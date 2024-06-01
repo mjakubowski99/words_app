@@ -42,9 +42,17 @@ jobs:
        run: cp .env.ci.example .env
      - name: Install dependencies
        run: composer install
+     - name: Check if documentation can be generated
+       run: composer open-api
      - name: Run cs fixer check
        run: composer php-cs-fixer-ci
      - name: Static analyse
        run: composer phpstan
      - name: Run migrations
        run: php artisan migrate
+     - name: Test if migrations can be rolled back
+       run: php artisan migrate:rollback
+     - name: Run migrations
+       run: php artisan migrate
+     - name: Run tests
+       run: php artisan test
