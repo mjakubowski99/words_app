@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\Auth;
 
-use UseCases\Contracts\Auth\IRegisterUserRequest;
-use Illuminate\Foundation\Http\FormRequest;
 use OpenApi\Attributes as OAT;
+use Illuminate\Foundation\Http\FormRequest;
+use UseCases\Contracts\Auth\IRegisterUserRequest;
 
 #[OAT\Schema(
-    schema: 'Requests\Auth\LoginRequest',
+    schema: 'Requests\Auth\RegisterRequest',
     properties: [
         new OAT\Property(
             property: 'email',

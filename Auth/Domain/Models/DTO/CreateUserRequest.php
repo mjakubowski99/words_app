@@ -16,7 +16,7 @@ readonly class CreateUserRequest implements ICreateUserRequest
 
     public static function fromRegisterRequest(IRegisterUserRequest $request): self
     {
-        return new self($request->getEmail(), $request->getPassword());
+        return new self($request->getEmail(), $request->getUserPassword());
     }
 
     public function getEmail(): string

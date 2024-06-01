@@ -8,14 +8,6 @@
         {
             "url": "http://localhost",
             "description": "localhost"
-        },
-        {
-            "url": "https://api-pasazgrunwaldzki.devpark.com.pl",
-            "description": "develop"
-        },
-        {
-            "url": "https://api-pasazgrunwaldzki.devpark.com.pl",
-            "description": "staging"
         }
     ],
     "paths": {
@@ -71,6 +63,68 @@
                                 }
                             }
                         }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/validation_error"
+                    }
+                }
+            }
+        },
+        "/api/register": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Register user",
+                "description": "Register user",
+                "operationId": "auth.register",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Requests\\Auth\\RegisterRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Resources\\Auth\\UserTokenResource"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Invalid login credentials"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/validation_error"
                     }
                 }
             }
@@ -189,6 +243,22 @@
                 },
                 "type": "object"
             },
+            "Requests\\Auth\\RegisterRequest": {
+                "properties": {
+                    "email": {
+                        "description": "Email.",
+                        "type": "string",
+                        "example": "email@email.com"
+                    },
+                    "password": {
+                        "description": "Password.",
+                        "type": "string",
+                        "format": "password",
+                        "example": "test123"
+                    }
+                },
+                "type": "object"
+            },
             "Resources\\Auth\\UserTokenResource": {
                 "properties": {
                     "user": {
@@ -196,7 +266,7 @@
                             "id": {
                                 "type": "string"
                             },
-                            "name": {
+                            "email": {
                                 "type": "string"
                             }
                         },
@@ -655,24 +725,6 @@
                 "required": true,
                 "schema": {
                     "type": "string"
-                }
-            },
-            "Path\\CashierNumber": {
-                "name": "cashier_number",
-                "in": "path",
-                "description": "Cashier identifier",
-                "required": true,
-                "schema": {
-                    "type": "string"
-                }
-            },
-            "Path\\CompanyId": {
-                "name": "company_id",
-                "in": "path",
-                "description": "Shop identifier",
-                "required": true,
-                "schema": {
-                    "type": "integer"
                 }
             },
             "Path\\PhoneNumber": {

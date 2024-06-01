@@ -49,6 +49,7 @@ class AuthController extends Controller
                     ),
                 ]),
             ),
+            new OAT\Response(ref: '#/components/responses/validation_error', response: 422),
         ],
     )]
     public function loginUser(LoginRequest $request, LoginUser $use_case): JsonResponse|UserTokenResource
@@ -95,6 +96,7 @@ class AuthController extends Controller
                     ),
                 ]),
             ),
+            new OAT\Response(ref: '#/components/responses/validation_error', response: 422),
         ],
     )]
     public function registerUser(RegisterRequest $request, RegisterUser $use_case): JsonResponse|UserTokenResource

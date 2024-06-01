@@ -20,7 +20,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
                     type: 'string',
                 ),
                 new OAT\Property(
-                    property: 'name',
+                    property: 'email',
                     type: 'string'
                 ),
             ]
@@ -41,7 +41,7 @@ class UserTokenResource extends JsonResource
         return [
             'user' => [
                 'id' => (string) $this->resource->getUser()->getId(),
-                'name' => $this->resource->getUser()->getEmail(),
+                'email' => $this->resource->getUser()->getEmail(),
             ],
             'token' => $this->resource->getToken(),
         ];
