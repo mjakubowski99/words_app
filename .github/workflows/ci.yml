@@ -27,3 +27,5 @@ jobs:
        run: composer install
      - name: Run cs fixer check
        run: composer php-cs-fixer-ci
+     - name: Static analyse
+       run: composer phpstan
