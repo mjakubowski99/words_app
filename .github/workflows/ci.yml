@@ -12,6 +12,8 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: mjakubowski99/words_app
+      volumes:
+        - .:/var/www
     steps:
      - name: Disable XDEBUG
        run: export XDEBUG_MODE=off
