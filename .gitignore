@@ -3,6 +3,7 @@
 /.vagrant
 .phpunit.result.cache
 .php_cs.cache
+.php-cs-fixer.cache
 _ide_helper.php
 _ide_helper_models.php
 /entry/.env.testing

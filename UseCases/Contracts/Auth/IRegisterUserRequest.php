@@ -8,5 +8,5 @@ interface IRegisterUserRequest
 {
     public function getEmail(): string;
 
-    public function getPassword(): string;
+    public function getUserPassword(): string;
 }
