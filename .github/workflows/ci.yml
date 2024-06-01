@@ -1,0 +1,25 @@
+name: ci
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  ci:
+
+    runs-on: ubuntu-latest
+    container:
+      image: mjakubowski99/words_app
+    steps:
+     - name: Disable XDEBUG
+       run: export XDEBUG_MODE=off
+     - name: Entery entry dir
+       run: cd entry
+     - name: Copy .env.example
+       run: cp .env.example .env
+     - name: Install dependencies
+       run: composer install 
+     - name: Run cs fixer
+       run: composer php-cs-fixer-ci
