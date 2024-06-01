@@ -16,15 +16,10 @@ jobs:
     steps:
      - name: Checkout code
        uses: actions/checkout@v4
-     - name: Check current dir
-       run: ls
-     - name: Disable XDEBUG
-       run: export XDEBUG_MODE=off
-     - name: Entery entry dir
-       run: cd entry
-     - name: Copy .env.example
-       run: cp .env.example .env
-     - name: Install dependencies
-       run: composer install 
-     - name: Run cs fixer
-       run: composer php-cs-fixer-ci
+     - name: Run tests
+       working-directory: entry
+       run: |
+        export XDEBUG_MODE=off
+        cp .env.example .env
+        composer install
+        composer php-cs-fixer-ci
