@@ -10,9 +10,26 @@ jobs:
   ci:
 
     runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:15.3
+        env:
+          POSTGRES_DB: postgres        
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+          
     defaults:
       run:
         working-directory: ./entry
+        
     container:
       image: mjakubowski99/words_app
       options: --user 1001
@@ -22,10 +39,12 @@ jobs:
      - name: Disable xdebug
        run: export XDEBUG_MODE=off
      - name: Copy .env.ci 
-       run: cp .env.example .env
+       run: cp .env.ci.example .env
      - name: Install dependencies
        run: composer install
      - name: Run cs fixer check
        run: composer php-cs-fixer-ci
      - name: Static analyse
        run: composer phpstan
+     - name: Run migrations
+       run: php artisan migrate
