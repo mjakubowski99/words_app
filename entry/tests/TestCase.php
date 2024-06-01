@@ -19,11 +19,8 @@ abstract class TestCase extends BaseTestCase
      *
      * @return MockInterface|T
      */
-    public function mockery(string $class, array $allows): mixed
+    public function mockery(string $class): mixed
     {
-        $mock = \Mockery::mock($class);
-        $mock->allows($allows);
-
-        return $mock;
+        return \Mockery::mock($class);
     }
 }

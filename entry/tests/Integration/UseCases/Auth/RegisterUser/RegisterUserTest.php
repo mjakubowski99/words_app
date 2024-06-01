@@ -26,9 +26,10 @@ class RegisterUserTest extends TestCase
     public function test_register_WhenEmailUnique_success(): void
     {
         // GIVEN
-        $request = $this->mockery(IRegisterUserRequest::class, [
+        $request = $this->mockery(IRegisterUserRequest::class);
+        $request->allows([
             'getEmail' => 'email@email.com',
-            'getPassword' => 'password123',
+            'getUserPassword' => 'password123',
         ]);
 
         // WHEN

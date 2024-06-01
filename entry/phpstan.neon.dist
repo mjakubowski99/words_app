@@ -12,6 +12,7 @@ parameters:
         - ../Auth
         - ../User
         - ../UseCases
+        - ../Shared
 
     excludePaths:
         - tests/*
