@@ -13,7 +13,8 @@ jobs:
     container:
       image: mjakubowski99/words_app
     steps:
-     - uses: actions/checkout@v4
+     - name: Checkout code
+       uses: actions/checkout@v4
      - name: Check current dir
        run: ls
      - name: Disable XDEBUG
