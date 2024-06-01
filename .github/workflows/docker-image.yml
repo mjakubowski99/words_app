@@ -13,7 +13,7 @@ jobs:
         - name: Checkout code
           uses: actions/checkout@v4
         - name: Build the app Docker image
-          run: docker build -t michalj/words_app --build-arg USER=app --build-arg UID=1000 --build-arg GID=1000 entry/docker/config/php
+          run: docker build -t mjakubowski99/words_app --build-arg USER=app --build-arg UID=1000 --build-arg GID=1000 entry/docker/config/php
         - name: Login to Docker Hub
           uses: docker/login-action@v3
           with:
