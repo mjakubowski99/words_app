@@ -12,8 +12,6 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: mjakubowski99/words_app
-      volumes:
-        - .:/var/www
     steps:
      - name: Check current dir
        run: ls
