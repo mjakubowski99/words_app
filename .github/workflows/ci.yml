@@ -15,6 +15,8 @@ jobs:
       volumes:
         - .:/var/www
     steps:
+     - name: Check current dir
+       run: ls
      - name: Disable XDEBUG
        run: export XDEBUG_MODE=off
      - name: Entery entry dir
