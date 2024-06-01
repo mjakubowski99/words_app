@@ -12,6 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: mjakubowski99/words_app
+      options: --user 1001
     steps:
      - name: Checkout code
        uses: actions/checkout@v4
