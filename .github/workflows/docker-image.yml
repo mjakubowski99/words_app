@@ -1,0 +1,20 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "new-docker-image" ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Build the app Docker image
+      run: docker build -t michalj/words_app --build-arg USER=app --build-arg UID=1000 --build-arg GID=1000 entry/docker/config/php
+    - name: Login to dockerhub
+      run: docker login -u "${{ secrets.DOCKERHUB_USER }}" -p "${{ secrets.DOCKERHUB_PASSWORD}}"
+    - name: Push to registery
+      run: docker push michalj/words_app
