@@ -33,11 +33,11 @@ jobs:
     container:
       image: mjakubowski99/words_app
       options: --user 1001
+    env:
+      XDEBUG_MODE: off
     steps:
      - name: Checkout code
        uses: actions/checkout@v4
-     - name: Disable xdebug
-       run: export XDEBUG_MODE=off
      - name: Copy .env.ci 
        run: cp .env.ci.example .env
      - name: Install dependencies
