@@ -10,16 +10,20 @@ jobs:
   ci:
 
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./entry
     container:
       image: mjakubowski99/words_app
       options: --user 1001
     steps:
      - name: Checkout code
        uses: actions/checkout@v4
-     - name: Run tests
-       working-directory: entry
-       run: |
-        export XDEBUG_MODE=off
-        cp .env.example .env
-        composer install
-        composer php-cs-fixer-ci
+     - name: Disable xdebug
+       run: export XDEBUG_MODE=off
+     - name: Copy .env.ci 
+       run: cp .env.example .env
+     - name: Install dependencies
+       run: composer install
+     - name: Run cs fixer check
+       run: composer php-cs-fixer-ci
