@@ -15,6 +15,6 @@ jobs:
     - name: Build the app Docker image
       run: docker build -t michalj/words_app --build-arg USER=app --build-arg UID=1000 --build-arg GID=1000 entry/docker/config/php
     - name: Login to dockerhub
-      run: docker login -u "${{ secrets.DOCKERHUB_USER }}" -p "${{ secrets.DOCKERHUB_PASSWORD}}"
+      run: docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" -p "${{ secrets.DOCKERHUB_PASSWORD}}"
     - name: Push to registery
       run: docker push michalj/words_app
