@@ -1,0 +1,65 @@
+version: "3.7"
+
+services:
+    php:
+        build:
+            context: config/php
+            args:
+                USER: ${USER}
+                UID: ${UID}
+                GID: ${GID}
+        container_name: "${PROJECT_NAME}_php"
+        image: ${PROJECT_NAME}_php
+        restart: unless-stopped
+        working_dir: /var/www/entry
+        volumes:
+            - ../../:/var/www
+        extra_hosts:
+            - "host.docker.internal:host-gateway"
+            - "php.docker:127.0.0.1"
+        environment:
+            PHP_IDE_CONFIG: serverName=server
+        links:
+            - db
+        networks:
+            - app-network
+
+    nginx:
+        image: nginx:latest
+        container_name: "${PROJECT_NAME}_nginx"
+        restart: unless-stopped
+        ports:
+          - "${NGINX_PORT}:80"
+        volumes:
+            - ../../:/var/www
+            - ./config/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+            - ./logs/nginx:/var/log/nginx
+        links:
+            - php
+            - db
+        networks:
+            - app-network
+
+    db:
+        image: postgres:15.3-alpine
+        container_name: "${PROJECT_NAME}_db"
+        restart: unless-stopped
+        ports:
+            - "${DATABASE_PORT}:5432"
+        volumes:
+            - db_volume:/data/postgres
+        environment:
+            POSTGRES_DATABASE: "${PROJECT_NAME}_db"
+            POSTGRES_USER: app
+            POSTGRES_PASSWORD: app
+            PGDATA: /data/postgres
+        networks:
+            - app-network
+
+volumes:
+    db_volume:
+        name: ${PROJECT_NAME}_db_volume
+
+networks:
+    app-network:
+        driver: bridge

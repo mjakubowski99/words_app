@@ -1,0 +1,764 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Words api",
+        "version": "0.1"
+    },
+    "servers": [
+        {
+            "url": "http://localhost",
+            "description": "localhost"
+        },
+        {
+            "url": "https://api-pasazgrunwaldzki.devpark.com.pl",
+            "description": "develop"
+        },
+        {
+            "url": "https://api-pasazgrunwaldzki.devpark.com.pl",
+            "description": "staging"
+        }
+    ],
+    "paths": {
+        "/api/login": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Login user",
+                "description": "Login user",
+                "operationId": "auth.login",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Requests\\Auth\\LoginRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Resources\\Auth\\UserTokenResource"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Invalid login credentials"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "date": {
+                "description": "",
+                "type": "string",
+                "format": "date",
+                "example": "2022:01:01"
+            },
+            "date_time": {
+                "description": "",
+                "type": "string",
+                "format": "date-time",
+                "example": "2021:01:01 00:00:000"
+            },
+            "id": {
+                "description": "",
+                "type": "integer",
+                "example": 1
+            },
+            "Links": {
+                "description": "Links",
+                "properties": {
+                    "links": {
+                        "properties": {
+                            "first": {
+                                "type": "string",
+                                "example": "https://some_path/some-list?page=1"
+                            },
+                            "last": {
+                                "type": "string",
+                                "example": "https://some_path/some-list?page=5"
+                            },
+                            "prev": {
+                                "type": "string",
+                                "example": "https://some_path/some-list?page=1",
+                                "nullable": true
+                            },
+                            "next": {
+                                "type": "string",
+                                "example": "https://some_path/some-list?page=3",
+                                "nullable": true
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "Meta": {
+                "description": "Meta",
+                "properties": {
+                    "meta": {
+                        "properties": {
+                            "current_page": {
+                                "type": "integer",
+                                "example": 2
+                            },
+                            "from": {
+                                "type": "integer",
+                                "example": 21
+                            },
+                            "last_page": {
+                                "type": "integer",
+                                "example": 5
+                            },
+                            "path": {
+                                "type": "string",
+                                "example": "https://some_path/some-list"
+                            },
+                            "per_page": {
+                                "type": "integer",
+                                "example": 20
+                            },
+                            "to": {
+                                "type": "integer",
+                                "example": 40
+                            },
+                            "total": {
+                                "type": "integer",
+                                "example": 98
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "string_item": {
+                "description": "",
+                "type": "string",
+                "example": "some value"
+            },
+            "uuid": {
+                "description": "UUID4",
+                "type": "string",
+                "format": "uuid"
+            },
+            "Requests\\Auth\\LoginRequest": {
+                "properties": {
+                    "email": {
+                        "description": "Email.",
+                        "type": "string",
+                        "example": "email@email.com"
+                    },
+                    "password": {
+                        "description": "Password.",
+                        "type": "string",
+                        "format": "password",
+                        "example": "test123"
+                    }
+                },
+                "type": "object"
+            },
+            "Resources\\Auth\\UserTokenResource": {
+                "properties": {
+                    "user": {
+                        "properties": {
+                            "id": {
+                                "type": "string"
+                            },
+                            "name": {
+                                "type": "string"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "token": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "responses": {
+            "bad_gateway": {
+                "description": "Bad gateway response.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "example": "Bad gateway."
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "bad_request": {
+                "description": "Bad request response.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "example": "Bad request."
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "business_card_accept_regulation": {
+                "description": "Business card accept regulation response.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "example": "Regulations have been accepted"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "business_card_activate": {
+                "description": "Business card activate response.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "example": "The business card has been activated."
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "business_card_not_accept_regulation": {
+                "description": "Business card not accept regulation response.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "example": "Regulations have not been accepted"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "business_card_not_activate": {
+                "description": "Business card not activated response.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "example": "The given code does not exist."
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "coupon_not_found": {
+                "description": "Coupon not found",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "example": "This coupon is not set to user"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "dummy": {
+                "description": "Dummy response, to be created."
+            },
+            "email_verification_required": {
+                "description": "Email verification required response.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "example": "Please verify your email address before"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "forbidden": {
+                "description": "Forbidden response.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "example": "This action is unauthorized."
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "fortune_wheel_error": {
+                "description": "Fortune Wheel error response.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "example": "Fortune Wheel was already turned."
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "method_not_allowed": {
+                "description": "Method not allowed response.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "example": "No route found for \"GET /api\": Method Not Allowed (Allow: POST)"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "missing_properties": {
+                "description": "Missing properties",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "example": "total"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "no_content": {
+                "description": "No content response."
+            },
+            "not_acceptable": {
+                "description": "Not acceptable response.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "example": "The user is using an obsolete version of the application"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "not_found": {
+                "description": "Not found response.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "example": "Not found."
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "profile_already_exists_error": {
+                "description": "Profile already exists error response.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "example": "The Profile for given user already exists."
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "profile_not_found_error": {
+                "description": "Profile not found error response.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "example": "The Profile for given user was not found."
+                                },
+                                "errors": {
+                                    "properties": {
+                                        "foo.0.bar": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string",
+                                                "example": "The Profile for given user was not found."
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "receipt_error": {
+                "description": "Receipt error response.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "example": "Photo scanning failed"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "register_error_response": {
+                "description": "Register error response",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "example": "A similar user already exists."
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "success": {
+                "description": "Success response.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "properties": {
+                                "success": {
+                                    "type": "boolean",
+                                    "example": true
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "unauthenticated": {
+                "description": "Unauthenticated response.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "example": "Unauthenticated."
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "user_account_banned_error": {
+                "description": "User Account Banned error response.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "example": "User Account Banned."
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "user_phone_number_not_exist": {
+                "description": "User number does not exist",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "example": "The given phone number does not exist"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "user_points_response": {
+                "description": "User points response",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "properties": {
+                                "value": {
+                                    "type": "integer",
+                                    "example": 50
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "validation_error": {
+                "description": "Validation error response.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "example": "The given data was invalid."
+                                },
+                                "errors": {
+                                    "properties": {
+                                        "foo.0.bar": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string",
+                                                "example": "The foo.0.bar format is invalid."
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "verification_pin_error": {
+                "description": "Verification PIN error response.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "example": "Pin is not correct."
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            }
+        },
+        "parameters": {
+            "autorization_header": {
+                "name": "Authorization Header",
+                "in": "header",
+                "description": "Authorization Header",
+                "required": true
+            },
+            "token_header": {
+                "name": "token",
+                "in": "header",
+                "description": "Logged user token",
+                "required": true,
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "Path\\CashierNumber": {
+                "name": "cashier_number",
+                "in": "path",
+                "description": "Cashier identifier",
+                "required": true,
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "Path\\CompanyId": {
+                "name": "company_id",
+                "in": "path",
+                "description": "Shop identifier",
+                "required": true,
+                "schema": {
+                    "type": "integer"
+                }
+            },
+            "Path\\PhoneNumber": {
+                "name": "phone_number",
+                "in": "path",
+                "description": "Phone Number",
+                "required": true,
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "user_id_in_path": {
+                "name": "user_id",
+                "in": "path",
+                "description": "User identifier",
+                "required": true,
+                "schema": {
+                    "type": "integer"
+                }
+            },
+            "Query\\Page": {
+                "name": "page",
+                "in": "query",
+                "description": "Requested page.",
+                "required": false,
+                "schema": {
+                    "type": "integer",
+                    "default": 1,
+                    "minimum": 1
+                }
+            },
+            "Query\\PerPage": {
+                "name": "per_page",
+                "in": "query",
+                "description": "Requested item count.",
+                "required": false,
+                "schema": {
+                    "type": "integer",
+                    "default": 25,
+                    "maximum": 100,
+                    "minimum": 1
+                }
+            },
+            "prize_uuid_query": {
+                "name": "prize_uuid",
+                "in": "query",
+                "description": "Prize uuid",
+                "required": true,
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "Query\\Search": {
+                "name": "search",
+                "in": "query",
+                "description": "Search phrase.",
+                "required": false,
+                "schema": {
+                    "type": "string",
+                    "default": null,
+                    "minLength": 2
+                }
+            },
+            "user_id_query": {
+                "name": "user_id",
+                "in": "query",
+                "description": "User identifier",
+                "required": true,
+                "schema": {
+                    "type": "integer"
+                }
+            }
+        },
+        "securitySchemes": {
+            "sanctum": {
+                "type": "http",
+                "description": "Enter authorization token from /api/login endpoint.",
+                "name": "Sanctum Authorization",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Auth",
+            "description": "Auth part of application."
+        }
+    ]
+}
