@@ -20,4 +20,4 @@ jobs:
             username: ${{ secrets.DOCKERHUB_USERNAME }}
             password: ${{ secrets.DOCKERHUB_PASSWORD }}
         - name: Push to registery
-          run: docker push michalj/words_app
+          run: docker push mjakubowski99/words_app
