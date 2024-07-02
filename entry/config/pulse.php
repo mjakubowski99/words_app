@@ -1,11 +1,12 @@
 <?php
 
-use Laravel\Pulse\Http\Middleware\Authorize;
+declare(strict_types=1);
+
 use Laravel\Pulse\Pulse;
 use Laravel\Pulse\Recorders;
+use Laravel\Pulse\Http\Middleware\Authorize;
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Pulse Domain
@@ -207,7 +208,7 @@ return [
             'sample_rate' => env('PULSE_SLOW_REQUESTS_SAMPLE_RATE', 1),
             'threshold' => env('PULSE_SLOW_REQUESTS_THRESHOLD', 1000),
             'ignore' => [
-                '#^/'.env('PULSE_PATH', 'pulse').'$#', // Pulse dashboard...
+                '#^/' . env('PULSE_PATH', 'pulse') . '$#', // Pulse dashboard...
                 '#^/telescope#', // Telescope dashboard...
             ],
         ],
@@ -224,7 +225,7 @@ return [
             'enabled' => env('PULSE_USER_REQUESTS_ENABLED', true),
             'sample_rate' => env('PULSE_USER_REQUESTS_SAMPLE_RATE', 1),
             'ignore' => [
-                '#^/'.env('PULSE_PATH', 'pulse').'$#', // Pulse dashboard...
+                '#^/' . env('PULSE_PATH', 'pulse') . '$#', // Pulse dashboard...
                 '#^/telescope#', // Telescope dashboard...
             ],
         ],

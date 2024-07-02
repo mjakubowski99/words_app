@@ -1,17 +1,18 @@
 <?php
 
-use Illuminate\Database\Schema\Blueprint;
+declare(strict_types=1);
+
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
 use Laravel\Pulse\Support\PulseMigration;
 
-return new class extends PulseMigration
-{
+return new class() extends PulseMigration {
     /**
      * Run the migrations.
      */
     public function up(): void
     {
-        if (! $this->shouldRun()) {
+        if (!$this->shouldRun()) {
             return;
         }
 

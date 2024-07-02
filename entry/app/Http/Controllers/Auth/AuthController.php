@@ -4,16 +4,13 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Auth;
 
-use App\Http\OpenApi\Tags;
 use App\Models\Test;
-use App\Models\User;
-use Auth\Domain\Services\LoginService;
-use Illuminate\Config\Repository;
-use Illuminate\Container\Container;
+use App\Http\OpenApi\Tags;
 use UseCases\Auth\LoginUser;
 use OpenApi\Attributes as OAT;
 use UseCases\Auth\RegisterUser;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Container\Container;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;

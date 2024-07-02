@@ -1,10 +1,11 @@
 <?php
 
-use Laravel\Telescope\Http\Middleware\Authorize;
+declare(strict_types=1);
+
 use Laravel\Telescope\Watchers;
+use Laravel\Telescope\Http\Middleware\Authorize;
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Telescope Master Switch
@@ -118,7 +119,6 @@ return [
     ],
 
     'ignore_commands' => [
-        //
     ],
 
     /*
