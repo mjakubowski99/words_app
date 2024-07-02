@@ -5,6 +5,11 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Auth;
 
 use App\Http\OpenApi\Tags;
+use App\Models\Test;
+use App\Models\User;
+use Auth\Domain\Services\LoginService;
+use Illuminate\Config\Repository;
+use Illuminate\Container\Container;
 use UseCases\Auth\LoginUser;
 use OpenApi\Attributes as OAT;
 use UseCases\Auth\RegisterUser;
@@ -108,5 +113,10 @@ class AuthController extends Controller
         }
 
         return new UserTokenResource($result->getUserToken());
+    }
+
+    public function test(Container $app)
+    {
+        return $app->make(Test::class)->app();
     }
 }

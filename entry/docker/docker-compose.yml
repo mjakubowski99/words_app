@@ -19,6 +19,7 @@ services:
             - "php.docker:127.0.0.1"
         environment:
             PHP_IDE_CONFIG: serverName=server
+            USER: ${USER}
         links:
             - db
         networks:

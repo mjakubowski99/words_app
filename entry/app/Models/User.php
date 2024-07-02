@@ -51,6 +51,8 @@ class User extends Authenticatable
     use Notifiable;
     use HasUuids;
 
+    public static $deps = [];
+
     /**
      * The attributes that are mass assignable.
      *

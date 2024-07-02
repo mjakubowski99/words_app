@@ -16,10 +16,14 @@ use UseCases\Contracts\Auth\IUserLoginRequest;
 
 readonly class LoginService implements ILoginService
 {
+    public int $user_id;
+
     public function __construct(
         private IUserService $service,
         private TokenService $token_service,
-    ) {}
+    ) {
+        $this->user_id = random_int(0, 1000);
+    }
 
     public function loginByCredentials(IUserLoginRequest $request): ILoginUserResult
     {

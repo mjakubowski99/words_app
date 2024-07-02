@@ -1,15 +1,13 @@
 FROM php:8.2-fpm
 
-#Args defined in docker-compose.yml
 ARG USER
-ARG UID
 ARG GID
+ARG UID
 
 USER root
 
-RUN addgroup $USER --gid $GID
-
-RUN useradd -rm -d /home/$USER -s /bin/bash -g $USER -G sudo -u $UID $USER
+RUN addgroup --system --gid $GID $USER
+RUN adduser --system --ingroup $USER --uid $UID $USER
 
 # Install dependencies
 RUN apt-get update && apt-get install -y \
@@ -37,9 +35,6 @@ RUN apt-get update && apt-get install -y \
     wget \
     gnupg
 
-# Get latest Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
@@ -58,20 +53,20 @@ RUN docker-php-ext-install \
     pdo_pgsql \
     zip
 
-# Install XDebug
-RUN pecl install xdebug-3.2.0  && docker-php-ext-enable xdebug
+COPY entry/docker/config/php/memory-limit-php.ini /usr/local/etc/php/conf.d/memory-limit-php.ini
 
-COPY xdebug.ini /usr/local/etc/php/conf.d/xdebug-dev.ini
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-COPY memory-limit-php.ini /usr/local/etc/php/conf.d/memory-limit-php.ini
+RUN chown -R $USER:$USER /usr/bin/composer
 
-WORKDIR /var/www/entry
-
-RUN chown -R $USER:$USER /var/www
+COPY --chown=$USER:$USER . /var/www
 
 USER $USER
 
+WORKDIR /var/www/entry
+
+RUN composer install
+
 EXPOSE 9000
-EXPOSE 9003
 
 CMD ["php-fpm"]

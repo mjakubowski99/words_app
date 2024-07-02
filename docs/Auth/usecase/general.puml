@@ -1,0 +1,26 @@
+@startuml
+actor Guest as guest
+actor User as user
+
+note right of guest
+    Guest is not logged user
+end note
+
+package Auth {
+    usecase "Login to the application" as (Login)
+    usecase "Register in the application" as (Register)
+}
+
+package Exercise {
+    usecase "Get exercise" as (Get ex)
+    usecase "Do exercise" as (Do ex)
+}
+
+guest --> (Login)
+guest --> (Register)
+
+user --> (Get ex)
+note "User need to login to do exercises" as N1
+user .. N1
+N1 .. (Do ex)
+@enduml
