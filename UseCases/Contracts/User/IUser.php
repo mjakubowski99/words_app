@@ -11,4 +11,6 @@ interface IUser
     public function getId(): Uuid;
 
     public function getEmail(): string;
+
+    public function getName(): string;
 }

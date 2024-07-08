@@ -4,20 +4,35 @@ declare(strict_types=1);
 
 namespace Auth\Infrastructure\Providers;
 
-use Auth\Domain\Services\LoginService;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\ServiceProvider;
-use Auth\Domain\Services\RegisterService;
-use UseCases\Contracts\Auth\ILoginService;
-use UseCases\Contracts\Auth\IRegisterService;
-use Auth\Domain\Repositories\ITokenRepository;
-use Auth\Infrastructure\Repositories\TokenRepository;
+use Kreait\Firebase\JWT\IdTokenVerifier;
+use Auth\Infrastructure\Guards\FirebaseGuard;
 
 class AuthServiceProvider extends ServiceProvider
 {
+    public function boot(): void
+    {
+        Auth::viaRequest('firebase', function ($request) {
+            return app(FirebaseGuard::class)->user($request);
+        });
+    }
+
     public function register(): void
     {
-        $this->app->bind(ITokenRepository::class, TokenRepository::class);
-        $this->app->bind(ILoginService::class, LoginService::class);
-        $this->app->bind(IRegisterService::class, RegisterService::class);
+        $this->registerIdTokenVerifier();
+    }
+
+    private function registerIdTokenVerifier(): void
+    {
+        $this->app->singleton(IdTokenVerifier::class, function ($app) {
+            $project = config('firebase.default');
+
+            if (empty($project)) {
+                throw new \Exception('Missing firebase project id .env variable.');
+            }
+
+            return IdTokenVerifier::createWithProjectId($project);
+        });
     }
 }

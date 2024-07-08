@@ -24,6 +24,11 @@ class User extends BaseModel implements IUser
         return Uuid::fromString($this->id);
     }
 
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
     public function getPassword(): string
     {
         return $this->password;

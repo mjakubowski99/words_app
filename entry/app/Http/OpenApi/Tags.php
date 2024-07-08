@@ -7,10 +7,10 @@ namespace App\Http\OpenApi;
 use OpenApi\Attributes as OAT;
 
 #[OAT\Tag(
-    name: Tags::AUTH,
-    description: 'Auth part of application.'
+    name: Tags::USER,
+    description: 'User part of application.'
 )]
 class Tags
 {
-    public const AUTH = 'Auth';
+    public const USER = 'User';
 }

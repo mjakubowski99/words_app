@@ -27,4 +27,9 @@ readonly class UserDTO implements IUser
     {
         return $this->domain_user->getEmail();
     }
+
+    public function getName(): string
+    {
+        return $this->domain_user->getName();
+    }
 }

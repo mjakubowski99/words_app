@@ -11,24 +11,14 @@
         }
     ],
     "paths": {
-        "/api/login": {
-            "post": {
+        "/api/user/me": {
+            "get": {
                 "tags": [
-                    "Auth"
+                    "User"
                 ],
-                "summary": "Login user",
-                "description": "Login user",
-                "operationId": "auth.login",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/Requests\\Auth\\LoginRequest"
-                            }
-                        }
-                    }
-                },
+                "summary": "User me",
+                "description": "User me",
+                "operationId": "user.me",
                 "responses": {
                     "200": {
                         "description": "success",
@@ -39,7 +29,7 @@
                                         "data": {
                                             "type": "array",
                                             "items": {
-                                                "$ref": "#/components/schemas/Resources\\Auth\\UserTokenResource"
+                                                "$ref": "#/components/schemas/Resources\\User\\UserResource"
                                             }
                                         }
                                     },
@@ -48,7 +38,7 @@
                             }
                         }
                     },
-                    "400": {
+                    "401": {
                         "description": "bad request",
                         "content": {
                             "application/json": {
@@ -56,7 +46,7 @@
                                     "properties": {
                                         "message": {
                                             "type": "string",
-                                            "example": "Invalid login credentials"
+                                            "example": "Unauthenticated"
                                         }
                                     },
                                     "type": "object"
@@ -66,67 +56,13 @@
                     },
                     "422": {
                         "$ref": "#/components/responses/validation_error"
-                    }
-                }
-            }
-        },
-        "/api/register": {
-            "post": {
-                "tags": [
-                    "Auth"
-                ],
-                "summary": "Register user",
-                "description": "Register user",
-                "operationId": "auth.register",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/Requests\\Auth\\RegisterRequest"
-                            }
-                        }
                     }
                 },
-                "responses": {
-                    "200": {
-                        "description": "success",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "data": {
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/components/schemas/Resources\\Auth\\UserTokenResource"
-                                            }
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "bad request",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Invalid login credentials"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "422": {
-                        "$ref": "#/components/responses/validation_error"
+                "security": [
+                    {
+                        "firebase": []
                     }
-                }
+                ]
             }
         }
     },
@@ -227,52 +163,15 @@
                 "type": "string",
                 "format": "uuid"
             },
-            "Requests\\Auth\\LoginRequest": {
+            "Resources\\User\\UserResource": {
                 "properties": {
+                    "id": {
+                        "type": "string"
+                    },
                     "email": {
-                        "description": "Email.",
-                        "type": "string",
-                        "example": "email@email.com"
+                        "type": "string"
                     },
-                    "password": {
-                        "description": "Password.",
-                        "type": "string",
-                        "format": "password",
-                        "example": "test123"
-                    }
-                },
-                "type": "object"
-            },
-            "Requests\\Auth\\RegisterRequest": {
-                "properties": {
-                    "email": {
-                        "description": "Email.",
-                        "type": "string",
-                        "example": "email@email.com"
-                    },
-                    "password": {
-                        "description": "Password.",
-                        "type": "string",
-                        "format": "password",
-                        "example": "test123"
-                    }
-                },
-                "type": "object"
-            },
-            "Resources\\Auth\\UserTokenResource": {
-                "properties": {
-                    "user": {
-                        "properties": {
-                            "id": {
-                                "type": "string"
-                            },
-                            "email": {
-                                "type": "string"
-                            }
-                        },
-                        "type": "object"
-                    },
-                    "token": {
+                    "name": {
                         "type": "string"
                     }
                 },
@@ -799,18 +698,18 @@
             }
         },
         "securitySchemes": {
-            "sanctum": {
+            "firebase": {
                 "type": "http",
-                "description": "Enter authorization token from /api/login endpoint.",
-                "name": "Sanctum Authorization",
+                "description": "Enter authorization token from firebase",
+                "name": "Firebase Authorization",
                 "scheme": "bearer"
             }
         }
     },
     "tags": [
         {
-            "name": "Auth",
-            "description": "Auth part of application."
+            "name": "User",
+            "description": "User part of application."
         }
     ]
 }

@@ -1,0 +1,15 @@
+@startuml
+
+start
+:Login with google;
+:User opens google auth window;
+:User logins with google;
+if (User present in database) then(yes)
+ :Redirect to homepage;
+else (no)
+ :Save user data;
+ :Redirect to homepage;
+endif
+end
+
+@enduml

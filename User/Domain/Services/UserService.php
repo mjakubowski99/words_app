@@ -4,35 +4,42 @@ declare(strict_types=1);
 
 namespace User\Domain\Services;
 
+use Shared\Utils\Str\IStr;
 use Shared\Utils\Hash\IHash;
 use UseCases\Contracts\User\IUser;
 use User\Domain\Models\DTO\UserDTO;
 use UseCases\Contracts\User\IUserService;
+use UseCases\Contracts\Auth\IAuthenticable;
 use User\Domain\Repositories\IUserRepository;
-use UseCases\Contracts\User\ICreateUserRequest;
 
 readonly class UserService implements IUserService
 {
-    public function __construct(private IUserRepository $repository, private IHash $hash) {}
+    public function __construct(private IUserRepository $repository, private IHash $hash, private IStr $str) {}
 
-    public function validateCredentials(string $email, string $password): ?IUser
+    public function existsByAuthenticable(IAuthenticable $user): bool
     {
-        $user = $this->repository->findByEmail($email);
+        return $this->repository->existsByProvider($user->getProviderId(), $user->getProviderType());
+    }
 
-        if (!$user) {
-            return null;
-        }
-        if (!$this->hash->check($password, $user->getPassword())) {
-            return null;
-        }
+    public function findByAuthenticable(IAuthenticable $user): IUser
+    {
+        $user = $this->repository->findByProvider($user->getProviderId(), $user->getProviderType());
 
         return new UserDTO($user);
     }
 
-    public function createUser(ICreateUserRequest $request): IUser
+    public function createFromAuthenticable(IAuthenticable $user): IUser
     {
-        return new UserDTO(
-            $this->repository->create($request)
-        );
+        $user = $this->repository->create([
+            'name' => $user->getName(),
+            'email' => $user->getEmail(),
+            'email_verified_at' => now(),
+            'password' => $this->hash->make($this->str->random(16)),
+            'picture' => $user->getPicture(),
+            'provider_id' => $user->getProviderId(),
+            'provider_type' => $user->getProviderType(),
+        ]);
+
+        return new UserDTO($user);
     }
 }

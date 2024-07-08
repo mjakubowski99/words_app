@@ -13,4 +13,6 @@ interface IUser
     public function getPassword(): string;
 
     public function getEmail(): string;
+
+    public function getName(): string;
 }

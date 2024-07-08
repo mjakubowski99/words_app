@@ -4,16 +4,14 @@ declare(strict_types=1);
 
 namespace User\Infrastructure\Repositories;
 
-use Illuminate\Support\Str;
-use Shared\Utils\Hash\IHash;
+use Shared\Enum\UserProvider;
 use User\Domain\Models\Entities\IUser;
 use User\Infrastructure\Entities\User;
 use User\Domain\Repositories\IUserRepository;
-use UseCases\Contracts\User\ICreateUserRequest;
 
 readonly class UserRepository implements IUserRepository
 {
-    public function __construct(private User $user, private IHash $hash) {}
+    public function __construct(private User $user) {}
 
     public function findByEmail(string $email): ?IUser
     {
@@ -23,14 +21,28 @@ readonly class UserRepository implements IUserRepository
             ->first();
     }
 
-    public function create(ICreateUserRequest $request): IUser
+    public function create(array $attributes): IUser
     {
         return $this->user
             ->newQuery()
-            ->create([
-                'email' => $request->getEmail(),
-                'password' => $this->hash->make($request->getPassword()),
-                'name' => Str::random(16),
-            ]);
+            ->create($attributes);
+    }
+
+    public function existsByProvider(string $provider_id, UserProvider $provider): bool
+    {
+        return $this->user
+            ->newQuery()
+            ->where('provider_id', $provider_id)
+            ->where('provider_type', $provider->value)
+            ->exists();
+    }
+
+    public function findByProvider(string $provider_id, UserProvider $provider): IUser
+    {
+        return $this->user
+            ->newQuery()
+            ->where('provider_id', $provider_id)
+            ->where('provider_type', $provider->value)
+            ->firstOrFail();
     }
 }

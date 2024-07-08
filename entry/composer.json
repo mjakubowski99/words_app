@@ -8,6 +8,7 @@
         "php": "^8.2",
         "darkaonline/l5-swagger": "^8.6",
         "guzzlehttp/guzzle": "^7.2",
+        "kreait/laravel-firebase": "^5.9",
         "laravel/framework": "^10.10",
         "laravel/pulse": "^1.2",
         "laravel/sanctum": "^3.3",
@@ -67,6 +68,9 @@
         ],
         "open-api": [
             "@php artisan l5-swagger:generate"
+        ],
+        "test": [
+            "@php ./vendor/bin/phpunit tests/"
         ]
     },
     "extra": {

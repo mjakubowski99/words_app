@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Models\User;
+use Auth\Infrastructure\Entities\FirebaseAuthenticable;
 
 return [
     /*
@@ -43,6 +44,10 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+        'firebase' => [
+            'driver' => 'firebase',
+            'provider' => 'firebase',
+        ],
     ],
 
     /*
@@ -66,6 +71,11 @@ return [
         'users' => [
             'driver' => 'eloquent',
             'model' => User::class,
+        ],
+
+        'firebase' => [
+            'driver' => 'eloquent',
+            'model' => FirebaseAuthenticable::class,
         ],
 
         // 'users' => [
