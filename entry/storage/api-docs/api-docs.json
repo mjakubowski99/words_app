@@ -68,6 +68,20 @@
     },
     "components": {
         "schemas": {
+            "Resources\\User\\UserResource": {
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
             "date": {
                 "description": "",
                 "type": "string",
@@ -162,20 +176,6 @@
                 "description": "UUID4",
                 "type": "string",
                 "format": "uuid"
-            },
-            "Resources\\User\\UserResource": {
-                "properties": {
-                    "id": {
-                        "type": "string"
-                    },
-                    "email": {
-                        "type": "string"
-                    },
-                    "name": {
-                        "type": "string"
-                    }
-                },
-                "type": "object"
             }
         },
         "responses": {

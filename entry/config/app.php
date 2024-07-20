@@ -178,7 +178,6 @@ return [
 
         SharedServiceProvider::class,
         UserServiceProvider::class,
-        Auth\Infrastructure\Providers\AuthServiceProvider::class,
     ])->toArray(),
 
     /*

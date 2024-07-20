@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "645e8c224a7617bac1a3d9a0b487ad0e",
+    "content-hash": "9235681081c14d286eebc6d5b7450a56",
     "packages": [
         {
             "name": "beste/clock",
@@ -3361,6 +3361,45 @@
                 }
             ],
             "time": "2024-05-21T13:39:04+00:00"
+        },
+        {
+            "name": "mjakubowski/firebase-auth",
+            "version": "dev-master",
+            "dist": {
+                "type": "path",
+                "url": "packages/firebase-auth",
+                "reference": "d27424cc7042a241a121129db90164e3acd3c5fe"
+            },
+            "require": {
+                "kreait/laravel-firebase": "^5.9"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Mjakubowski\\FirebaseAuth\\FirebaseAuthServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Mjakubowski\\FirebaseAuth\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Michal Jakubowski",
+                    "email": "jakubowskimichal1210@gmail.com"
+                }
+            ],
+            "description": "Firebase custom authentication driver for Laravel",
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
         },
         {
             "name": "monolog/monolog",
@@ -12195,7 +12234,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "mjakubowski/firebase-auth": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {

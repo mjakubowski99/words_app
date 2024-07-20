@@ -9,7 +9,6 @@ parameters:
 
     paths:
         - app
-        - ../Auth
         - ../User
         - ../UseCases
         - ../Shared

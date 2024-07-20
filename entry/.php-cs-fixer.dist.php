@@ -82,7 +82,6 @@ $finder = Finder::create()
         $project_path . '/routes',
         $project_path . '/tests',
 
-        $domains_path . '/Auth',
         $domains_path . '/User',
         $domains_path . '/UseCases',
         $domains_path . '/Shared',

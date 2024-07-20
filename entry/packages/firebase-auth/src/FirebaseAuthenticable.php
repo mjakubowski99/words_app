@@ -2,16 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Auth\Infrastructure\Entities;
+namespace Mjakubowski\FirebaseAuth;
 
-use Shared\Enum\UserProvider;
-use UseCases\Contracts\Auth\IAuthenticable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 /**
  * @property mixed $id
  */
-class FirebaseAuthenticable extends Authenticatable implements IAuthenticable
+class FirebaseAuthenticable extends Authenticatable
 {
     protected array $claims;
 
@@ -121,11 +119,8 @@ class FirebaseAuthenticable extends Authenticatable implements IAuthenticable
         return $this->attributes['picture'];
     }
 
-    public function getProviderType(): UserProvider
+    public function getProviderType(): string
     {
-        return match ($this->attributes['sign_in_provider']) {
-            'google.com' => UserProvider::GOOGLE,
-            default => throw new \UnexpectedValueException('Unknown sing in provider'),
-        };
+        return $this->attributes['sign_in_provider'];
     }
 }
