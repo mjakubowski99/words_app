@@ -71,7 +71,7 @@ $rules = [
 ];
 
 $project_path = getcwd();
-$domains_path = $project_path . '/..';
+$domains_path = $project_path . '/../';
 
 $finder = Finder::create()
     ->in([
@@ -82,7 +82,6 @@ $finder = Finder::create()
         $project_path . '/routes',
         $project_path . '/tests',
 
-        $domains_path . '/Auth',
         $domains_path . '/User',
         $domains_path . '/UseCases',
         $domains_path . '/Shared',
