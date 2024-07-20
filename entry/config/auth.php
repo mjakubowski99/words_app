@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 use App\Models\User;
-use Auth\Infrastructure\Entities\FirebaseAuthenticable;
+use Mjakubowski\FirebaseAuth\FirebaseAuthenticable;
 
 return [
     /*

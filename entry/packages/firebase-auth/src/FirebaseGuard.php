@@ -2,12 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Auth\Infrastructure\Guards;
+namespace Mjakubowski\FirebaseAuth;
 
 use Illuminate\Http\Request;
-use Kreait\Firebase\JWT\IdTokenVerifier;
-use Auth\Infrastructure\Entities\FirebaseAuthenticable;
 use Kreait\Firebase\JWT\Error\IdTokenVerificationFailed;
+use Kreait\Firebase\JWT\IdTokenVerifier;
 
 class FirebaseGuard
 {
@@ -15,7 +14,7 @@ class FirebaseGuard
         private readonly IdTokenVerifier $verifier,
     ) {}
 
-    public function user(Request $request): ?FirebaseAuthenticable
+    public function user(Request $request)
     {
         $token = $request->bearerToken();
 
@@ -28,12 +27,7 @@ class FirebaseGuard
 
             $user = app(config('auth.providers.firebase.model'));
 
-            if (!$user instanceof FirebaseAuthenticable) {
-                throw new \UnexpectedValueException('Unsupported provider');
-            }
-
-            $user->resolveByClaims($firebase_token->payload())
-                ->setFirebaseToken($token);
+            $user->resolveByClaims($firebase_token->payload())->setFirebaseToken($token);
 
             return $user;
         } catch (\Exception $e) {

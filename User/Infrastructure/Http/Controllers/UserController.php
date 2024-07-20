@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Controllers\User;
+namespace User\Infrastructure\Http\Controllers;
 
-use UseCases\User\Find;
+use UseCases\Auth\Create;
 use App\Http\OpenApi\Tags;
 use OpenApi\Attributes as OAT;
-use Shared\Http\Request\Request;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\User\UserResource;
+use User\Infrastructure\Http\Request\GetUserRequest;
+use User\Infrastructure\Http\Resources\UserResource;
 
 class UserController extends Controller
 {
@@ -46,10 +46,10 @@ class UserController extends Controller
             new OAT\Response(ref: '#/components/responses/validation_error', response: 422),
         ],
     )]
-    public function me(Request $request, Find $use_case): UserResource
+    public function me(GetUserRequest $request, Create $create): UserResource
     {
-        return new UserResource(
-            $use_case->findByAuthenticable($request->authenticable())
-        );
+        $user = $create->findOrCreate($request->authenticable());
+
+        return new UserResource($user);
     }
 }

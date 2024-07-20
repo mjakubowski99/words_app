@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace UseCases\User;
+namespace UseCases\Auth;
 
 use UseCases\Contracts\User\IUser;
 use UseCases\Contracts\User\IUserService;
@@ -14,8 +14,12 @@ readonly class Create
         private IUserService $user_service,
     ) {}
 
-    public function create(IAuthenticable $user): IUser
+    public function findOrCreate(IAuthenticable $user): IUser
     {
+        if ($this->user_service->existsByAuthenticable($user)) {
+            return $this->user_service->findByAuthenticable($user);
+        }
+
         return $this->user_service->createFromAuthenticable($user);
     }
 }

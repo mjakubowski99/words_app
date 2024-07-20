@@ -8,6 +8,8 @@ use Shared\Enum\UserProvider;
 
 interface IAuthenticable
 {
+    public function getGuard(): string;
+
     public function getProviderId(): string;
 
     public function getProviderType(): UserProvider;

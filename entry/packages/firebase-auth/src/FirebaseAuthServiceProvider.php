@@ -2,14 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Auth\Infrastructure\Providers;
+namespace Mjakubowski\FirebaseAuth;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\ServiceProvider;
 use Kreait\Firebase\JWT\IdTokenVerifier;
-use Auth\Infrastructure\Guards\FirebaseGuard;
 
-class AuthServiceProvider extends ServiceProvider
+class FirebaseAuthServiceProvider extends ServiceProvider
 {
     public function boot(): void
     {
@@ -19,11 +18,6 @@ class AuthServiceProvider extends ServiceProvider
     }
 
     public function register(): void
-    {
-        $this->registerIdTokenVerifier();
-    }
-
-    private function registerIdTokenVerifier(): void
     {
         $this->app->singleton(IdTokenVerifier::class, function ($app) {
             $project = config('firebase.default');

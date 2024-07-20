@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Resources\User;
+namespace User\Infrastructure\Http\Resources;
 
 use Illuminate\Http\Request;
 use OpenApi\Attributes as OAT;
