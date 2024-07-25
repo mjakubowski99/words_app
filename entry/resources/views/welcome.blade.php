@@ -7,15 +7,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
     <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyAtEmKQohjg3Tcui-RCbGV4TnMtVK2-0V8",
-            authDomain: "gallery-4fc0c.firebaseapp.com",
-            projectId: "gallery-4fc0c",
-            storageBucket: "gallery-4fc0c.appspot.com",
-            messagingSenderId: "188372467209",
-            appId: "1:188372467209:web:aaa289c77256aaabf042d8",
-            measurementId: "G-WL9J47CX5R"
-        };
+        const firebaseConfig = {};
 
         firebase.initializeApp(firebaseConfig);
 
