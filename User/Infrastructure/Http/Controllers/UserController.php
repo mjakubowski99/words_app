@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace User\Infrastructure\Http\Controllers;
 
-use UseCases\Auth\Create;
+use App\Http\Controllers\Controller;
 use App\Http\OpenApi\Tags;
 use OpenApi\Attributes as OAT;
-use App\Http\Controllers\Controller;
+use UseCases\User\Create;
 use User\Infrastructure\Http\Request\GetUserRequest;
 use User\Infrastructure\Http\Resources\UserResource;
 

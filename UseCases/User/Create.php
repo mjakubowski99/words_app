@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace UseCases\Auth;
+namespace UseCases\User;
 
+use UseCases\Contracts\Auth\IAuthenticable;
 use UseCases\Contracts\User\IUser;
 use UseCases\Contracts\User\IUserService;
-use UseCases\Contracts\Auth\IAuthenticable;
 
 readonly class Create
 {
