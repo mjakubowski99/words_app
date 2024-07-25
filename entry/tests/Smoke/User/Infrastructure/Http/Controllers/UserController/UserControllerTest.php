@@ -8,6 +8,7 @@ use Tests\TestCase;
 use App\Models\User;
 use Shared\Enum\UserProvider;
 use Shared\Utils\ValueObjects\Uuid;
+use Illuminate\Auth\Middleware\Authenticate;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class UserControllerTest extends TestCase
@@ -36,6 +37,23 @@ class UserControllerTest extends TestCase
                 'email',
             ],
         ]);
+    }
+
+    /**
+     * @test
+     */
+    public function me_WhenUserFromOtherDriver_fail(): void
+    {
+        // GIVEN
+        $user = $this->createUser();
+
+        // WHEN
+        $response = $this->actingAs($user, 'web')
+            ->withoutMiddleware(Authenticate::class)
+            ->getJson(route('user.me'));
+
+        // THEN
+        $response->assertStatus(500);
     }
 
     /**
