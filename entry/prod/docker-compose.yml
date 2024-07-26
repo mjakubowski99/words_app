@@ -15,9 +15,12 @@ services:
     volumes:
       - ../storage:/var/www/entry/storage
       - ../.env:/var/www/entry/.env
-    network_mode: "host"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     ports:
       - "9000:9000"
+    networks:
+      - prod-network
 
   nginx:
     container_name: "${PROJECT_NAME}_prod_nginx"
@@ -35,4 +38,8 @@ services:
       - ./logs/nginx:/var/log/nginx
     links:
       - php
-    network_mode: "host"
+    networks:
+      - prod-network
+
+networks:
+  prod-network:
