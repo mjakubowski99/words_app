@@ -4,7 +4,6 @@ actor User
 
 User -> App: Request to route with authentication
 App -> App: App bootstraping
-App -> AuthMiddleware: Handle request
 AuthMiddleware -> FirebaseGuard: Get user from token from request
 alt #LightBlue Token valid
     AuthMiddleware <- FirebaseGuard: Return user

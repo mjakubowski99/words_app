@@ -15,8 +15,10 @@ _ide_helper_models.php
 /entry/public/storage
 /entry/vendor
 /entry/.env
-/entry/docker/.env.prod
 /entry/docker/.env
+/entry/docker/logs
+/entry/prod/logs
+/entry/prod/.env
 /entry/.env.backup
 /entry/.env.production
 /entry/.phpunit.result.cache
