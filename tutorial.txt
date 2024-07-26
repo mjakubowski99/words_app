@@ -1,0 +1,15 @@
+Postgres polecenia:
+
+Logowanie jako admin:
+sudo -u postgres psql(postgre mapuje w linuxie użytkowników systemu na użytkowników bazy danych dlatego nie trzeba hasła)
+
+CREATE DATABASE your_database_name;
+
+create user myuser with encrypted password 'mypass';
+
+GRANT ALL PRIVILEGES ON DATABASE your_database_name TO myuser;
+
+Dodanie uprawnień do tworzenia tabel:
+\connect your_database_name;
+GRANT USAGE ON SCHEMA public TO new_user;
+GRANT CREATE ON SCHEMA public TO new_user;
