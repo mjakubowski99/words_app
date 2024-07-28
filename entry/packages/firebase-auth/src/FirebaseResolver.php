@@ -5,16 +5,18 @@ declare(strict_types=1);
 namespace Mjakubowski\FirebaseAuth;
 
 use Illuminate\Http\Request;
-use Kreait\Firebase\JWT\Error\IdTokenVerificationFailed;
+use Illuminate\Contracts\Auth\Guard;
 use Kreait\Firebase\JWT\IdTokenVerifier;
+use Illuminate\Contracts\Auth\Authenticatable;
+use Kreait\Firebase\JWT\Error\IdTokenVerificationFailed;
 
-class FirebaseGuard
+class FirebaseResolver implements Guard
 {
     public function __construct(
         private readonly IdTokenVerifier $verifier,
     ) {}
 
-    public function user(Request $request)
+    public function fromRequest(Request $request)
     {
         $token = $request->bearerToken();
 
@@ -25,6 +27,7 @@ class FirebaseGuard
         try {
             $firebase_token = $this->verifier->verifyIdToken($token);
 
+            /** @var FirebaseAuthenticable $user */
             $user = app(config('auth.providers.firebase.model'));
 
             $user->resolveByClaims($firebase_token->payload())->setFirebaseToken($token);
@@ -43,5 +46,40 @@ class FirebaseGuard
 
             return null;
         }
+    }
+
+    public function check()
+    {
+        throw new \Exception('Not implemented');
+    }
+
+    public function guest()
+    {
+        throw new \Exception('Not implemented');
+    }
+
+    public function user()
+    {
+        throw new \Exception('Not implemented');
+    }
+
+    public function id()
+    {
+        throw new \Exception('Not implemented');
+    }
+
+    public function validate(array $credentials = [])
+    {
+        throw new \Exception('Not implemented');
+    }
+
+    public function hasUser()
+    {
+        throw new \Exception('Not implemented');
+    }
+
+    public function setUser(Authenticatable $user)
+    {
+        throw new \Exception('Not implemented');
     }
 }

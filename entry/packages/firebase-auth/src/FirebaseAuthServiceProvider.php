@@ -13,7 +13,7 @@ class FirebaseAuthServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Auth::viaRequest('firebase', function ($request) {
-            return app(FirebaseGuard::class)->user($request);
+            return app(FirebaseResolver::class)->fromRequest($request);
         });
     }
 
