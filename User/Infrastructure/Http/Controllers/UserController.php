@@ -15,10 +15,10 @@ use User\Infrastructure\Http\Resources\UserResource;
 
 class UserController extends Controller
 {
-    #[OAT\Get(
+    #[OAT\Post(
         path: '/api/user/firebase-init',
         operationId: 'user.firebase-init',
-        description: 'Firebase user',
+        description: 'Endpoint should be called after completing login with firebase to init user on backend side',
         summary: 'Create firebase user if not exists',
         security: [['firebase' => []]],
         tags: [Tags::USER],
