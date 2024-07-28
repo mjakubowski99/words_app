@@ -8,16 +8,20 @@
         {
             "url": "http://localhost",
             "description": "localhost"
+        },
+        {
+            "url": "https://api.vocasmart.pl",
+            "description": "api.vocasmart.pl"
         }
     ],
     "paths": {
         "/api/user/firebase-init": {
-            "get": {
+            "post": {
                 "tags": [
                     "User"
                 ],
                 "summary": "Create firebase user if not exists",
-                "description": "Firebase user",
+                "description": "Endpoint should be called after completing login with firebase to init user on backend side",
                 "operationId": "user.firebase-init",
                 "responses": {
                     "200": {

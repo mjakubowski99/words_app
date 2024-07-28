@@ -11,6 +11,15 @@ use Laravel\Telescope\TelescopeApplicationServiceProvider;
 
 class TelescopeServiceProvider extends TelescopeApplicationServiceProvider
 {
+    protected function authorization()
+    {
+        $this->gate();
+
+        Telescope::auth(function ($request) {
+            return true;
+        });
+    }
+
     public function register(): void
     {
         // Telescope::night();

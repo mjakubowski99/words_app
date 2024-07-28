@@ -10,4 +10,8 @@ use OpenApi\Attributes as OAT;
     url: 'http://localhost',
     description: 'localhost'
 )]
+#[OAT\Server(
+    url: 'https://api.vocasmart.pl',
+    description: 'api.vocasmart.pl'
+)]
 class Servers {}
