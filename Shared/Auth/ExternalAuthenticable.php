@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Shared\Auth;
 
 use Shared\Enum\UserProvider;
-use UseCases\Contracts\Auth\IAuthenticable;
 use Mjakubowski\FirebaseAuth\FirebaseAuthenticable;
+use UseCases\Contracts\Auth\IExternalAuthenticable;
 
-class Authenticable implements IAuthenticable
+class ExternalAuthenticable implements IExternalAuthenticable
 {
     public function __construct(
         private readonly string $provider_id,

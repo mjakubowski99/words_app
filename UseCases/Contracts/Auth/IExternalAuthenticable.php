@@ -6,10 +6,8 @@ namespace UseCases\Contracts\Auth;
 
 use Shared\Enum\UserProvider;
 
-interface IAuthenticable
+interface IExternalAuthenticable
 {
-    public function getGuard(): string;
-
     public function getProviderId(): string;
 
     public function getProviderType(): UserProvider;

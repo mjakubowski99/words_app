@@ -76,7 +76,7 @@ class FirebaseAuthenticable extends Authenticatable
 
     public function getAuthIdentifier(): mixed
     {
-        return $this->id;
+        return $this->getProviderId();
     }
 
     public function getAuthPassword(): string

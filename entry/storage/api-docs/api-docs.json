@@ -11,6 +11,60 @@
         }
     ],
     "paths": {
+        "/api/user/firebase-init": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Create firebase user if not exists",
+                "description": "Firebase user",
+                "operationId": "user.firebase-init",
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Resources\\User\\UserResource"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/validation_error"
+                    }
+                },
+                "security": [
+                    {
+                        "firebase": []
+                    }
+                ]
+            }
+        },
         "/api/user/me": {
             "get": {
                 "tags": [
