@@ -1,4 +1,4 @@
-FROM php:8.2.21-fpm
+FROM php:8.2-fpm
 
 ARG USER
 ARG GID
