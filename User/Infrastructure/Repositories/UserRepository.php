@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace User\Infrastructure\Repositories;
 
 use Shared\Enum\UserProvider;
+use Shared\Utils\ValueObjects\UserId;
 use Shared\Utils\ValueObjects\Uuid;
 use User\Domain\Models\Entities\IUser;
 use User\Infrastructure\Entities\User;
@@ -14,11 +15,11 @@ readonly class UserRepository implements IUserRepository
 {
     public function __construct(private User $user) {}
 
-    public function findById(Uuid $id): IUser
+    public function findById(UserId $id): IUser
     {
         return $this->user
             ->newQuery()
-            ->findOrFail((string) $id);
+            ->findOrFail($id->getValue());
     }
 
     public function findByEmail(string $email): ?IUser

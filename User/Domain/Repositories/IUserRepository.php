@@ -5,12 +5,13 @@ declare(strict_types=1);
 namespace User\Domain\Repositories;
 
 use Shared\Enum\UserProvider;
+use Shared\Utils\ValueObjects\UserId;
 use Shared\Utils\ValueObjects\Uuid;
 use User\Domain\Models\Entities\IUser;
 
 interface IUserRepository
 {
-    public function findById(Uuid $id): IUser;
+    public function findById(UserId $id): IUser;
 
     public function findByProvider(string $provider_id, UserProvider $provider): IUser;
 

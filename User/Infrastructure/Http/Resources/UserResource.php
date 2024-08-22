@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace User\Infrastructure\Http\Resources;
 
 use Illuminate\Http\Request;
-use OpenApi\Attributes as OAT;
-use UseCases\Contracts\User\IUser;
 use Illuminate\Http\Resources\Json\JsonResource;
+use OpenApi\Attributes as OAT;
+use Shared\User\IUser;
 
 #[OAT\Schema(
     schema: 'Resources\User\UserResource',
@@ -34,7 +34,7 @@ class UserResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => (string) $this->resource->getId(),
+            'id' => $this->resource->getId()->getValue(),
             'name' => $this->resource->getName(),
             'email' => $this->resource->getEmail(),
         ];
