@@ -32,7 +32,6 @@
             "App\\": "app/",
             "User\\": "../User",
             "Flashcard\\": "../Flashcard",
-            "UseCases\\": "../UseCases",
             "Shared\\": "../Shared",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"

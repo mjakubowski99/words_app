@@ -6,10 +6,20 @@ namespace Shared\Utils\ValueObjects;
 
 class UserId
 {
-    public function __construct(private string $value) {}
+    private Uuid $value;
+
+    public function __construct(string $value)
+    {
+        $this->value = Uuid::fromString($value);
+    }
+
+    public static function fromString(string $value): self
+    {
+        return new self($value);
+    }
 
     public function getValue(): string
     {
-        return $this->value;
+        return $this->value->getValue();
     }
 }

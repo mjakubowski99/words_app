@@ -10,6 +10,7 @@ use App\Providers\RouteServiceProvider;
 use Illuminate\Support\ServiceProvider;
 use Shared\Providers\SharedServiceProvider;
 use User\Infrastructure\Providers\UserServiceProvider;
+use Flashcard\Infrastructure\FlashcardServiceProvider;
 
 return [
     /*
@@ -178,6 +179,7 @@ return [
 
         SharedServiceProvider::class,
         UserServiceProvider::class,
+        FlashcardServiceProvider::class,
     ])->toArray(),
 
     /*

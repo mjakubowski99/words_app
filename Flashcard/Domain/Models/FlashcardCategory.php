@@ -2,21 +2,17 @@
 
 namespace Flashcard\Domain\Models;
 
+use Shared\Utils\ValueObjects\UserId;
+
 class FlashcardCategory
 {
     public const MAIN = 'main';
 
-    private CategoryId $category_id;
-
     public function __construct(
+        private UserId $user_id,
         private string $tag,
         private string $name,
     ) {}
-
-    public static function newMainCategory()
-    {
-
-    }
 
     public function setCategoryId(CategoryId $category_id): void
     {
@@ -26,6 +22,11 @@ class FlashcardCategory
     public function getId(): CategoryId
     {
         return $this->category_id;
+    }
+
+    public function getUserId(): UserId
+    {
+        return $this->user_id;
     }
 
     public function isMainCategory(): bool

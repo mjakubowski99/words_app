@@ -11,6 +11,11 @@ final readonly class CategoryId
         $this->value = $value;
     }
 
+    public static function fromInt(int $value): self
+    {
+        return new CategoryId((string) $value);
+    }
+
     public function getValue(): string
     {
         return $this->value;

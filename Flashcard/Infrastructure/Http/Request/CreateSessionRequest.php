@@ -12,7 +12,7 @@ class CreateSessionRequest extends Request
         return [
             'cards_per_session' => ['required', 'integer'],
             'category_id' => ['required', 'integer'],
-            'flashcards_limit' => ['required', 'integer'],
+            'flashcards_limit' => ['required', 'integer', 'min:1', 'max:200'],
         ];
     }
 
