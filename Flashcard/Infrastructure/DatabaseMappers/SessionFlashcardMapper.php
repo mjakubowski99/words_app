@@ -5,8 +5,9 @@ namespace Flashcard\Infrastructure\DatabaseMappers;
 use Flashcard\Domain\Models\Rating;
 use Flashcard\Domain\Models\SessionFlashcard;
 use Flashcard\Domain\Models\SessionFlashcardId;
+use Shared\Utils\ValueObjects\UserId;
 
-class SessionFlashcardMapper extends AbstractMapper
+class SessionFlashcardMapper
 {
     public const COLUMNS = ['id', 'rating'];
 

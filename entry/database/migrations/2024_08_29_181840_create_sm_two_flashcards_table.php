@@ -11,8 +11,9 @@ return new class extends Migration
         Schema::create('sm_two_flashcards', function (Blueprint $table) {
             $table->uuid('user_id');
             $table->unsignedBigInteger('flashcard_id');
-            $table->unsignedFloat('repetition_ratio');
-            $table->unsignedSmallInteger('repetition_interval');
+            $table->decimal('repetition_ratio', 10, 6);
+            $table->decimal('repetition_interval', 10, 6);
+            $table->unsignedSmallInteger('repetition_count');
             $table->timestamps();
 
             $table->primary(['user_id', 'flashcard_id']);

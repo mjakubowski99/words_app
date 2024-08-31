@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Shared\Utils\ValueObjects;
 
+use Flashcard\Domain\Models\FlashcardId;
+
 class UserId
 {
     private Uuid $value;
@@ -21,5 +23,11 @@ class UserId
     public function getValue(): string
     {
         return $this->value->getValue();
+    }
+
+    public function equals(object $user_id): bool
+    {
+        return ($user_id instanceof UserId)
+            && $user_id->getValue() === $this->getValue();
     }
 }

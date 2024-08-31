@@ -1,12 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Flashcard\Domain\Models;
+
+use Flashcard\Domain\Exceptions\SessionFlashcardAlreadyRatedException;
 
 class SessionFlashcard
 {
     public function __construct(
-        private SessionFlashcardId $id,
-        private Flashcard $flashcard,
+        private readonly SessionFlashcardId $id,
+        private readonly FlashcardId $flashcard_id,
         private ?Rating $rating,
     ) {}
 
@@ -15,9 +19,9 @@ class SessionFlashcard
         return $this->id;
     }
 
-    public function getFlashcard(): Flashcard
+    public function getFlashcardId(): FlashcardId
     {
-        return $this->flashcard;
+        return $this->flashcard_id;
     }
 
     public function rated(): bool
@@ -30,10 +34,11 @@ class SessionFlashcard
         return $this->rating;
     }
 
+    /** @throws SessionFlashcardAlreadyRatedException */
     public function rate(Rating $rating): void
     {
         if ($this->rated()) {
-            throw new \Exception("Flashcard already rated");
+            throw new SessionFlashcardAlreadyRatedException();
         }
         $this->rating = $rating;
     }

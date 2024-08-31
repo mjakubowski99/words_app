@@ -80,21 +80,6 @@ class SessionRepository extends AbstractRepository implements ISessionRepository
         return $this->session_mapper->map($db_session);
     }
 
-    public function findSessionFlashcard(SessionFlashcardId $id)
-    {
-        // TODO: Implement findSessionFlashcard() method.
-    }
-
-    public function findManySessionFlashcards(array $session_flashcard_id): SessionFlashcards
-    {
-        // TODO: Implement findManySessionFlashcards() method.
-    }
-
-    public function bulkSaveSessionFlashcards(array $session_flashcards): void
-    {
-        // TODO: Implement bulkSaveSessionFlashcards() method.
-    }
-
     private function newSessionQuery(): Builder
     {
         return $this->db::table('learning_sessions');

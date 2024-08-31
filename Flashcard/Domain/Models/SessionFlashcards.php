@@ -2,23 +2,49 @@
 
 namespace Flashcard\Domain\Models;
 
-class SessionFlashcards
+use Flashcard\Domain\Contracts\ICollection;
+use Shared\Utils\ValueObjects\UserId;
+
+class SessionFlashcards implements ICollection
 {
-    public function __construct(private array $session_flashcards) {}
+    public function __construct(private array $session_flashcards, private UserId $user_id) {}
 
     public function all(): array
     {
         return $this->session_flashcards;
     }
 
-    public function findById(SessionFlashcardId $id): SessionFlashcard
+    public function isEmpty(): bool
     {
-        $results = array_filter($this->session_flashcards, fn(SessionFlashcard $s) => $s->getId() === $id);
+        return count($this->session_flashcards) === 0;
+    }
 
-        if (count($results) === 0) {
-            throw new \Exception();
+    public function getUserId(): UserId
+    {
+        return $this->user_id;
+    }
+
+    public function rate(SessionFlashcardId $id, Rating $rating): void
+    {
+        $key = $this->findKeyById($id);
+
+        $this->session_flashcards[$key]->rate($rating);
+    }
+
+    private function findKeyById(SessionFlashcardId $id): int
+    {
+        foreach ($this->session_flashcards as $key => $session_flashcard) {
+            if ($session_flashcard->getId()->equals($id)) {
+                return $key;
+            }
         }
 
-        return $results[0];
+        throw new \Exception();
+    }
+
+    /** @return FlashcardId[] */
+    public function pluckFlashcardIds(): array
+    {
+        return array_map(fn(SessionFlashcard $flashcard) => $flashcard->getFlashcard()->getId(), $this->session_flashcards);
     }
 }

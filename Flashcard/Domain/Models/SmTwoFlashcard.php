@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Flashcard\Domain\Models;
 
 use Shared\Utils\ValueObjects\UserId;
@@ -10,14 +12,14 @@ class SmTwoFlashcard
     public const INITIAL_REPETITION_INTERVAL = 1;
 
     private float $repetition_ratio;
-    private int $repetition_interval;
+    private float $repetition_interval;
     private int $repetition_count;
 
     public function __construct(
         private UserId $user_id,
         private Flashcard $flashcard,
         ?float $repetition_ratio = null,
-        ?int $repetition_interval = null,
+        ?float $repetition_interval = null,
         ?int $repetition_count = null,
     ) {
         $this->repetition_ratio = $repetition_ratio ?? self::INITIAL_REPETITION_RATIO;
@@ -30,7 +32,7 @@ class SmTwoFlashcard
         return $this->user_id;
     }
 
-    public function getFlashcardId(): Flashcard
+    public function getFlashcard(): Flashcard
     {
         return $this->flashcard;
     }
@@ -45,7 +47,7 @@ class SmTwoFlashcard
         return $this->repetition_ratio;
     }
 
-    public function getRepetitionCount(): float
+    public function getRepetitionCount(): int
     {
         return $this->repetition_count;
     }
@@ -76,9 +78,9 @@ class SmTwoFlashcard
     {
         if ($rating->value >= Rating::GOOD->value) {
             if ($this->repetition_count === 0) {
-                $this->repetition_interval = 1;
+                $this->repetition_interval = 1.0;
             } else if ($this->repetition_count === 1) {
-                $this->repetition_interval = 6;
+                $this->repetition_interval = 6.0;
             } else {
                 $this->repetition_interval = $this->repetition_interval * $this->repetition_ratio;
             }
@@ -92,6 +94,8 @@ class SmTwoFlashcard
     private function calculateRepetitionRatio(Rating $rating): void
     {
         $this->repetition_ratio = $this->repetition_ratio + (0.1 - (3 - $rating->value) * (0.08 + (3 - $rating->value) * 0.02));
+
+        $this->repetition_ratio = round($this->repetition_ratio, 6);
 
         if ($this->repetition_ratio < 1.3) {
             $this->repetition_ratio = 1.3;

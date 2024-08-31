@@ -15,4 +15,10 @@ class FlashcardId
     {
         return $this->value;
     }
+
+    public function equals(object $flashcard_id): bool
+    {
+        return ($flashcard_id instanceof FlashcardId)
+            && $flashcard_id->getValue() === $this->value;
+    }
 }

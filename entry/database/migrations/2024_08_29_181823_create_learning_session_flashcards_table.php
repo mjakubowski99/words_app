@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('session_flashcards', function (Blueprint $table) {
+        Schema::create('learning_session_flashcards', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('learning_session_id');
             $table->unsignedBigInteger('flashcard_id');

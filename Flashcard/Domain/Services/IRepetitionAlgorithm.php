@@ -2,10 +2,9 @@
 
 namespace Flashcard\Domain\Services;
 
-use Flashcard\Domain\Models\SessionFlashcard;
+use Flashcard\Domain\Models\SessionFlashcards;
 
 interface IRepetitionAlgorithm
 {
-    /** @return SessionFlashcard[] */
-    public function handle(array $session_flashcards): void;
+    public function handle(SessionFlashcards $session_flashcards): void;
 }
