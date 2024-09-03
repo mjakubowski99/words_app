@@ -45,6 +45,6 @@ class SessionFlashcards implements ICollection
     /** @return FlashcardId[] */
     public function pluckFlashcardIds(): array
     {
-        return array_map(fn(SessionFlashcard $flashcard) => $flashcard->getFlashcard()->getId(), $this->session_flashcards);
+        return array_map(fn(SessionFlashcard $flashcard) => $flashcard->getFlashcardId(), $this->session_flashcards);
     }
 }

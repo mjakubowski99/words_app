@@ -1,6 +1,6 @@
 <?php
 
-namespace Flashcard\Infrastructure\DatabaseMappers;
+namespace Flashcard\Infrastructure\Repositories\Mappers;
 
 use Flashcard\Domain\Models\Session;
 use Flashcard\Domain\Models\SessionId;

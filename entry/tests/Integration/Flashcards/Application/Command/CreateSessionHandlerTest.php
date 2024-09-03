@@ -30,7 +30,7 @@ class CreateSessionHandlerTest extends FlashcardTestCase
     public function createSessionHandler_ShouldCreateSession(): void
     {
         // GIVEN
-        $user_id = $this->createUserId(User::factory()->create());
+        $user_id = User::factory()->create()->getId();
         $category_id = $this->createCategoryId(FlashcardCategory::factory()->create());
         $cards_per_session = 5;
         $device = 'Mozilla/Firefox';

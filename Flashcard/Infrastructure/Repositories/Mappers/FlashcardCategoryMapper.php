@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Flashcard\Infrastructure\DatabaseMappers;
+namespace Flashcard\Infrastructure\Repositories\Mappers;
 
 use Flashcard\Domain\Models\CategoryId;
 use Flashcard\Domain\Models\FlashcardCategory;

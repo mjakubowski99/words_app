@@ -2,16 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Flashcard\Infrastructure\DatabaseRepositories;
+namespace Flashcard\Infrastructure\Repositories\Postgres;
 
 use Flashcard\Domain\Models\CategoryId;
 use Flashcard\Domain\Models\FlashcardCategory;
 use Flashcard\Domain\Repositories\IFlashcardCategoryRepository;
-use Flashcard\Infrastructure\DatabaseMappers\FlashcardCategoryMapper;
+use Flashcard\Infrastructure\Repositories\Mappers\FlashcardCategoryMapper;
 use Illuminate\Support\Facades\DB;
-use Shared\Utils\Str\IStr;
 
-class FlashcardCategoryRepository extends AbstractRepository implements IFlashcardCategoryRepository
+class FlashcardCategoryRepository implements IFlashcardCategoryRepository
 {
     public function __construct(
         private readonly DB $db,
@@ -23,10 +22,10 @@ class FlashcardCategoryRepository extends AbstractRepository implements IFlashca
         $db_category = (array) $this->db::table('flashcard_categories')
             ->where('id', $id->getValue())
             ->select(
-                ...$this->dbPrefix(
-                    'flashcard_categories',
-                    FlashcardCategoryMapper::COLUMNS
-                )
+                'flashcard_categories.id as flashcard_categories_id',
+                'flashcard_categories.user_id as flashcard_categories_user_id',
+                'flashcard_categories.tag as flashcard_categories_tag',
+                'flashcard_categories.name as flashcard_categories_name',
             )
             ->first();
 

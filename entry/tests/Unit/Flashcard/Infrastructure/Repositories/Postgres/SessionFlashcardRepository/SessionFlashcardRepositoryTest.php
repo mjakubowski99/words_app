@@ -2,18 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Tests\Unit\Flashcard\Infrastructure\Repositories\SessionFlashcardRepository;
+namespace Tests\Unit\Flashcard\Infrastructure\Repositories\Postgres\SessionFlashcardRepository;
 
 use App\Models\LearningSession;
 use App\Models\LearningSessionFlashcard;
-use Flashcard\Domain\Models\Flashcard;
 use Flashcard\Domain\Models\FlashcardId;
 use Flashcard\Domain\Models\Rating;
 use Flashcard\Domain\Models\SessionFlashcard;
 use Flashcard\Domain\Models\SessionFlashcardId;
 use Flashcard\Domain\Models\SessionFlashcards;
-use Flashcard\Infrastructure\DatabaseRepositories\SessionFlashcardRepository;
-use Shared\Utils\ValueObjects\Language;
+use Flashcard\Infrastructure\Repositories\Postgres\SessionFlashcardRepository;
 use Shared\Utils\ValueObjects\UserId;
 use Shared\Utils\ValueObjects\Uuid;
 use Tests\Base\FlashcardTestCase;
@@ -85,7 +83,7 @@ class SessionFlashcardRepositoryTest extends FlashcardTestCase
     public function saveRating_ShouldSaveRatings(): void
     {
         // GIVEN
-        $flashcard_id = new FlashcardId('1');
+        $flashcard_id = new FlashcardId(1);
         $session_flashcards_to_rate = new SessionFlashcards([
             new SessionFlashcard(new SessionFlashcardId(LearningSessionFlashcard::factory()->create()->id), $flashcard_id, Rating::VERY_GOOD),
             new SessionFlashcard(new SessionFlashcardId(LearningSessionFlashcard::factory()->create()->id), $flashcard_id, Rating::GOOD)

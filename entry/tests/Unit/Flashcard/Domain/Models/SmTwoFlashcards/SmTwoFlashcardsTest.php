@@ -35,29 +35,6 @@ class SmTwoFlashcardsTest extends TestCase
         new SmTwoFlashcards($sm_two_flashcards);
     }
 
-    /**
-     * @test
-     */
-    public function searchKeyByUserFlashcard_ShouldReturnCorrectKey(): void
-    {
-        // GIVEN
-        $user_id = UserId::fromString(Uuid::make());
-        $flashcard_id = new FlashcardId('1');
-        $other_flashcard_id = new FlashcardId('2');
-
-        $sm_two_flashcards = [
-            $this->makeSmTwoFlashcard($user_id, $other_flashcard_id),
-            $this->makeSmTwoFlashcard($user_id, $flashcard_id),
-        ];
-        $sm_two_flashcards = new SmTwoFlashcards($sm_two_flashcards);
-
-        // WHEN
-        $key = $sm_two_flashcards->searchKeyByUserFlashcard($flashcard_id);
-
-        // THEN
-        $this->assertSame(1, $key);
-    }
-
     private function makeSmTwoFlashcard(UserId $user_id, FlashcardId $flashcard_id): SmTwoFlashcard
     {
         $flashcard = new Flashcard(

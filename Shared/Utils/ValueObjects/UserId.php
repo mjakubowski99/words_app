@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace Shared\Utils\ValueObjects;
 
-use Flashcard\Domain\Models\FlashcardId;
-
-class UserId
+class UserId implements \Stringable
 {
     private Uuid $value;
 
@@ -29,5 +27,10 @@ class UserId
     {
         return ($user_id instanceof UserId)
             && $user_id->getValue() === $this->getValue();
+    }
+
+    public function __toString(): string
+    {
+        return $this->value->getValue();
     }
 }

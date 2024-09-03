@@ -30,11 +30,9 @@ class SmTwoRepetitionAlgorithm implements IRepetitionAlgorithm
         $sm_two_flashcards = $this->repository->findMany($user_id, $flashcard_ids);
 
         foreach ($session_flashcards->all() as $session_flashcard) {
-            $key = $sm_two_flashcards->searchKeyByUserFlashcard(
+            $sm_two_flashcards->updateByRating(
                 $session_flashcard->getFlashcardId(),
-            );
-            $sm_two_flashcards->all()[$key]->updateByRating(
-                $session_flashcard->getRating()
+                $session_flashcard->getRating(),
             );
         }
 

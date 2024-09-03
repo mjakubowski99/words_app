@@ -7,13 +7,15 @@ use Flashcard\Domain\Models\SessionFlashcardId;
 
 class FlashcardRating
 {
+    public function __construct(private SessionFlashcardId $id, private Rating $rating) {}
+
     public function getSessionFlashcardId(): SessionFlashcardId
     {
-        return new SessionFlashcardId();
+        return $this->id;
     }
 
     public function getRating(): Rating
     {
-        return Rating::GOOD;
+        return $this->rating;
     }
 }

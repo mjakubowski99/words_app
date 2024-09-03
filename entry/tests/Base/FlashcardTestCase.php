@@ -7,8 +7,10 @@ namespace Tests\Base;
 use App\Models\FlashcardCategory;
 use App\Models\LearningSession;
 use App\Models\LearningSessionFlashcard;
+use App\Models\SmTwoFlashcard;
 use App\Models\User;
 use Flashcard\Domain\Models\CategoryId;
+use Flashcard\Domain\Models\FlashcardId;
 use Flashcard\Domain\Models\SessionFlashcardId;
 use Flashcard\Domain\Models\SessionId;
 use Shared\Utils\ValueObjects\UserId;
@@ -24,6 +26,11 @@ abstract class FlashcardTestCase extends TestCase
     public function createUserId(User $user): UserId
     {
         return new UserId($user->id);
+    }
+
+    public function createSmTwoFlashcardId(SmTwoFlashcard $flashcard): FlashcardId
+    {
+        return new FlashcardId($flashcard->flashcard_id);
     }
 
     public function createSessionId(LearningSession $session): SessionId

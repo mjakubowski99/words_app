@@ -1,6 +1,6 @@
 <?php
 
-namespace Flashcard\Infrastructure\DatabaseMappers;
+namespace Flashcard\Infrastructure\Repositories\Mappers;
 
 use Flashcard\Domain\Models\Flashcard;
 use Flashcard\Domain\Models\FlashcardId;
@@ -8,8 +8,6 @@ use Shared\Utils\ValueObjects\Language;
 
 class FlashcardMapper
 {
-    public const COLUMNS = ['id', 'word', 'word_lang', 'translation', 'translation_lang', 'context', 'context_translation'];
-
     public function map(array $data): Flashcard
     {
         return new Flashcard(

@@ -8,6 +8,7 @@ use Flashcard\Application\Command\FlashcardRating;
 use Flashcard\Application\Command\RateFlashcards;
 use Flashcard\Application\Command\RateFlashcardsCommand;
 use Flashcard\Domain\Models\SessionId;
+use Flashcard\Infrastructure\Http\Request\RateSessionFlashcardRequest;
 use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use Flashcard\Application\Query\GetSessionHandler;
@@ -62,6 +63,7 @@ class SessionController extends Controller
     }
 
     public function rate(
+        RateSessionFlashcardRequest $request,
         RateFlashcards $rate,
         GetSessionHandler $get_session,
         AddSessionFlashcardsHandler $add_session_flashcards,
@@ -69,8 +71,9 @@ class SessionController extends Controller
     )
     {
         $command = new RateFlashcardsCommand(
-            new SessionId(),
-            [new FlashcardRating()]
+            $request->getUserId(),
+            $request->getSessionId(),
+            $request->getRatings(),
         );
 
         $rate->handle($command);

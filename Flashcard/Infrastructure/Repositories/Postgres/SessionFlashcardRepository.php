@@ -1,18 +1,18 @@
 <?php
 
-namespace Flashcard\Infrastructure\DatabaseRepositories;
+namespace Flashcard\Infrastructure\Repositories\Postgres;
 
 use Flashcard\Domain\Models\SessionFlashcard;
 use Flashcard\Domain\Models\SessionFlashcardId;
 use Flashcard\Domain\Models\SessionFlashcards;
 use Flashcard\Domain\Models\SessionId;
 use Flashcard\Domain\Repositories\ISessionFlashcardRepository;
-use Flashcard\Infrastructure\DatabaseMappers\FlashcardMapper;
-use Flashcard\Infrastructure\DatabaseMappers\SessionFlashcardMapper;
+use Flashcard\Infrastructure\Repositories\Mappers\FlashcardMapper;
+use Flashcard\Infrastructure\Repositories\Mappers\SessionFlashcardMapper;
 use Illuminate\Support\Facades\DB;
 use Shared\Utils\ValueObjects\UserId;
 
-class SessionFlashcardRepository extends AbstractRepository implements ISessionFlashcardRepository
+class SessionFlashcardRepository implements ISessionFlashcardRepository
 {
     public function __construct(
         private readonly DB $db,
@@ -28,8 +28,15 @@ class SessionFlashcardRepository extends AbstractRepository implements ISessionF
             ->where('session_id', $session_id->getValue())
             ->take($limit)
             ->select(
-                ...$this->dbPrefix('flashcards', FlashcardMapper::COLUMNS),
-                ...$this->dbPrefix('learning_session_flashcards', SessionFlashcardMapper::COLUMNS)
+                'flashcards.id as flashcards_id',
+                'flashcards.word as flashcards_word',
+                'flashcards.word_lang as flashcards_word_lang',
+                'flashcards.translation as flashcards_translation',
+                'flashcards.translation_lang as flashcards_translation_lang',
+                'flashcards.context as flashcards_translation_context',
+                'flashcards.context_translation as flashcards_translation_context',
+                'learning_sessions.flashcard_id as learning_sessions_flashcard_id',
+                'learning_sessions.rating as learning_sessions_rating',
             )
             ->get()
             ->map(function (object $data) {
@@ -62,8 +69,9 @@ class SessionFlashcardRepository extends AbstractRepository implements ISessionF
     {
         $result = $this->db::table('learning_session_flashcards')
             ->select(
-                ...$this->dbPrefix('flashcards', FlashcardMapper::COLUMNS),
-                ...$this->dbPrefix('learning_session_flashcards', SessionFlashcardMapper::COLUMNS)
+                'learning_session_flashcards.id as learning_session_flashcards_id',
+                'learning_session_flashcards.flashcard_id as learning_session_flashcards_flashcard_id',
+                'learning_session_flashcards.rating as learning_session_flashcards_rating',
             )->find($id->getValue());
 
         return $this->session_flashcard_mapper->map((array) $result);
@@ -78,8 +86,9 @@ class SessionFlashcardRepository extends AbstractRepository implements ISessionF
             ->join('flashcards', 'flashcards.id', '=', 'learning_session_flashcards.flashcard_id')
             ->where('learning_sessions.user_id', $user_id->getValue())
             ->select(
-                ...$this->dbPrefix('flashcards', FlashcardMapper::COLUMNS),
-                ...$this->dbPrefix('learning_session_flashcards', SessionFlashcardMapper::COLUMNS)
+                'learning_session_flashcards.id as learning_session_flashcards_id',
+                'learning_session_flashcards.flashcard_id as learning_session_flashcards_flashcard_id',
+                'learning_session_flashcards.rating as learning_session_flashcards_rating',
             )
             ->whereIn('learning_session_flashcards.id', $ids)
             ->get()

@@ -1,22 +1,19 @@
 <?php
 
-namespace Flashcard\Infrastructure\DatabaseRepositories;
+namespace Flashcard\Infrastructure\Repositories\Postgres;
 
 use Flashcard\Domain\Models\CategoryId;
 use Flashcard\Domain\Models\Session;
-use Flashcard\Domain\Models\SessionFlashcardId;
-use Flashcard\Domain\Models\SessionFlashcards;
 use Flashcard\Domain\Models\SessionId;
 use Flashcard\Domain\Repositories\ISessionRepository;
-use Flashcard\Infrastructure\DatabaseMappers\FlashcardCategoryMapper;
-use Flashcard\Infrastructure\DatabaseMappers\SessionMapper;
+use Flashcard\Infrastructure\Repositories\Mappers\FlashcardCategoryMapper;
+use Flashcard\Infrastructure\Repositories\Mappers\SessionMapper;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;
 use Shared\Enum\SessionStatus;
-use Shared\Utils\Str\IStr;
 use Shared\Utils\ValueObjects\UserId;
 
-class SessionRepository extends AbstractRepository implements ISessionRepository
+class SessionRepository implements ISessionRepository
 {
     public function __construct(
         private readonly DB $db,
@@ -72,8 +69,15 @@ class SessionRepository extends AbstractRepository implements ISessionRepository
             ->where('learning_sessions.id', $id->getValue())
             ->join('flashcard_categories', 'flashcard_categories.id', '=', 'learning_sessions.flashcard_category_id')
             ->select(
-                ...$this->dbPrefix('learning_sessions', SessionMapper::COLUMNS),
-                ...$this->dbPrefix('flashcard_categories', FlashcardCategoryMapper::COLUMNS),
+                'learning_sessions.id as learning_sessions_id',
+                'learning_sessions.user_id as learning_sessions_user_id',
+                'learning_sessions.status as learning_sessions_status',
+                'learning_sessions.cards_per_session as learning_sessions_cards_per_session',
+                'learning_sessions.device as learning_sessions_device',
+                'flashcard_categories.id as flashcard_categories_id',
+                'flashcard_categories.user_id as flashcard_categories_user_id',
+                'flashcard_categories.tag as flashcard_categories_tag',
+                'flashcard_categories.name as flashcard_categories_name',
             )
             ->first();
 

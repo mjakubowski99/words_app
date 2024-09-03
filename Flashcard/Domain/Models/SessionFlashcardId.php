@@ -15,4 +15,10 @@ class SessionFlashcardId
     {
         return $this->value;
     }
+
+    public function equals(object $id): bool
+    {
+        return ($id instanceof SessionFlashcardId)
+            && $id->getValue() === $this->getValue();
+    }
 }

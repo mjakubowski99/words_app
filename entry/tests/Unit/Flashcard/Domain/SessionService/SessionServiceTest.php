@@ -12,6 +12,7 @@ use Flashcard\Domain\Services\SessionService;
 use Mockery\MockInterface;
 use Shared\Enum\SessionStatus;
 use Shared\Utils\ValueObjects\UserId;
+use Shared\Utils\ValueObjects\Uuid;
 use Tests\TestCase;
 
 class SessionServiceTest extends TestCase
@@ -38,7 +39,7 @@ class SessionServiceTest extends TestCase
     public function newSession_ShouldCreateNewSession(): void
     {
         // GIVEN
-        $user_id = new UserId('1');
+        $user_id = UserId::fromString(Uuid::make()->getValue());
         $category_id = new CategoryId('1');
         $cards_per_session = 5;
         $device = 'Mozilla/Firefox';
@@ -46,7 +47,10 @@ class SessionServiceTest extends TestCase
         $category = new FlashcardCategory($user_id, 'tag', 'name');
         $session_repo_expectation = $this->session_repository
             ->shouldReceive('setAllUserSessionsStatus')
-            ->withArgs(fn(UserId $user_id, SessionStatus $status) => $this->assertSame(SessionStatus::STARTED, $status))
+            ->withArgs(function(UserId $user_id, SessionStatus $status) {
+                $this->assertSame(SessionStatus::STARTED, $status);
+                return true;
+            })
             ->andReturn();
         $flashcard_repo_expectation = $this->flashcard_category_repository->shouldReceive('findById')->andReturn($category);
 

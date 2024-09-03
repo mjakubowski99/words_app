@@ -2,15 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Tests\Unit\Flashcard\Infrastructure\Repositories\SessionRepository;
+namespace Tests\Unit\Flashcard\Infrastructure\Repositories\Postgres\SessionRepository;
 
 use App\Models\FlashcardCategory;
 use App\Models\LearningSession;
 use App\Models\User;
-use Flashcard\Domain\Models\CategoryId;
 use Flashcard\Domain\Models\Session;
 use Flashcard\Domain\Models\SessionId;
-use Flashcard\Infrastructure\DatabaseRepositories\SessionRepository;
+use Flashcard\Infrastructure\Repositories\Postgres\SessionRepository;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Shared\Enum\SessionStatus;
 use Shared\Utils\ValueObjects\UserId;
