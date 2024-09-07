@@ -180,6 +180,7 @@ return [
         SharedServiceProvider::class,
         UserServiceProvider::class,
         FlashcardServiceProvider::class,
+        \Integrations\IntegrationsServiceProvider::class,
     ])->toArray(),
 
     /*
