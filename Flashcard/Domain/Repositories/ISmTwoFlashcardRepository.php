@@ -1,13 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Flashcard\Domain\Repositories;
 
-use Flashcard\Domain\Models\CategoryId;
+use Shared\Utils\ValueObjects\UserId;
 use Flashcard\Domain\Models\Flashcard;
-use Flashcard\Domain\Models\FlashcardId;
+use Flashcard\Domain\Models\CategoryId;
 use Flashcard\Domain\Models\SmTwoFlashcard;
 use Flashcard\Domain\Models\SmTwoFlashcards;
-use Shared\Utils\ValueObjects\UserId;
 
 interface ISmTwoFlashcardRepository
 {
@@ -18,5 +19,7 @@ interface ISmTwoFlashcardRepository
     public function saveMany(SmTwoFlashcards $sm_two_flashcards): void;
 
     /** @return Flashcard[] */
-    public function getFlashcardsWithLowestRepetitionInterval(UserId $user_id, CategoryId $category_id, int $limit): array;
+    public function getFlashcardsWithLowestRepetitionIntervalByCategory(UserId $user_id, CategoryId $category_id, int $limit): array;
+
+    public function getFlashcardsWithLowestRepetitionInterval(UserId $user_id, int $limit): array;
 }

@@ -7,6 +7,7 @@ namespace App\Models;
 use Illuminate\Support\Carbon;
 use Laravel\Sanctum\HasApiTokens;
 use Database\Factories\UserFactory;
+use Shared\Utils\ValueObjects\UserId;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\PersonalAccessToken;
 use Illuminate\Database\Eloquent\Builder;
@@ -16,7 +17,6 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\DatabaseNotificationCollection;
-use Shared\Utils\ValueObjects\UserId;
 
 /**
  * @property        string                                                    $id
@@ -43,6 +43,12 @@ use Shared\Utils\ValueObjects\UserId;
  * @method   static Builder|User                                              wherePassword($value)
  * @method   static Builder|User                                              whereRememberToken($value)
  * @method   static Builder|User                                              whereUpdatedAt($value)
+ * @property        null|string                                               $provider_id
+ * @property        null|string                                               $provider_type
+ * @property        null|string                                               $picture
+ * @method   static Builder|User                                              wherePicture($value)
+ * @method   static Builder|User                                              whereProviderId($value)
+ * @method   static Builder|User                                              whereProviderType($value)
  * @mixin \Eloquent
  */
 class User extends Authenticatable

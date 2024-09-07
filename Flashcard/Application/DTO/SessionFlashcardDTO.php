@@ -1,14 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Flashcard\Application\DTO;
 
-use Flashcard\Domain\Models\FlashcardId;
+use Flashcard\Domain\Models\Rating;
 use Shared\Utils\ValueObjects\Language;
+use Flashcard\Domain\Models\SessionFlashcardId;
 
-class FlashcardDTO
+class SessionFlashcardDTO
 {
     public function __construct(
-        private FlashcardId $id,
+        private SessionFlashcardId $id,
+        private ?Rating $rating,
         private string $word,
         private Language $word_lang,
         private string $translation,
@@ -17,9 +21,14 @@ class FlashcardDTO
         private string $context_translation,
     ) {}
 
-    public function getId(): FlashcardId
+    public function getId(): SessionFlashcardId
     {
         return $this->id;
+    }
+
+    public function getRating(): ?Rating
+    {
+        return $this->rating;
     }
 
     public function getWord(): string

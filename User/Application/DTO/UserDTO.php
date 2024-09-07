@@ -6,7 +6,6 @@ namespace User\Application\DTO;
 
 use Shared\User\IUser;
 use Shared\Utils\ValueObjects\UserId;
-use Shared\Utils\ValueObjects\Uuid;
 
 readonly class UserDTO implements IUser
 {

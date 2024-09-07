@@ -6,7 +6,6 @@ namespace User\Infrastructure\Entities;
 
 use App\Models\User as BaseModel;
 use Shared\Utils\ValueObjects\UserId;
-use Shared\Utils\ValueObjects\Uuid;
 use User\Domain\Models\Entities\IUser;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;

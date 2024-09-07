@@ -1,13 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Flashcard\Domain\Services;
 
-use Flashcard\Domain\Models\CategoryId;
-use Flashcard\Domain\Models\Session;
-use Flashcard\Domain\Repositories\IFlashcardCategoryRepository;
-use Flashcard\Domain\Repositories\ISessionRepository;
 use Shared\Enum\SessionStatus;
+use Flashcard\Domain\Models\Session;
 use Shared\Utils\ValueObjects\UserId;
+use Flashcard\Domain\Models\CategoryId;
+use Flashcard\Domain\Repositories\ISessionRepository;
+use Flashcard\Domain\Repositories\IFlashcardCategoryRepository;
 
 class SessionService
 {
@@ -21,8 +23,7 @@ class SessionService
         CategoryId $category_id,
         int $cards_per_session,
         string $device
-    ): Session
-    {
+    ): Session {
         $this->session_repository->setAllUserSessionsStatus($user_id, SessionStatus::STARTED);
 
         $category = $this->category_repository->findById($category_id);

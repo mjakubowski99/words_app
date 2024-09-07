@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace Tests\Base;
 
-use App\Models\FlashcardCategory;
-use App\Models\LearningSession;
-use App\Models\LearningSessionFlashcard;
-use App\Models\SmTwoFlashcard;
+use Tests\TestCase;
 use App\Models\User;
+use App\Models\SmTwoFlashcard;
+use App\Models\LearningSession;
+use App\Models\FlashcardCategory;
+use Shared\Utils\ValueObjects\UserId;
+use Flashcard\Domain\Models\SessionId;
 use Flashcard\Domain\Models\CategoryId;
+use App\Models\LearningSessionFlashcard;
 use Flashcard\Domain\Models\FlashcardId;
 use Flashcard\Domain\Models\SessionFlashcardId;
-use Flashcard\Domain\Models\SessionId;
-use Shared\Utils\ValueObjects\UserId;
-use Tests\TestCase;
 
 abstract class FlashcardTestCase extends TestCase
 {
@@ -35,23 +35,20 @@ abstract class FlashcardTestCase extends TestCase
 
     public function createSessionId(LearningSession $session): SessionId
     {
-        return new SessionId((string) $session->id);
+        return new SessionId($session->id);
     }
 
     public function createCategoryId(FlashcardCategory $category): CategoryId
     {
-        return new CategoryId((string) $category->id);
+        return new CategoryId($category->id);
     }
 
     public function domainCategory(FlashcardCategory $category): \Flashcard\Domain\Models\FlashcardCategory
     {
-        $domain_category = new \Flashcard\Domain\Models\FlashcardCategory(
+        return (new \Flashcard\Domain\Models\FlashcardCategory(
             new UserId($category->user_id),
             $category->tag,
             $category->name,
-        );
-        $domain_category->setCategoryId(new CategoryId((string) $category->id));
-
-        return $domain_category;
+        ))->init(new CategoryId($category->id));
     }
 }

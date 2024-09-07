@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace User\Application\Command;
 
 use Shared\Enum\UserProvider;

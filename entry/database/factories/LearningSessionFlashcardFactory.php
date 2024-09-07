@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
 use App\Models\Flashcard;
@@ -12,9 +14,9 @@ class LearningSessionFlashcardFactory extends Factory
     public function definition(): array
     {
         return [
-            'learning_session_id' => fn() => LearningSession::factory()->create(),
-            'flashcard_id' => fn() => Flashcard::factory()->create(),
-            'rating' => Rating::WEAK,
+            'learning_session_id' => fn () => LearningSession::factory()->create(),
+            'flashcard_id' => fn () => Flashcard::factory()->create(),
+            'rating' => Rating::WEAK->value,
         ];
     }
 }

@@ -17,7 +17,7 @@ class SmTwoFlashcard
 
     public function __construct(
         private UserId $user_id,
-        private Flashcard $flashcard,
+        private FlashcardId $flashcard_id,
         ?float $repetition_ratio = null,
         ?float $repetition_interval = null,
         ?int $repetition_count = null,
@@ -32,9 +32,9 @@ class SmTwoFlashcard
         return $this->user_id;
     }
 
-    public function getFlashcard(): Flashcard
+    public function getFlashcardId(): FlashcardId
     {
-        return $this->flashcard;
+        return $this->flashcard_id;
     }
 
     public function getRepetitionInterval(): float
@@ -79,12 +79,12 @@ class SmTwoFlashcard
         if ($rating->value >= Rating::GOOD->value) {
             if ($this->repetition_count === 0) {
                 $this->repetition_interval = 1.0;
-            } else if ($this->repetition_count === 1) {
+            } elseif ($this->repetition_count === 1) {
                 $this->repetition_interval = 6.0;
             } else {
                 $this->repetition_interval = $this->repetition_interval * $this->repetition_ratio;
             }
-            $this->repetition_count++;
+            ++$this->repetition_count;
         } else {
             $this->repetition_interval = 1;
             $this->repetition_count = 0;  // Zresetuj licznik powtórzeń po złej odpowiedzi

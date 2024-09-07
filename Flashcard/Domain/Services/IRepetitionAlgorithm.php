@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Flashcard\Domain\Services;
 
 use Flashcard\Domain\Models\SessionFlashcards;

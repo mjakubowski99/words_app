@@ -19,9 +19,11 @@ class Session
         private readonly FlashcardCategory $flashcard_category,
     ) {}
 
-    public function setId(SessionId $id): void
+    public function init(SessionId $id): self
     {
         $this->id = $id;
+
+        return $this;
     }
 
     public function getId(): SessionId
@@ -33,7 +35,6 @@ class Session
     {
         return $this->flashcard_category;
     }
-
 
     public function getStatus(): SessionStatus
     {

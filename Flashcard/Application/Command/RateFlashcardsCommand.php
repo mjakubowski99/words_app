@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Flashcard\Application\Command;
 
-use Flashcard\Domain\Models\SessionId;
 use Shared\Utils\ValueObjects\UserId;
+use Flashcard\Domain\Models\SessionId;
 
 class RateFlashcardsCommand
 {

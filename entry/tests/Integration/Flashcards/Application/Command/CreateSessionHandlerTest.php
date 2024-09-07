@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Tests\Integration\Flashcards\Application\Command;
 
-use App\Models\FlashcardCategory;
 use App\Models\User;
+use Shared\User\IUser;
+use App\Models\FlashcardCategory;
+use Tests\Base\FlashcardTestCase;
 use Flashcard\Application\Command\CreateSession;
 use Flashcard\Application\Command\CreateSessionHandler;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Shared\User\IUser;
-use Tests\Base\FlashcardTestCase;
 
 class CreateSessionHandlerTest extends FlashcardTestCase
 {

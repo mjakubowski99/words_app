@@ -2,22 +2,21 @@
 
 declare(strict_types=1);
 
-namespace Tests\Unit\Flashcard\Infrastructure\Repositories\Postgres\SessionFlashcardRepository;
+namespace Tests\Unit\Flashcard\Infrastructure\Repositories\SessionFlashcardRepository;
 
 use App\Models\LearningSession;
+use Tests\Base\FlashcardTestCase;
+use Shared\Utils\ValueObjects\UserId;
 use App\Models\LearningSessionFlashcard;
 use Flashcard\Domain\Models\FlashcardId;
-use Flashcard\Domain\Models\Rating;
-use Flashcard\Domain\Models\SessionFlashcard;
-use Flashcard\Domain\Models\SessionFlashcardId;
 use Flashcard\Domain\Models\SessionFlashcards;
-use Flashcard\Infrastructure\Repositories\Postgres\SessionFlashcardRepository;
-use Shared\Utils\ValueObjects\UserId;
-use Shared\Utils\ValueObjects\Uuid;
-use Tests\Base\FlashcardTestCase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Flashcard\Infrastructure\Repositories\SessionFlashcardRepository;
 
 class SessionFlashcardRepositoryTest extends FlashcardTestCase
 {
+    use DatabaseTransactions;
+
     private SessionFlashcardRepository $repository;
 
     protected function setUp(): void
@@ -33,7 +32,6 @@ class SessionFlashcardRepositoryTest extends FlashcardTestCase
     {
         // GIVEN
         $session = LearningSession::factory()->create();
-        $user_id = new UserId($session->user_id);
         $expected_flashcard = LearningSessionFlashcard::factory()->create([
             'learning_session_id' => $session->id,
         ]);
@@ -44,7 +42,7 @@ class SessionFlashcardRepositoryTest extends FlashcardTestCase
         ];
 
         // WHEN
-        $result = $this->repository->findMany($user_id, $ids);
+        $result = $this->repository->findMany($session->getId(), $ids);
 
         // THEN
         $this->assertSame(1, count($result->all()));
@@ -70,7 +68,7 @@ class SessionFlashcardRepositoryTest extends FlashcardTestCase
         ];
 
         // WHEN
-        $result = $this->repository->findMany($user_id, $ids);
+        $result = $this->repository->findMany($session->getId(), $ids);
 
         // THEN
         $this->assertSame(1, count($result->all()));
@@ -84,10 +82,17 @@ class SessionFlashcardRepositoryTest extends FlashcardTestCase
     {
         // GIVEN
         $flashcard_id = new FlashcardId(1);
-        $session_flashcards_to_rate = new SessionFlashcards([
-            new SessionFlashcard(new SessionFlashcardId(LearningSessionFlashcard::factory()->create()->id), $flashcard_id, Rating::VERY_GOOD),
-            new SessionFlashcard(new SessionFlashcardId(LearningSessionFlashcard::factory()->create()->id), $flashcard_id, Rating::GOOD)
-        ], new UserId(Uuid::make()->getValue()));
+        $session = LearningSession::factory()->create();
+
+        $learning_session_flashcards = LearningSessionFlashcard::factory(2)->create();
+
+        $session_flashcards_to_rate = new SessionFlashcards(
+            $session->toDomainModel(),
+            [
+                $learning_session_flashcards[0]->toDomainModel(),
+                $learning_session_flashcards[1]->toDomainModel(),
+            ]
+        );
 
         // WHEN
         $this->repository->saveRating($session_flashcards_to_rate);

@@ -10,7 +10,12 @@ use OpenApi\Attributes as OAT;
     name: Tags::USER,
     description: 'User part of application.'
 )]
+#[OAT\Tag(
+    name: Tags::FLASHCARD,
+    description: 'Flashcard part of application.'
+)]
 class Tags
 {
     public const USER = 'User';
+    public const FLASHCARD = 'Flashcard';
 }

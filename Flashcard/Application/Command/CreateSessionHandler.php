@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\Command;
 
+use Flashcard\Domain\Services\SessionService;
 use Flashcard\Application\DTO\CreateSessionResultDTO;
 use Flashcard\Domain\Repositories\ISessionRepository;
-use Flashcard\Domain\Services\SessionService;
 
 class CreateSessionHandler
 {
@@ -23,7 +23,7 @@ class CreateSessionHandler
             $command->getCardsPerSession(),
             $command->getDevice()
         );
-        
+
         $session_id = $this->repository->create($session);
 
         return new CreateSessionResultDTO(true, null, $session_id);

@@ -1,10 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace User\Application\Query;
 
-use Shared\Auth\IExternalAuthenticable;
 use Shared\Enum\UserProvider;
-use Shared\User\IUser;
 use User\Application\DTO\UserDTO;
 use User\Domain\Repositories\IUserRepository;
 

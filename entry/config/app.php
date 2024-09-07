@@ -9,8 +9,8 @@ use App\Providers\EventServiceProvider;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Support\ServiceProvider;
 use Shared\Providers\SharedServiceProvider;
-use User\Infrastructure\Providers\UserServiceProvider;
 use Flashcard\Infrastructure\FlashcardServiceProvider;
+use User\Infrastructure\Providers\UserServiceProvider;
 
 return [
     /*

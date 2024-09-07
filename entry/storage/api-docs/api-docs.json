@@ -15,6 +15,126 @@
         }
     ],
     "paths": {
+        "/api/flashcard/session": {
+            "post": {
+                "tags": [
+                    "Flashcard"
+                ],
+                "summary": "Creates flashcard learning session for given category",
+                "description": "Creates flashcard learning session for given category",
+                "operationId": "flashcard.session.store",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Requests\\Flashcard\\CreateSessionRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Resources\\Flashcard\\SessionFlashcardsResource"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "firebase": []
+                    }
+                ]
+            }
+        },
+        "/api/flashcard/session/{session_id}/rate-flashcards": {
+            "post": {
+                "tags": [
+                    "Flashcard"
+                ],
+                "summary": "Rate session flashcards",
+                "description": "Rate session flashcards and get next flashcards to learn",
+                "operationId": "flashcard.session.rate",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Requests\\Flashcard\\RateSessionFlashcardRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Resources\\Flashcard\\SessionFlashcardsResource"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "firebase": []
+                    }
+                ]
+            }
+        },
         "/api/user/firebase-init": {
             "post": {
                 "tags": [
@@ -120,6 +240,144 @@
     },
     "components": {
         "schemas": {
+            "Requests\\Flashcard\\CreateSessionRequest": {
+                "properties": {
+                    "category_id": {
+                        "description": "Flashcards category id",
+                        "example": 1
+                    },
+                    "cards_per_session": {
+                        "description": "Cards per learning session",
+                        "example": 10
+                    }
+                },
+                "type": "object"
+            },
+            "Requests\\Flashcard\\RateSessionFlashcardRequest": {
+                "required": [
+                    "ratings"
+                ],
+                "properties": {
+                    "ratings": {
+                        "description": "List of ratings for flashcards",
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "id": {
+                                    "description": "ID of the flashcard in the session",
+                                    "type": "integer",
+                                    "example": 12
+                                },
+                                "rating": {
+                                    "description": "Rating given to the flashcard",
+                                    "type": "integer",
+                                    "enum": [
+                                        0,
+                                        1,
+                                        2,
+                                        3
+                                    ],
+                                    "example": 2
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "Resources\\Flashcard\\SessionFlashcardsResource": {
+                "properties": {
+                    "session": {
+                        "properties": {
+                            "id": {
+                                "description": "ID of the session",
+                                "type": "integer",
+                                "example": 10
+                            },
+                            "cards_per_session": {
+                                "description": "Number of cards per session",
+                                "type": "integer",
+                                "example": 25
+                            },
+                            "is_finished": {
+                                "description": "Indicates if the session is finished",
+                                "type": "boolean"
+                            },
+                            "progress": {
+                                "description": "Progress of the session as a percentage",
+                                "type": "number",
+                                "format": "float",
+                                "example": 5
+                            },
+                            "flashcards": {
+                                "description": "List of flashcards in the session",
+                                "type": "array",
+                                "items": {
+                                    "properties": {
+                                        "id": {
+                                            "description": "Flashcard ID",
+                                            "type": "integer",
+                                            "example": 11
+                                        },
+                                        "rating": {
+                                            "description": "User rating for the flashcard",
+                                            "type": "integer",
+                                            "enum": [
+                                                0,
+                                                1,
+                                                2,
+                                                3
+                                            ],
+                                            "example": 2
+                                        },
+                                        "word": {
+                                            "description": "Word on the flashcard",
+                                            "type": "string",
+                                            "example": "Polish"
+                                        },
+                                        "word_lang": {
+                                            "description": "Language of the word",
+                                            "enum": [
+                                                "en",
+                                                "pl"
+                                            ],
+                                            "example": "en"
+                                        },
+                                        "translation": {
+                                            "description": "Translation of the word",
+                                            "type": "string",
+                                            "example": "Polska"
+                                        },
+                                        "translation_lang": {
+                                            "description": "Language of the translation",
+                                            "type": "string",
+                                            "enum": [
+                                                "en",
+                                                "pl"
+                                            ],
+                                            "example": "pl"
+                                        },
+                                        "context": {
+                                            "description": "Context sentence for the word",
+                                            "type": "string",
+                                            "example": "Country in the center of Europe"
+                                        },
+                                        "context_translation": {
+                                            "description": "Translation of the context sentence",
+                                            "type": "string",
+                                            "example": "Kraj w centrum Europy"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
             "Resources\\User\\UserResource": {
                 "properties": {
                     "id": {
@@ -762,6 +1020,10 @@
         {
             "name": "User",
             "description": "User part of application."
+        },
+        {
+            "name": "Flashcard",
+            "description": "Flashcard part of application."
         }
     ]
 }

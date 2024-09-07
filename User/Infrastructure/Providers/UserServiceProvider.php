@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace User\Infrastructure\Providers;
 
 use Shared\User\IUserFacade;
-use User\Application\Facades\UserFacade;
 use Illuminate\Support\ServiceProvider;
+use User\Application\Facades\UserFacade;
 use User\Domain\Repositories\IUserRepository;
 use User\Infrastructure\Repositories\UserRepository;
 

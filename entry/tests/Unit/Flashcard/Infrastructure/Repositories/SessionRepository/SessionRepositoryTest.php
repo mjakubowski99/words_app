@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace Tests\Unit\Flashcard\Infrastructure\Repositories\Postgres\SessionRepository;
+namespace Tests\Unit\Flashcard\Infrastructure\Repositories\SessionRepository;
 
-use App\Models\FlashcardCategory;
-use App\Models\LearningSession;
 use App\Models\User;
-use Flashcard\Domain\Models\Session;
-use Flashcard\Domain\Models\SessionId;
-use Flashcard\Infrastructure\Repositories\Postgres\SessionRepository;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Shared\Enum\SessionStatus;
-use Shared\Utils\ValueObjects\UserId;
+use App\Models\LearningSession;
+use App\Models\FlashcardCategory;
 use Tests\Base\FlashcardTestCase;
+use Flashcard\Domain\Models\Session;
+use Shared\Utils\ValueObjects\UserId;
+use Flashcard\Domain\Models\SessionId;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Flashcard\Infrastructure\Repositories\SessionRepository;
 
 class SessionRepositoryTest extends FlashcardTestCase
 {
@@ -61,13 +61,12 @@ class SessionRepositoryTest extends FlashcardTestCase
         $session = LearningSession::factory()->create();
 
         // WHEN
-        $result = $this->repository->find(new SessionId((string) $session->id));
+        $result = $this->repository->find(new SessionId($session->id));
 
-        $this->assertSame((string) $session->id, $result->getId()->getValue());
-        $this->assertSame((string) $session->user_id, $result->getUserId()->getValue());
+        $this->assertSame($session->id, $result->getId()->getValue());
+        $this->assertSame($session->user_id, $result->getUserId()->getValue());
         $this->assertSame($session->cards_per_session, $result->getCardsPerSession());
     }
-
 
     /**
      * @test

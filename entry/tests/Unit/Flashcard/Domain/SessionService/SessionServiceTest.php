@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Flashcard\Domain\SessionService;
 
-use Flashcard\Domain\Models\CategoryId;
-use Flashcard\Domain\Models\FlashcardCategory;
-use Flashcard\Domain\Repositories\IFlashcardCategoryRepository;
-use Flashcard\Domain\Repositories\ISessionRepository;
-use Flashcard\Domain\Services\SessionService;
+use Tests\TestCase;
 use Mockery\MockInterface;
 use Shared\Enum\SessionStatus;
-use Shared\Utils\ValueObjects\UserId;
 use Shared\Utils\ValueObjects\Uuid;
-use Tests\TestCase;
+use Shared\Utils\ValueObjects\UserId;
+use Flashcard\Domain\Models\CategoryId;
+use Flashcard\Domain\Services\SessionService;
+use Flashcard\Domain\Models\FlashcardCategory;
+use Flashcard\Domain\Repositories\ISessionRepository;
+use Flashcard\Domain\Repositories\IFlashcardCategoryRepository;
 
 class SessionServiceTest extends TestCase
 {
@@ -40,15 +40,16 @@ class SessionServiceTest extends TestCase
     {
         // GIVEN
         $user_id = UserId::fromString(Uuid::make()->getValue());
-        $category_id = new CategoryId('1');
+        $category_id = new CategoryId(1);
         $cards_per_session = 5;
         $device = 'Mozilla/Firefox';
 
         $category = new FlashcardCategory($user_id, 'tag', 'name');
         $session_repo_expectation = $this->session_repository
             ->shouldReceive('setAllUserSessionsStatus')
-            ->withArgs(function(UserId $user_id, SessionStatus $status) {
+            ->withArgs(function (UserId $user_id, SessionStatus $status) {
                 $this->assertSame(SessionStatus::STARTED, $status);
+
                 return true;
             })
             ->andReturn();

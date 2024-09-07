@@ -6,7 +6,6 @@ namespace User\Domain\Repositories;
 
 use Shared\Enum\UserProvider;
 use Shared\Utils\ValueObjects\UserId;
-use Shared\Utils\ValueObjects\Uuid;
 use User\Domain\Models\Entities\IUser;
 
 interface IUserRepository

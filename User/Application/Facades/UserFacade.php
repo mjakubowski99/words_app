@@ -1,13 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace User\Application\Facades;
 
-use Shared\Enum\UserProvider;
 use Shared\User\IUser;
 use Shared\User\IUserFacade;
+use Shared\Enum\UserProvider;
 use Shared\Utils\ValueObjects\UserId;
-use User\Application\Query\FindExternalUserHandler;
 use User\Application\Query\FindUserHandler;
+use User\Application\Query\FindExternalUserHandler;
 
 class UserFacade implements IUserFacade
 {

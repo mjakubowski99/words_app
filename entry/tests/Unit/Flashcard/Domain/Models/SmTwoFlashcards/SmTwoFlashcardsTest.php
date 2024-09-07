@@ -1,16 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Unit\Flashcard\Domain\Models\SmTwoFlashcards;
 
-use Flashcard\Domain\Exceptions\InvalidSmTwoFlashcardSetException;
-use Flashcard\Domain\Models\Flashcard;
+use Tests\TestCase;
+use Shared\Utils\ValueObjects\Uuid;
+use Shared\Utils\ValueObjects\UserId;
 use Flashcard\Domain\Models\FlashcardId;
 use Flashcard\Domain\Models\SmTwoFlashcard;
 use Flashcard\Domain\Models\SmTwoFlashcards;
-use Shared\Utils\ValueObjects\Language;
-use Shared\Utils\ValueObjects\UserId;
-use Shared\Utils\ValueObjects\Uuid;
-use Tests\TestCase;
+use Flashcard\Domain\Exceptions\InvalidSmTwoFlashcardSetException;
 
 class SmTwoFlashcardsTest extends TestCase
 {
@@ -20,9 +20,9 @@ class SmTwoFlashcardsTest extends TestCase
     public function construct_WhenNotEveryUserInSetHasSameId_ShouldThrowException(): void
     {
         // GIVEN
-        $user_id = UserId::fromString(Uuid::make());
-        $other_user_id = UserId::fromString(Uuid::make());
-        $flashcard_id = new FlashcardId('1');
+        $user_id = UserId::fromString(Uuid::make()->getValue());
+        $other_user_id = UserId::fromString(Uuid::make()->getValue());
+        $flashcard_id = new FlashcardId(1);
         $sm_two_flashcards = [
             $this->makeSmTwoFlashcard($other_user_id, $flashcard_id),
             $this->makeSmTwoFlashcard($user_id, $flashcard_id),
@@ -37,15 +37,6 @@ class SmTwoFlashcardsTest extends TestCase
 
     private function makeSmTwoFlashcard(UserId $user_id, FlashcardId $flashcard_id): SmTwoFlashcard
     {
-        $flashcard = new Flashcard(
-            $flashcard_id,
-            'word',
-            Language::from(Language::EN),
-            'translation',
-            Language::from(Language::PL),
-            'context',
-            'context translation',
-        );
-        return new SmTwoFlashcard($user_id, $flashcard, null, null, null);
+        return new SmTwoFlashcard($user_id, $flashcard_id, null, null, null);
     }
 }

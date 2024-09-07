@@ -6,20 +6,20 @@ namespace Flashcard\Domain\Models;
 
 class SessionId
 {
-    private string $value;
+    private int $value;
 
-    public function __construct(string $value)
+    public function __construct(int $value)
     {
         $this->value = $value;
     }
 
-    public static function fromInt(int $value): self
-    {
-        return new SessionId((string) $value);
-    }
-
-    public function getValue(): string
+    public function getValue(): int
     {
         return $this->value;
+    }
+
+    public function __toString(): string
+    {
+        return (string) $this->value;
     }
 }

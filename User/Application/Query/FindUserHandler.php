@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace User\Application\Query;
 
-use Shared\User\IUser;
-use Shared\Utils\ValueObjects\UserId;
-use Shared\Utils\ValueObjects\Uuid;
 use User\Application\DTO\UserDTO;
+use Shared\Utils\ValueObjects\UserId;
 use User\Domain\Repositories\IUserRepository;
 
 class FindUserHandler

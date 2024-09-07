@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Flashcard\Domain\Models;
 
 class SessionFlashcardId
@@ -20,5 +22,10 @@ class SessionFlashcardId
     {
         return ($id instanceof SessionFlashcardId)
             && $id->getValue() === $this->getValue();
+    }
+
+    public function __toString(): string
+    {
+        return (string) $this->value;
     }
 }

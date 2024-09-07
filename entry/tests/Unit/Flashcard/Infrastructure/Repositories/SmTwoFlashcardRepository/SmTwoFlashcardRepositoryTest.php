@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Tests\Unit\Flashcard\Infrastructure\Repositories\Postgres\SmTwoFlashcardRepository;
+namespace Tests\Unit\Flashcard\Infrastructure\Repositories\SmTwoFlashcardRepository;
 
-use App\Models\Flashcard;
-use App\Models\FlashcardCategory;
-use App\Models\SmTwoFlashcard;
 use App\Models\User;
-use Flashcard\Domain\Models\SmTwoFlashcards;
-use Flashcard\Infrastructure\Repositories\Postgres\SmTwoFlashcardRepository;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use App\Models\Flashcard;
+use App\Models\SmTwoFlashcard;
+use App\Models\FlashcardCategory;
 use Tests\Base\FlashcardTestCase;
+use Flashcard\Domain\Models\SmTwoFlashcards;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Flashcard\Infrastructure\Repositories\SmTwoFlashcardRepository;
 
 class SmTwoFlashcardRepositoryTest extends FlashcardTestCase
 {
@@ -34,10 +34,10 @@ class SmTwoFlashcardRepositoryTest extends FlashcardTestCase
         $user = User::factory()->create();
         $expected_flashcards = [
             SmTwoFlashcard::factory()->create(['user_id' => $user->id]),
-            SmTwoFlashcard::factory()->create(['user_id' => $user->id])
+            SmTwoFlashcard::factory()->create(['user_id' => $user->id]),
         ];
         $other_flashcards = SmTwoFlashcard::factory()->create(['user_id' => $user->id]);
-        $flashcard_ids = array_map(fn(SmTwoFlashcard $flashcard) => $flashcard->getFlashcardId(), $expected_flashcards);
+        $flashcard_ids = array_map(fn (SmTwoFlashcard $flashcard) => $flashcard->getFlashcardId(), $expected_flashcards);
 
         // WHEN
         $results = $this->repository->findMany($user->getId(), $flashcard_ids);
@@ -54,13 +54,13 @@ class SmTwoFlashcardRepositoryTest extends FlashcardTestCase
         // GIVEN
         $user = User::factory()->create();
         $flashcard = SmTwoFlashcard::factory()->create([
-            'user_id' => $user->getId(),
+            'user_id' => $user->getId()->getValue(),
             'repetition_interval' => 1,
             'repetition_count' => 2,
             'repetition_ratio' => 3,
         ]);
         $domain_model = new SmTwoFlashcards([
-             $flashcard->toDomainModel()
+            $flashcard->toDomainModel(),
         ]);
 
         // WHEN
@@ -79,7 +79,7 @@ class SmTwoFlashcardRepositoryTest extends FlashcardTestCase
     /**
      * @test
      */
-    public function getFlashcardsWithLowestRepetitionInterval_ShouldReturnFlashcardsSortedByRepetitionInterval(): void
+    public function getFlashcardsWithLowestRepetitionIntervalByCategory_ShouldReturnFlashcardsSortedByRepetitionInterval(): void
     {
         // GIVEN
         $user = User::factory()->create();
@@ -88,23 +88,23 @@ class SmTwoFlashcardRepositoryTest extends FlashcardTestCase
             SmTwoFlashcard::factory()->create([
                 'flashcard_id' => Flashcard::factory()->create(['flashcard_category_id' => $category->id]),
                 'user_id' => $user->id,
-                'repetition_interval' => 5
+                'repetition_interval' => 5,
             ]),
             SmTwoFlashcard::factory()->create([
                 'flashcard_id' => Flashcard::factory()->create(['flashcard_category_id' => $category->id]),
                 'user_id' => $user->id,
-                'repetition_interval' => 4
+                'repetition_interval' => 4,
             ]),
             SmTwoFlashcard::factory()->create([
                 'flashcard_id' => Flashcard::factory()->create(['flashcard_category_id' => $category->id]),
                 'user_id' => $user->id,
-                'repetition_interval' => 6
-            ])
+                'repetition_interval' => 6,
+            ]),
         ];
         $expected = [$flashcards[1], $flashcards[0], $flashcards[2]];
 
         // WHEN
-        $results = $this->repository->getFlashcardsWithLowestRepetitionInterval($user->getId(), $category->getId(), 5);
+        $results = $this->repository->getFlashcardsWithLowestRepetitionIntervalByCategory($user->getId(), $category->getId(), 5);
 
         // THEN
         $this->assertCount(3, $results);

@@ -10,7 +10,7 @@ parameters:
     paths:
         - app
         - ../User
-        - ../UseCases
+        - ../Flashcard
         - ../Shared
 
     excludePaths:

@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Flashcard\Domain\Models;
 
+use Shared\Utils\ValueObjects\UserId;
 use Flashcard\Domain\Exceptions\InvalidSmTwoFlashcardSetException;
 
 class SmTwoFlashcards implements \Countable
@@ -10,6 +13,15 @@ class SmTwoFlashcards implements \Countable
     public function __construct(private array $sm_two_flashcards)
     {
         $this->validate();
+    }
+
+    public function fillMissing(UserId $user_id, array $flashcard_ids): void
+    {
+        foreach ($flashcard_ids as $flashcard_id) {
+            if (!$this->searchKeyByUserFlashcard($flashcard_id)) {
+                $this->sm_two_flashcards[] = new SmTwoFlashcard($user_id, $flashcard_id);
+            }
+        }
     }
 
     public function all(): array
@@ -27,7 +39,7 @@ class SmTwoFlashcards implements \Countable
 
         foreach ($this->sm_two_flashcards as $sm_two_flashcard) {
             if (!$sm_two_flashcard->getUserId()->equals($to_compare->getUserId())) {
-                throw new InvalidSmTwoFlashcardSetException("Not every flashcard in set has same user id");
+                throw new InvalidSmTwoFlashcardSetException('Not every flashcard in set has same user id');
             }
         }
     }
@@ -38,14 +50,17 @@ class SmTwoFlashcards implements \Countable
         $this->sm_two_flashcards[$key]->updateByRating($rating);
     }
 
-    private function searchKeyByUserFlashcard(FlashcardId $flashcard_id): int
+    private function searchKeyByUserFlashcard(FlashcardId $flashcard_id): ?int
     {
         foreach ($this->sm_two_flashcards as $key => $sm_two_flashcard) {
-            if (!$sm_two_flashcard->getFlashcard()->getId()->equals($flashcard_id)) {
+            if (!$sm_two_flashcard->getFlashcardId()->equals($flashcard_id)) {
                 continue;
             }
+
             return $key;
         }
+
+        return null;
     }
 
     public function count(): int

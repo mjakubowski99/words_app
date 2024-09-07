@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\Command;
 
-use Flashcard\Domain\Models\CategoryId;
 use Shared\User\IUser;
+use Flashcard\Domain\Models\CategoryId;
 
 final readonly class CreateSession
 {

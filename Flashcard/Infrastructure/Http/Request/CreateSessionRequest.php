@@ -1,10 +1,29 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Flashcard\Infrastructure\Http\Request;
 
-use Flashcard\Application\Command\CreateSession;
+use OpenApi\Attributes as OAT;
 use Shared\Http\Request\Request;
+use Flashcard\Domain\Models\CategoryId;
+use Flashcard\Application\Command\CreateSession;
 
+#[OAT\Schema(
+    schema: 'Requests\Flashcard\CreateSessionRequest',
+    properties: [
+        new OAT\Property(
+            property: 'category_id',
+            description: 'Flashcards category id',
+            example: 1,
+        ),
+        new OAT\Property(
+            property: 'cards_per_session',
+            description: 'Cards per learning session',
+            example: 10,
+        ),
+    ]
+)]
 class CreateSessionRequest extends Request
 {
     public function rules(): array
@@ -12,7 +31,6 @@ class CreateSessionRequest extends Request
         return [
             'cards_per_session' => ['required', 'integer'],
             'category_id' => ['required', 'integer'],
-            'flashcards_limit' => ['required', 'integer', 'min:1', 'max:200'],
         ];
     }
 
@@ -22,12 +40,7 @@ class CreateSessionRequest extends Request
             $this->current(),
             (int) $this->input('cards_per_session'),
             $this->userAgent(),
-            (string) $this->input('category_id')
+            new CategoryId($this->input('category_id')),
         );
-    }
-
-    public function getFlashcardsLimit(): int
-    {
-        return $this->input('flashcards_limit');
     }
 }

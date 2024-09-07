@@ -1,15 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Unit\Flashcard\Domain\Models\SmTwoFlashcard;
 
-use Flashcard\Domain\Models\Flashcard;
-use Flashcard\Domain\Models\FlashcardId;
-use Flashcard\Domain\Models\Rating;
-use Flashcard\Domain\Models\SmTwoFlashcard;
-use Shared\Utils\ValueObjects\Language;
-use Shared\Utils\ValueObjects\UserId;
-use Shared\Utils\ValueObjects\Uuid;
 use Tests\TestCase;
+use Flashcard\Domain\Models\Rating;
+use Shared\Utils\ValueObjects\Uuid;
+use Shared\Utils\ValueObjects\UserId;
+use Flashcard\Domain\Models\FlashcardId;
+use Flashcard\Domain\Models\SmTwoFlashcard;
 
 class SmTwoFlashcardTest extends TestCase
 {
@@ -26,8 +26,7 @@ class SmTwoFlashcardTest extends TestCase
         float $expected_repetition_ratio,
         float $expected_repetition_interval,
         int $expected_repetition_count,
-    ): void
-    {
+    ): void {
         // GIVEN
         $model = $this->makeSmTwoFlashcard($repetition_ratio, $repetition_interval, $repetition_count);
 
@@ -115,16 +114,8 @@ class SmTwoFlashcardTest extends TestCase
 
     private function makeSmTwoFlashcard(float $repetition_ratio, float $repetition_interval, int $repetition_count): SmTwoFlashcard
     {
-        $user_id = new UserId(Uuid::make());
-        $flashcard = new Flashcard(
-            new FlashcardId('1'),
-            'word',
-            Language::from(Language::EN),
-            'translation',
-            Language::from(Language::PL),
-            'context',
-            'context translation',
-        );
-        return new SmTwoFlashcard($user_id, $flashcard, $repetition_ratio, $repetition_interval, $repetition_count);
+        $user_id = new UserId(Uuid::make()->getValue());
+
+        return new SmTwoFlashcard($user_id, new FlashcardId(1), $repetition_ratio, $repetition_interval, $repetition_count);
     }
 }

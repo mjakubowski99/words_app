@@ -1,11 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Shared\User;
 
-use Shared\Auth\IExternalAuthenticable;
 use Shared\Enum\UserProvider;
 use Shared\Utils\ValueObjects\UserId;
-use Shared\Utils\ValueObjects\Uuid;
 
 interface IUserFacade
 {

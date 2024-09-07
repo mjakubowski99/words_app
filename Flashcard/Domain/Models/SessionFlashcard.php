@@ -8,11 +8,19 @@ use Flashcard\Domain\Exceptions\SessionFlashcardAlreadyRatedException;
 
 class SessionFlashcard
 {
+    private SessionFlashcardId $id;
+
     public function __construct(
-        private readonly SessionFlashcardId $id,
         private readonly FlashcardId $flashcard_id,
         private ?Rating $rating,
     ) {}
+
+    public function init(SessionFlashcardId $id): self
+    {
+        $this->id = $id;
+
+        return $this;
+    }
 
     public function getId(): SessionFlashcardId
     {

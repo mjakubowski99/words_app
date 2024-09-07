@@ -1,13 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Flashcard\Domain\Models;
 
 use Flashcard\Domain\Contracts\ICollection;
-use Shared\Utils\ValueObjects\UserId;
 
 class SessionFlashcards implements ICollection
 {
-    public function __construct(private array $session_flashcards, private UserId $user_id) {}
+    public function __construct(
+        private Session $session,
+        private array $session_flashcards,
+    ) {}
 
     public function all(): array
     {
@@ -19,9 +23,9 @@ class SessionFlashcards implements ICollection
         return count($this->session_flashcards) === 0;
     }
 
-    public function getUserId(): UserId
+    public function getSession(): Session
     {
-        return $this->user_id;
+        return $this->session;
     }
 
     public function rate(SessionFlashcardId $id, Rating $rating): void
@@ -45,6 +49,6 @@ class SessionFlashcards implements ICollection
     /** @return FlashcardId[] */
     public function pluckFlashcardIds(): array
     {
-        return array_map(fn(SessionFlashcard $flashcard) => $flashcard->getFlashcardId(), $this->session_flashcards);
+        return array_map(fn (SessionFlashcard $flashcard) => $flashcard->getFlashcardId(), $this->session_flashcards);
     }
 }

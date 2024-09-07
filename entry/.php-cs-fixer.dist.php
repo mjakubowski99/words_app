@@ -83,7 +83,7 @@ $finder = Finder::create()
         $project_path . '/tests',
 
         $domains_path . '/User',
-        $domains_path . '/UseCases',
+        $domains_path . '/Flashcard',
         $domains_path . '/Shared',
     ])
     ->name('*.php')

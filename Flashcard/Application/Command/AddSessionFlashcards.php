@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Flashcard\Application\Command;
 
 use Flashcard\Domain\Models\SessionId;

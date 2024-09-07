@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace Shared\Http\Request;
 
-use Illuminate\Foundation\Http\FormRequest;
-use Mjakubowski\FirebaseAuth\FirebaseAuthenticable;
 use Shared\User\IUser;
 use Shared\User\IUserFacade;
-use Shared\Utils\Auth\ExternalAuthenticable;
 use Shared\Utils\ValueObjects\UserId;
-use Shared\Utils\ValueObjects\Uuid;
+use Illuminate\Foundation\Http\FormRequest;
+use Shared\Utils\Auth\ExternalAuthenticable;
+use Mjakubowski\FirebaseAuth\FirebaseAuthenticable;
 
 class Request extends FormRequest
 {

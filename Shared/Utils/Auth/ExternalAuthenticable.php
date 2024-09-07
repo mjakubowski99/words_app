@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Shared\Utils\Auth;
 
-use Mjakubowski\FirebaseAuth\FirebaseAuthenticable;
 use Shared\Enum\UserProvider;
+use Mjakubowski\FirebaseAuth\FirebaseAuthenticable;
 
 class ExternalAuthenticable
 {

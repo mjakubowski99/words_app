@@ -1,12 +1,46 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
-use Flashcard\Domain\Models\FlashcardId;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Shared\Utils\ValueObjects\Language;
+use Database\Factories\FlashcardFactory;
+use Flashcard\Domain\Models\FlashcardId;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
+/**
+ * @property        int               $id
+ * @property        string            $user_id
+ * @property        int               $flashcard_category_id
+ * @property        string            $word
+ * @property        string            $word_lang
+ * @property        string            $translation
+ * @property        string            $translation_lang
+ * @property        string            $context
+ * @property        string            $context_translation
+ * @property        null|Carbon       $created_at
+ * @property        null|Carbon       $updated_at
+ * @method   static FlashcardFactory  factory($count = null, $state = [])
+ * @method   static Builder|Flashcard newModelQuery()
+ * @method   static Builder|Flashcard newQuery()
+ * @method   static Builder|Flashcard query()
+ * @method   static Builder|Flashcard whereContext($value)
+ * @method   static Builder|Flashcard whereContextTranslation($value)
+ * @method   static Builder|Flashcard whereCreatedAt($value)
+ * @method   static Builder|Flashcard whereFlashcardCategoryId($value)
+ * @method   static Builder|Flashcard whereId($value)
+ * @method   static Builder|Flashcard whereTranslation($value)
+ * @method   static Builder|Flashcard whereTranslationLang($value)
+ * @method   static Builder|Flashcard whereUpdatedAt($value)
+ * @method   static Builder|Flashcard whereUserId($value)
+ * @method   static Builder|Flashcard whereWord($value)
+ * @method   static Builder|Flashcard whereWordLang($value)
+ * @mixin \Eloquent
+ */
 class Flashcard extends Model
 {
     use HasFactory;

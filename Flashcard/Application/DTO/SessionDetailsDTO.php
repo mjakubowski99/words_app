@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\DTO;
 
-use Flashcard\Domain\Models\SessionId;
 use Shared\Enum\SessionStatus;
+use Flashcard\Domain\Models\SessionId;
 
 class SessionDetailsDTO
 {

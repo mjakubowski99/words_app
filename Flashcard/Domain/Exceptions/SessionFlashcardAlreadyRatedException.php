@@ -1,8 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Flashcard\Domain\Exceptions;
 
-class SessionFlashcardAlreadyRatedException extends \Exception
-{
-
-}
+class SessionFlashcardAlreadyRatedException extends \Exception {}

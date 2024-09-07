@@ -1,16 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Flashcard\Domain\Services\SmTwo;
 
-
-
-use Flashcard\Domain\Models\Rating;
-use Flashcard\Domain\Models\SessionFlashcard;
 use Flashcard\Domain\Models\SessionFlashcards;
-use Flashcard\Domain\Models\SmTwoFlashcard;
-use Flashcard\Domain\Models\SmTwoFlashcards;
-use Flashcard\Domain\Repositories\ISmTwoFlashcardRepository;
 use Flashcard\Domain\Services\IRepetitionAlgorithm;
+use Flashcard\Domain\Repositories\ISmTwoFlashcardRepository;
 
 class SmTwoRepetitionAlgorithm implements IRepetitionAlgorithm
 {
@@ -24,10 +20,14 @@ class SmTwoRepetitionAlgorithm implements IRepetitionAlgorithm
             return;
         }
 
-        $user_id = $session_flashcards->getUserId();
         $flashcard_ids = $session_flashcards->pluckFlashcardIds();
 
-        $sm_two_flashcards = $this->repository->findMany($user_id, $flashcard_ids);
+        $sm_two_flashcards = $this->repository->findMany(
+            $session_flashcards->getSession()->getUserId(),
+            $flashcard_ids
+        );
+
+        $sm_two_flashcards->fillMissing($session_flashcards->getSession()->getUserId(), $flashcard_ids);
 
         foreach ($session_flashcards->all() as $session_flashcard) {
             $sm_two_flashcards->updateByRating(

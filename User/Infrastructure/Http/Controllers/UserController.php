@@ -4,17 +4,16 @@ declare(strict_types=1);
 
 namespace User\Infrastructure\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Http\OpenApi\Tags;
 use OpenApi\Attributes as OAT;
 use Shared\Http\Request\Request;
+use App\Http\Controllers\Controller;
 use Shared\Utils\Auth\ExternalAuthenticable;
-use UseCases\User\Create;
 use User\Application\Command\CreateExternalUser;
-use User\Application\Command\CreateExternalUserHandler;
 use User\Application\Query\FindExternalUserHandler;
 use User\Infrastructure\Http\Request\GetUserRequest;
 use User\Infrastructure\Http\Resources\UserResource;
+use User\Application\Command\CreateExternalUserHandler;
 
 class UserController extends Controller
 {
