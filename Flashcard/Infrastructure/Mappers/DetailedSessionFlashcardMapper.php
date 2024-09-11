@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Mappers;
 
+use Flashcard\Domain\Models\CategoryId;
 use Illuminate\Support\Facades\DB;
 use Flashcard\Domain\Models\Rating;
 use Flashcard\Domain\Models\Flashcard;
@@ -12,6 +13,7 @@ use Shared\Utils\ValueObjects\Language;
 use Flashcard\Domain\Models\FlashcardId;
 use Flashcard\Domain\Models\SessionFlashcardId;
 use Flashcard\Domain\Models\DetailedSessionFlashcard;
+use Shared\Utils\ValueObjects\UserId;
 
 class DetailedSessionFlashcardMapper
 {
@@ -33,6 +35,8 @@ class DetailedSessionFlashcardMapper
                 'flashcards.translation_lang',
                 'flashcards.context',
                 'flashcards.context_translation',
+                'flashcards.user_id',
+                'flashcards.flashcard_category_id',
             )
             ->take($limit)
             ->get()
@@ -54,6 +58,8 @@ class DetailedSessionFlashcardMapper
                 Language::from($data->translation_lang),
                 $data->context,
                 $data->context_translation,
+                new UserId($data->user_id),
+                new CategoryId($data->flashcard_category_id)
             ),
         );
     }

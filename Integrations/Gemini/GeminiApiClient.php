@@ -33,7 +33,7 @@ class GeminiApiClient implements IGeminiApiClient
         $key = $this->config->get('gemini.api_key');
         $endpoint = $this->config->get('gemini.endpoints.generate_text');
 
-        return rtrim($url, '/') . '/' . ltrim('/', $endpoint). "?" . Arr::query([
+        return rtrim($url, '/') . '/' . ltrim($endpoint, '/'). "?" . Arr::query([
            'key' => $key,
         ]);
     }

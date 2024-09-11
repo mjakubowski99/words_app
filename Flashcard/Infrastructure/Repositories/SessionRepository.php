@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Repositories;
 
+use Flashcard\Domain\Models\Owner;
 use Shared\Enum\SessionStatus;
 use Flashcard\Domain\Models\Session;
 use Shared\Utils\ValueObjects\UserId;
@@ -17,14 +18,19 @@ class SessionRepository implements ISessionRepository
         private readonly SessionMapper $session_mapper,
     ) {}
 
-    public function setAllUserSessionsStatus(UserId $user_id, SessionStatus $status): void
+    public function setAllOwnerSessionsStatus(Owner $owner, SessionStatus $status): void
     {
-        $this->session_mapper->updateStatus($user_id, $status);
+        $this->session_mapper->updateStatus($owner, $status);
     }
 
     public function create(Session $session): SessionId
     {
         return $this->session_mapper->create($session);
+    }
+
+    public function update(Session $session): void
+    {
+        $this->session_mapper->update($session);
     }
 
     public function find(SessionId $id): Session

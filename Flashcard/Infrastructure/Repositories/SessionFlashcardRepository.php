@@ -49,6 +49,11 @@ class SessionFlashcardRepository implements ISessionFlashcardRepository
         return $this->session_flashcard_mapper->getRatedSessionFlashcardsCount($session_id);
     }
 
+    public function getLatestSessionFlashcardIds(SessionId $session_id, int $limit): array
+    {
+        return $this->session_flashcard_mapper->getLatestSessionFlashcardIds($session_id, $limit);
+    }
+
     public function getTotalSessionFlashcardsCount(SessionId $session_id): int
     {
         return $this->session_flashcard_mapper->getRatedSessionFlashcardsCount($session_id);

@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Flashcard\Infrastructure\Http\Controllers;
 
 use App\Http\OpenApi\Tags;
+use Flashcard\Domain\Models\Owner;
+use Flashcard\Domain\Models\OwnerId;
 use OpenApi\Attributes as OAT;
 use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
@@ -19,6 +21,7 @@ use Flashcard\Infrastructure\Http\Request\CreateSessionRequest;
 use Flashcard\Application\Query\GetNextSessionFlashcardsHandler;
 use Flashcard\Infrastructure\Http\Request\RateSessionFlashcardRequest;
 use Flashcard\Infrastructure\Http\Resources\SessionFlashcardsResource;
+use Shared\Enum\FlashcardOwnerType;
 
 class SessionController extends Controller
 {
@@ -143,18 +146,16 @@ class SessionController extends Controller
         GetNextSessionFlashcardsHandler $get_next_session_flashcards,
     ): SessionFlashcardsResource {
         $command = new RateFlashcardsCommand(
-            $request->getUserId(),
+            new Owner(new OwnerId($request->getUserId()->getValue()), FlashcardOwnerType::USER),
             $request->getSessionId(),
             $request->getRatings(),
         );
 
         $rate->handle($command);
 
-        $session = $get_session->handle($command->getSessionId());
+        $add_session_flashcards->handle(new AddSessionFlashcards($command->getSessionId(), 5));
 
-        $add_session_flashcards->handle(
-            new AddSessionFlashcards($session->getId(), 5)
-        );
+        $session = $get_session->handle($command->getSessionId());
 
         $flashcards = $get_next_session_flashcards->handle($session->getId(), 5);
 

@@ -36,11 +36,6 @@ class GenerateTextResponse implements IGenerateTextResponse
         return $this->success() ? $this->response->json() : null;
     }
 
-    public function getGeneratedContent(): ?string
-    {
-        return $this->success() ? $this->response->json()['candidates'][0]['content']['parts'][0]['text'] : null;
-    }
-
     public function getErrorReason(): ?string
     {
         return null;
@@ -49,5 +44,10 @@ class GenerateTextResponse implements IGenerateTextResponse
     public function getErrorResponse(): ?array
     {
         return !$this->success() ? $this->response->json() : null;
+    }
+
+    public function getGeneratedText(): ?string
+    {
+        return $this->success() ? $this->response->json()['candidates'][0]['content']['parts'][0]['text'] : null;
     }
 }

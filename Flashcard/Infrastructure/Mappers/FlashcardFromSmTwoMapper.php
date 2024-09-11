@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Mappers;
 
+use Flashcard\Domain\Models\Owner;
 use Illuminate\Support\Facades\DB;
 use Shared\Utils\ValueObjects\UserId;
 use Flashcard\Domain\Models\Flashcard;
@@ -17,28 +18,30 @@ class FlashcardFromSmTwoMapper
         private readonly DB $db
     ) {}
 
-    public function getFlashcardsWithLowestRepetitionInterval(UserId $user_id, int $limit): array
+    public function getFlashcardsWithLowestRepetitionInterval(Owner $owner, int $limit, array $exclude_flashcard_ids): array
     {
         return $this->db::table('sm_two_flashcards')
             ->join('flashcards', 'flashcards.id', '=', 'sm_two_flashcards.flashcard_id')
-            ->where('sm_two_flashcards.user_id', $user_id)
+            ->where('sm_two_flashcards.user_id', $owner->getId())
+            ->whereNotIn('sm_two_flashcards.flashcard_id', $exclude_flashcard_ids)
             ->orderBy('sm_two_flashcards.repetition_interval', 'ASC')
             ->take($limit)
-            ->select('id', 'word', 'word_lang', 'translation', 'translation_lang', 'context', 'context_translation')
+            ->select('id', 'word', 'word_lang', 'translation', 'translation_lang', 'context', 'context_translation', 'flashcards.user_id', 'flashcards.flashcard_category_id')
             ->get()
             ->map(function (object $flashcard) {
                 return $this->map($flashcard);
             })->toArray();
     }
 
-    public function getFlashcardsWithLowestRepetitionIntervalByCategory(UserId $user_id, CategoryId $category_id, int $limit): array
+    public function getFlashcardsWithLowestRepetitionIntervalByCategory(CategoryId $category_id, int $limit, array $exclude_flashcard_ids): array
     {
         return $this->db::table('sm_two_flashcards')
             ->join('flashcards', 'flashcards.id', '=', 'sm_two_flashcards.flashcard_id')
             ->where('flashcards.flashcard_category_id', $category_id->getValue())
+            ->whereNotIn('sm_two_flashcards.flashcard_id', $exclude_flashcard_ids)
             ->orderBy('sm_two_flashcards.repetition_interval', 'ASC')
             ->take($limit)
-            ->select('id', 'word', 'word_lang', 'translation', 'translation_lang', 'context', 'context_translation')
+            ->select('id', 'word', 'word_lang', 'translation', 'translation_lang', 'context', 'context_translation', 'flashcards.user_id', 'flashcards.flashcard_category_id')
             ->get()
             ->map(function (object $flashcard) {
                 return $this->map($flashcard);
@@ -55,6 +58,8 @@ class FlashcardFromSmTwoMapper
             Language::from($data->translation_lang),
             $data->context,
             $data->context_translation,
+            new UserId($data->user_id),
+            new CategoryId($data->flashcard_category_id),
         );
     }
 }

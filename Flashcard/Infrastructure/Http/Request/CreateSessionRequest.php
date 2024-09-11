@@ -40,7 +40,7 @@ class CreateSessionRequest extends Request
             $this->current(),
             (int) $this->input('cards_per_session'),
             $this->userAgent(),
-            new CategoryId($this->input('category_id')),
+            new CategoryId((int) $this->input('category_id')),
         );
     }
 }

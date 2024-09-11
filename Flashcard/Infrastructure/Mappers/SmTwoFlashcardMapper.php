@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Mappers;
 
+use Flashcard\Domain\Models\Owner;
+use Flashcard\Domain\Models\OwnerId;
 use Illuminate\Support\Facades\DB;
-use Shared\Utils\ValueObjects\UserId;
+use Shared\Enum\FlashcardOwnerType;
 use Flashcard\Domain\Models\FlashcardId;
 use Flashcard\Domain\Models\SmTwoFlashcard;
 use Flashcard\Domain\Models\SmTwoFlashcards;
@@ -21,16 +23,16 @@ class SmTwoFlashcardMapper
         $this->db::table('sm_two_flashcards')
             ->insert([
                 'flashcard_id' => $flashcard->getFlashcardId(),
-                'user_id' => $flashcard->getUserId(),
+                'user_id' => $flashcard->getOwner()->getId(),
                 'repetition_ratio' => $flashcard->getRepetitionRatio(),
                 'repetition_interval' => $flashcard->getRepetitionInterval(),
             ]);
     }
 
-    public function findMany(UserId $user_id, array $flashcard_ids): SmTwoFlashcards
+    public function findMany(Owner $owner, array $flashcard_ids): SmTwoFlashcards
     {
         $results = $this->db::table('sm_two_flashcards')
-            ->where('sm_two_flashcards.user_id', $user_id->getValue())
+            ->where('sm_two_flashcards.user_id', $owner->getId())
             ->whereIn('sm_two_flashcards.flashcard_id', $flashcard_ids)
             ->join('flashcards', 'flashcards.id', '=', 'sm_two_flashcards.flashcard_id')
             ->select(
@@ -66,7 +68,7 @@ class SmTwoFlashcardMapper
     private function map(object $data): SmTwoFlashcard
     {
         return new SmTwoFlashcard(
-            new UserId($data->user_id),
+            new Owner(new OwnerId($data->user_id), FlashcardOwnerType::USER),
             new FlashcardId($data->flashcard_id),
             (float) $data->repetition_ratio,
             (float) $data->repetition_interval,

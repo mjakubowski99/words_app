@@ -43,9 +43,9 @@ abstract class FlashcardTestCase extends TestCase
         return new CategoryId($category->id);
     }
 
-    public function domainCategory(FlashcardCategory $category): \Flashcard\Domain\Models\FlashcardCategory
+    public function domainCategory(FlashcardCategory $category): \Flashcard\Domain\Models\Category
     {
-        return (new \Flashcard\Domain\Models\FlashcardCategory(
+        return (new \Flashcard\Domain\Models\Category(
             new UserId($category->user_id),
             $category->tag,
             $category->name,

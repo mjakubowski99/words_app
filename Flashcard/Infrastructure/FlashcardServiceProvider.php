@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure;
 
+use Flashcard\Domain\Services\Generators\GeminiGenerator;
+use Flashcard\Domain\Services\Generators\IFlashcardGenerator;
 use Illuminate\Support\ServiceProvider;
 use Flashcard\Domain\Services\IFlashcardSelector;
 use Flashcard\Domain\Services\IRepetitionAlgorithm;
@@ -32,5 +34,6 @@ class FlashcardServiceProvider extends ServiceProvider
         $this->app->bind(IFlashcardSelector::class, SmTwoFlashcardSelector::class);
         $this->app->bind(ISmTwoFlashcardRepository::class, SmTwoFlashcardRepository::class);
         $this->app->bind(IFlashcardRepository::class, FlashcardRepository::class);
+        $this->app->bind(IFlashcardGenerator::class, GeminiGenerator::class);
     }
 }

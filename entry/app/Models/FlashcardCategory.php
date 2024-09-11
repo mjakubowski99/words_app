@@ -42,9 +42,9 @@ class FlashcardCategory extends Model
         return new CategoryId($this->id);
     }
 
-    public function toDomainModel(): \Flashcard\Domain\Models\FlashcardCategory
+    public function toDomainModel(): \Flashcard\Domain\Models\Category
     {
-        return (new \Flashcard\Domain\Models\FlashcardCategory(
+        return (new \Flashcard\Domain\Models\Category(
             new UserId($this->user_id),
             $this->tag,
             $this->name,

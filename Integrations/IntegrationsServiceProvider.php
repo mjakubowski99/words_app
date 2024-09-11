@@ -10,7 +10,7 @@ use Shared\Integrations\Gemini\IGeminiApiClient;
 
 class IntegrationsServiceProvider extends AppServiceProvider
 {
-    public function bind(): void
+    public function register(): void
     {
         $this->app->bind(IGeminiApiClient::class, GeminiApiClient::class);
     }

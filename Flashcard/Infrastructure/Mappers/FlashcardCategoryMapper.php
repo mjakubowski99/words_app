@@ -4,10 +4,14 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Mappers;
 
+use Flashcard\Domain\Contracts\ICategory;
+use Flashcard\Domain\Models\Owner;
+use Flashcard\Domain\Models\OwnerId;
 use Illuminate\Support\Facades\DB;
+use Shared\Enum\FlashcardOwnerType;
 use Shared\Utils\ValueObjects\UserId;
 use Flashcard\Domain\Models\CategoryId;
-use Flashcard\Domain\Models\FlashcardCategory;
+use Flashcard\Domain\Models\Category;
 
 class FlashcardCategoryMapper
 {
@@ -15,11 +19,11 @@ class FlashcardCategoryMapper
         private readonly DB $db,
     ) {}
 
-    public function create(FlashcardCategory $category): CategoryId
+    public function create(ICategory $category): CategoryId
     {
         $result = $this->db::table('flashcard_categories')
             ->insertGetId([
-                'user_id' => $category->getUserId(),
+                'user_id' => $category->getOwner()->getId(),
                 'tag' => $category->getTag(),
                 'name' => $category->getName(),
             ]);
@@ -27,7 +31,7 @@ class FlashcardCategoryMapper
         return new CategoryId($result);
     }
 
-    public function findById(CategoryId $id): FlashcardCategory
+    public function findById(CategoryId $id): Category
     {
         $result = $this->db::table('flashcard_categories')
             ->where('id', $id->getValue())
@@ -40,13 +44,15 @@ class FlashcardCategoryMapper
     {
         $results = $this->db::table('flashcard_categories')
             ->where('user_id', $id->getValue())
-            ->paginate($per_page, ['*'], 'page', $page)
-            ->items();
+            ->take($per_page)
+            ->skip(($page-1) * $per_page)
+            ->get()
+            ->toArray();
 
         return array_map(fn (object $result) => $this->map($result), $results);
     }
 
-    public function findByTag(string $tag): FlashcardCategory
+    public function findByTag(string $tag): Category
     {
         $result = $this->db::table('flashcard_categories')
             ->where('tag', $tag)
@@ -55,10 +61,10 @@ class FlashcardCategoryMapper
         return $this->map($result);
     }
 
-    private function map(object $data): FlashcardCategory
+    private function map(object $data): Category
     {
-        return (new FlashcardCategory(
-            $data->user_id ? UserId::fromString($data->user_id) : null,
+        return (new Category(
+            new Owner(new OwnerId($data->user_id), FlashcardOwnerType::USER),
             $data->tag,
             $data->name,
         ))->init(new CategoryId($data->id));

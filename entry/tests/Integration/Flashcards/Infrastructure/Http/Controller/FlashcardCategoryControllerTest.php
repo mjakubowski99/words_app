@@ -15,7 +15,7 @@ class FlashcardCategoryControllerTest extends FlashcardTestCase
         // GIVEN
         $user = User::factory()->create();
         $main_category = FlashcardCategory::factory()->create([
-            'tag' => \Flashcard\Domain\Models\FlashcardCategory::MAIN,
+            'tag' => \Flashcard\Domain\Models\Category::MAIN,
             'user_id' => null,
         ]);
         $categories = FlashcardCategory::factory(2)->create([

@@ -18,7 +18,7 @@ class CreateSessionHandler
     public function handle(CreateSession $command): CreateSessionResultDTO
     {
         $session = $this->service->newSession(
-            $command->getOwnerUser()->getId(),
+            $command->getOwner(),
             $command->getCategoryId(),
             $command->getCardsPerSession(),
             $command->getDevice()

@@ -4,16 +4,15 @@ declare(strict_types=1);
 
 namespace Flashcard\Domain\Models;
 
-use Shared\Utils\ValueObjects\UserId;
+use Flashcard\Domain\Contracts\ICategory;
+use Shared\Enum\FlashcardCategoryType;
 
-class FlashcardCategory
+class Category implements ICategory
 {
-    public const MAIN = 'main';
-
     private CategoryId $id;
 
     public function __construct(
-        private ?UserId $user_id,
+        private Owner $owner,
         private string $tag,
         private string $name,
     ) {}
@@ -30,19 +29,14 @@ class FlashcardCategory
         return $this->id;
     }
 
-    public function hasUserId(): UserId
+    public function hasOwner(): bool
     {
-        return $this->user_id;
+        return true;
     }
 
-    public function getUserId(): UserId
+    public function getOwner(): Owner
     {
-        return $this->user_id;
-    }
-
-    public function isMainCategory(): bool
-    {
-        return $this->tag == self::MAIN;
+        return $this->owner;
     }
 
     public function getTag(): string
@@ -53,5 +47,10 @@ class FlashcardCategory
     public function getName(): string
     {
         return $this->name;
+    }
+
+    public function getCategoryType(): FlashcardCategoryType
+    {
+        return FlashcardCategoryType::NORMAL;
     }
 }

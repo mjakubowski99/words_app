@@ -4,19 +4,19 @@ declare(strict_types=1);
 
 namespace Flashcard\Domain\Models;
 
+use Flashcard\Domain\Contracts\ICategory;
 use Shared\Enum\SessionStatus;
-use Shared\Utils\ValueObjects\UserId;
 
 class Session
 {
     private SessionId $id;
 
     public function __construct(
-        private readonly SessionStatus $status,
-        private readonly UserId $user_id,
-        private readonly int $cards_per_session,
-        private readonly string $device,
-        private readonly FlashcardCategory $flashcard_category,
+        private SessionStatus     $status,
+        private readonly Owner $owner,
+        private readonly int      $cards_per_session,
+        private readonly string   $device,
+        private readonly ICategory $flashcard_category,
     ) {}
 
     public function init(SessionId $id): self
@@ -31,7 +31,7 @@ class Session
         return $this->id;
     }
 
-    public function getFlashcardCategory(): FlashcardCategory
+    public function getFlashcardCategory(): ICategory
     {
         return $this->flashcard_category;
     }
@@ -41,9 +41,14 @@ class Session
         return $this->status;
     }
 
-    public function getUserId(): UserId
+    public function setStatus(SessionStatus $status): void
     {
-        return $this->user_id;
+        $this->status = $status;
+    }
+
+    public function getOwner(): Owner
+    {
+        return $this->owner;
     }
 
     public function getCardsPerSession(): int

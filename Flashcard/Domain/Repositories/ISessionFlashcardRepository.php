@@ -11,6 +11,8 @@ use Flashcard\Domain\Models\DetailedSessionFlashcard;
 
 interface ISessionFlashcardRepository
 {
+    public function getLatestSessionFlashcardIds(SessionId $session_id, int $limit): array;
+
     public function getRatedSessionFlashcardsCount(SessionId $session_id): int;
 
     public function getTotalSessionFlashcardsCount(SessionId $session_id): int;

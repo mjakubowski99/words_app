@@ -4,13 +4,17 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Mappers;
 
+use Flashcard\Domain\Models\MainCategory;
+use Flashcard\Domain\Models\Owner;
+use Flashcard\Domain\Models\OwnerId;
+use Shared\Enum\FlashcardOwnerType;
 use Shared\Enum\SessionStatus;
 use Illuminate\Support\Facades\DB;
 use Flashcard\Domain\Models\Session;
 use Shared\Utils\ValueObjects\UserId;
 use Flashcard\Domain\Models\SessionId;
 use Flashcard\Domain\Models\CategoryId;
-use Flashcard\Domain\Models\FlashcardCategory;
+use Flashcard\Domain\Models\Category;
 
 class SessionMapper
 {
@@ -20,10 +24,10 @@ class SessionMapper
         private readonly DB $db,
     ) {}
 
-    public function updateStatus(UserId $user_id, SessionStatus $status): void
+    public function updateStatus(Owner $owner, SessionStatus $status): void
     {
         $this->db::table('learning_sessions')
-            ->where('user_id', $user_id->getValue())
+            ->where('user_id', $owner->getId())
             ->update([
                 'status' => $status->value,
             ]);
@@ -33,7 +37,7 @@ class SessionMapper
     {
         $result = $this->db::table('learning_sessions')
             ->insertGetId([
-                'user_id' => $session->getUserId()->getValue(),
+                'user_id' => $session->getOwner()->getId()->getValue(),
                 'status' => $session->getStatus()->value,
                 'flashcard_category_id' => $session->getFlashcardCategory()->getId()->getValue(),
                 'cards_per_session' => $session->getCardsPerSession(),
@@ -41,6 +45,26 @@ class SessionMapper
             ]);
 
         return new SessionId($result);
+    }
+
+    public function update(Session $session): void
+    {
+        $result = $this->db::table('learning_sessions')
+            ->find($session->getId()->getValue());
+
+        if (!$result) {
+            throw new \Exception("Not found");
+        }
+
+        $this->db::table('learning_sessions')
+            ->where('id', $session->getId()->getValue())
+            ->update([
+                'user_id' => $session->getUserId()->getValue(),
+                'status' => $session->getStatus()->value,
+                'flashcard_category_id' => $session->getFlashcardCategory()->getId()->getValue(),
+                'cards_per_session' => $session->getCardsPerSession(),
+                'device' => $session->getDevice(),
+            ]);
     }
 
     public function find(SessionId $id): Session
@@ -66,16 +90,18 @@ class SessionMapper
 
     public function map(object $data): Session
     {
+        $category = $data->category_id === null ? new MainCategory() : (new Category(
+            new UserId($data->user_id),
+            $data->tag,
+            $data->name,
+        ))->init(new CategoryId($data->category_id));
+
         return (new Session(
             SessionStatus::from($data->status),
-            new UserId($data->user_id),
+            new Owner(new OwnerId($data->user_id), FlashcardOwnerType::USER),
             $data->cards_per_session,
             $data->device,
-            (new FlashcardCategory(
-                new UserId($data->user_id),
-                $data->tag,
-                $data->name,
-            ))->init(new CategoryId($data->category_id))
+            $category,
         ))->init(new SessionId($data->id));
     }
 }

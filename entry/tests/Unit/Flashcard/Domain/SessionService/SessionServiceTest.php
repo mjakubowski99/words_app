@@ -11,7 +11,7 @@ use Shared\Utils\ValueObjects\Uuid;
 use Shared\Utils\ValueObjects\UserId;
 use Flashcard\Domain\Models\CategoryId;
 use Flashcard\Domain\Services\SessionService;
-use Flashcard\Domain\Models\FlashcardCategory;
+use Flashcard\Domain\Models\Category;
 use Flashcard\Domain\Repositories\ISessionRepository;
 use Flashcard\Domain\Repositories\IFlashcardCategoryRepository;
 
@@ -44,7 +44,7 @@ class SessionServiceTest extends TestCase
         $cards_per_session = 5;
         $device = 'Mozilla/Firefox';
 
-        $category = new FlashcardCategory($user_id, 'tag', 'name');
+        $category = new Category($user_id, 'tag', 'name');
         $session_repo_expectation = $this->session_repository
             ->shouldReceive('setAllUserSessionsStatus')
             ->withArgs(function (UserId $user_id, SessionStatus $status) {

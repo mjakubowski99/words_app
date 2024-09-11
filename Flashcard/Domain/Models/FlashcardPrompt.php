@@ -2,34 +2,63 @@
 
 namespace Flashcard\Domain\Models;
 
+use Shared\Utils\ValueObjects\Language;
+
 class FlashcardPrompt
 {
-    private string $prompt;
+    private string $prompt = '
+        Jesteś algorytmem ai generującym słowa do nauki angielskiego.
+        Bazujesz na krzywej zapominania i algorytmach typu Anki lub super memo.
+        Wygeneruj 10 słów.
+        Słowa muszą bezpośrednio nawiązywać do tematu narzuconego przez użytkownika. Przedstaw słowa po polsku jak i po angielsku.
+        Zapisz je w formie prostego kodu.
+        Wzór:
+        [{
+        "word": "kasjer",
+        "trans": "cashier",
+        "sentence":"Kasjer przywitał mnie z uśmiechem.",
+        "sentence_trans":"Cashier greeted me with a smile"
+        },...]
+        Wygeneruj odpowiedź w formacie JSON zawierającą 10 rekordów.
+        Ton odpowiedzi: Jasne i zrozumiałe zdania, przydatne do praktycznej komunikacji w danej sytuacji.
+        Prompt użytkownika to: ${{category}}.
+        Warunek błedu: Jeśli z jakiegoś powodu nie jesteś w stanie wygenerować rekordów dla danej sytuacji, zamiast rekordów odpowiedz w formacie {"error":"prompt"}
+        Twoja odpowiedź ma zawierać tylko i wyłącznie dane w formacie JSON i nic więcej.
+    ';
 
-    public function __construct(private readonly string $category)
+    public function __construct(
+        private readonly string $category,
+        private readonly Language $word_lang,
+        private readonly Language $translation_lang,
+    )
     {
         $this->buildPrompt();
     }
 
-    public function get(): string
+    public function getPrompt(): string
     {
         return $this->prompt;
     }
 
-    private function buildPrompt(): string
+    public function getWordLang(): Language
     {
-        $this->readFromFile();
-        $this->setCategory();
+        return $this->word_lang;
     }
 
-    private function readFromFile(): void
+    public function getTranslationLang(): Language
     {
-        $this->prompt = file_get_contents(resource_path('prompts/generate_csv_flashcards_prompt.txt'));
+        return $this->translation_lang;
+    }
+
+    private function buildPrompt(): void
+    {
+        $this->setCategory();
+        $this->removeWhiteCharacters();
     }
 
     private function setCategory(): void
     {
-        if (!str_contains($this->category, $this->prompt)) {
+        if (!str_contains($this->prompt, '${{category}}')) {
             throw new \Exception("Invalid prompt exception");
         }
 

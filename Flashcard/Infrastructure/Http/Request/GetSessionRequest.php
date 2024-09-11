@@ -11,6 +11,6 @@ class GetSessionRequest extends Request
 {
     public function getSessionId(): SessionId
     {
-        return new SessionId($this->input('session_id'));
+        return new SessionId((int) $this->route('session_id'));
     }
 }

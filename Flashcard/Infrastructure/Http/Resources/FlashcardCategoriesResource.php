@@ -7,7 +7,34 @@ namespace Flashcard\Infrastructure\Http\Resources;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Flashcard\Application\DTO\MainFlashcardCategoryDTO;
 use Flashcard\Application\DTO\UserFlashcardCategoryDTO;
+use OpenApi\Attributes as OAT;
 
+#[OAT\Schema(
+    schema: 'Resources\Flashcard\FlashcardCategoriesResource',
+    properties: [
+        new OAT\Property(
+            property: 'main',
+            properties: [
+                new OAT\Property(
+                    property: 'id',
+                    description: 'ID of the main category',
+                    type: 'integer',
+                    example: 10,
+                ),
+                new OAT\Property(
+                    property: 'name',
+                    description: 'Name of the main category',
+                    type: 'string',
+                ),
+            ],
+            type: 'object'
+        ),
+        new OAT\Property(
+            property: 'categories',
+            type: 'array'
+        ),
+    ]
+)]
 class FlashcardCategoriesResource extends JsonResource
 {
     public function toArray($request): array
@@ -27,7 +54,7 @@ class FlashcardCategoriesResource extends JsonResource
             ],
             'categories' => array_map(function (UserFlashcardCategoryDTO $resource) {
                 return [
-                    'id' => $resource->getId(),
+                    'id' => $resource->getId()->getValue(),
                     'name' => $resource->getName(),
                 ];
             }, $user_categories),

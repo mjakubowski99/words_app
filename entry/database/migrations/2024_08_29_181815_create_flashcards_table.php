@@ -15,7 +15,7 @@ return new class() extends Migration {
         Schema::create('flashcards', function (Blueprint $table) {
             $table->id();
             $table->uuid('user_id');
-            $table->unsignedBigInteger('flashcard_category_id');
+            $table->unsignedBigInteger('flashcard_category_id')->nullable();
             $table->string('word');
             $table->string('word_lang', 5);
             $table->string('translation');

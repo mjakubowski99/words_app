@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Repositories;
 
+use Flashcard\Domain\Contracts\ICategory;
+use Flashcard\Domain\Models\MainCategory;
+use Flashcard\Domain\Models\Owner;
+use Shared\Enum\FlashcardCategoryType;
 use Shared\Utils\ValueObjects\UserId;
 use Flashcard\Domain\Models\CategoryId;
-use Flashcard\Domain\Models\FlashcardCategory;
 use Flashcard\Infrastructure\Mappers\FlashcardCategoryMapper;
 use Flashcard\Domain\Repositories\IFlashcardCategoryRepository;
 
@@ -16,24 +19,31 @@ class FlashcardCategoryRepository implements IFlashcardCategoryRepository
         private readonly FlashcardCategoryMapper $mapper
     ) {}
 
-    public function findById(CategoryId $id): FlashcardCategory
+    public function findById(CategoryId $id): ICategory
     {
+        $main_category = new MainCategory();
+
+        if ($main_category->getId()->getValue() === $id->getValue()) {
+            return $main_category;
+        }
+
         return $this->mapper->findById($id);
     }
 
-    /** @return FlashcardCategory[] */
-    public function getByUser(UserId $user_id, int $page, int $per_page): array
+    public function createCategory(ICategory $category): ICategory
     {
-        return $this->mapper->getByUser($user_id, $page, $per_page);
+        if ($category->getCategoryType() === FlashcardCategoryType::GENERAL) {
+            return new MainCategory();
+        }
+
+        $category_id  = $this->mapper->create($category);
+
+        return $this->findById($category_id);
     }
 
-    public function findMain(): FlashcardCategory
+    /** @return ICategory[] */
+    public function getByOwner(Owner $owner, int $page, int $per_page): array
     {
-        return $this->mapper->findByTag(FlashcardCategory::MAIN);
-    }
-
-    public function createCategory(FlashcardCategory $category): CategoryId
-    {
-        return $this->mapper->create($category);
+        return $this->mapper->getByOwner($owner, $page, $per_page);
     }
 }

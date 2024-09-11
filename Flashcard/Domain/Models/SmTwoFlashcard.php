@@ -16,7 +16,7 @@ class SmTwoFlashcard
     private int $repetition_count;
 
     public function __construct(
-        private UserId $user_id,
+        private Owner $owner,
         private FlashcardId $flashcard_id,
         ?float $repetition_ratio = null,
         ?float $repetition_interval = null,
@@ -27,9 +27,9 @@ class SmTwoFlashcard
         $this->repetition_count = $repetition_count ?? 0;
     }
 
-    public function getUserId(): UserId
+    public function getOwner(): Owner
     {
-        return $this->user_id;
+        return $this->owner;
     }
 
     public function getFlashcardId(): FlashcardId
