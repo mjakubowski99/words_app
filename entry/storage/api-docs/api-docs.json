@@ -15,6 +15,126 @@
         }
     ],
     "paths": {
+        "/api/flashcards/categories/by-user": {
+            "post": {
+                "tags": [
+                    "Flashcard"
+                ],
+                "summary": "Get user flashcard categories",
+                "description": "Get user flashcard categories",
+                "operationId": "flashcards.categories.index",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Requests\\Flashcard\\IndexFlashcardCategoryRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Resources\\Flashcard\\FlashcardCategoriesResource"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "firebase": []
+                    }
+                ]
+            }
+        },
+        "api/flashcards/generate-by-category": {
+            "post": {
+                "tags": [
+                    "Flashcard"
+                ],
+                "summary": "Generate flashcards by provided category",
+                "description": "Generate flashcards by provided category",
+                "operationId": "flashcards.generate-by-category",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Requests\\Flashcard\\GenerateFlashcardsRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Resources\\Flashcard\\CategoryDetailsResource"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "firebase": []
+                    }
+                ]
+            }
+        },
         "/api/flashcard/session": {
             "post": {
                 "tags": [
@@ -253,6 +373,29 @@
                 },
                 "type": "object"
             },
+            "Requests\\Flashcard\\GenerateFlashcardsRequest": {
+                "properties": {
+                    "category_name": {
+                        "description": "Category name provided by user",
+                        "type": "string",
+                        "example": 1
+                    }
+                },
+                "type": "object"
+            },
+            "Requests\\Flashcard\\IndexFlashcardCategoryRequest": {
+                "properties": {
+                    "page": {
+                        "description": "Categories page number",
+                        "example": 1
+                    },
+                    "per_page": {
+                        "description": "Categories per page",
+                        "example": 10
+                    }
+                },
+                "type": "object"
+            },
             "Requests\\Flashcard\\RateSessionFlashcardRequest": {
                 "required": [
                     "ratings"
@@ -282,6 +425,118 @@
                             },
                             "type": "object"
                         }
+                    }
+                },
+                "type": "object"
+            },
+            "Resources\\Flashcard\\CategoryDetailsResource": {
+                "properties": {
+                    "id": {
+                        "description": "ID of the session",
+                        "type": "integer",
+                        "example": 10
+                    },
+                    "name": {
+                        "description": "Category name",
+                        "type": "string",
+                        "example": "Two people talk"
+                    },
+                    "flashcards": {
+                        "description": "List of flashcards in the session",
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "id": {
+                                    "description": "Flashcard ID",
+                                    "type": "integer",
+                                    "example": 11
+                                },
+                                "word": {
+                                    "description": "Word on the flashcard",
+                                    "type": "string",
+                                    "example": "Polish"
+                                },
+                                "word_lang": {
+                                    "description": "Language of the word",
+                                    "enum": [
+                                        "en",
+                                        "pl"
+                                    ],
+                                    "example": "en"
+                                },
+                                "translation": {
+                                    "description": "Translation of the word",
+                                    "type": "string",
+                                    "example": "Polska"
+                                },
+                                "translation_lang": {
+                                    "description": "Language of the translation",
+                                    "type": "string",
+                                    "enum": [
+                                        "en",
+                                        "pl"
+                                    ],
+                                    "example": "pl"
+                                },
+                                "context": {
+                                    "description": "Context sentence for the word",
+                                    "type": "string",
+                                    "example": "Country in the center of Europe"
+                                },
+                                "context_translation": {
+                                    "description": "Translation of the context sentence",
+                                    "type": "string",
+                                    "example": "Kraj w centrum Europy"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "Resources\\Flashcard\\FlashcardCategoriesResource": {
+                "properties": {
+                    "main": {
+                        "properties": {
+                            "id": {
+                                "description": "ID of the main category",
+                                "type": "integer",
+                                "example": 10
+                            },
+                            "name": {
+                                "description": "Name of the main category",
+                                "type": "string"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "categories": {
+                        "description": "List of flashcard categories",
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "id": {
+                                    "description": "Category id",
+                                    "type": "integer",
+                                    "example": 11
+                                },
+                                "name": {
+                                    "description": "Category name",
+                                    "type": "string",
+                                    "example": "Two people talk"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    },
+                    "page": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "per_page": {
+                        "type": "integer",
+                        "example": 15
                     }
                 },
                 "type": "object"
@@ -319,17 +574,6 @@
                                             "description": "Flashcard ID",
                                             "type": "integer",
                                             "example": 11
-                                        },
-                                        "rating": {
-                                            "description": "User rating for the flashcard",
-                                            "type": "integer",
-                                            "enum": [
-                                                0,
-                                                1,
-                                                2,
-                                                3
-                                            ],
-                                            "example": 2
                                         },
                                         "word": {
                                             "description": "Word on the flashcard",

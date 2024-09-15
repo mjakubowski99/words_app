@@ -3,6 +3,7 @@
 namespace Integrations\Gemini;
 
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Log;
 use Shared\Integrations\Gemini\IGeminiApiClient;
 use Shared\Integrations\Gemini\IGenerateTextResponse;
 use Shared\Utils\Config\IConfig;

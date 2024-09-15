@@ -24,7 +24,7 @@ class FlashcardCategoryMapper
         $result = $this->db::table('flashcard_categories')
             ->insertGetId([
                 'user_id' => $category->getOwner()->getId(),
-                'tag' => $category->getTag(),
+                'tag' => $category->getName(),
                 'name' => $category->getName(),
             ]);
 

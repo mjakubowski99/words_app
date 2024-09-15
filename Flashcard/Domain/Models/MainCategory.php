@@ -3,6 +3,7 @@
 namespace Flashcard\Domain\Models;
 
 use Flashcard\Domain\Contracts\ICategory;
+use Flashcard\Domain\Exceptions\NotImplementedException;
 use Flashcard\Domain\ValueObjects\CategoryId;
 use Shared\Enum\FlashcardCategoryType;
 
@@ -26,7 +27,7 @@ class MainCategory implements ICategory
 
     public function getOwner(): Owner
     {
-        throw new \Exception("Not implemented");
+        throw new NotImplementedException();
     }
 
     public function getName(): string

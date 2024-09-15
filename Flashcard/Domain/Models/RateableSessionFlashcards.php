@@ -2,6 +2,7 @@
 
 namespace Flashcard\Domain\Models;
 
+use Flashcard\Domain\Exceptions\SessionFinishedException;
 use Flashcard\Domain\ValueObjects\SessionFlashcardId;
 use Flashcard\Domain\ValueObjects\SessionId;
 use Shared\Enum\SessionStatus;
@@ -17,7 +18,7 @@ class RateableSessionFlashcards
         private array $rateable_session_flashcards,
     ) {
         if ($this->status === SessionStatus::FINISHED) {
-            throw new \Exception("Session already finished exception");
+            throw new SessionFinishedException();
         }
     }
 

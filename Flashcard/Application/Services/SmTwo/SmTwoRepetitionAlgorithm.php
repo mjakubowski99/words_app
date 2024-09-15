@@ -27,10 +27,12 @@ class SmTwoRepetitionAlgorithm implements IRepetitionAlgorithm
         $sm_two_flashcards->fillMissing($session_flashcards->getOwner(), $flashcard_ids);
 
         foreach ($session_flashcards->all() as $session_flashcard) {
-            $sm_two_flashcards->updateByRating(
-                $session_flashcard->getFlashcardId(),
-                $session_flashcard->getRating(),
-            );
+            if ($session_flashcard->rated()) {
+                $sm_two_flashcards->updateByRating(
+                    $session_flashcard->getFlashcardId(),
+                    $session_flashcard->getRating(),
+                );
+            }
         }
 
         $this->repository->saveMany($sm_two_flashcards);

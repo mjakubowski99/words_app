@@ -41,18 +41,11 @@ class RateFlashcardsTest extends TestCase
             LearningSessionFlashcard::factory()->create(['learning_session_id' => $session->id, 'rating' => null]),
             LearningSessionFlashcard::factory()->create(['learning_session_id' => $session->id, 'rating' => null]),
         ];
-        $sm_two_flashcards = [
-            SmTwoFlashcard::factory()->create([
-                'user_id' => $user->id,
-                'flashcard_id' => $session_flashcards[0]->flashcard_id,
-                'repetition_interval' => 1,
-            ]),
-            SmTwoFlashcard::factory()->create([
-                'user_id' => $user->id,
-                'flashcard_id' => $session_flashcards[1]->flashcard_id,
-                'repetition_interval' => 1,
-            ]),
-        ];
+        SmTwoFlashcard::factory()->create([
+            'user_id' => $user->id,
+            'flashcard_id' => $session_flashcards[0]->flashcard_id,
+            'repetition_interval' => 1,
+        ]);
         $command = new RateFlashcardsCommand(
             $user->toOwner(),
             $session->getId(),

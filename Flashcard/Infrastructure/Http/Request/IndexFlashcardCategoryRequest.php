@@ -6,7 +6,23 @@ namespace Flashcard\Infrastructure\Http\Request;
 
 use Shared\Http\Request\Request;
 use Shared\Utils\ValueObjects\UserId;
+use OpenApi\Attributes as OAT;
 
+#[OAT\Schema(
+    schema: 'Requests\Flashcard\IndexFlashcardCategoryRequest',
+    properties: [
+        new OAT\Property(
+            property: 'page',
+            description: 'Categories page number',
+            example: 1,
+        ),
+        new OAT\Property(
+            property: 'per_page',
+            description: 'Categories per page',
+            example: 10,
+        ),
+    ]
+)]
 class IndexFlashcardCategoryRequest extends Request
 {
     public function rules(): array

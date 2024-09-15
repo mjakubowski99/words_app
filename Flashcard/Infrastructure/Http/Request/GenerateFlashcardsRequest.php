@@ -1,12 +1,27 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Flashcard\Infrastructure\Http\Request;
 
-use App\Models\User;
+use OpenApi\Attributes as OAT;
 use Shared\Http\Request\Request;
-use Shared\User\IUser;
-use Shared\Utils\ValueObjects\UserId;
+use Flashcard\Domain\Models\Owner;
+use Shared\Enum\FlashcardOwnerType;
+use Flashcard\Domain\ValueObjects\OwnerId;
+use Flashcard\Application\Command\GenerateFlashcards;
 
+#[OAT\Schema(
+    schema: 'Requests\Flashcard\GenerateFlashcardsRequest',
+    properties: [
+        new OAT\Property(
+            property: 'category_name',
+            type: 'string',
+            description: 'Category name provided by user',
+            example: 1,
+        ),
+    ]
+)]
 class GenerateFlashcardsRequest extends Request
 {
     public function rules(): array
@@ -16,17 +31,16 @@ class GenerateFlashcardsRequest extends Request
         ];
     }
 
-    public function resolveUser(): IUser
-    {
-        $mock = \Mockery::mock(IUser::class);
-
-        $mock->shouldReceive('getId')->andReturn(new UserId(User::query()->first()->id));
-
-        return $mock;
-    }
-
     public function getCategoryName()
     {
         return $this->input('category_name');
+    }
+
+    public function toCommand(): GenerateFlashcards
+    {
+        return new GenerateFlashcards(
+            new Owner(new OwnerId($this->current()->getId()->getValue()), FlashcardOwnerType::USER),
+            $this->getCategoryName()
+        );
     }
 }

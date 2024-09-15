@@ -24,7 +24,6 @@ class SmTwoFlashcardSelector implements IFlashcardSelector
         return match ($next_session_flashcards->getCategory()->getCategoryType()) {
             FlashcardCategoryType::GENERAL => $this->selectGeneral($next_session_flashcards, $limit),
             FlashcardCategoryType::NORMAL => $this->selectNormal($next_session_flashcards, $limit),
-            default => throw new \Exception('Not supported type'),
         };
     }
 

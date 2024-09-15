@@ -29,6 +29,10 @@ class GenerateFlashcardsHandler
 
         $category = $this->category_repository->createCategory($category);
 
+        if (!$category instanceof Category) {
+            throw new \Exception("Invalid category type");
+        }
+
         $flashcards = $this->generator->generate($command->getOwner(), $category, $prompt);
 
         $this->repository->createMany($flashcards);

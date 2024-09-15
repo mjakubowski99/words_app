@@ -2,6 +2,7 @@
 
 namespace Flashcard\Domain\Models;
 
+use Flashcard\Domain\Exceptions\InvalidPromptException;
 use Shared\Utils\ValueObjects\Language;
 
 class FlashcardPrompt
@@ -59,7 +60,7 @@ class FlashcardPrompt
     private function setCategory(): void
     {
         if (!str_contains($this->prompt, '${{category}}')) {
-            throw new \Exception("Invalid prompt exception");
+            throw new InvalidPromptException("Invalid prompt exception");
         }
 
         $this->prompt = str_replace('${{category}}', $this->category, $this->prompt);

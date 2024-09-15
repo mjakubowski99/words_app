@@ -78,6 +78,7 @@ class FlashcardMapper
     public function createMany(array $flashcards): void
     {
         $insert_data = [];
+        $now = now();
         /** @var Flashcard $flashcard */
         foreach ($flashcards as $flashcard) {
             $insert_data[] = [
@@ -89,6 +90,8 @@ class FlashcardMapper
                 'translation_lang' => $flashcard->getTranslationLang()->getValue(),
                 'context' => $flashcard->getContext(),
                 'context_translation' => $flashcard->getContextTranslation(),
+                'created_at' => $now,
+                'updated_at' => $now,
             ];
         }
         $this->db::table('flashcards')->insert($insert_data);

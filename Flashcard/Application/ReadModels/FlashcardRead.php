@@ -1,20 +1,20 @@
 <?php
 
-namespace Flashcard\Application\DTO;
+namespace Flashcard\Application\ReadModels;
 
 use Flashcard\Domain\ValueObjects\FlashcardId;
 use Shared\Utils\ValueObjects\Language;
 
-class FlashcardDTO
+class FlashcardRead
 {
     public function __construct(
         private FlashcardId $id,
-        private string $word,
-        private Language $word_lang,
-        private string $translation,
-        private Language $translation_lang,
-        private string $context,
-        private string $context_translation,
+        private string      $word,
+        private Language    $word_lang,
+        private string      $translation,
+        private Language    $translation_lang,
+        private string      $context,
+        private string      $context_translation,
     ) {}
 
     public function getId(): FlashcardId

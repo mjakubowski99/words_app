@@ -1,41 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Flashcard\Application\Query;
 
-use Flashcard\Application\DTO\FlashcardCategoryDetailsDTO;
-use Flashcard\Application\DTO\FlashcardDTO;
-use Flashcard\Application\Repository\IFlashcardCategoryRepository;
-use Flashcard\Application\Repository\IFlashcardRepository;
-use Flashcard\Domain\Models\Flashcard;
+use Flashcard\Application\ReadModels\CategoryDetailsRead;
+use Flashcard\Application\Repository\IFlashcardCategoryReadRepository;
 use Flashcard\Domain\ValueObjects\CategoryId;
-use Shared\Utils\ValueObjects\UserId;
 
 class GetCategoryDetails
 {
     public function __construct(
-        private IFlashcardCategoryRepository $repository,
-        private IFlashcardRepository $flashcard_repository,
+        private IFlashcardCategoryReadRepository $repository,
     ) {}
 
-    public function get(CategoryId $id): FlashcardCategoryDetailsDTO
+    public function get(CategoryId $id): CategoryDetailsRead
     {
-        $category = $this->repository->findById($id);
-
-        return new FlashcardCategoryDetailsDTO(
-            $category->getId(),
-            $category->getName(),
-            new UserId($category->getOwner()->getId()->getValue()),
-            array_map(function (Flashcard $flashcard) {
-                return new FlashcardDTO(
-                    $flashcard->getId(),
-                    $flashcard->getWord(),
-                    $flashcard->getWordLang(),
-                    $flashcard->getTranslation(),
-                    $flashcard->getTranslationLang(),
-                    $flashcard->getContext(),
-                    $flashcard->getContextTranslation()
-                );
-            }, $this->flashcard_repository->getByCategory($id))
-        );
+        return $this->repository->find($id);
     }
 }

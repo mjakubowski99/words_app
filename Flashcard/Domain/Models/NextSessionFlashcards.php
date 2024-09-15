@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Flashcard\Domain\Models;
 
 use Flashcard\Domain\Contracts\ICategory;
+use Flashcard\Domain\Exceptions\TooManySessionFlashcardsException;
 use Flashcard\Domain\ValueObjects\OwnerId;
 use Flashcard\Domain\ValueObjects\SessionId;
 
@@ -20,7 +21,7 @@ class NextSessionFlashcards
         private int $max_flashcards_count,
     ) {
         if ($this->current_session_flashcards_count > $this->max_flashcards_count) {
-            throw new \Exception("Invalid object");
+            throw new TooManySessionFlashcardsException();
         }
     }
 
@@ -47,7 +48,7 @@ class NextSessionFlashcards
     public function addNext(Flashcard $flashcard): void
     {
         if (!$this->canAddNext()) {
-            throw new \Exception('Flashcards limit exceeded');
+            throw new TooManySessionFlashcardsException();
         }
 
         $this->next_session_flashcards[] = new NextSessionFlashcard(

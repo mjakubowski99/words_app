@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure;
 
+use Flashcard\Application\Repository\IFlashcardCategoryReadRepository;
 use Flashcard\Application\Repository\ISessionFlashcardReadRepository;
 use Flashcard\Application\Repository\ISessionReadRepository;
+use Flashcard\Infrastructure\Repositories\FlashcardCategoryReadRepository;
 use Flashcard\Infrastructure\Repositories\SessionFlashcardReadRepository;
 use Flashcard\Infrastructure\Repositories\SessionReadRepository;
 use Illuminate\Support\ServiceProvider;
@@ -47,5 +49,6 @@ class FlashcardServiceProvider extends ServiceProvider
         $this->app->bind(ISmTwoFlashcardRepository::class, SmTwoFlashcardRepository::class);
         $this->app->bind(IFlashcardRepository::class, FlashcardRepository::class);
         $this->app->bind(IFlashcardGenerator::class, GeminiGenerator::class);
+        $this->app->bind(IFlashcardCategoryReadRepository::class, FlashcardCategoryReadRepository::class);
     }
 }
