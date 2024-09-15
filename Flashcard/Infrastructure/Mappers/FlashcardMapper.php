@@ -4,14 +4,15 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Mappers;
 
+use Flashcard\Domain\Models\Category;
+use Flashcard\Domain\Models\Flashcard;
 use Flashcard\Domain\Models\Owner;
-use Flashcard\Domain\Models\OwnerId;
+use Flashcard\Domain\ValueObjects\CategoryId;
+use Flashcard\Domain\ValueObjects\FlashcardId;
+use Flashcard\Domain\ValueObjects\OwnerId;
 use Illuminate\Support\Facades\DB;
 use Shared\Enum\FlashcardOwnerType;
-use Flashcard\Domain\Models\Flashcard;
-use Flashcard\Domain\Models\CategoryId;
 use Shared\Utils\ValueObjects\Language;
-use Flashcard\Domain\Models\FlashcardId;
 
 class FlashcardMapper
 {
@@ -21,6 +22,13 @@ class FlashcardMapper
     {
         return $this->db::table('flashcards')
             ->where('flashcards.flashcard_category_id', $id->getValue())
+            ->leftJoin('flashcard_categories', 'flashcard_categories.id', '=', 'flashcards.flashcard_category_id')
+            ->select(
+                'flashcards.*',
+                'flashcard_categories.user_id as category_user_id',
+                'flashcard_categories.tag as category_tag',
+                'flashcard_categories.name as category_name',
+            )
             ->get()
             ->map(function (object $data) {
                 return $this->map($data);
@@ -31,9 +39,16 @@ class FlashcardMapper
     {
         return $this->db::table('flashcards')
             ->where('flashcards.user_id', $owner->getId()->getValue())
+            ->leftJoin('flashcard_categories', 'flashcard_categories.id', '=', 'flashcards.flashcard_category_id')
             ->whereNotIn('flashcards.id', $exclude_flashcard_ids)
             ->take($limit)
             ->inRandomOrder()
+            ->select(
+                'flashcards.*',
+                'flashcard_categories.user_id as category_user_id',
+                'flashcard_categories.tag as category_tag',
+                'flashcard_categories.name as category_name',
+            )
             ->get()
             ->map(function (object $data) {
                 return $this->map($data);
@@ -44,9 +59,16 @@ class FlashcardMapper
     {
         return $this->db::table('flashcards')
             ->where('flashcards.flashcard_category_id', $id->getValue())
+            ->leftJoin('flashcard_categories', 'flashcard_categories.id', '=', 'flashcards.flashcard_category_id')
             ->whereNotIn('flashcards.id', $exclude_flashcard_ids)
             ->take($limit)
             ->inRandomOrder()
+            ->select(
+                'flashcards.*',
+                'flashcard_categories.user_id as category_user_id',
+                'flashcard_categories.tag as category_tag',
+                'flashcard_categories.name as category_name',
+            )
             ->get()
             ->map(function (object $data) {
                 return $this->map($data);
@@ -60,7 +82,7 @@ class FlashcardMapper
         foreach ($flashcards as $flashcard) {
             $insert_data[] = [
                 'user_id' => $flashcard->getOwner()->getId(),
-                'flashcard_category_id' => $flashcard->getCategoryId()->getValue(),
+                'flashcard_category_id' => $flashcard->getCategory()->getId(),
                 'word' => $flashcard->getWord(),
                 'word_lang' => $flashcard->getWordLang()->getValue(),
                 'translation' => $flashcard->getTranslation(),
@@ -74,6 +96,12 @@ class FlashcardMapper
 
     public function map(object $data): Flashcard
     {
+        $category = $data->flashcard_category_id ? (new Category(
+            new Owner(new OwnerId($data->category_user_id), FlashcardOwnerType::USER),
+            $data->category_tag,
+            $data->category_name,
+        ))->init(new CategoryId($data->flashcard_category_id)) : Category::empty();
+
         return new Flashcard(
             new FlashcardId($data->id),
             $data->word,
@@ -83,7 +111,7 @@ class FlashcardMapper
             $data->context,
             $data->context_translation,
             new Owner(new OwnerId($data->user_id), FlashcardOwnerType::USER),
-            new CategoryId($data->flashcard_category_id),
+            $data->flashcard_category_id ? $category : Category::empty(),
         );
     }
 }

@@ -4,24 +4,30 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\Command;
 
-use Flashcard\Domain\Services\SessionService;
 use Flashcard\Application\DTO\CreateSessionResultDTO;
-use Flashcard\Domain\Repositories\ISessionRepository;
+use Flashcard\Application\Repository\IFlashcardCategoryRepository;
+use Flashcard\Application\Repository\ISessionRepository;
+use Flashcard\Domain\Models\Session;
+use Shared\Enum\SessionStatus;
 
 class CreateSessionHandler
 {
     public function __construct(
         private readonly ISessionRepository $repository,
-        private readonly SessionService $service,
+        private readonly IFlashcardCategoryRepository $category_repository,
     ) {}
 
     public function handle(CreateSession $command): CreateSessionResultDTO
     {
-        $session = $this->service->newSession(
+        $this->repository->setAllOwnerSessionsStatus($command->getOwner(), SessionStatus::STARTED);
+
+        $category = $this->category_repository->findById($command->getCategoryId());
+
+        $session = Session::newSession(
             $command->getOwner(),
-            $command->getCategoryId(),
             $command->getCardsPerSession(),
-            $command->getDevice()
+            $command->getDevice(),
+            $category,
         );
 
         $session_id = $this->repository->create($session);

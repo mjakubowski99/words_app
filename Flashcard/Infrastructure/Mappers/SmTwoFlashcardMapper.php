@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace Flashcard\Infrastructure\Mappers;
 
 use Flashcard\Domain\Models\Owner;
-use Flashcard\Domain\Models\OwnerId;
-use Illuminate\Support\Facades\DB;
-use Shared\Enum\FlashcardOwnerType;
-use Flashcard\Domain\Models\FlashcardId;
 use Flashcard\Domain\Models\SmTwoFlashcard;
 use Flashcard\Domain\Models\SmTwoFlashcards;
+use Flashcard\Domain\ValueObjects\FlashcardId;
+use Flashcard\Domain\ValueObjects\OwnerId;
+use Illuminate\Support\Facades\DB;
+use Shared\Enum\FlashcardOwnerType;
 
 class SmTwoFlashcardMapper
 {
@@ -56,7 +56,7 @@ class SmTwoFlashcardMapper
             $this->db::table('sm_two_flashcards')
                 ->updateOrInsert([
                     'flashcard_id' => $flashcard->getFlashcardId(),
-                    'user_id' => $flashcard->getUserId(),
+                    'user_id' => $flashcard->getOwner()->getId(),
                 ], [
                     'repetition_ratio' => $flashcard->getRepetitionRatio(),
                     'repetition_interval' => $flashcard->getRepetitionInterval(),

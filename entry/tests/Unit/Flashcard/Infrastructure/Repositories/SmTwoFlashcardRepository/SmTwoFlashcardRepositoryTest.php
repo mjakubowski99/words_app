@@ -40,7 +40,7 @@ class SmTwoFlashcardRepositoryTest extends FlashcardTestCase
         $flashcard_ids = array_map(fn (SmTwoFlashcard $flashcard) => $flashcard->getFlashcardId(), $expected_flashcards);
 
         // WHEN
-        $results = $this->repository->findMany($user->getId(), $flashcard_ids);
+        $results = $this->repository->findMany($user->toOwner(), $flashcard_ids);
 
         // THEN
         $this->assertSame(2, count($results));
@@ -104,7 +104,7 @@ class SmTwoFlashcardRepositoryTest extends FlashcardTestCase
         $expected = [$flashcards[1], $flashcards[0], $flashcards[2]];
 
         // WHEN
-        $results = $this->repository->getFlashcardsWithLowestRepetitionIntervalByCategory($user->getId(), $category->getId(), 5);
+        $results = $this->repository->getFlashcardsWithLowestRepetitionIntervalByCategory($category->getId(), 5, []);
 
         // THEN
         $this->assertCount(3, $results);

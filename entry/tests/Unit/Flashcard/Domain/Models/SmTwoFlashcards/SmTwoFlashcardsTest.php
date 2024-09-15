@@ -4,13 +4,16 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Flashcard\Domain\Models\SmTwoFlashcards;
 
-use Tests\TestCase;
-use Shared\Utils\ValueObjects\Uuid;
-use Shared\Utils\ValueObjects\UserId;
-use Flashcard\Domain\Models\FlashcardId;
+use Flashcard\Domain\Exceptions\InvalidSmTwoFlashcardSetException;
+use Flashcard\Domain\Models\Owner;
 use Flashcard\Domain\Models\SmTwoFlashcard;
 use Flashcard\Domain\Models\SmTwoFlashcards;
-use Flashcard\Domain\Exceptions\InvalidSmTwoFlashcardSetException;
+use Flashcard\Domain\ValueObjects\FlashcardId;
+use Flashcard\Domain\ValueObjects\OwnerId;
+use Shared\Enum\FlashcardOwnerType;
+use Shared\Utils\ValueObjects\UserId;
+use Shared\Utils\ValueObjects\Uuid;
+use Tests\TestCase;
 
 class SmTwoFlashcardsTest extends TestCase
 {
@@ -37,6 +40,8 @@ class SmTwoFlashcardsTest extends TestCase
 
     private function makeSmTwoFlashcard(UserId $user_id, FlashcardId $flashcard_id): SmTwoFlashcard
     {
-        return new SmTwoFlashcard($user_id, $flashcard_id, null, null, null);
+        $onwer = new Owner(new OwnerId($user_id->getValue()), FlashcardOwnerType::USER);
+
+        return new SmTwoFlashcard($onwer, $flashcard_id, null, null, null);
     }
 }

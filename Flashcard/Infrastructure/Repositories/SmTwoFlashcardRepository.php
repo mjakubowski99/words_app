@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Repositories;
 
+use Flashcard\Application\Repository\ISmTwoFlashcardRepository;
 use Flashcard\Domain\Models\Owner;
-use Flashcard\Domain\Models\CategoryId;
 use Flashcard\Domain\Models\SmTwoFlashcard;
 use Flashcard\Domain\Models\SmTwoFlashcards;
-use Flashcard\Infrastructure\Mappers\SmTwoFlashcardMapper;
-use Flashcard\Domain\Repositories\ISmTwoFlashcardRepository;
+use Flashcard\Domain\ValueObjects\CategoryId;
 use Flashcard\Infrastructure\Mappers\FlashcardFromSmTwoMapper;
+use Flashcard\Infrastructure\Mappers\SmTwoFlashcardMapper;
 
 class SmTwoFlashcardRepository implements ISmTwoFlashcardRepository
 {

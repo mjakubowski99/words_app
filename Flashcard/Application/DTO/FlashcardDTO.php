@@ -2,7 +2,7 @@
 
 namespace Flashcard\Application\DTO;
 
-use Flashcard\Domain\Models\FlashcardId;
+use Flashcard\Domain\ValueObjects\FlashcardId;
 use Shared\Utils\ValueObjects\Language;
 
 class FlashcardDTO

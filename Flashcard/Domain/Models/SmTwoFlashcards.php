@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Flashcard\Domain\Models;
 
-use Shared\Utils\ValueObjects\UserId;
 use Flashcard\Domain\Exceptions\InvalidSmTwoFlashcardSetException;
+use Flashcard\Domain\ValueObjects\FlashcardId;
 
 class SmTwoFlashcards implements \Countable
 {
@@ -38,7 +38,7 @@ class SmTwoFlashcards implements \Countable
         $to_compare = $this->sm_two_flashcards[0];
 
         foreach ($this->sm_two_flashcards as $sm_two_flashcard) {
-            if (!$sm_two_flashcard->getUserId()->equals($to_compare->getUserId())) {
+            if (!$sm_two_flashcard->getOwner()->getId()->equals($to_compare->getOwner()->getId())) {
                 throw new InvalidSmTwoFlashcardSetException('Not every flashcard in set has same user id');
             }
         }

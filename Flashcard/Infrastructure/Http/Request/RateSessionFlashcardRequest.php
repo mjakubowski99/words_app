@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Http\Request;
 
+use Flashcard\Application\Command\FlashcardRating;
+use Flashcard\Domain\Models\Rating;
+use Flashcard\Domain\ValueObjects\SessionFlashcardId;
+use Flashcard\Domain\ValueObjects\SessionId;
 use OpenApi\Attributes as OAT;
 use Shared\Http\Request\Request;
-use Flashcard\Domain\Models\Rating;
 use Shared\Utils\ValueObjects\UserId;
-use Flashcard\Domain\Models\SessionId;
-use Flashcard\Domain\Models\SessionFlashcardId;
-use Flashcard\Application\Command\FlashcardRating;
 
 #[OAT\Schema(
     schema: 'Requests\Flashcard\RateSessionFlashcardRequest',

@@ -54,7 +54,7 @@ class RateFlashcardsTest extends TestCase
             ]),
         ];
         $command = new RateFlashcardsCommand(
-            $user->getId(),
+            $user->toOwner(),
             $session->getId(),
             [
                 new FlashcardRating($session_flashcards[0]->getId(), Rating::GOOD),

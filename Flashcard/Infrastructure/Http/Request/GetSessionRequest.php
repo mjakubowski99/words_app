@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Http\Request;
 
+use Flashcard\Domain\ValueObjects\SessionId;
 use Shared\Http\Request\Request;
-use Flashcard\Domain\Models\SessionId;
 
 class GetSessionRequest extends Request
 {

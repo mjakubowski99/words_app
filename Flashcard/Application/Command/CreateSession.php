@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Flashcard\Application\Command;
 
 use Flashcard\Domain\Models\Owner;
-use Flashcard\Domain\Models\OwnerId;
+use Flashcard\Domain\ValueObjects\CategoryId;
+use Flashcard\Domain\ValueObjects\OwnerId;
 use Shared\Enum\FlashcardOwnerType;
 use Shared\User\IUser;
-use Flashcard\Domain\Models\CategoryId;
 
 final readonly class CreateSession
 {

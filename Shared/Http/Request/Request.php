@@ -16,9 +16,6 @@ class Request extends FormRequest
 {
     public function current($guard = null): IUser
     {
-        $mocke = \Mockery::mock(IUser::class);
-        $mocke->shouldReceive('getId')->andReturn(new UserId('9cf45e8c-b319-4fd9-84e0-e82431f56baa'));
-        return $mocke;
         $user = $this->user($guard);
 
         if (!$user) {

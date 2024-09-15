@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use Illuminate\Support\Carbon;
-use Illuminate\Database\Eloquent\Model;
-use Shared\Utils\ValueObjects\Language;
 use Database\Factories\FlashcardFactory;
-use Flashcard\Domain\Models\FlashcardId;
+use Flashcard\Domain\ValueObjects\FlashcardId;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
+use Shared\Utils\ValueObjects\Language;
 
 /**
  * @property        int               $id
@@ -50,6 +51,16 @@ class Flashcard extends Model
         return new FlashcardId($this->id);
     }
 
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(FlashcardCategory::class, 'flashcard_category_id');
+    }
+
     public function toDomainModel(): \Flashcard\Domain\Models\Flashcard
     {
         return new \Flashcard\Domain\Models\Flashcard(
@@ -60,6 +71,8 @@ class Flashcard extends Model
             Language::from($this->translation_lang),
             $this->context,
             $this->context_translation,
+            $this->user->toOwner(),
+            $this->category->toDomainModel(),
         );
     }
 }

@@ -4,20 +4,26 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\Command;
 
-use Flashcard\Domain\Repositories\ISessionRepository;
+use Flashcard\Application\Repository\INextSessionFlashcardsRepository;
+use Flashcard\Application\Services\IFlashcardSelector;
 use Flashcard\Domain\Services\SessionFlashcardsService;
 
 class AddSessionFlashcardsHandler
 {
     public function __construct(
-        private readonly ISessionRepository $repository,
+        private INextSessionFlashcardsRepository $next_session_flashcards_repository,
+        private readonly IFlashcardSelector $selector,
         private readonly SessionFlashcardsService $service,
     ) {}
 
     public function handle(AddSessionFlashcards $command): void
     {
-        $session = $this->repository->find($command->getSessionId());
+        $session_flashcards = $this->next_session_flashcards_repository->find($command->getSessionId());
 
-        $this->service->add($session, $command->getLimit());
+        $flashcards = $this->selector->select($session_flashcards, $command->getLimit());
+
+        $session_flashcards = $this->service->add($session_flashcards, $flashcards);
+
+        $this->next_session_flashcards_repository->save($session_flashcards);
     }
 }

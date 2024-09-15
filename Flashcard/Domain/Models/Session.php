@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Flashcard\Domain\Models;
 
 use Flashcard\Domain\Contracts\ICategory;
+use Flashcard\Domain\ValueObjects\SessionId;
 use Shared\Enum\SessionStatus;
 
 class Session
@@ -18,6 +19,22 @@ class Session
         private readonly string   $device,
         private readonly ICategory $flashcard_category,
     ) {}
+
+    public static function newSession(
+        Owner $owner,
+        int $cards_per_session,
+        string $device,
+        ICategory $category
+    ): self
+    {
+        return new Session(
+            SessionStatus::STARTED,
+            $owner,
+            $cards_per_session,
+            $device,
+            $category
+        );
+    }
 
     public function init(SessionId $id): self
     {

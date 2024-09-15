@@ -2,6 +2,7 @@
 
 namespace Flashcard\Domain\Models;
 
+use Flashcard\Domain\ValueObjects\OwnerId;
 use Shared\Enum\FlashcardOwnerType;
 
 class Owner

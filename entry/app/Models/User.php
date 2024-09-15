@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Flashcard\Domain\Models\Owner;
+use Flashcard\Domain\ValueObjects\OwnerId;
 use Illuminate\Support\Carbon;
 use Laravel\Sanctum\HasApiTokens;
 use Database\Factories\UserFactory;
+use Shared\Enum\FlashcardOwnerType;
 use Shared\Utils\ValueObjects\UserId;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\PersonalAccessToken;
@@ -90,5 +93,10 @@ class User extends Authenticatable
     public function getId(): UserId
     {
         return new UserId($this->id);
+    }
+
+    public function toOwner(): Owner
+    {
+        return new Owner(new OwnerId($this->id), FlashcardOwnerType::USER);
     }
 }

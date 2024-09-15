@@ -4,13 +4,16 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Mappers;
 
-use Flashcard\Domain\Models\Owner;
-use Illuminate\Support\Facades\DB;
-use Shared\Utils\ValueObjects\UserId;
 use Flashcard\Domain\Models\Flashcard;
-use Flashcard\Domain\Models\CategoryId;
+use Flashcard\Domain\Models\MainCategory;
+use Flashcard\Domain\Models\Owner;
+use Flashcard\Domain\ValueObjects\CategoryId;
+use Flashcard\Domain\ValueObjects\FlashcardId;
+use Flashcard\Domain\ValueObjects\OwnerId;
+use Illuminate\Support\Facades\DB;
+use Shared\Enum\FlashcardOwnerType;
 use Shared\Utils\ValueObjects\Language;
-use Flashcard\Domain\Models\FlashcardId;
+use Shared\Utils\ValueObjects\UserId;
 
 class FlashcardFromSmTwoMapper
 {
@@ -58,8 +61,8 @@ class FlashcardFromSmTwoMapper
             Language::from($data->translation_lang),
             $data->context,
             $data->context_translation,
-            new UserId($data->user_id),
-            new CategoryId($data->flashcard_category_id),
+            new Owner(new OwnerId($data->user_id), FlashcardOwnerType::USER),
+            null,
         );
     }
 }

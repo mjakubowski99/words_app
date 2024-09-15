@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Flashcard\Infrastructure\Repositories\SessionRepository;
 
-use App\Models\User;
-use Shared\Enum\SessionStatus;
-use App\Models\LearningSession;
 use App\Models\FlashcardCategory;
-use Tests\Base\FlashcardTestCase;
+use App\Models\LearningSession;
+use App\Models\User;
 use Flashcard\Domain\Models\Session;
-use Shared\Utils\ValueObjects\UserId;
-use Flashcard\Domain\Models\SessionId;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Flashcard\Domain\ValueObjects\SessionId;
 use Flashcard\Infrastructure\Repositories\SessionRepository;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Shared\Enum\SessionStatus;
+use Shared\Utils\ValueObjects\UserId;
+use Tests\Base\FlashcardTestCase;
 
 class SessionRepositoryTest extends FlashcardTestCase
 {
@@ -38,7 +38,7 @@ class SessionRepositoryTest extends FlashcardTestCase
         $domain_category = $this->domainCategory($category);
         $session = new Session(
             SessionStatus::STARTED,
-            $this->createUserId($user),
+            $user->toOwner(),
             10,
             'Mozilla/Firefox',
             $domain_category,
@@ -64,7 +64,7 @@ class SessionRepositoryTest extends FlashcardTestCase
         $result = $this->repository->find(new SessionId($session->id));
 
         $this->assertSame($session->id, $result->getId()->getValue());
-        $this->assertSame($session->user_id, $result->getUserId()->getValue());
+        $this->assertSame($session->user_id, $result->getOwner()->getId()->getValue());
         $this->assertSame($session->cards_per_session, $result->getCardsPerSession());
     }
 
@@ -75,7 +75,6 @@ class SessionRepositoryTest extends FlashcardTestCase
     {
         // GIVEN
         $user = User::factory()->create();
-        $user_id = new UserId($user->id);
         $user_session = LearningSession::factory()->create([
             'user_id' => $user->id,
             'status' => SessionStatus::STARTED->value,
@@ -86,7 +85,7 @@ class SessionRepositoryTest extends FlashcardTestCase
         $expected_status = SessionStatus::FINISHED;
 
         // WHEN
-        $this->repository->setAllUserSessionsStatus($user_id, $expected_status);
+        $this->repository->setAllOwnerSessionsStatus($user->toOwner(), $expected_status);
 
         // THEN
         $this->assertDatabaseHas('learning_sessions', [

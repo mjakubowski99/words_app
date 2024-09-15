@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Flashcard\Domain\Models;
 
-use Shared\Utils\ValueObjects\UserId;
+use Flashcard\Domain\ValueObjects\FlashcardId;
 
 class SmTwoFlashcard
 {

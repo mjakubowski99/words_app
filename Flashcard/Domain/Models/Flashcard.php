@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Flashcard\Domain\Models;
 
+use Flashcard\Domain\Contracts\ICategory;
+use Flashcard\Domain\ValueObjects\CategoryId;
+use Flashcard\Domain\ValueObjects\FlashcardId;
 use Shared\Utils\ValueObjects\Language;
-use Shared\Utils\ValueObjects\UserId;
 
 final class Flashcard
 {
@@ -18,10 +20,10 @@ final class Flashcard
         private string $context,
         private string $context_translation,
         private ?Owner $owner,
-        private CategoryId $category_id,
+        private ?ICategory $category,
     ) {}
 
-    public static function fromArray(array $data, ?Owner $owner, CategoryId $category_id): Flashcard
+    public static function fromArray(array $data, ?Owner $owner, ICategory $category): Flashcard
     {
         return new self(
             new FlashcardId(0),
@@ -32,7 +34,7 @@ final class Flashcard
             (string) $data['sentence_pl'],
             (string) $data['sentence_en'],
             $owner,
-            $category_id,
+            $category,
         );
     }
 
@@ -81,8 +83,8 @@ final class Flashcard
         return $this->owner;
     }
 
-    public function getCategoryId(): CategoryId
+    public function getCategory(): ICategory
     {
-        return $this->category_id;
+        return $this->category;
     }
 }

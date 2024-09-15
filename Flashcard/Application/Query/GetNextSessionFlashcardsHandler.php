@@ -4,20 +4,17 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\Query;
 
-use Flashcard\Domain\Models\SessionId;
-use Flashcard\Application\DTO\SessionFlashcardsDTO;
-use Flashcard\Domain\Repositories\ISessionFlashcardRepository;
+use Flashcard\Application\Repository\ISessionFlashcardReadRepository;
+use Flashcard\Domain\ValueObjects\SessionId;
 
 class GetNextSessionFlashcardsHandler
 {
     public function __construct(
-        private ISessionFlashcardRepository $repository,
+        private ISessionFlashcardReadRepository $repository,
     ) {}
 
-    public function handle(SessionId $session_id, int $limit): SessionFlashcardsDTO
+    public function handle(SessionId $session_id, int $limit): array
     {
-        return new SessionFlashcardsDTO(
-            $this->repository->getNotRatedDetailedSessionFlashcards($session_id, $limit)
-        );
+        return $this->repository->findUnratedById($session_id, $limit);
     }
 }

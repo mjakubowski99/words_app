@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\Query;
 
-use Flashcard\Domain\Models\Owner;
-use Flashcard\Domain\Models\Category;
 use Flashcard\Application\DTO\UserFlashcardCategoryDTO;
-use Flashcard\Domain\Repositories\IFlashcardCategoryRepository;
+use Flashcard\Application\Repository\IFlashcardCategoryRepository;
+use Flashcard\Domain\Models\Category;
+use Flashcard\Domain\Models\Owner;
 
 class GetUserCategories
 {

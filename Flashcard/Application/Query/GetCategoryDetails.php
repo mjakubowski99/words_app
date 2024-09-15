@@ -4,10 +4,11 @@ namespace Flashcard\Application\Query;
 
 use Flashcard\Application\DTO\FlashcardCategoryDetailsDTO;
 use Flashcard\Application\DTO\FlashcardDTO;
-use Flashcard\Domain\Models\CategoryId;
+use Flashcard\Application\Repository\IFlashcardCategoryRepository;
+use Flashcard\Application\Repository\IFlashcardRepository;
 use Flashcard\Domain\Models\Flashcard;
-use Flashcard\Domain\Repositories\IFlashcardCategoryRepository;
-use Flashcard\Domain\Repositories\IFlashcardRepository;
+use Flashcard\Domain\ValueObjects\CategoryId;
+use Shared\Utils\ValueObjects\UserId;
 
 class GetCategoryDetails
 {
@@ -23,7 +24,7 @@ class GetCategoryDetails
         return new FlashcardCategoryDetailsDTO(
             $category->getId(),
             $category->getName(),
-            $category->getUserId(),
+            new UserId($category->getOwner()->getId()->getValue()),
             array_map(function (Flashcard $flashcard) {
                 return new FlashcardDTO(
                     $flashcard->getId(),

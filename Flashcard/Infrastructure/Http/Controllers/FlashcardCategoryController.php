@@ -4,19 +4,19 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Http\Controllers;
 
-use Flashcard\Domain\Models\Owner;
-use Flashcard\Domain\Models\OwnerId;
-use OpenApi\Attributes as OAT;
 use App\Http\OpenApi\Tags;
 use Flashcard\Application\Command\GenerateFlashcards;
 use Flashcard\Application\Command\GenerateFlashcardsHandler;
 use Flashcard\Application\Query\GetCategoryDetails;
 use Flashcard\Application\Query\GetMainCategory;
 use Flashcard\Application\Query\GetUserCategories;
+use Flashcard\Domain\Models\Owner;
+use Flashcard\Domain\ValueObjects\OwnerId;
 use Flashcard\Infrastructure\Http\Request\GenerateFlashcardsRequest;
 use Flashcard\Infrastructure\Http\Request\IndexFlashcardCategoryRequest;
 use Flashcard\Infrastructure\Http\Resources\CategoryDetailsResource;
 use Flashcard\Infrastructure\Http\Resources\FlashcardCategoriesResource;
+use OpenApi\Attributes as OAT;
 use Shared\Enum\FlashcardOwnerType;
 
 class FlashcardCategoryController

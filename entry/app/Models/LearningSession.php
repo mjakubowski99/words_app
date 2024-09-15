@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Database\Factories\LearningSessionFactory;
+use Flashcard\Domain\Models\Session;
+use Flashcard\Domain\ValueObjects\SessionId;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 use Shared\Enum\SessionStatus;
-use Flashcard\Domain\Models\Session;
 use Shared\Utils\ValueObjects\UserId;
-use Flashcard\Domain\Models\SessionId;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Builder;
-use Database\Factories\LearningSessionFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
  * @property        int                     $id
@@ -48,6 +48,11 @@ class LearningSession extends Model
         return new SessionId($this->id);
     }
 
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
     public function category(): BelongsTo
     {
         return $this->belongsTo(FlashcardCategory::class, 'flashcard_category_id');
@@ -57,7 +62,7 @@ class LearningSession extends Model
     {
         return (new Session(
             SessionStatus::from($this->status),
-            new UserId($this->user_id),
+            $this->user->toOwner(),
             $this->cards_per_session,
             $this->device,
             $this->category()->first()->toDomainModel(),

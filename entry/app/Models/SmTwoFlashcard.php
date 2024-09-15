@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Database\Factories\SmTwoFlashcardFactory;
+use Flashcard\Domain\ValueObjects\FlashcardId;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 use Shared\Utils\ValueObjects\UserId;
-use Illuminate\Database\Eloquent\Model;
-use Flashcard\Domain\Models\FlashcardId;
-use Illuminate\Database\Eloquent\Builder;
-use Database\Factories\SmTwoFlashcardFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
  * @property        string                 $user_id
@@ -46,6 +46,11 @@ class SmTwoFlashcard extends Model
         return $this->belongsTo(Flashcard::class);
     }
 
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
     public function getFlashcardId(): FlashcardId
     {
         return new FlashcardId($this->flashcard_id);
@@ -54,7 +59,7 @@ class SmTwoFlashcard extends Model
     public function toDomainModel(): \Flashcard\Domain\Models\SmTwoFlashcard
     {
         return new \Flashcard\Domain\Models\SmTwoFlashcard(
-            new UserId($this->user_id),
+            $this->user->toOwner(),
             $this->getFlashcardId(),
             (float) $this->repetition_ratio,
             (float) $this->repetition_interval,

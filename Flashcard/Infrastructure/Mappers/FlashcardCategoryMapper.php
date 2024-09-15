@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace Flashcard\Infrastructure\Mappers;
 
 use Flashcard\Domain\Contracts\ICategory;
+use Flashcard\Domain\Models\Category;
 use Flashcard\Domain\Models\Owner;
-use Flashcard\Domain\Models\OwnerId;
+use Flashcard\Domain\ValueObjects\CategoryId;
+use Flashcard\Domain\ValueObjects\OwnerId;
 use Illuminate\Support\Facades\DB;
 use Shared\Enum\FlashcardOwnerType;
 use Shared\Utils\ValueObjects\UserId;
-use Flashcard\Domain\Models\CategoryId;
-use Flashcard\Domain\Models\Category;
 
 class FlashcardCategoryMapper
 {
@@ -40,10 +40,10 @@ class FlashcardCategoryMapper
         return $this->map($result);
     }
 
-    public function getByUser(UserId $id, int $page, int $per_page): array
+    public function getByOwner(Owner $owner, int $page, int $per_page): array
     {
         $results = $this->db::table('flashcard_categories')
-            ->where('user_id', $id->getValue())
+            ->where('user_id', $owner->getId()->getValue())
             ->take($per_page)
             ->skip(($page-1) * $per_page)
             ->get()

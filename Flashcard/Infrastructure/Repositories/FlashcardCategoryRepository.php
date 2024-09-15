@@ -4,14 +4,13 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Repositories;
 
+use Flashcard\Application\Repository\IFlashcardCategoryRepository;
 use Flashcard\Domain\Contracts\ICategory;
 use Flashcard\Domain\Models\MainCategory;
 use Flashcard\Domain\Models\Owner;
-use Shared\Enum\FlashcardCategoryType;
-use Shared\Utils\ValueObjects\UserId;
-use Flashcard\Domain\Models\CategoryId;
+use Flashcard\Domain\ValueObjects\CategoryId;
 use Flashcard\Infrastructure\Mappers\FlashcardCategoryMapper;
-use Flashcard\Domain\Repositories\IFlashcardCategoryRepository;
+use Shared\Enum\FlashcardCategoryType;
 
 class FlashcardCategoryRepository implements IFlashcardCategoryRepository
 {

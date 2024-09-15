@@ -3,8 +3,8 @@
 namespace Flashcard\Domain\Models;
 
 use Flashcard\Domain\Contracts\ICategory;
+use Flashcard\Domain\ValueObjects\CategoryId;
 use Shared\Enum\FlashcardCategoryType;
-use Shared\Utils\ValueObjects\UserId;
 
 class MainCategory implements ICategory
 {
@@ -24,7 +24,7 @@ class MainCategory implements ICategory
         return false;
     }
 
-    public function getOwner(): UserId
+    public function getOwner(): Owner
     {
         throw new \Exception("Not implemented");
     }

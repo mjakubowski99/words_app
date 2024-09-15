@@ -2,8 +2,8 @@
 
 namespace Flashcard\Domain\Contracts;
 
-use Flashcard\Domain\Models\CategoryId;
 use Flashcard\Domain\Models\Owner;
+use Flashcard\Domain\ValueObjects\CategoryId;
 use Shared\Enum\FlashcardCategoryType;
 
 interface ICategory

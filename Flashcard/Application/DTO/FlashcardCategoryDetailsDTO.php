@@ -2,8 +2,8 @@
 
 namespace Flashcard\Application\DTO;
 
-use Flashcard\Domain\Models\CategoryId;
 use Flashcard\Domain\Models\Flashcard;
+use Flashcard\Domain\ValueObjects\CategoryId;
 use Shared\Utils\ValueObjects\UserId;
 
 class FlashcardCategoryDetailsDTO

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Flashcard\Domain\Models;
 
 use Flashcard\Domain\Contracts\ICategory;
+use Flashcard\Domain\ValueObjects\CategoryId;
 use Shared\Enum\FlashcardCategoryType;
 
 class Category implements ICategory
@@ -16,6 +17,11 @@ class Category implements ICategory
         private string $tag,
         private string $name,
     ) {}
+
+    public static function empty(): MainCategory
+    {
+        return new MainCategory();
+    }
 
     public function init(CategoryId $id): self
     {

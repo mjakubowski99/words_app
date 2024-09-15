@@ -4,13 +4,11 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Http\Resources;
 
-use OpenApi\Attributes as OAT;
-use Flashcard\Domain\Models\Rating;
-use Shared\Utils\ValueObjects\Language;
-use Flashcard\Application\DTO\SessionDetailsDTO;
+use Flashcard\Application\ReadModels\SessionFlashcardRead;
+use Flashcard\Application\ReadModels\SessionRead;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Flashcard\Application\DTO\SessionFlashcardDTO;
-use Flashcard\Application\DTO\SessionFlashcardsDTO;
+use OpenApi\Attributes as OAT;
+use Shared\Utils\ValueObjects\Language;
 
 #[OAT\Schema(
     schema: 'Resources\Flashcard\SessionFlashcardsResource',
@@ -53,13 +51,6 @@ use Flashcard\Application\DTO\SessionFlashcardsDTO;
                                 description: 'Flashcard ID',
                                 type: 'integer',
                                 example: 11,
-                            ),
-                            new OAT\Property(
-                                property: 'rating',
-                                description: 'User rating for the flashcard',
-                                type: 'integer',
-                                enum: [Rating::UNKNOWN, Rating::WEAK, Rating::GOOD, Rating::VERY_GOOD],
-                                example: Rating::GOOD,
                             ),
                             new OAT\Property(
                                 property: 'word',
@@ -111,10 +102,10 @@ class SessionFlashcardsResource extends JsonResource
 {
     public function toArray($request): array
     {
-        /** @var SessionDetailsDTO $session */
+        /** @var SessionRead $session */
         $session = $this->resource['session'];
 
-        /** @var SessionFlashcardsDTO $flashcards */
+        /** @var array $flashcards */
         $flashcards = $this->resource['flashcards'];
 
         return [
@@ -123,18 +114,17 @@ class SessionFlashcardsResource extends JsonResource
                 'cards_per_session' => $session->getCardsPerSession(),
                 'is_finished' => $session->isFinished(),
                 'progress' => $session->getProgress(),
-                'flashcards' => array_map(function (SessionFlashcardDTO $flashcard_dto) {
+                'flashcards' => array_map(function (SessionFlashcardRead $flashcard) {
                     return [
-                        'id' => $flashcard_dto->getId()->getValue(),
-                        'rating' => $flashcard_dto->getRating(),
-                        'word' => $flashcard_dto->getWord(),
-                        'word_lang' => $flashcard_dto->getWordLang()->getValue(),
-                        'translation' => $flashcard_dto->getTranslation(),
-                        'translation_lang' => $flashcard_dto->getTranslationLang()->getValue(),
-                        'context' => $flashcard_dto->getContext(),
-                        'context_translation' => $flashcard_dto->getContextTranslation(),
+                        'id' => $flashcard->getId()->getValue(),
+                        'word' => $flashcard->getWord(),
+                        'word_lang' => $flashcard->getWordLang()->getValue(),
+                        'translation' => $flashcard->getTranslation(),
+                        'translation_lang' => $flashcard->getTranslationLang()->getValue(),
+                        'context' => $flashcard->getContext(),
+                        'context_translation' => $flashcard->getContextTranslation(),
                     ];
-                }, $flashcards->getFlashcards()),
+                }, $flashcards),
             ],
         ];
     }

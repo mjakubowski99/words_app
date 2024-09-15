@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Flashcard\Application\Command;
 
 use Flashcard\Domain\Models\Rating;
-use Flashcard\Domain\Models\SessionFlashcardId;
+use Flashcard\Domain\ValueObjects\SessionFlashcardId;
 
 class FlashcardRating
 {

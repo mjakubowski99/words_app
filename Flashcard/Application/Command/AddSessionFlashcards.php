@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\Command;
 
-use Flashcard\Domain\Models\SessionId;
+use Flashcard\Domain\ValueObjects\SessionId;
 
 class AddSessionFlashcards
 {

@@ -1,0 +1,84 @@
+<?php
+
+namespace Flashcard\Domain\Models;
+
+use Flashcard\Domain\ValueObjects\SessionFlashcardId;
+use Flashcard\Domain\ValueObjects\SessionId;
+use Shared\Enum\SessionStatus;
+
+class RateableSessionFlashcards
+{
+    public function __construct(
+        private SessionId $session_id,
+        private Owner $owner,
+        private SessionStatus $status,
+        private int $rated_count,
+        private int $total_count,
+        private array $rateable_session_flashcards,
+    ) {
+        if ($this->status === SessionStatus::FINISHED) {
+            throw new \Exception("Session already finished exception");
+        }
+    }
+
+    /** @return RateableSessionFlashcard[] */
+    public function getRateableSessionFlashcards(): array
+    {
+        return $this->rateable_session_flashcards;
+    }
+
+    public function all(): array
+    {
+        return $this->rateable_session_flashcards;
+    }
+
+    public function getSessionId(): SessionId
+    {
+        return $this->session_id;
+    }
+
+    public function getOwner(): Owner
+    {
+        return $this->owner;
+    }
+
+    public function getStatus(): SessionStatus
+    {
+        return $this->status;
+    }
+
+    public function isEmpty(): bool
+    {
+        return count($this->rateable_session_flashcards) === 0;
+    }
+
+    public function pluckSessionFlashcardIds(): array
+    {
+        return array_map(fn(RateableSessionFlashcard $flashcard) => $flashcard->getFlashcardId(), $this->rateable_session_flashcards);
+    }
+
+    public function rate(SessionFlashcardId $id, Rating $rating): void
+    {
+        $key = $this->findKeyById($id);
+
+        $this->rateable_session_flashcards[$key]->rate($rating);
+
+        $this->rated_count++;
+
+        if ($this->rated_count === $this->total_count) {
+            $this->status = SessionStatus::FINISHED;
+        }
+    }
+
+    private function findKeyById(SessionFlashcardId $id): int
+    {
+        foreach ($this->rateable_session_flashcards as $key => $session_flashcard) {
+            if ($session_flashcard->getId()->equals($id)) {
+                return $key;
+            }
+        }
+
+        throw new \Exception();
+    }
+
+}

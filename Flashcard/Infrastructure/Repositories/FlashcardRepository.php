@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Repositories;
 
+use Flashcard\Application\Repository\IFlashcardRepository;
 use Flashcard\Domain\Models\Owner;
-use Shared\Utils\ValueObjects\UserId;
-use Flashcard\Domain\Models\CategoryId;
+use Flashcard\Domain\ValueObjects\CategoryId;
 use Flashcard\Infrastructure\Mappers\FlashcardMapper;
-use Flashcard\Domain\Repositories\IFlashcardRepository;
 
 class FlashcardRepository implements IFlashcardRepository
 {

@@ -4,15 +4,16 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use Illuminate\Support\Carbon;
-use Flashcard\Domain\Models\Rating;
-use Illuminate\Database\Eloquent\Model;
-use Flashcard\Domain\Models\FlashcardId;
-use Illuminate\Database\Eloquent\Builder;
-use Flashcard\Domain\Models\SessionFlashcard;
-use Flashcard\Domain\Models\SessionFlashcardId;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Database\Factories\LearningSessionFlashcardFactory;
+use Flashcard\Domain\Models\Rating;
+use Flashcard\Domain\Models\SessionFlashcard;
+use Flashcard\Domain\ValueObjects\FlashcardId;
+use Flashcard\Domain\ValueObjects\SessionFlashcardId;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
 /**
  * @property        int                              $id
@@ -40,6 +41,11 @@ class LearningSessionFlashcard extends Model
     public function getId(): SessionFlashcardId
     {
         return new SessionFlashcardId($this->id);
+    }
+
+    public function flashcard(): BelongsTo
+    {
+        return $this->belongsTo(Flashcard::class);
     }
 
     public function toDomainModel(): SessionFlashcard
