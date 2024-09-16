@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Repositories;
 
-use Flashcard\Application\Repository\ISmTwoFlashcardRepository;
 use Flashcard\Domain\Models\Owner;
-use Flashcard\Domain\Models\SmTwoFlashcard;
 use Flashcard\Domain\Models\SmTwoFlashcards;
 use Flashcard\Domain\ValueObjects\CategoryId;
-use Flashcard\Infrastructure\Mappers\FlashcardFromSmTwoMapper;
 use Flashcard\Infrastructure\Mappers\SmTwoFlashcardMapper;
+use Flashcard\Infrastructure\Mappers\FlashcardFromSmTwoMapper;
+use Flashcard\Application\Repository\ISmTwoFlashcardRepository;
 
 class SmTwoFlashcardRepository implements ISmTwoFlashcardRepository
 {
@@ -18,11 +17,6 @@ class SmTwoFlashcardRepository implements ISmTwoFlashcardRepository
         private SmTwoFlashcardMapper $mapper,
         private FlashcardFromSmTwoMapper $flashcard_mapper,
     ) {}
-
-    public function create(SmTwoFlashcard $flashcard): void
-    {
-        $this->mapper->create($flashcard);
-    }
 
     public function findMany(Owner $owner, array $flashcard_ids): SmTwoFlashcards
     {

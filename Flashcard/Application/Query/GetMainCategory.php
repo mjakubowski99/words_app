@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\Query;
 
-use Flashcard\Application\DTO\MainFlashcardCategoryDTO;
 use Flashcard\Domain\Models\MainCategory;
+use Flashcard\Application\DTO\MainFlashcardCategoryDTO;
 
 class GetMainCategory
 {

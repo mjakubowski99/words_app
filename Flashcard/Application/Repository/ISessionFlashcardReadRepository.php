@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Flashcard\Application\Repository;
 
-use Flashcard\Application\ReadModels\SessionFlashcardRead;
 use Flashcard\Domain\ValueObjects\SessionId;
+use Flashcard\Application\ReadModels\SessionFlashcardRead;
 
 interface ISessionFlashcardReadRepository
 {

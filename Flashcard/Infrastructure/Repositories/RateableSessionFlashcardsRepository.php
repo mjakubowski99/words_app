@@ -1,15 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Flashcard\Infrastructure\Repositories;
 
-use Flashcard\Application\Repository\IRateableSessionFlashcardsRepository;
-use Flashcard\Domain\Models\RateableSessionFlashcard;
-use Flashcard\Domain\Models\RateableSessionFlashcards;
-use Flashcard\Domain\ValueObjects\FlashcardId;
-use Flashcard\Domain\ValueObjects\SessionFlashcardId;
-use Flashcard\Domain\ValueObjects\SessionId;
-use Flashcard\Infrastructure\Mappers\SessionMapper;
 use Illuminate\Support\Facades\DB;
+use Flashcard\Domain\ValueObjects\SessionId;
+use Flashcard\Domain\ValueObjects\FlashcardId;
+use Flashcard\Infrastructure\Mappers\SessionMapper;
+use Flashcard\Domain\Models\RateableSessionFlashcard;
+use Flashcard\Domain\ValueObjects\SessionFlashcardId;
+use Flashcard\Domain\Models\RateableSessionFlashcards;
+use Flashcard\Application\Repository\IRateableSessionFlashcardsRepository;
 
 class RateableSessionFlashcardsRepository implements IRateableSessionFlashcardsRepository
 {
@@ -33,7 +35,7 @@ class RateableSessionFlashcardsRepository implements IRateableSessionFlashcardsR
             ->get()
             ->toArray();
 
-        $results = array_map(fn(object $result) => new RateableSessionFlashcard(
+        $results = array_map(fn (object $result) => new RateableSessionFlashcard(
             new SessionFlashcardId($result->id),
             new FlashcardId($result->flashcard_id)
         ), $results);
@@ -63,7 +65,7 @@ class RateableSessionFlashcardsRepository implements IRateableSessionFlashcardsR
                     ->where('learning_session_id', $flashcards->getSessionId())
                     ->where('id', $flashcard->getId())
                     ->update([
-                        'rating' => $flashcard->getRating()
+                        'rating' => $flashcard->getRating(),
                     ]);
             }
         }

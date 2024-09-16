@@ -1,13 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Flashcard\Infrastructure\Repositories;
 
-use Flashcard\Application\ReadModels\SessionFlashcardRead;
-use Flashcard\Application\Repository\ISessionFlashcardReadRepository;
-use Flashcard\Domain\ValueObjects\SessionFlashcardId;
-use Flashcard\Domain\ValueObjects\SessionId;
 use Illuminate\Support\Facades\DB;
 use Shared\Utils\ValueObjects\Language;
+use Flashcard\Domain\ValueObjects\SessionId;
+use Flashcard\Domain\ValueObjects\SessionFlashcardId;
+use Flashcard\Application\ReadModels\SessionFlashcardRead;
+use Flashcard\Application\Repository\ISessionFlashcardReadRepository;
 
 class SessionFlashcardReadRepository implements ISessionFlashcardReadRepository
 {

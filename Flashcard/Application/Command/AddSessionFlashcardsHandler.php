@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\Command;
 
-use Flashcard\Application\Repository\INextSessionFlashcardsRepository;
 use Flashcard\Application\Services\IFlashcardSelector;
 use Flashcard\Domain\Services\SessionFlashcardsService;
+use Flashcard\Application\Repository\INextSessionFlashcardsRepository;
 
 class AddSessionFlashcardsHandler
 {

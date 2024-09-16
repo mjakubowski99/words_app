@@ -1,15 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Flashcard\Domain\Models;
 
-use Flashcard\Domain\Contracts\ICategory;
-use Flashcard\Domain\Exceptions\NotImplementedException;
-use Flashcard\Domain\ValueObjects\CategoryId;
 use Shared\Enum\FlashcardCategoryType;
+use Flashcard\Domain\Contracts\ICategory;
+use Flashcard\Domain\ValueObjects\CategoryId;
+use Flashcard\Domain\Exceptions\NotImplementedException;
 
 class MainCategory implements ICategory
 {
-
     public function getId(): CategoryId
     {
         return new CategoryId(0);

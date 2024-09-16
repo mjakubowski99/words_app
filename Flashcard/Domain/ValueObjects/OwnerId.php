@@ -1,8 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Flashcard\Domain\ValueObjects;
 
-use Shared\Utils\ValueObjects\UserId;
 use Shared\Utils\ValueObjects\Uuid;
 
 class OwnerId

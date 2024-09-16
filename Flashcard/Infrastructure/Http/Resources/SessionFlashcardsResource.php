@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Http\Resources;
 
-use Flashcard\Application\ReadModels\SessionFlashcardRead;
-use Flashcard\Application\ReadModels\SessionRead;
-use Illuminate\Http\Resources\Json\JsonResource;
 use OpenApi\Attributes as OAT;
 use Shared\Utils\ValueObjects\Language;
+use Illuminate\Http\Resources\Json\JsonResource;
+use Flashcard\Application\ReadModels\SessionRead;
+use Flashcard\Application\ReadModels\SessionFlashcardRead;
 
 #[OAT\Schema(
     schema: 'Resources\Flashcard\SessionFlashcardsResource',

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Flashcard\Domain\Models;
 
-use Flashcard\Domain\Exceptions\InvalidSmTwoFlashcardSetException;
 use Flashcard\Domain\ValueObjects\FlashcardId;
+use Flashcard\Domain\Exceptions\InvalidSmTwoFlashcardSetException;
 
 class SmTwoFlashcards implements \Countable
 {

@@ -4,17 +4,18 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Mappers;
 
-use Flashcard\Domain\Models\Category;
-use Flashcard\Domain\Models\MainCategory;
+use Shared\Enum\SessionStatus;
 use Flashcard\Domain\Models\Owner;
-use Flashcard\Domain\Models\Session;
-use Flashcard\Domain\ValueObjects\CategoryId;
-use Flashcard\Domain\ValueObjects\OwnerId;
-use Flashcard\Domain\ValueObjects\SessionId;
 use Illuminate\Support\Facades\DB;
 use Shared\Enum\FlashcardOwnerType;
-use Shared\Enum\SessionStatus;
-use Shared\Utils\ValueObjects\UserId;
+use Flashcard\Domain\Models\Session;
+use Flashcard\Domain\Models\Category;
+use Shared\Enum\FlashcardCategoryType;
+use Flashcard\Domain\Models\MainCategory;
+use Flashcard\Domain\ValueObjects\OwnerId;
+use Flashcard\Domain\ValueObjects\SessionId;
+use Flashcard\Domain\ValueObjects\CategoryId;
+use Flashcard\Domain\Exceptions\ModelNotFoundException;
 
 class SessionMapper
 {
@@ -33,11 +34,14 @@ class SessionMapper
 
     public function create(Session $session): SessionId
     {
+        $category_id = $session->getFlashcardCategory()->getCategoryType() === FlashcardCategoryType::NORMAL ?
+            $session->getFlashcardCategory()->getId()->getValue() : null;
+
         $result = $this->db::table('learning_sessions')
             ->insertGetId([
                 'user_id' => $session->getOwner()->getId()->getValue(),
                 'status' => $session->getStatus()->value,
-                'flashcard_category_id' => $session->getFlashcardCategory()->getId()->getValue(),
+                'flashcard_category_id' => $category_id,
                 'cards_per_session' => $session->getCardsPerSession(),
                 'device' => $session->getDevice(),
             ]);
@@ -51,7 +55,7 @@ class SessionMapper
             ->find($session->getId()->getValue());
 
         if (!$result) {
-            throw new \Exception("Not found");
+            throw new \Exception('Not found');
         }
 
         $this->db::table('learning_sessions')
@@ -69,7 +73,7 @@ class SessionMapper
     {
         $result = $this->db::table('learning_sessions')
             ->where('learning_sessions.id', $id->getValue())
-            ->join('flashcard_categories', 'flashcard_categories.id', '=', 'learning_sessions.flashcard_category_id')
+            ->leftJoin('flashcard_categories', 'flashcard_categories.id', '=', 'learning_sessions.flashcard_category_id')
             ->select(
                 'learning_sessions.id',
                 'learning_sessions.user_id',
@@ -82,6 +86,10 @@ class SessionMapper
                 'flashcard_categories.name',
             )
             ->first();
+
+        if (!$result) {
+            throw new ModelNotFoundException(Session::class, (string) $id->getValue());
+        }
 
         return $this->map($result);
     }

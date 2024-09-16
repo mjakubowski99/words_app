@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\Services\SmTwo;
 
-use Flashcard\Application\Repository\ISmTwoFlashcardRepository;
-use Flashcard\Application\Services\IRepetitionAlgorithm;
 use Flashcard\Domain\Models\RateableSessionFlashcards;
+use Flashcard\Application\Services\IRepetitionAlgorithm;
+use Flashcard\Application\Repository\ISmTwoFlashcardRepository;
 
 class SmTwoRepetitionAlgorithm implements IRepetitionAlgorithm
 {

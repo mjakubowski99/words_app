@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Http\Request;
 
-use Flashcard\Application\Command\CreateSession;
-use Flashcard\Domain\ValueObjects\CategoryId;
 use OpenApi\Attributes as OAT;
 use Shared\Http\Request\Request;
+use Flashcard\Domain\ValueObjects\CategoryId;
+use Flashcard\Application\Command\CreateSession;
 
 #[OAT\Schema(
     schema: 'Requests\Flashcard\CreateSessionRequest',

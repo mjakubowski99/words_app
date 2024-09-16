@@ -1,15 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Integration\Flashcards\Application\Command;
 
-use App\Models\Flashcard;
+use Tests\TestCase;
 use App\Models\User;
-use Flashcard\Application\Command\GenerateFlashcards;
-use Flashcard\Application\Command\GenerateFlashcardsHandler;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Http;
 use Integrations\Gemini\GeminiApiClient;
-use Tests\TestCase;
+use Flashcard\Application\Command\GenerateFlashcards;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Flashcard\Application\Command\GenerateFlashcardsHandler;
 
 class GenerateFlashcardsHandlerTest extends TestCase
 {
@@ -62,7 +63,7 @@ class GenerateFlashcardsHandlerTest extends TestCase
                }
             }';
         Http::fake([
-            '*' => Http::response(json_decode($response, true))
+            '*' => Http::response(json_decode($response, true)),
         ]);
         $this->handler = $this->app->make(GenerateFlashcardsHandler::class);
     }

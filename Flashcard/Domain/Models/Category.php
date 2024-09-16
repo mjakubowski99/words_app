@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Flashcard\Domain\Models;
 
+use Shared\Enum\FlashcardCategoryType;
 use Flashcard\Domain\Contracts\ICategory;
 use Flashcard\Domain\ValueObjects\CategoryId;
-use Shared\Enum\FlashcardCategoryType;
 
 class Category implements ICategory
 {

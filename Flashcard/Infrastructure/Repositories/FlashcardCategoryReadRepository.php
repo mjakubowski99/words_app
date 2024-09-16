@@ -1,16 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Flashcard\Infrastructure\Repositories;
 
-use Flashcard\Application\ReadModels\CategoryDetailsRead;
-use Flashcard\Application\ReadModels\CategoryRead;
-use Flashcard\Application\ReadModels\FlashcardRead;
-use Flashcard\Application\Repository\IFlashcardCategoryReadRepository;
 use Flashcard\Domain\Models\Owner;
-use Flashcard\Domain\ValueObjects\CategoryId;
-use Flashcard\Domain\ValueObjects\FlashcardId;
 use Illuminate\Support\Facades\DB;
 use Shared\Utils\ValueObjects\Language;
+use Flashcard\Domain\ValueObjects\CategoryId;
+use Flashcard\Domain\ValueObjects\FlashcardId;
+use Flashcard\Application\ReadModels\FlashcardRead;
+use Flashcard\Application\ReadModels\OwnerCategoryRead;
+use Flashcard\Domain\Exceptions\ModelNotFoundException;
+use Flashcard\Application\ReadModels\CategoryDetailsRead;
+use Flashcard\Application\Repository\IFlashcardCategoryReadRepository;
 
 class FlashcardCategoryReadRepository implements IFlashcardCategoryReadRepository
 {
@@ -18,9 +21,13 @@ class FlashcardCategoryReadRepository implements IFlashcardCategoryReadRepositor
         private readonly DB $db,
     ) {}
 
-    public function find(CategoryId $id): CategoryDetailsRead
+    public function findDetails(CategoryId $id): CategoryDetailsRead
     {
-        $category = $this->db::table('flashcard_categories')->find($id);
+        $category = $this->db::table('flashcard_categories')->find($id->getValue());
+
+        if (!$category) {
+            throw new ModelNotFoundException(CategoryDetailsRead::class, (string) $id->getValue());
+        }
 
         $results = $this->db::table('flashcards')
             ->where('flashcards.flashcard_category_id', $id->getValue())
@@ -49,10 +56,10 @@ class FlashcardCategoryReadRepository implements IFlashcardCategoryReadRepositor
         return $this->db::table('flashcard_categories')
             ->where('flashcard_categories.user_id', $owner->getId())
             ->take($per_page)
-            ->skip(($page-1) * $per_page)
+            ->skip(($page - 1) * $per_page)
             ->get()
             ->map(function (object $data) {
-                return new CategoryRead(
+                return new OwnerCategoryRead(
                     new CategoryId($data->id),
                     $data->name,
                 );

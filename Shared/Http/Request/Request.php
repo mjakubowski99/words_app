@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Shared\Http\Request;
 
-use App\Models\User;
 use Shared\User\IUser;
 use Shared\User\IUserFacade;
 use Shared\Utils\ValueObjects\UserId;

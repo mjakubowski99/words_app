@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\Command;
 
-use Flashcard\Domain\Models\Owner;
-use Flashcard\Domain\ValueObjects\CategoryId;
-use Flashcard\Domain\ValueObjects\OwnerId;
-use Shared\Enum\FlashcardOwnerType;
 use Shared\User\IUser;
+use Flashcard\Domain\Models\Owner;
+use Shared\Enum\FlashcardOwnerType;
+use Flashcard\Domain\ValueObjects\OwnerId;
+use Flashcard\Domain\ValueObjects\CategoryId;
 
 final readonly class CreateSession
 {

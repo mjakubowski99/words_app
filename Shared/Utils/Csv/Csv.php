@@ -12,7 +12,7 @@ class Csv
         private readonly array $data
     ) {}
 
-    public static function fromString(string $csv_string, string $column_separator = ",", string $line_separator = "\n"): self
+    public static function fromString(string $csv_string, string $column_separator = ',', string $line_separator = "\n"): self
     {
         return new self(self::parseCsv($csv_string, $column_separator, $line_separator));
     }
@@ -30,8 +30,9 @@ class Csv
     public function getRecords(string $column): array
     {
         if (!array_key_exists($column, $this->data)) {
-            throw new \UnexpectedValueException("Column not found");
+            throw new \UnexpectedValueException('Column not found');
         }
+
         return $this->data[$column];
     }
 
@@ -50,13 +51,13 @@ class Csv
         return $result;
     }
 
-
     public function getRowsCount(): int
     {
         $columns = $this->getColumns();
         if (count($columns) === 0) {
             return 0;
         }
+
         return count($this->data[$columns[0]]);
     }
 }

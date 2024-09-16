@@ -4,16 +4,14 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Mappers;
 
-use Flashcard\Domain\Models\Flashcard;
-use Flashcard\Domain\Models\MainCategory;
 use Flashcard\Domain\Models\Owner;
-use Flashcard\Domain\ValueObjects\CategoryId;
-use Flashcard\Domain\ValueObjects\FlashcardId;
-use Flashcard\Domain\ValueObjects\OwnerId;
 use Illuminate\Support\Facades\DB;
 use Shared\Enum\FlashcardOwnerType;
+use Flashcard\Domain\Models\Flashcard;
 use Shared\Utils\ValueObjects\Language;
-use Shared\Utils\ValueObjects\UserId;
+use Flashcard\Domain\ValueObjects\OwnerId;
+use Flashcard\Domain\ValueObjects\CategoryId;
+use Flashcard\Domain\ValueObjects\FlashcardId;
 
 class FlashcardFromSmTwoMapper
 {

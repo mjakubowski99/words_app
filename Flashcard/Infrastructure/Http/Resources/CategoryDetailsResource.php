@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Flashcard\Infrastructure\Http\Resources;
 
 use OpenApi\Attributes as OAT;
-use Flashcard\Domain\Models\Flashcard;
 use Shared\Utils\ValueObjects\Language;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Flashcard\Application\DTO\FlashcardCategoryDetailsDTO;
+use Flashcard\Application\ReadModels\FlashcardRead;
+use Flashcard\Application\ReadModels\CategoryDetailsRead;
 
 #[OAT\Schema(
     schema: 'Resources\Flashcard\CategoryDetailsResource',
@@ -81,16 +81,16 @@ use Flashcard\Application\DTO\FlashcardCategoryDetailsDTO;
     ]
 )]
 /**
- * @property FlashcardCategoryDetailsDTO $resource
+ * @property CategoryDetailsRead $resource
  */
 class CategoryDetailsResource extends JsonResource
 {
     public function toArray($request): array
     {
         return [
-            'id' => $this->resource->getCategoryId()->getValue(),
+            'id' => $this->resource->getId()->getValue(),
             'name' => $this->resource->getName(),
-            'flashcards' => array_map(function (Flashcard $flashcard) {
+            'flashcards' => array_map(function (FlashcardRead $flashcard) {
                 return [
                     'id' => $flashcard->getId()->getValue(),
                     'word' => $flashcard->getWord(),

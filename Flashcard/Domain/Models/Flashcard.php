@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace Flashcard\Domain\Models;
 
-use Flashcard\Domain\Contracts\ICategory;
-use Flashcard\Domain\ValueObjects\CategoryId;
-use Flashcard\Domain\ValueObjects\FlashcardId;
 use Shared\Utils\ValueObjects\Language;
+use Flashcard\Domain\Contracts\ICategory;
+use Flashcard\Domain\ValueObjects\FlashcardId;
 
 final class Flashcard
 {
@@ -22,21 +21,6 @@ final class Flashcard
         private ?Owner $owner,
         private ?ICategory $category,
     ) {}
-
-    public static function fromArray(array $data, ?Owner $owner, ICategory $category): Flashcard
-    {
-        return new self(
-            new FlashcardId(0),
-            (string) $data['word_en'],
-            Language::from(Language::EN),
-            (string) $data['word_pl'],
-            Language::from(Language::PL),
-            (string) $data['sentence_pl'],
-            (string) $data['sentence_en'],
-            $owner,
-            $category,
-        );
-    }
 
     public function getId(): FlashcardId
     {

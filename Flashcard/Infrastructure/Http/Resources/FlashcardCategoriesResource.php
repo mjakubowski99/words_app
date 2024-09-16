@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Http\Resources;
 
-use Flashcard\Application\ReadModels\CategoryRead;
+use OpenApi\Attributes as OAT;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Flashcard\Application\DTO\MainFlashcardCategoryDTO;
-use OpenApi\Attributes as OAT;
+use Flashcard\Application\ReadModels\OwnerCategoryRead;
 
 #[OAT\Schema(
     schema: 'Resources\Flashcard\FlashcardCategoriesResource',
@@ -60,7 +60,7 @@ use OpenApi\Attributes as OAT;
             property: 'per_page',
             type: 'integer',
             example: 15,
-        )
+        ),
     ]
 )]
 class FlashcardCategoriesResource extends JsonResource
@@ -81,7 +81,7 @@ class FlashcardCategoriesResource extends JsonResource
                 'id' => $main_category->getId()->getValue(),
                 'name' => $main_category->getName(),
             ],
-            'categories' => array_map(function (CategoryRead $resource) {
+            'categories' => array_map(function (OwnerCategoryRead $resource) {
                 return [
                     'id' => $resource->getId()->getValue(),
                     'name' => $resource->getName(),

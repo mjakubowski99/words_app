@@ -52,21 +52,6 @@ class SmTwoFlashcard
         return $this->repetition_count;
     }
 
-    public function setRepetitionRatio(float $repetition_ratio): void
-    {
-        $this->repetition_ratio = $repetition_ratio;
-    }
-
-    public function setRepetitionInterval(float $repetition_interval): void
-    {
-        $this->repetition_interval = $repetition_interval;
-    }
-
-    public function setRepetitionCount(int $repetition_count): void
-    {
-        $this->repetition_count = $repetition_count;
-    }
-
     public function updateByRating(Rating $rating): void
     {
         $this->calculateRepetitionInterval($rating);

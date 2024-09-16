@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Http\Request;
 
+use OpenApi\Attributes as OAT;
 use Shared\Http\Request\Request;
 use Shared\Utils\ValueObjects\UserId;
-use OpenApi\Attributes as OAT;
 
 #[OAT\Schema(
     schema: 'Requests\Flashcard\IndexFlashcardCategoryRequest',
@@ -28,8 +28,8 @@ class IndexFlashcardCategoryRequest extends Request
     public function rules(): array
     {
         return [
-            'page' => ['required', 'integer', 'gte:0'],
-            'per_page' => ['required', 'integer', 'max:30'],
+            'page' => ['integer', 'gte:0'],
+            'per_page' => ['integer', 'max:30'],
         ];
     }
 

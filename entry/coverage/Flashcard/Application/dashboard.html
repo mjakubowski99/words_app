@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <title>Dashboard for /var/www/Flashcard/Application</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="../../_css/bootstrap.min.css?v=10.1.14" rel="stylesheet" type="text/css">
+  <link href="../../_css/nv.d3.min.css?v=10.1.14" rel="stylesheet" type="text/css">
+  <link href="../../_css/style.css?v=10.1.14" rel="stylesheet" type="text/css">
+  <link href="../../_css/custom.css" rel="stylesheet" type="text/css">
+ </head>
+ <body>
+  <header>
+   <div class="container-fluid">
+    <div class="row">
+     <div class="col-md-12">
+      <nav aria-label="breadcrumb">
+       <ol class="breadcrumb">
+         <li class="breadcrumb-item"><a href="../../index.html">/var/www</a></li>
+         <li class="breadcrumb-item"><a href="../index.html">Flashcard</a></li>
+         <li class="breadcrumb-item"><a href="index.html">Application</a></li>
+         <li class="breadcrumb-item active">(Dashboard)</li>
+
+       </ol>
+      </nav>
+     </div>
+    </div>
+   </div>
+  </header>
+  <div class="container-fluid">
+   <div class="row">
+    <div class="col-md-12">
+     <h2>Classes</h2>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-md-6">
+     <h3>Coverage Distribution</h3>
+     <div id="classCoverageDistribution" style="height: 300px;">
+       <svg></svg>
+     </div>
+    </div>
+    <div class="col-md-6">
+     <h3>Complexity</h3>
+     <div id="classComplexity" style="height: 300px;">
+       <svg></svg>
+     </div>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-md-6">
+     <h3>Insufficient Coverage</h3>
+     <div class="scrollbox">
+      <table class="table">
+       <thead>
+        <tr>
+         <th>Class</th>
+         <th class="text-right">Coverage</th>
+        </tr>
+       </thead>
+       <tbody>
+       <tr><td><a href="Command/RateFlashcardsCommand.php.html#10">Flashcard\Application\Command\RateFlashcardsCommand</a></td><td class="text-right">75%</td></tr>
+       <tr><td><a href="DTO/CreateSessionResultDTO.php.html#9">Flashcard\Application\DTO\CreateSessionResultDTO</a></td><td class="text-right">75%</td></tr>
+       <tr><td><a href="Services/AiGenerators/GeminiGenerator.php.html#14">Flashcard\Application\Services\AiGenerators\GeminiGenerator</a></td><td class="text-right">89%</td></tr>
+
+       </tbody>
+      </table>
+     </div>
+    </div>
+    <div class="col-md-6">
+     <h3>Project Risks</h3>
+     <div class="scrollbox">
+      <table class="table">
+       <thead>
+        <tr>
+         <th>Class</th>
+         <th class="text-right"><abbr title="Change Risk Anti-Patterns (CRAP) Index">CRAP</abbr></th>
+        </tr>
+       </thead>
+       <tbody>
+       <tr><td><a href="Services/AiGenerators/GeminiGenerator.php.html#14">Flashcard\Application\Services\AiGenerators\GeminiGenerator</a></td><td class="text-right">7</td></tr>
+
+       </tbody>
+      </table>
+     </div>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-md-12">
+     <h2>Methods</h2>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-md-6">
+     <h3>Coverage Distribution</h3>
+     <div id="methodCoverageDistribution" style="height: 300px;">
+       <svg></svg>
+     </div>
+    </div>
+    <div class="col-md-6">
+     <h3>Complexity</h3>
+     <div id="methodComplexity" style="height: 300px;">
+       <svg></svg>
+     </div>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-md-6">
+     <h3>Insufficient Coverage</h3>
+     <div class="scrollbox">
+      <table class="table">
+       <thead>
+        <tr>
+         <th>Method</th>
+         <th class="text-right">Coverage</th>
+        </tr>
+       </thead>
+       <tbody>
+       <tr><td><a href="Command/RateFlashcardsCommand.php.html#18"><abbr title="Flashcard\Application\Command\RateFlashcardsCommand::getOwner">getOwner</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="DTO/CreateSessionResultDTO.php.html#22"><abbr title="Flashcard\Application\DTO\CreateSessionResultDTO::getFailReason">getFailReason</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Services/AiGenerators/GeminiGenerator.php.html#49"><abbr title="Flashcard\Application\Services\AiGenerators\GeminiGenerator::parseChatResponse">parseChatResponse</abbr></a></td><td class="text-right">80%</td></tr>
+
+       </tbody>
+      </table>
+     </div>
+    </div>
+    <div class="col-md-6">
+     <h3>Project Risks</h3>
+     <div class="scrollbox">
+      <table class="table">
+       <thead>
+        <tr>
+         <th>Method</th>
+         <th class="text-right"><abbr title="Change Risk Anti-Patterns (CRAP) Index">CRAP</abbr></th>
+        </tr>
+       </thead>
+       <tbody>
+       <tr><td><a href="Services/AiGenerators/GeminiGenerator.php.html#49"><abbr title="Flashcard\Application\Services\AiGenerators\GeminiGenerator::parseChatResponse">parseChatResponse</abbr></a></td><td class="text-right">3</td></tr>
+
+       </tbody>
+      </table>
+     </div>
+    </div>
+   </div>
+   <footer>
+    <hr/>
+    <p>
+     <small>Generated by <a href="https://github.com/sebastianbergmann/php-code-coverage" target="_top">php-code-coverage 10.1.14</a> using <a href="https://www.php.net/" target="_top">PHP 8.2.9</a> and <a href="https://phpunit.de/">PHPUnit 10.5.20</a> at Mon Sep 16 18:53:23 UTC 2024.</small>
+    </p>
+   </footer>
+  </div>
+  <script src="../../_js/jquery.min.js?v=10.1.14" type="text/javascript"></script>
+  <script src="../../_js/d3.min.js?v=10.1.14" type="text/javascript"></script>
+  <script src="../../_js/nv.d3.min.js?v=10.1.14" type="text/javascript"></script>
+  <script type="text/javascript">
+$(document).ready(function() {
+  nv.addGraph(function() {
+    var chart = nv.models.multiBarChart();
+    chart.tooltips(false)
+      .showControls(false)
+      .showLegend(false)
+      .reduceXTicks(false)
+      .staggerLabels(true)
+      .yAxis.tickFormat(d3.format('d'));
+
+    d3.select('#classCoverageDistribution svg')
+      .datum(getCoverageDistributionData([0,0,0,0,0,0,0,0,2,1,2,19], "Class Coverage"))
+      .transition().duration(500).call(chart);
+
+    nv.utils.windowResize(chart.update);
+
+    return chart;
+  });
+
+  nv.addGraph(function() {
+    var chart = nv.models.multiBarChart();
+    chart.tooltips(false)
+      .showControls(false)
+      .showLegend(false)
+      .reduceXTicks(false)
+      .staggerLabels(true)
+      .yAxis.tickFormat(d3.format('d'));
+
+    d3.select('#methodCoverageDistribution svg')
+      .datum(getCoverageDistributionData([2,0,0,0,0,0,0,0,0,1,3,74], "Method Coverage"))
+      .transition().duration(500).call(chart);
+
+    nv.utils.windowResize(chart.update);
+
+    return chart;
+  });
+
+  function getCoverageDistributionData(data, label) {
+    var labels = [
+      '0%',
+      '0-10%',
+      '10-20%',
+      '20-30%',
+      '30-40%',
+      '40-50%',
+      '50-60%',
+      '60-70%',
+      '70-80%',
+      '80-90%',
+      '90-100%',
+      '100%'
+    ];
+    var values = [];
+    $.each(labels, function(key) {
+      values.push({x: labels[key], y: data[key]});
+    });
+
+    return [
+      {
+        key: label,
+        values: values,
+        color: "#4572A7"
+      }
+    ];
+  }
+  nv.addGraph(function() {
+    var chart = nv.models.scatterChart()
+      .showDistX(true)
+      .showDistY(true)
+      .showLegend(false)
+      .forceX([0, 100]);
+    chart.tooltipContent(function(graph) {
+      return '<p>' + graph.point.class + '</p>';
+    });
+
+    chart.xAxis.axisLabel('Code Coverage (in percent)');
+    chart.yAxis.axisLabel('Cyclomatic Complexity');
+
+    d3.select('#classComplexity svg')
+      .datum(getComplexityData([[100,3,"<a href=\"Command\/AddSessionFlashcards.php.html#9\">Flashcard\\Application\\Command\\AddSessionFlashcards<\/a>"],[100,2,"<a href=\"Command\/AddSessionFlashcardsHandler.php.html#11\">Flashcard\\Application\\Command\\AddSessionFlashcardsHandler<\/a>"],[100,5,"<a href=\"Command\/CreateSession.php.html#13\">Flashcard\\Application\\Command\\CreateSession<\/a>"],[100,2,"<a href=\"Command\/CreateSessionHandler.php.html#13\">Flashcard\\Application\\Command\\CreateSessionHandler<\/a>"],[100,3,"<a href=\"Command\/FlashcardRating.php.html#10\">Flashcard\\Application\\Command\\FlashcardRating<\/a>"],[100,3,"<a href=\"Command\/GenerateFlashcards.php.html#9\">Flashcard\\Application\\Command\\GenerateFlashcards<\/a>"],[92.3076923076923,3,"<a href=\"Command\/GenerateFlashcardsHandler.php.html#15\">Flashcard\\Application\\Command\\GenerateFlashcardsHandler<\/a>"],[100,3,"<a href=\"Command\/RateFlashcards.php.html#10\">Flashcard\\Application\\Command\\RateFlashcards<\/a>"],[75,4,"<a href=\"Command\/RateFlashcardsCommand.php.html#10\">Flashcard\\Application\\Command\\RateFlashcardsCommand<\/a>"],[75,4,"<a href=\"DTO\/CreateSessionResultDTO.php.html#9\">Flashcard\\Application\\DTO\\CreateSessionResultDTO<\/a>"],[100,3,"<a href=\"DTO\/MainFlashcardCategoryDTO.php.html#9\">Flashcard\\Application\\DTO\\MainFlashcardCategoryDTO<\/a>"],[100,2,"<a href=\"Query\/GetCategoryDetails.php.html#11\">Flashcard\\Application\\Query\\GetCategoryDetails<\/a>"],[100,2,"<a href=\"Query\/GetMainCategory.php.html#10\">Flashcard\\Application\\Query\\GetMainCategory<\/a>"],[100,2,"<a href=\"Query\/GetNextSessionFlashcardsHandler.php.html#10\">Flashcard\\Application\\Query\\GetNextSessionFlashcardsHandler<\/a>"],[100,2,"<a href=\"Query\/GetSessionHandler.php.html#11\">Flashcard\\Application\\Query\\GetSessionHandler<\/a>"],[100,2,"<a href=\"Query\/GetUserCategories.php.html#11\">Flashcard\\Application\\Query\\GetUserCategories<\/a>"],[100,4,"<a href=\"ReadModels\/CategoryDetailsRead.php.html#9\">Flashcard\\Application\\ReadModels\\CategoryDetailsRead<\/a>"],[100,8,"<a href=\"ReadModels\/FlashcardRead.php.html#10\">Flashcard\\Application\\ReadModels\\FlashcardRead<\/a>"],[100,3,"<a href=\"ReadModels\/OwnerCategoryRead.php.html#9\">Flashcard\\Application\\ReadModels\\OwnerCategoryRead<\/a>"],[100,8,"<a href=\"ReadModels\/SessionFlashcardRead.php.html#10\">Flashcard\\Application\\ReadModels\\SessionFlashcardRead<\/a>"],[100,5,"<a href=\"ReadModels\/SessionRead.php.html#9\">Flashcard\\Application\\ReadModels\\SessionRead<\/a>"],[89.65517241379311,7,"<a href=\"Services\/AiGenerators\/GeminiGenerator.php.html#14\">Flashcard\\Application\\Services\\AiGenerators\\GeminiGenerator<\/a>"],[100,6,"<a href=\"Services\/SmTwo\/SmTwoFlashcardSelector.php.html#13\">Flashcard\\Application\\Services\\SmTwo\\SmTwoFlashcardSelector<\/a>"],[92.3076923076923,5,"<a href=\"Services\/SmTwo\/SmTwoRepetitionAlgorithm.php.html#11\">Flashcard\\Application\\Services\\SmTwo\\SmTwoRepetitionAlgorithm<\/a>"]], 'Class Complexity'))
+      .transition()
+      .duration(500)
+      .call(chart);
+
+    nv.utils.windowResize(chart.update);
+
+    return chart;
+  });
+
+  nv.addGraph(function() {
+    var chart = nv.models.scatterChart()
+      .showDistX(true)
+      .showDistY(true)
+      .showLegend(false)
+      .forceX([0, 100]);
+    chart.tooltipContent(function(graph) {
+      return '<p>' + graph.point.class + '</p>';
+    });
+
+    chart.xAxis.axisLabel('Code Coverage (in percent)');
+    chart.yAxis.axisLabel('Method Complexity');
+
+    d3.select('#methodComplexity svg')
+      .datum(getComplexityData([[100,1,"<a href=\"Command\/AddSessionFlashcards.php.html#11\">Flashcard\\Application\\Command\\AddSessionFlashcards::__construct<\/a>"],[100,1,"<a href=\"Command\/AddSessionFlashcards.php.html#13\">Flashcard\\Application\\Command\\AddSessionFlashcards::getSessionId<\/a>"],[100,1,"<a href=\"Command\/AddSessionFlashcards.php.html#18\">Flashcard\\Application\\Command\\AddSessionFlashcards::getLimit<\/a>"],[100,1,"<a href=\"Command\/AddSessionFlashcardsHandler.php.html#13\">Flashcard\\Application\\Command\\AddSessionFlashcardsHandler::__construct<\/a>"],[100,1,"<a href=\"Command\/AddSessionFlashcardsHandler.php.html#19\">Flashcard\\Application\\Command\\AddSessionFlashcardsHandler::handle<\/a>"],[100,1,"<a href=\"Command\/CreateSession.php.html#17\">Flashcard\\Application\\Command\\CreateSession::__construct<\/a>"],[100,1,"<a href=\"Command\/CreateSession.php.html#29\">Flashcard\\Application\\Command\\CreateSession::getOwner<\/a>"],[100,1,"<a href=\"Command\/CreateSession.php.html#34\">Flashcard\\Application\\Command\\CreateSession::getCardsPerSession<\/a>"],[100,1,"<a href=\"Command\/CreateSession.php.html#39\">Flashcard\\Application\\Command\\CreateSession::getDevice<\/a>"],[100,1,"<a href=\"Command\/CreateSession.php.html#44\">Flashcard\\Application\\Command\\CreateSession::getCategoryId<\/a>"],[100,1,"<a href=\"Command\/CreateSessionHandler.php.html#15\">Flashcard\\Application\\Command\\CreateSessionHandler::__construct<\/a>"],[100,1,"<a href=\"Command\/CreateSessionHandler.php.html#20\">Flashcard\\Application\\Command\\CreateSessionHandler::handle<\/a>"],[100,1,"<a href=\"Command\/FlashcardRating.php.html#12\">Flashcard\\Application\\Command\\FlashcardRating::__construct<\/a>"],[100,1,"<a href=\"Command\/FlashcardRating.php.html#14\">Flashcard\\Application\\Command\\FlashcardRating::getSessionFlashcardId<\/a>"],[100,1,"<a href=\"Command\/FlashcardRating.php.html#19\">Flashcard\\Application\\Command\\FlashcardRating::getRating<\/a>"],[100,1,"<a href=\"Command\/GenerateFlashcards.php.html#11\">Flashcard\\Application\\Command\\GenerateFlashcards::__construct<\/a>"],[100,1,"<a href=\"Command\/GenerateFlashcards.php.html#16\">Flashcard\\Application\\Command\\GenerateFlashcards::getOwner<\/a>"],[100,1,"<a href=\"Command\/GenerateFlashcards.php.html#21\">Flashcard\\Application\\Command\\GenerateFlashcards::getCategoryName<\/a>"],[100,1,"<a href=\"Command\/GenerateFlashcardsHandler.php.html#17\">Flashcard\\Application\\Command\\GenerateFlashcardsHandler::__construct<\/a>"],[91.66666666666666,2,"<a href=\"Command\/GenerateFlashcardsHandler.php.html#23\">Flashcard\\Application\\Command\\GenerateFlashcardsHandler::handle<\/a>"],[100,1,"<a href=\"Command\/RateFlashcards.php.html#12\">Flashcard\\Application\\Command\\RateFlashcards::__construct<\/a>"],[100,2,"<a href=\"Command\/RateFlashcards.php.html#17\">Flashcard\\Application\\Command\\RateFlashcards::handle<\/a>"],[100,1,"<a href=\"Command\/RateFlashcardsCommand.php.html#12\">Flashcard\\Application\\Command\\RateFlashcardsCommand::__construct<\/a>"],[0,1,"<a href=\"Command\/RateFlashcardsCommand.php.html#18\">Flashcard\\Application\\Command\\RateFlashcardsCommand::getOwner<\/a>"],[100,1,"<a href=\"Command\/RateFlashcardsCommand.php.html#23\">Flashcard\\Application\\Command\\RateFlashcardsCommand::getSessionId<\/a>"],[100,1,"<a href=\"Command\/RateFlashcardsCommand.php.html#31\">Flashcard\\Application\\Command\\RateFlashcardsCommand::getRatings<\/a>"],[100,1,"<a href=\"DTO\/CreateSessionResultDTO.php.html#11\">Flashcard\\Application\\DTO\\CreateSessionResultDTO::__construct<\/a>"],[100,1,"<a href=\"DTO\/CreateSessionResultDTO.php.html#17\">Flashcard\\Application\\DTO\\CreateSessionResultDTO::success<\/a>"],[0,1,"<a href=\"DTO\/CreateSessionResultDTO.php.html#22\">Flashcard\\Application\\DTO\\CreateSessionResultDTO::getFailReason<\/a>"],[100,1,"<a href=\"DTO\/CreateSessionResultDTO.php.html#27\">Flashcard\\Application\\DTO\\CreateSessionResultDTO::getId<\/a>"],[100,1,"<a href=\"DTO\/MainFlashcardCategoryDTO.php.html#11\">Flashcard\\Application\\DTO\\MainFlashcardCategoryDTO::__construct<\/a>"],[100,1,"<a href=\"DTO\/MainFlashcardCategoryDTO.php.html#16\">Flashcard\\Application\\DTO\\MainFlashcardCategoryDTO::getId<\/a>"],[100,1,"<a href=\"DTO\/MainFlashcardCategoryDTO.php.html#21\">Flashcard\\Application\\DTO\\MainFlashcardCategoryDTO::getName<\/a>"],[100,1,"<a href=\"Query\/GetCategoryDetails.php.html#13\">Flashcard\\Application\\Query\\GetCategoryDetails::__construct<\/a>"],[100,1,"<a href=\"Query\/GetCategoryDetails.php.html#17\">Flashcard\\Application\\Query\\GetCategoryDetails::get<\/a>"],[100,1,"<a href=\"Query\/GetMainCategory.php.html#12\">Flashcard\\Application\\Query\\GetMainCategory::__construct<\/a>"],[100,1,"<a href=\"Query\/GetMainCategory.php.html#14\">Flashcard\\Application\\Query\\GetMainCategory::handle<\/a>"],[100,1,"<a href=\"Query\/GetNextSessionFlashcardsHandler.php.html#12\">Flashcard\\Application\\Query\\GetNextSessionFlashcardsHandler::__construct<\/a>"],[100,1,"<a href=\"Query\/GetNextSessionFlashcardsHandler.php.html#16\">Flashcard\\Application\\Query\\GetNextSessionFlashcardsHandler::handle<\/a>"],[100,1,"<a href=\"Query\/GetSessionHandler.php.html#13\">Flashcard\\Application\\Query\\GetSessionHandler::__construct<\/a>"],[100,1,"<a href=\"Query\/GetSessionHandler.php.html#17\">Flashcard\\Application\\Query\\GetSessionHandler::handle<\/a>"],[100,1,"<a href=\"Query\/GetUserCategories.php.html#13\">Flashcard\\Application\\Query\\GetUserCategories::__construct<\/a>"],[100,1,"<a href=\"Query\/GetUserCategories.php.html#16\">Flashcard\\Application\\Query\\GetUserCategories::handle<\/a>"],[100,1,"<a href=\"ReadModels\/CategoryDetailsRead.php.html#11\">Flashcard\\Application\\ReadModels\\CategoryDetailsRead::__construct<\/a>"],[100,1,"<a href=\"ReadModels\/CategoryDetailsRead.php.html#13\">Flashcard\\Application\\ReadModels\\CategoryDetailsRead::getId<\/a>"],[100,1,"<a href=\"ReadModels\/CategoryDetailsRead.php.html#18\">Flashcard\\Application\\ReadModels\\CategoryDetailsRead::getName<\/a>"],[100,1,"<a href=\"ReadModels\/CategoryDetailsRead.php.html#24\">Flashcard\\Application\\ReadModels\\CategoryDetailsRead::getFlashcards<\/a>"],[100,1,"<a href=\"ReadModels\/FlashcardRead.php.html#12\">Flashcard\\Application\\ReadModels\\FlashcardRead::__construct<\/a>"],[100,1,"<a href=\"ReadModels\/FlashcardRead.php.html#22\">Flashcard\\Application\\ReadModels\\FlashcardRead::getId<\/a>"],[100,1,"<a href=\"ReadModels\/FlashcardRead.php.html#27\">Flashcard\\Application\\ReadModels\\FlashcardRead::getWord<\/a>"],[100,1,"<a href=\"ReadModels\/FlashcardRead.php.html#32\">Flashcard\\Application\\ReadModels\\FlashcardRead::getWordLang<\/a>"],[100,1,"<a href=\"ReadModels\/FlashcardRead.php.html#37\">Flashcard\\Application\\ReadModels\\FlashcardRead::getTranslation<\/a>"],[100,1,"<a href=\"ReadModels\/FlashcardRead.php.html#42\">Flashcard\\Application\\ReadModels\\FlashcardRead::getTranslationLang<\/a>"],[100,1,"<a href=\"ReadModels\/FlashcardRead.php.html#47\">Flashcard\\Application\\ReadModels\\FlashcardRead::getContext<\/a>"],[100,1,"<a href=\"ReadModels\/FlashcardRead.php.html#52\">Flashcard\\Application\\ReadModels\\FlashcardRead::getContextTranslation<\/a>"],[100,1,"<a href=\"ReadModels\/OwnerCategoryRead.php.html#11\">Flashcard\\Application\\ReadModels\\OwnerCategoryRead::__construct<\/a>"],[100,1,"<a href=\"ReadModels\/OwnerCategoryRead.php.html#13\">Flashcard\\Application\\ReadModels\\OwnerCategoryRead::getId<\/a>"],[100,1,"<a href=\"ReadModels\/OwnerCategoryRead.php.html#18\">Flashcard\\Application\\ReadModels\\OwnerCategoryRead::getName<\/a>"],[100,1,"<a href=\"ReadModels\/SessionFlashcardRead.php.html#12\">Flashcard\\Application\\ReadModels\\SessionFlashcardRead::__construct<\/a>"],[100,1,"<a href=\"ReadModels\/SessionFlashcardRead.php.html#22\">Flashcard\\Application\\ReadModels\\SessionFlashcardRead::getId<\/a>"],[100,1,"<a href=\"ReadModels\/SessionFlashcardRead.php.html#27\">Flashcard\\Application\\ReadModels\\SessionFlashcardRead::getWord<\/a>"],[100,1,"<a href=\"ReadModels\/SessionFlashcardRead.php.html#32\">Flashcard\\Application\\ReadModels\\SessionFlashcardRead::getWordLang<\/a>"],[100,1,"<a href=\"ReadModels\/SessionFlashcardRead.php.html#37\">Flashcard\\Application\\ReadModels\\SessionFlashcardRead::getTranslation<\/a>"],[100,1,"<a href=\"ReadModels\/SessionFlashcardRead.php.html#42\">Flashcard\\Application\\ReadModels\\SessionFlashcardRead::getTranslationLang<\/a>"],[100,1,"<a href=\"ReadModels\/SessionFlashcardRead.php.html#47\">Flashcard\\Application\\ReadModels\\SessionFlashcardRead::getContext<\/a>"],[100,1,"<a href=\"ReadModels\/SessionFlashcardRead.php.html#52\">Flashcard\\Application\\ReadModels\\SessionFlashcardRead::getContextTranslation<\/a>"],[100,1,"<a href=\"ReadModels\/SessionRead.php.html#11\">Flashcard\\Application\\ReadModels\\SessionRead::__construct<\/a>"],[100,1,"<a href=\"ReadModels\/SessionRead.php.html#18\">Flashcard\\Application\\ReadModels\\SessionRead::getId<\/a>"],[100,1,"<a href=\"ReadModels\/SessionRead.php.html#23\">Flashcard\\Application\\ReadModels\\SessionRead::getProgress<\/a>"],[100,1,"<a href=\"ReadModels\/SessionRead.php.html#28\">Flashcard\\Application\\ReadModels\\SessionRead::getCardsPerSession<\/a>"],[100,1,"<a href=\"ReadModels\/SessionRead.php.html#33\">Flashcard\\Application\\ReadModels\\SessionRead::isFinished<\/a>"],[100,1,"<a href=\"Services\/AiGenerators\/GeminiGenerator.php.html#16\">Flashcard\\Application\\Services\\AiGenerators\\GeminiGenerator::__construct<\/a>"],[94.44444444444444,3,"<a href=\"Services\/AiGenerators\/GeminiGenerator.php.html#20\">Flashcard\\Application\\Services\\AiGenerators\\GeminiGenerator::generate<\/a>"],[80,3,"<a href=\"Services\/AiGenerators\/GeminiGenerator.php.html#49\">Flashcard\\Application\\Services\\AiGenerators\\GeminiGenerator::parseChatResponse<\/a>"],[100,1,"<a href=\"Services\/SmTwo\/SmTwoFlashcardSelector.php.html#15\">Flashcard\\Application\\Services\\SmTwo\\SmTwoFlashcardSelector::__construct<\/a>"],[100,1,"<a href=\"Services\/SmTwo\/SmTwoFlashcardSelector.php.html#20\">Flashcard\\Application\\Services\\SmTwo\\SmTwoFlashcardSelector::select<\/a>"],[100,2,"<a href=\"Services\/SmTwo\/SmTwoFlashcardSelector.php.html#28\">Flashcard\\Application\\Services\\SmTwo\\SmTwoFlashcardSelector::selectGeneral<\/a>"],[100,2,"<a href=\"Services\/SmTwo\/SmTwoFlashcardSelector.php.html#42\">Flashcard\\Application\\Services\\SmTwo\\SmTwoFlashcardSelector::selectNormal<\/a>"],[100,1,"<a href=\"Services\/SmTwo\/SmTwoRepetitionAlgorithm.php.html#13\">Flashcard\\Application\\Services\\SmTwo\\SmTwoRepetitionAlgorithm::__construct<\/a>"],[91.66666666666666,4,"<a href=\"Services\/SmTwo\/SmTwoRepetitionAlgorithm.php.html#17\">Flashcard\\Application\\Services\\SmTwo\\SmTwoRepetitionAlgorithm::handle<\/a>"]], 'Method Complexity'))
+      .transition()
+      .duration(500)
+      .call(chart);
+
+    nv.utils.windowResize(chart.update);
+
+    return chart;
+  });
+
+  function getComplexityData(data, label) {
+    var values = [];
+    $.each(data, function(key) {
+      var value = Math.round(data[key][0]*100) / 100;
+      values.push({
+        x: value,
+        y: data[key][1],
+        class: data[key][2],
+        size: 0.05,
+        shape: 'diamond'
+      });
+    });
+
+    return [
+      {
+        key: label,
+        values: values,
+        color: "#4572A7"
+      }
+    ];
+  }
+});
+  </script>
+ </body>
+</html>

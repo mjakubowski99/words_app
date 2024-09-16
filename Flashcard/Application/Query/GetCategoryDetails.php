@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\Query;
 
+use Flashcard\Domain\ValueObjects\CategoryId;
 use Flashcard\Application\ReadModels\CategoryDetailsRead;
 use Flashcard\Application\Repository\IFlashcardCategoryReadRepository;
-use Flashcard\Domain\ValueObjects\CategoryId;
 
 class GetCategoryDetails
 {
@@ -16,6 +16,6 @@ class GetCategoryDetails
 
     public function get(CategoryId $id): CategoryDetailsRead
     {
-        return $this->repository->find($id);
+        return $this->repository->findDetails($id);
     }
 }

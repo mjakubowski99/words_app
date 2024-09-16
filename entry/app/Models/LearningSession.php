@@ -4,16 +4,15 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use Database\Factories\LearningSessionFactory;
-use Flashcard\Domain\Models\Session;
-use Flashcard\Domain\ValueObjects\SessionId;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 use Shared\Enum\SessionStatus;
-use Shared\Utils\ValueObjects\UserId;
+use Flashcard\Domain\Models\Session;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
+use Flashcard\Domain\ValueObjects\SessionId;
+use Database\Factories\LearningSessionFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
  * @property        int                     $id

@@ -5,29 +5,18 @@ declare(strict_types=1);
 namespace Flashcard\Infrastructure\Mappers;
 
 use Flashcard\Domain\Models\Owner;
+use Illuminate\Support\Facades\DB;
+use Shared\Enum\FlashcardOwnerType;
+use Flashcard\Domain\ValueObjects\OwnerId;
 use Flashcard\Domain\Models\SmTwoFlashcard;
 use Flashcard\Domain\Models\SmTwoFlashcards;
 use Flashcard\Domain\ValueObjects\FlashcardId;
-use Flashcard\Domain\ValueObjects\OwnerId;
-use Illuminate\Support\Facades\DB;
-use Shared\Enum\FlashcardOwnerType;
 
 class SmTwoFlashcardMapper
 {
     public function __construct(
         private readonly DB $db
     ) {}
-
-    public function create(SmTwoFlashcard $flashcard): void
-    {
-        $this->db::table('sm_two_flashcards')
-            ->insert([
-                'flashcard_id' => $flashcard->getFlashcardId(),
-                'user_id' => $flashcard->getOwner()->getId(),
-                'repetition_ratio' => $flashcard->getRepetitionRatio(),
-                'repetition_interval' => $flashcard->getRepetitionInterval(),
-            ]);
-    }
 
     public function findMany(Owner $owner, array $flashcard_ids): SmTwoFlashcards
     {
@@ -52,6 +41,8 @@ class SmTwoFlashcardMapper
 
     public function saveMany(SmTwoFlashcards $sm_two_flashcards): void
     {
+        $now = now();
+
         foreach ($sm_two_flashcards->all() as $flashcard) {
             $this->db::table('sm_two_flashcards')
                 ->updateOrInsert([
@@ -61,6 +52,8 @@ class SmTwoFlashcardMapper
                     'repetition_ratio' => $flashcard->getRepetitionRatio(),
                     'repetition_interval' => $flashcard->getRepetitionInterval(),
                     'repetition_count' => $flashcard->getRepetitionCount(),
+                    'created_at' => $now,
+                    'updated_at' => $now,
                 ]);
         }
     }

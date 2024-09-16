@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Flashcard\Infrastructure\Repositories\NextSessionFlashcardsRepository;
 
+use Tests\TestCase;
 use App\Models\Flashcard;
 use App\Models\LearningSession;
 use Flashcard\Domain\Models\NextSessionFlashcards;
-use Flashcard\Infrastructure\Repositories\NextSessionFlashcardsRepository;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Tests\TestCase;
+use Flashcard\Infrastructure\Repositories\NextSessionFlashcardsRepository;
 
 class NextSessionFlashcardsRepositoryTest extends TestCase
 {

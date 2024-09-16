@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Flashcard\Domain\Models\SmTwoFlashcards;
 
-use Flashcard\Domain\Exceptions\InvalidSmTwoFlashcardSetException;
+use Tests\TestCase;
 use Flashcard\Domain\Models\Owner;
+use Shared\Enum\FlashcardOwnerType;
+use Shared\Utils\ValueObjects\Uuid;
+use Shared\Utils\ValueObjects\UserId;
+use Flashcard\Domain\ValueObjects\OwnerId;
 use Flashcard\Domain\Models\SmTwoFlashcard;
 use Flashcard\Domain\Models\SmTwoFlashcards;
 use Flashcard\Domain\ValueObjects\FlashcardId;
-use Flashcard\Domain\ValueObjects\OwnerId;
-use Shared\Enum\FlashcardOwnerType;
-use Shared\Utils\ValueObjects\UserId;
-use Shared\Utils\ValueObjects\Uuid;
-use Tests\TestCase;
+use Flashcard\Domain\Exceptions\InvalidSmTwoFlashcardSetException;
 
 class SmTwoFlashcardsTest extends TestCase
 {

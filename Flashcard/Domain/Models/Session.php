@@ -4,19 +4,19 @@ declare(strict_types=1);
 
 namespace Flashcard\Domain\Models;
 
+use Shared\Enum\SessionStatus;
 use Flashcard\Domain\Contracts\ICategory;
 use Flashcard\Domain\ValueObjects\SessionId;
-use Shared\Enum\SessionStatus;
 
 class Session
 {
     private SessionId $id;
 
     public function __construct(
-        private SessionStatus     $status,
+        private SessionStatus $status,
         private readonly Owner $owner,
-        private readonly int      $cards_per_session,
-        private readonly string   $device,
+        private readonly int $cards_per_session,
+        private readonly string $device,
         private readonly ICategory $flashcard_category,
     ) {}
 
@@ -25,8 +25,7 @@ class Session
         int $cards_per_session,
         string $device,
         ICategory $category
-    ): self
-    {
+    ): self {
         return new Session(
             SessionStatus::STARTED,
             $owner,
@@ -76,10 +75,5 @@ class Session
     public function getDevice(): string
     {
         return $this->device;
-    }
-
-    public function isFinished(): bool
-    {
-        return $this->status === SessionStatus::FINISHED;
     }
 }

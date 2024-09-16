@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\Repository;
 
-use Flashcard\Domain\Contracts\ICategory;
-use Flashcard\Domain\Models\Category;
 use Flashcard\Domain\Models\Owner;
+use Flashcard\Domain\Models\Category;
+use Flashcard\Domain\Contracts\ICategory;
 use Flashcard\Domain\ValueObjects\CategoryId;
 
 interface IFlashcardCategoryRepository

@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Repositories;
 
-use Flashcard\Application\Repository\IFlashcardCategoryRepository;
+use Flashcard\Domain\Models\Owner;
+use Shared\Enum\FlashcardCategoryType;
 use Flashcard\Domain\Contracts\ICategory;
 use Flashcard\Domain\Models\MainCategory;
-use Flashcard\Domain\Models\Owner;
 use Flashcard\Domain\ValueObjects\CategoryId;
 use Flashcard\Infrastructure\Mappers\FlashcardCategoryMapper;
-use Shared\Enum\FlashcardCategoryType;
+use Flashcard\Domain\Exceptions\CannotCreateCategoryException;
+use Flashcard\Application\Repository\IFlashcardCategoryRepository;
 
 class FlashcardCategoryRepository implements IFlashcardCategoryRepository
 {
@@ -32,10 +33,10 @@ class FlashcardCategoryRepository implements IFlashcardCategoryRepository
     public function createCategory(ICategory $category): ICategory
     {
         if ($category->getCategoryType() === FlashcardCategoryType::GENERAL) {
-            return new MainCategory();
+            throw new CannotCreateCategoryException();
         }
 
-        $category_id  = $this->mapper->create($category);
+        $category_id = $this->mapper->create($category);
 
         return $this->findById($category_id);
     }

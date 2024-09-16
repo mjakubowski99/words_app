@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Flashcard\Domain\Models;
 
-use Flashcard\Domain\Exceptions\InvalidPromptException;
 use Shared\Utils\ValueObjects\Language;
+use Flashcard\Domain\Exceptions\InvalidPromptException;
 
 class FlashcardPrompt
 {
@@ -31,8 +33,7 @@ class FlashcardPrompt
         private readonly string $category,
         private readonly Language $word_lang,
         private readonly Language $translation_lang,
-    )
-    {
+    ) {
         $this->buildPrompt();
     }
 
@@ -60,7 +61,7 @@ class FlashcardPrompt
     private function setCategory(): void
     {
         if (!str_contains($this->prompt, '${{category}}')) {
-            throw new InvalidPromptException("Invalid prompt exception");
+            throw new InvalidPromptException('Invalid prompt exception');
         }
 
         $this->prompt = str_replace('${{category}}', $this->category, $this->prompt);
@@ -68,6 +69,6 @@ class FlashcardPrompt
 
     private function removeWhiteCharacters(): void
     {
-        $this->prompt = str_replace(["\n", "\r"], "", $this->prompt);
+        $this->prompt = str_replace(["\n", "\r"], '', $this->prompt);
     }
 }

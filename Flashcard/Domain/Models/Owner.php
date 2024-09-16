@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Flashcard\Domain\Models;
 
-use Flashcard\Domain\ValueObjects\OwnerId;
 use Shared\Enum\FlashcardOwnerType;
+use Flashcard\Domain\ValueObjects\OwnerId;
 
 class Owner
 {

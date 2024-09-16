@@ -4,16 +4,17 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Flashcard\Domain\Models\NextSessionFlashcards;
 
-use Flashcard\Domain\Models\Category;
-use Flashcard\Domain\Models\NextSessionFlashcards;
+use Tests\TestCase;
 use Flashcard\Domain\Models\Owner;
-use Flashcard\Domain\ValueObjects\FlashcardId;
+use Shared\Enum\FlashcardOwnerType;
+use Shared\Utils\ValueObjects\Uuid;
+use Flashcard\Domain\Models\Category;
+use Flashcard\Domain\Models\Flashcard;
+use Shared\Utils\ValueObjects\Language;
 use Flashcard\Domain\ValueObjects\OwnerId;
 use Flashcard\Domain\ValueObjects\SessionId;
-use Shared\Enum\FlashcardOwnerType;
-use Shared\Utils\ValueObjects\Language;
-use Shared\Utils\ValueObjects\Uuid;
-use Tests\TestCase;
+use Flashcard\Domain\ValueObjects\FlashcardId;
+use Flashcard\Domain\Models\NextSessionFlashcards;
 
 class NextSessionFlashcardsTest extends TestCase
 {
@@ -88,9 +89,9 @@ class NextSessionFlashcardsTest extends TestCase
         return new Owner(new OwnerId(Uuid::make()->getValue()), FlashcardOwnerType::USER);
     }
 
-    private function makeFlashcard(Owner $owner): \Flashcard\Domain\Models\Flashcard
+    private function makeFlashcard(Owner $owner): Flashcard
     {
-        return new \Flashcard\Domain\Models\Flashcard(
+        return new Flashcard(
             new FlashcardId(1),
             'word',
             Language::from(Language::PL),

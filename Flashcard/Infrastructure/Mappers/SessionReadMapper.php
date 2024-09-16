@@ -1,11 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Flashcard\Infrastructure\Mappers;
 
-use Flashcard\Application\ReadModels\SessionRead;
-use Flashcard\Domain\ValueObjects\SessionId;
-use Illuminate\Support\Facades\DB;
 use Shared\Enum\SessionStatus;
+use Illuminate\Support\Facades\DB;
+use Flashcard\Domain\ValueObjects\SessionId;
+use Flashcard\Application\ReadModels\SessionRead;
+use Flashcard\Domain\Exceptions\ModelNotFoundException;
 
 class SessionReadMapper
 {
@@ -18,6 +21,10 @@ class SessionReadMapper
         $result = $this->db::table('learning_sessions')
             ->where('learning_sessions.id', $id->getValue())
             ->first();
+
+        if (!$result) {
+            throw new ModelNotFoundException(SessionRead::class, (string) $id->getValue());
+        }
 
         $rated = $this->db::table('learning_session_flashcards')
             ->where('learning_session_flashcards.learning_session_id', $id)

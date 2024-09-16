@@ -1,11 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Flashcard\Domain\Models;
 
-use Flashcard\Domain\Exceptions\SessionFinishedException;
-use Flashcard\Domain\ValueObjects\SessionFlashcardId;
-use Flashcard\Domain\ValueObjects\SessionId;
 use Shared\Enum\SessionStatus;
+use Flashcard\Domain\ValueObjects\SessionId;
+use Flashcard\Domain\ValueObjects\SessionFlashcardId;
+use Flashcard\Domain\Exceptions\SessionFinishedException;
+use Flashcard\Domain\Exceptions\RateableSessionFlashcardNotFound;
 
 class RateableSessionFlashcards
 {
@@ -55,7 +58,7 @@ class RateableSessionFlashcards
 
     public function pluckSessionFlashcardIds(): array
     {
-        return array_map(fn(RateableSessionFlashcard $flashcard) => $flashcard->getFlashcardId(), $this->rateable_session_flashcards);
+        return array_map(fn (RateableSessionFlashcard $flashcard) => $flashcard->getFlashcardId(), $this->rateable_session_flashcards);
     }
 
     public function rate(SessionFlashcardId $id, Rating $rating): void
@@ -64,7 +67,7 @@ class RateableSessionFlashcards
 
         $this->rateable_session_flashcards[$key]->rate($rating);
 
-        $this->rated_count++;
+        ++$this->rated_count;
 
         if ($this->rated_count === $this->total_count) {
             $this->status = SessionStatus::FINISHED;
@@ -79,7 +82,6 @@ class RateableSessionFlashcards
             }
         }
 
-        throw new \Exception();
+        throw new RateableSessionFlashcardNotFound();
     }
-
 }

@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Flashcard\Application\ReadModels;
 
-use Flashcard\Domain\ValueObjects\SessionFlashcardId;
 use Shared\Utils\ValueObjects\Language;
+use Flashcard\Domain\ValueObjects\SessionFlashcardId;
 
 class SessionFlashcardRead
 {

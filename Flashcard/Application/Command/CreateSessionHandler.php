@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\Command;
 
-use Flashcard\Application\DTO\CreateSessionResultDTO;
-use Flashcard\Application\Repository\IFlashcardCategoryRepository;
-use Flashcard\Application\Repository\ISessionRepository;
-use Flashcard\Domain\Models\Session;
 use Shared\Enum\SessionStatus;
+use Flashcard\Domain\Models\Session;
+use Flashcard\Application\DTO\CreateSessionResultDTO;
+use Flashcard\Application\Repository\ISessionRepository;
+use Flashcard\Application\Repository\IFlashcardCategoryRepository;
 
 class CreateSessionHandler
 {

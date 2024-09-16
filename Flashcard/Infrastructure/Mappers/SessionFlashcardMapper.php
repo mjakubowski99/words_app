@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Mappers;
 
-use Flashcard\Domain\ValueObjects\FlashcardId;
-use Flashcard\Domain\ValueObjects\SessionId;
 use Illuminate\Support\Facades\DB;
+use Flashcard\Domain\ValueObjects\SessionId;
+use Flashcard\Domain\ValueObjects\FlashcardId;
 
 class SessionFlashcardMapper
 {
@@ -23,6 +23,6 @@ class SessionFlashcardMapper
             ->pluck('flashcard_id')
             ->toArray();
 
-        return array_map(fn($id) => new FlashcardId($id), $latest);
+        return array_map(fn ($id) => new FlashcardId($id), $latest);
     }
 }

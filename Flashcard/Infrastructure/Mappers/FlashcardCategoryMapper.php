@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Mappers;
 
-use Flashcard\Domain\Contracts\ICategory;
-use Flashcard\Domain\Models\Category;
 use Flashcard\Domain\Models\Owner;
-use Flashcard\Domain\ValueObjects\CategoryId;
-use Flashcard\Domain\ValueObjects\OwnerId;
 use Illuminate\Support\Facades\DB;
 use Shared\Enum\FlashcardOwnerType;
-use Shared\Utils\ValueObjects\UserId;
+use Flashcard\Domain\Models\Category;
+use Flashcard\Domain\Contracts\ICategory;
+use Flashcard\Domain\ValueObjects\OwnerId;
+use Flashcard\Domain\ValueObjects\CategoryId;
+use Flashcard\Domain\Exceptions\ModelNotFoundException;
 
 class FlashcardCategoryMapper
 {
@@ -37,6 +37,10 @@ class FlashcardCategoryMapper
             ->where('id', $id->getValue())
             ->first();
 
+        if (!$result) {
+            throw new ModelNotFoundException(Category::class, (string) $id->getValue());
+        }
+
         return $this->map($result);
     }
 
@@ -45,20 +49,11 @@ class FlashcardCategoryMapper
         $results = $this->db::table('flashcard_categories')
             ->where('user_id', $owner->getId()->getValue())
             ->take($per_page)
-            ->skip(($page-1) * $per_page)
+            ->skip(($page - 1) * $per_page)
             ->get()
             ->toArray();
 
         return array_map(fn (object $result) => $this->map($result), $results);
-    }
-
-    public function findByTag(string $tag): Category
-    {
-        $result = $this->db::table('flashcard_categories')
-            ->where('tag', $tag)
-            ->first();
-
-        return $this->map($result);
     }
 
     private function map(object $data): Category

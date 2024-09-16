@@ -5,9 +5,8 @@ declare(strict_types=1);
 namespace Flashcard\Domain\Models;
 
 use Flashcard\Domain\Contracts\ICategory;
-use Flashcard\Domain\Exceptions\TooManySessionFlashcardsException;
-use Flashcard\Domain\ValueObjects\OwnerId;
 use Flashcard\Domain\ValueObjects\SessionId;
+use Flashcard\Domain\Exceptions\TooManySessionFlashcardsException;
 
 class NextSessionFlashcards
 {
@@ -54,7 +53,7 @@ class NextSessionFlashcards
         $this->next_session_flashcards[] = new NextSessionFlashcard(
             $flashcard->getId()
         );
-        $this->current_session_flashcards_count++;
+        ++$this->current_session_flashcards_count;
     }
 
     public function getNextFlashcards(): array

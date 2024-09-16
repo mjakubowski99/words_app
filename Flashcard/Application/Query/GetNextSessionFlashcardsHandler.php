@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\Query;
 
-use Flashcard\Application\Repository\ISessionFlashcardReadRepository;
 use Flashcard\Domain\ValueObjects\SessionId;
+use Flashcard\Application\Repository\ISessionFlashcardReadRepository;
 
 class GetNextSessionFlashcardsHandler
 {

@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Flashcard\Domain\Models\SmTwoFlashcard;
 
+use Tests\TestCase;
 use Flashcard\Domain\Models\Owner;
 use Flashcard\Domain\Models\Rating;
-use Flashcard\Domain\Models\SmTwoFlashcard;
-use Flashcard\Domain\ValueObjects\FlashcardId;
-use Flashcard\Domain\ValueObjects\OwnerId;
 use Shared\Enum\FlashcardOwnerType;
 use Shared\Utils\ValueObjects\Uuid;
-use Tests\TestCase;
+use Flashcard\Domain\ValueObjects\OwnerId;
+use Flashcard\Domain\Models\SmTwoFlashcard;
+use Flashcard\Domain\ValueObjects\FlashcardId;
 
 class SmTwoFlashcardTest extends TestCase
 {

@@ -1,9 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Flashcard\Application\ReadModels;
 
 use Flashcard\Domain\ValueObjects\SessionId;
-use Shared\Enum\SessionStatus;
 
 class SessionRead
 {

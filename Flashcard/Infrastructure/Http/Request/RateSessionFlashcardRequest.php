@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Http\Request;
 
-use Flashcard\Application\Command\FlashcardRating;
-use Flashcard\Domain\Models\Rating;
-use Flashcard\Domain\ValueObjects\SessionFlashcardId;
-use Flashcard\Domain\ValueObjects\SessionId;
 use OpenApi\Attributes as OAT;
 use Shared\Http\Request\Request;
+use Flashcard\Domain\Models\Rating;
 use Shared\Utils\ValueObjects\UserId;
+use Flashcard\Domain\ValueObjects\SessionId;
+use Flashcard\Application\Command\FlashcardRating;
+use Flashcard\Domain\ValueObjects\SessionFlashcardId;
 
 #[OAT\Schema(
     schema: 'Requests\Flashcard\RateSessionFlashcardRequest',
@@ -59,7 +59,13 @@ class RateSessionFlashcardRequest extends Request
 
     public function getSessionId(): SessionId
     {
-        return new SessionId((int) $this->route('session_id'));
+        $session_id = $this->route('session_id');
+
+        if (is_object($session_id)) {
+            throw new \UnexpectedValueException('Session id is object');
+        }
+
+        return new SessionId((int) $session_id);
     }
 
     public function getRatings(): array

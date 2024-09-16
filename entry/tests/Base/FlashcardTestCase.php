@@ -4,17 +4,18 @@ declare(strict_types=1);
 
 namespace Tests\Base;
 
-use App\Models\FlashcardCategory;
-use App\Models\LearningSession;
-use App\Models\LearningSessionFlashcard;
-use App\Models\SmTwoFlashcard;
+use Tests\TestCase;
 use App\Models\User;
+use App\Models\SmTwoFlashcard;
+use App\Models\LearningSession;
+use App\Models\FlashcardCategory;
+use Flashcard\Domain\Models\Category;
+use Shared\Utils\ValueObjects\UserId;
+use App\Models\LearningSessionFlashcard;
+use Flashcard\Domain\ValueObjects\SessionId;
 use Flashcard\Domain\ValueObjects\CategoryId;
 use Flashcard\Domain\ValueObjects\FlashcardId;
 use Flashcard\Domain\ValueObjects\SessionFlashcardId;
-use Flashcard\Domain\ValueObjects\SessionId;
-use Shared\Utils\ValueObjects\UserId;
-use Tests\TestCase;
 
 abstract class FlashcardTestCase extends TestCase
 {
@@ -43,9 +44,9 @@ abstract class FlashcardTestCase extends TestCase
         return new CategoryId($category->id);
     }
 
-    public function domainCategory(FlashcardCategory $category): \Flashcard\Domain\Models\Category
+    public function domainCategory(FlashcardCategory $category): Category
     {
-        return (new \Flashcard\Domain\Models\Category(
+        return (new Category(
             $category->user->toOwner(),
             $category->tag,
             $category->name,

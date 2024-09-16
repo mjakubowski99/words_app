@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Mappers;
 
-use Flashcard\Domain\Models\Category;
-use Flashcard\Domain\Models\Flashcard;
 use Flashcard\Domain\Models\Owner;
-use Flashcard\Domain\ValueObjects\CategoryId;
-use Flashcard\Domain\ValueObjects\FlashcardId;
-use Flashcard\Domain\ValueObjects\OwnerId;
 use Illuminate\Support\Facades\DB;
 use Shared\Enum\FlashcardOwnerType;
+use Flashcard\Domain\Models\Category;
+use Flashcard\Domain\Models\Flashcard;
 use Shared\Utils\ValueObjects\Language;
+use Flashcard\Domain\ValueObjects\OwnerId;
+use Flashcard\Domain\ValueObjects\CategoryId;
+use Flashcard\Domain\ValueObjects\FlashcardId;
 
 class FlashcardMapper
 {
@@ -79,6 +79,7 @@ class FlashcardMapper
     {
         $insert_data = [];
         $now = now();
+
         /** @var Flashcard $flashcard */
         foreach ($flashcards as $flashcard) {
             $insert_data[] = [

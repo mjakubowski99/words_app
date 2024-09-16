@@ -5,19 +5,18 @@ declare(strict_types=1);
 namespace Flashcard\Infrastructure\Http\Controllers;
 
 use App\Http\OpenApi\Tags;
-use Flashcard\Application\Command\GenerateFlashcards;
-use Flashcard\Application\Command\GenerateFlashcardsHandler;
-use Flashcard\Application\Query\GetCategoryDetails;
+use OpenApi\Attributes as OAT;
+use Flashcard\Domain\Models\Owner;
+use Shared\Enum\FlashcardOwnerType;
+use Flashcard\Domain\ValueObjects\OwnerId;
 use Flashcard\Application\Query\GetMainCategory;
 use Flashcard\Application\Query\GetUserCategories;
-use Flashcard\Domain\Models\Owner;
-use Flashcard\Domain\ValueObjects\OwnerId;
+use Flashcard\Application\Query\GetCategoryDetails;
+use Flashcard\Application\Command\GenerateFlashcardsHandler;
 use Flashcard\Infrastructure\Http\Request\GenerateFlashcardsRequest;
-use Flashcard\Infrastructure\Http\Request\IndexFlashcardCategoryRequest;
 use Flashcard\Infrastructure\Http\Resources\CategoryDetailsResource;
+use Flashcard\Infrastructure\Http\Request\IndexFlashcardCategoryRequest;
 use Flashcard\Infrastructure\Http\Resources\FlashcardCategoriesResource;
-use OpenApi\Attributes as OAT;
-use Shared\Enum\FlashcardOwnerType;
 
 class FlashcardCategoryController
 {
@@ -113,7 +112,6 @@ class FlashcardCategoryController
         GenerateFlashcardsHandler $generate_flashcards,
         GetCategoryDetails $get_category_details,
     ): CategoryDetailsResource {
-
         $category_id = $generate_flashcards->handle($request->toCommand());
 
         return new CategoryDetailsResource($get_category_details->get($category_id));

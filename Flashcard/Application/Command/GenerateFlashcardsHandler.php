@@ -1,14 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Flashcard\Application\Command;
 
-use Flashcard\Application\Repository\IFlashcardCategoryRepository;
-use Flashcard\Application\Repository\IFlashcardRepository;
-use Flashcard\Application\Services\AiGenerators\IFlashcardGenerator;
 use Flashcard\Domain\Models\Category;
+use Shared\Utils\ValueObjects\Language;
 use Flashcard\Domain\Models\FlashcardPrompt;
 use Flashcard\Domain\ValueObjects\CategoryId;
-use Shared\Utils\ValueObjects\Language;
+use Flashcard\Application\Repository\IFlashcardRepository;
+use Flashcard\Application\Repository\IFlashcardCategoryRepository;
+use Flashcard\Application\Services\AiGenerators\IFlashcardGenerator;
 
 class GenerateFlashcardsHandler
 {
@@ -30,7 +32,7 @@ class GenerateFlashcardsHandler
         $category = $this->category_repository->createCategory($category);
 
         if (!$category instanceof Category) {
-            throw new \Exception("Invalid category type");
+            throw new \Exception('Invalid category type');
         }
 
         $flashcards = $this->generator->generate($command->getOwner(), $category, $prompt);

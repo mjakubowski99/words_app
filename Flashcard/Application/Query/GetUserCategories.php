@@ -4,17 +4,15 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\Query;
 
-use Flashcard\Application\DTO\UserFlashcardCategoryDTO;
-use Flashcard\Application\Repository\IFlashcardCategoryReadRepository;
-use Flashcard\Application\Repository\IFlashcardCategoryRepository;
-use Flashcard\Domain\Models\Category;
+use Flashcard\Application\ReadModels\OwnerCategoryRead;
 use Flashcard\Domain\Models\Owner;
+use Flashcard\Application\Repository\IFlashcardCategoryReadRepository;
 
 class GetUserCategories
 {
     public function __construct(private IFlashcardCategoryReadRepository $repository) {}
 
-    /** @return UserFlashcardCategoryDTO[] */
+    /** @return OwnerCategoryRead[] */
     public function handle(Owner $owner, int $page, int $per_page): array
     {
         return $this->repository->getByOwner($owner, $page, $per_page);

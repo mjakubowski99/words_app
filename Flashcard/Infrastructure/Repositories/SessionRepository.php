@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Repositories;
 
-use Flashcard\Application\Repository\ISessionRepository;
+use Shared\Enum\SessionStatus;
 use Flashcard\Domain\Models\Owner;
 use Flashcard\Domain\Models\Session;
 use Flashcard\Domain\ValueObjects\SessionId;
 use Flashcard\Infrastructure\Mappers\SessionMapper;
-use Shared\Enum\SessionStatus;
+use Flashcard\Application\Repository\ISessionRepository;
 
 class SessionRepository implements ISessionRepository
 {

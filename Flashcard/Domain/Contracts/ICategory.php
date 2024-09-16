@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Flashcard\Domain\Contracts;
 
 use Flashcard\Domain\Models\Owner;
-use Flashcard\Domain\ValueObjects\CategoryId;
 use Shared\Enum\FlashcardCategoryType;
+use Flashcard\Domain\ValueObjects\CategoryId;
 
 interface ICategory
 {

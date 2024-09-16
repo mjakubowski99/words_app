@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Flashcard\Domain\Models;
 
-use Flashcard\Domain\Exceptions\SessionFlashcardAlreadyRatedException;
 use Flashcard\Domain\ValueObjects\FlashcardId;
 use Flashcard\Domain\ValueObjects\SessionFlashcardId;
+use Flashcard\Domain\Exceptions\SessionFlashcardAlreadyRatedException;
 
 class RateableSessionFlashcard
 {

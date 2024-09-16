@@ -18,7 +18,7 @@ return new class() extends Migration {
             $table->string('status');
             $table->string('device');
             $table->unsignedSmallInteger('cards_per_session');
-            $table->unsignedSmallInteger('flashcard_category_id');
+            $table->unsignedSmallInteger('flashcard_category_id')->nullable();
             $table->timestamps();
 
             $table->foreign('user_id')

@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Flashcard\Infrastructure\Repositories;
 
-use Flashcard\Application\Repository\INextSessionFlashcardsRepository;
-use Flashcard\Domain\Models\NextSessionFlashcards;
-use Flashcard\Domain\ValueObjects\SessionId;
-use Flashcard\Infrastructure\Mappers\SessionMapper;
 use Illuminate\Support\Facades\DB;
+use Flashcard\Domain\ValueObjects\SessionId;
+use Flashcard\Domain\Models\NextSessionFlashcards;
+use Flashcard\Infrastructure\Mappers\SessionMapper;
+use Flashcard\Application\Repository\INextSessionFlashcardsRepository;
 
 class NextSessionFlashcardsRepository implements INextSessionFlashcardsRepository
 {

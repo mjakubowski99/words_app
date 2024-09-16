@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Flashcard\Infrastructure\Repositories\SessionRepository;
 
-use App\Models\FlashcardCategory;
-use App\Models\LearningSession;
 use App\Models\User;
-use Flashcard\Domain\Models\Session;
-use Flashcard\Domain\ValueObjects\SessionId;
-use Flashcard\Infrastructure\Repositories\SessionRepository;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Shared\Enum\SessionStatus;
-use Shared\Utils\ValueObjects\UserId;
+use App\Models\LearningSession;
+use App\Models\FlashcardCategory;
 use Tests\Base\FlashcardTestCase;
+use Flashcard\Domain\Models\Session;
+use Flashcard\Domain\Models\MainCategory;
+use Flashcard\Domain\ValueObjects\SessionId;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Flashcard\Infrastructure\Repositories\SessionRepository;
 
 class SessionRepositoryTest extends FlashcardTestCase
 {
@@ -49,6 +49,31 @@ class SessionRepositoryTest extends FlashcardTestCase
         $this->assertDatabaseHas('learning_sessions', [
             'id' => $session_id->getValue(),
             'user_id' => $user->id,
+        ]);
+    }
+
+    /**
+     * @test
+     */
+    public function create_MainCategory_success(): void
+    {
+        // GIVEN
+        $user = User::factory()->create();
+        $category = new MainCategory();
+        $session = new Session(
+            SessionStatus::STARTED,
+            $user->toOwner(),
+            10,
+            'Mozilla/Firefox',
+            $category
+        );
+
+        $session_id = $this->repository->create($session);
+
+        $this->assertDatabaseHas('learning_sessions', [
+            'id' => $session_id->getValue(),
+            'user_id' => $user->id,
+            'flashcard_category_id' => null,
         ]);
     }
 

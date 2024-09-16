@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\Command;
 
-use Flashcard\Application\Repository\IRateableSessionFlashcardsRepository;
 use Flashcard\Application\Services\IRepetitionAlgorithm;
+use Flashcard\Application\Repository\IRateableSessionFlashcardsRepository;
 
 class RateFlashcards
 {

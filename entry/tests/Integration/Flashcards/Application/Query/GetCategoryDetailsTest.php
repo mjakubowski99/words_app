@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Integration\Flashcards\Application\Query;
 
+use Tests\TestCase;
 use App\Models\Flashcard;
 use App\Models\FlashcardCategory;
 use Flashcard\Application\Query\GetCategoryDetails;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Tests\TestCase;
 
 class GetCategoryDetailsTest extends TestCase
 {

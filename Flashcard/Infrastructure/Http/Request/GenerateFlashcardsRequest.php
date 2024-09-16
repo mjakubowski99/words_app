@@ -31,7 +31,7 @@ class GenerateFlashcardsRequest extends Request
         ];
     }
 
-    public function getCategoryName()
+    public function getCategoryName(): string
     {
         return $this->input('category_name');
     }

@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use Database\Factories\FlashcardCategoryFactory;
-use Flashcard\Domain\ValueObjects\CategoryId;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
-use Shared\Utils\ValueObjects\UserId;
+use Flashcard\Domain\Models\Category;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
+use Flashcard\Domain\ValueObjects\CategoryId;
+use Database\Factories\FlashcardCategoryFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
  * @property        int                       $id
@@ -48,9 +48,9 @@ class FlashcardCategory extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function toDomainModel(): \Flashcard\Domain\Models\Category
+    public function toDomainModel(): Category
     {
-        return (new \Flashcard\Domain\Models\Category(
+        return (new Category(
             $this->user->toOwner(),
             $this->tag,
             $this->name,

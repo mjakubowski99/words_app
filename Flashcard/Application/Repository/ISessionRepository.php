@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\Repository;
 
+use Shared\Enum\SessionStatus;
 use Flashcard\Domain\Models\Owner;
 use Flashcard\Domain\Models\Session;
 use Flashcard\Domain\ValueObjects\SessionId;
-use Shared\Enum\SessionStatus;
 
 interface ISessionRepository
 {

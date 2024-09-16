@@ -4,14 +4,19 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Repositories;
 
-use Flashcard\Application\Repository\IFlashcardRepository;
 use Flashcard\Domain\Models\Owner;
+use Flashcard\Domain\ValueObjects\SessionId;
 use Flashcard\Domain\ValueObjects\CategoryId;
 use Flashcard\Infrastructure\Mappers\FlashcardMapper;
+use Flashcard\Application\Repository\IFlashcardRepository;
+use Flashcard\Infrastructure\Mappers\SessionFlashcardMapper;
 
 class FlashcardRepository implements IFlashcardRepository
 {
-    public function __construct(private FlashcardMapper $mapper) {}
+    public function __construct(
+        private FlashcardMapper $mapper,
+        private SessionFlashcardMapper $session_flashcard_mapper,
+    ) {}
 
     public function getRandomFlashcards(Owner $owner, int $limit, array $exclude_flashcard_ids): array
     {
@@ -31,5 +36,10 @@ class FlashcardRepository implements IFlashcardRepository
     public function getByCategory(CategoryId $category_id): array
     {
         return $this->mapper->getByCategory($category_id);
+    }
+
+    public function getLatestSessionFlashcardIds(SessionId $session_id, int $limit): array
+    {
+        return $this->session_flashcard_mapper->getLatestSessionFlashcardIds($session_id, $limit);
     }
 }
