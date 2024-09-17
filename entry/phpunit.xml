@@ -4,13 +4,6 @@
          bootstrap="vendor/autoload.php"
          colors="true"
 >
-    <coverage processUncoveredFiles="true">
-        <include>
-            <directory suffix=".php">../User</directory>
-            <directory suffix=".php">../Flashcard</directory>
-        </include>
-    </coverage>
-
     <testsuites>
         <testsuite name="Unit">
             <directory>tests/Unit</directory>

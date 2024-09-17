@@ -34,6 +34,7 @@ class NextSessionFlashcardsTest extends TestCase
             $owner,
             $this->makeCategory($owner),
             12,
+            10,
             11,
         );
     }
@@ -47,6 +48,7 @@ class NextSessionFlashcardsTest extends TestCase
             $owner,
             $this->makeCategory($owner),
             10,
+            3,
             11,
         );
         $flashcard = $this->makeFlashcard($owner);
@@ -68,6 +70,7 @@ class NextSessionFlashcardsTest extends TestCase
             $owner,
             $this->makeCategory($owner),
             11,
+            3,
             11,
         );
         $flashcard = $this->makeFlashcard($owner);

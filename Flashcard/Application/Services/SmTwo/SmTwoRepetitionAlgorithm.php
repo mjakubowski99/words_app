@@ -20,14 +20,19 @@ class SmTwoRepetitionAlgorithm implements IRepetitionAlgorithm
             return;
         }
 
-        $flashcard_ids = $session_flashcards->pluckSessionFlashcardIds();
+        $rated_flashcard_ids = [];
+        foreach ($session_flashcards->all() as $session_flashcard) {
+            if ($session_flashcard->rated()) {
+                $rated_flashcard_ids[] = $session_flashcard->getFlashcardId();
+            }
+        }
 
-        $sm_two_flashcards = $this->repository->findMany($session_flashcards->getOwner(), $flashcard_ids);
-
-        $sm_two_flashcards->fillMissing($session_flashcards->getOwner(), $flashcard_ids);
+        $sm_two_flashcards = $this->repository->findMany($session_flashcards->getOwner(), $rated_flashcard_ids);
 
         foreach ($session_flashcards->all() as $session_flashcard) {
             if ($session_flashcard->rated()) {
+                $sm_two_flashcards->fillMissing($session_flashcards->getOwner(), [$session_flashcard->getFlashcardId()]);
+
                 $sm_two_flashcards->updateByRating(
                     $session_flashcard->getFlashcardId(),
                     $session_flashcard->getRating(),

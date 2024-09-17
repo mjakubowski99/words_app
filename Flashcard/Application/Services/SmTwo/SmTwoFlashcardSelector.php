@@ -29,14 +29,7 @@ class SmTwoFlashcardSelector implements IFlashcardSelector
     {
         $latest_ids = $this->flashcard_repository->getLatestSessionFlashcardIds($next_session_flashcards->getSessionId(), $limit);
 
-        $flashcards = $this->repository->getFlashcardsWithLowestRepetitionInterval($next_session_flashcards->getOwner(), $limit, $latest_ids);
-
-        if (count($flashcards) !== $limit) {
-            $random_flashcards = $this->flashcard_repository->getRandomFlashcards($next_session_flashcards->getOwner(), $limit, $latest_ids);
-            $flashcards = array_merge($random_flashcards, $flashcards);
-        }
-
-        return $flashcards;
+        return $this->repository->getFlashcardsWithLowestRepetitionInterval($next_session_flashcards->getOwner(), $limit, $latest_ids);
     }
 
     private function selectNormal(NextSessionFlashcards $next_session_flashcards, int $limit): array
@@ -44,16 +37,6 @@ class SmTwoFlashcardSelector implements IFlashcardSelector
         $latest_ids = $this->flashcard_repository->getLatestSessionFlashcardIds($next_session_flashcards->getSessionId(), $limit);
         $category = $next_session_flashcards->getCategory();
 
-        $flashcards = $this->repository->getFlashcardsWithLowestRepetitionIntervalByCategory($category->getId(), $limit, $latest_ids);
-
-        if (count($flashcards) !== $limit) {
-            $limit = $limit - count($flashcards);
-
-            $random_flashcards = $this->flashcard_repository->getRandomFlashcardsByCategory($category->getId(), $limit, $latest_ids);
-
-            $flashcards = array_merge($random_flashcards, $flashcards);
-        }
-
-        return $flashcards;
+        return $this->repository->getFlashcardsWithLowestRepetitionIntervalByCategory($category->getId(), $limit, $latest_ids);
     }
 }

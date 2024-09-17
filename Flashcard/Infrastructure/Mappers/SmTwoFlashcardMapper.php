@@ -42,19 +42,54 @@ class SmTwoFlashcardMapper
     public function saveMany(SmTwoFlashcards $sm_two_flashcards): void
     {
         $now = now();
+        $query = $this->db::table('sm_two_flashcards');
 
         foreach ($sm_two_flashcards->all() as $flashcard) {
-            $this->db::table('sm_two_flashcards')
-                ->updateOrInsert([
+            $query->orWhere(
+                fn($q) => $q->where([
                     'flashcard_id' => $flashcard->getFlashcardId(),
                     'user_id' => $flashcard->getOwner()->getId(),
-                ], [
+                ])
+            );
+        }
+
+        $results = $query->select('flashcard_id', 'user_id')->get();
+
+        $insert_data = [];
+
+        foreach ($sm_two_flashcards->all() as $flashcard) {
+
+            if (
+                $results->where('flashcard_id', $flashcard->getFlashcardId()->getValue())
+                    ->where('user_id', $flashcard->getOwner()->getId()->getValue())
+                    ->isEmpty()
+            ) {
+                $insert_data[] = [
+                    'flashcard_id' => $flashcard->getFlashcardId(),
+                    'user_id' => $flashcard->getOwner()->getId(),
                     'repetition_ratio' => $flashcard->getRepetitionRatio(),
                     'repetition_interval' => $flashcard->getRepetitionInterval(),
                     'repetition_count' => $flashcard->getRepetitionCount(),
                     'created_at' => $now,
                     'updated_at' => $now,
-                ]);
+                ];
+            } else {
+                $this->db::table('sm_two_flashcards')
+                    ->where([
+                        'flashcard_id' => $flashcard->getFlashcardId(),
+                        'user_id' => $flashcard->getOwner()->getId(),
+                    ])->update([
+                        'repetition_ratio' => $flashcard->getRepetitionRatio(),
+                        'repetition_interval' => $flashcard->getRepetitionInterval(),
+                        'repetition_count' => $flashcard->getRepetitionCount(),
+                        'created_at' => $now,
+                        'updated_at' => $now,
+                    ]);
+            }
+        }
+
+        if (!empty($insert_data)) {
+            $this->db::table('sm_two_flashcards')->insert($insert_data);
         }
     }
 

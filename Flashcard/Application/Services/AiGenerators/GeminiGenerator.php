@@ -54,16 +54,18 @@ class GeminiGenerator implements IFlashcardGenerator
         preg_match($pattern, $text, $matches);
 
         if (empty($matches)) {
-            throw new \Exception('Failed to parse');
+            $rows = json_decode($text, true);
+
+            if ($rows) {
+                return $rows;
+            }
+
+            throw new \Exception("Failed to parse chat response");
         }
 
         $json = $matches[1];
         $json = trim($json);
         $rows = json_decode($json, true);
-
-        if (!$rows) {
-            $rows = json_decode($text, true);
-        }
 
         return $rows;
     }

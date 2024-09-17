@@ -10,6 +10,8 @@ use Flashcard\Domain\Exceptions\TooManySessionFlashcardsException;
 
 class NextSessionFlashcards
 {
+    public const UNRATED_LIMIT = 5;
+
     private array $next_session_flashcards = [];
 
     public function __construct(
@@ -17,10 +19,11 @@ class NextSessionFlashcards
         private Owner $owner,
         private ICategory $category,
         private int $current_session_flashcards_count,
+        private int $unrated_count,
         private int $max_flashcards_count,
     ) {
-        if ($this->current_session_flashcards_count > $this->max_flashcards_count) {
-            throw new TooManySessionFlashcardsException();
+        if (!$this->isValid()) {
+            throw new \Exception();
         }
     }
 
@@ -39,8 +42,19 @@ class NextSessionFlashcards
         return $this->category;
     }
 
+    public function isValid(): bool
+    {
+        if ($this->unrated_count > self::UNRATED_LIMIT) {
+            return false;
+        }
+        return $this->current_session_flashcards_count <= $this->max_flashcards_count;
+    }
+
     public function canAddNext(): bool
     {
+        if ($this->unrated_count+1 > self::UNRATED_LIMIT) {
+            return false;
+        }
         return $this->current_session_flashcards_count + 1 <= $this->max_flashcards_count;
     }
 
@@ -54,6 +68,7 @@ class NextSessionFlashcards
             $flashcard->getId()
         );
         ++$this->current_session_flashcards_count;
+        ++$this->unrated_count;
     }
 
     public function getNextFlashcards(): array

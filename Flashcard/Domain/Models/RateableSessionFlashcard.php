@@ -41,7 +41,7 @@ class RateableSessionFlashcard
     public function rate(Rating $rating): void
     {
         if ($this->rated()) {
-            throw new SessionFlashcardAlreadyRatedException();
+            throw new SessionFlashcardAlreadyRatedException("Already rated", (string) $this->id->getValue());
         }
         $this->rating = $rating;
     }

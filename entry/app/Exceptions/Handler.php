@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Flashcard\Domain\Exceptions\SessionFlashcardAlreadyRatedException;
 
 class Handler extends ExceptionHandler
 {
@@ -25,5 +26,15 @@ class Handler extends ExceptionHandler
     public function register(): void
     {
         $this->reportable(function (\Throwable $e) {});
+
+        $this->renderable(function (SessionFlashcardAlreadyRatedException $exception, $request) {
+            return response()->json(
+                [
+                    'message' => $exception->getMessage(),
+                    'id' => $exception->getIdentifier(),
+                ],
+                400
+            );
+        });
     }
 }

@@ -45,6 +45,7 @@ class NextSessionFlashcardsRepositoryTest extends TestCase
             $session->user->toOwner(),
             $session->category->toDomainModel(),
             8,
+            2,
             10
         );
         $object->addNext($flashcard->toDomainModel());

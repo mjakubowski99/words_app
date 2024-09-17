@@ -21,13 +21,13 @@ class FlashcardFromSmTwoMapper
 
     public function getFlashcardsWithLowestRepetitionInterval(Owner $owner, int $limit, array $exclude_flashcard_ids): array
     {
-        return $this->db::table('sm_two_flashcards')
-            ->join('flashcards', 'flashcards.id', '=', 'sm_two_flashcards.flashcard_id')
-            ->where('sm_two_flashcards.user_id', $owner->getId())
-            ->whereNotIn('sm_two_flashcards.flashcard_id', $exclude_flashcard_ids)
-            ->orderBy('sm_two_flashcards.repetition_interval', 'ASC')
+        return $this->db::table('flashcards')
+            ->whereNotIn('flashcards.id', array_map(fn (FlashcardId $id) => $id->getValue(), $exclude_flashcard_ids))
+            ->where('flashcards.user_id', $owner->getId())
+            ->leftJoin('sm_two_flashcards', 'sm_two_flashcards.flashcard_id', '=', 'flashcards.id')
             ->take($limit)
-            ->select('id', 'word', 'word_lang', 'translation', 'translation_lang', 'context', 'context_translation', 'flashcards.user_id', 'flashcards.flashcard_category_id')
+            ->orderByRaw('NULLIF(repetition_interval, 1), RANDOM() ASC')
+            ->select('flashcards.*')
             ->get()
             ->map(function (object $flashcard) {
                 return $this->map($flashcard);
@@ -36,13 +36,13 @@ class FlashcardFromSmTwoMapper
 
     public function getFlashcardsWithLowestRepetitionIntervalByCategory(CategoryId $category_id, int $limit, array $exclude_flashcard_ids): array
     {
-        return $this->db::table('sm_two_flashcards')
-            ->join('flashcards', 'flashcards.id', '=', 'sm_two_flashcards.flashcard_id')
+        return $this->db::table('flashcards')
+            ->whereNotIn('flashcards.id', array_map(fn (FlashcardId $id) => $id->getValue(), $exclude_flashcard_ids))
             ->where('flashcards.flashcard_category_id', $category_id->getValue())
-            ->whereNotIn('sm_two_flashcards.flashcard_id', $exclude_flashcard_ids)
-            ->orderBy('sm_two_flashcards.repetition_interval', 'ASC')
+            ->leftJoin('sm_two_flashcards', 'sm_two_flashcards.flashcard_id', '=', 'flashcards.id')
             ->take($limit)
-            ->select('id', 'word', 'word_lang', 'translation', 'translation_lang', 'context', 'context_translation', 'flashcards.user_id', 'flashcards.flashcard_category_id')
+            ->orderByRaw('NULLIF(repetition_interval, 1), RANDOM() ASC')
+            ->select('flashcards.*')
             ->get()
             ->map(function (object $flashcard) {
                 return $this->map($flashcard);

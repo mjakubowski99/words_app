@@ -25,11 +25,17 @@ class NextSessionFlashcardsRepository implements INextSessionFlashcardsRepositor
             ->where('learning_session_id', $id->getValue())
             ->count();
 
+        $unrated_count = $this->db::table('learning_session_flashcards')
+            ->where('learning_session_id', $id->getValue())
+            ->whereNull('rating')
+            ->count();
+
         return new NextSessionFlashcards(
             $id,
             $session->getOwner(),
             $session->getFlashcardCategory(),
             $count,
+            $unrated_count,
             $session->getCardsPerSession(),
         );
     }
