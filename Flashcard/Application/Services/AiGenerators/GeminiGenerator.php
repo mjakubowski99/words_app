@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\Services\AiGenerators;
 
-use Flashcard\Application\Exceptions\GeminiApiException;
 use Flashcard\Domain\Models\Owner;
 use Flashcard\Domain\Models\Category;
 use Flashcard\Domain\Models\Flashcard;
 use Flashcard\Domain\Models\FlashcardPrompt;
 use Flashcard\Domain\ValueObjects\FlashcardId;
 use Shared\Integrations\Gemini\IGeminiApiClient;
+use Flashcard\Application\Exceptions\GeminiApiException;
 
 class GeminiGenerator implements IFlashcardGenerator
 {
@@ -24,6 +24,7 @@ class GeminiGenerator implements IFlashcardGenerator
 
         if (!$response->success()) {
             $response = json_encode($response->getErrorResponse());
+
             throw new GeminiApiException(is_string($response) ? $response : '');
         }
 
@@ -60,7 +61,7 @@ class GeminiGenerator implements IFlashcardGenerator
                 return $rows;
             }
 
-            throw new \Exception("Failed to parse chat response");
+            throw new \Exception('Failed to parse chat response');
         }
 
         $json = $matches[1];

@@ -68,4 +68,34 @@ class SessionControllerTest extends TestCase
         // THEN
         $response->assertStatus(200);
     }
+
+    /**
+     * @test
+     */
+    public function rate_WhenFlashcardAlreadyRated_badRequest(): void
+    {
+        // GIVEN
+        $user = User::factory()->create();
+        $session = LearningSession::factory()->create();
+        $flashcards = LearningSessionFlashcard::factory(1)->create([
+            'learning_session_id' => $session->id,
+            'rating' => Rating::GOOD,
+        ]);
+
+        // WHEN
+        $response = $this
+            ->actingAs($user, 'firebase')
+            ->putJson(route('flashcards.session.rate', ['session_id' => $session->id]), [
+                'ratings' => [
+                    ['id' => $flashcards[0]->id, 'rating' => Rating::GOOD],
+                ],
+            ]);
+
+        // THEN
+        $response->assertStatus(400);
+        $response->assertJsonStructure([
+            'message',
+            'id',
+        ]);
+    }
 }

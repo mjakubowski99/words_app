@@ -46,7 +46,7 @@ class SmTwoFlashcardMapper
 
         foreach ($sm_two_flashcards->all() as $flashcard) {
             $query->orWhere(
-                fn($q) => $q->where([
+                fn ($q) => $q->where([
                     'flashcard_id' => $flashcard->getFlashcardId(),
                     'user_id' => $flashcard->getOwner()->getId(),
                 ])
@@ -58,7 +58,6 @@ class SmTwoFlashcardMapper
         $insert_data = [];
 
         foreach ($sm_two_flashcards->all() as $flashcard) {
-
             if (
                 $results->where('flashcard_id', $flashcard->getFlashcardId()->getValue())
                     ->where('user_id', $flashcard->getOwner()->getId()->getValue())

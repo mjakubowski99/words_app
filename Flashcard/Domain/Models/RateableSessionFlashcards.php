@@ -82,6 +82,6 @@ class RateableSessionFlashcards
             }
         }
 
-        throw new RateableSessionFlashcardNotFound();
+        throw new RateableSessionFlashcardNotFound('Flashcard already rated or not exists', (string) $id->getValue());
     }
 }

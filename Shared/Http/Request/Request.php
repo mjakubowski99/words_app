@@ -15,9 +15,9 @@ class Request extends FormRequest
 {
     public function current($guard = null): IUser
     {
-//        $user = User::query()->first();
-//
-//        return new UserDTO($user);
+        //        $user = User::query()->first();
+        //
+        //        return new UserDTO($user);
 
         $user = $this->user($guard);
 

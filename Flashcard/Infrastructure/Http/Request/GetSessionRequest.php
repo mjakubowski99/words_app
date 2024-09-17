@@ -14,7 +14,7 @@ class GetSessionRequest extends Request
         $session_id = $this->route('session_id');
 
         if (is_object($session_id)) {
-            throw new \UnexpectedValueException("Session id is object");
+            throw new \UnexpectedValueException('Session id is object');
         }
 
         return new SessionId((int) $session_id);

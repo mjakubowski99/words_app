@@ -47,14 +47,16 @@ class NextSessionFlashcards
         if ($this->unrated_count > self::UNRATED_LIMIT) {
             return false;
         }
+
         return $this->current_session_flashcards_count <= $this->max_flashcards_count;
     }
 
     public function canAddNext(): bool
     {
-        if ($this->unrated_count+1 > self::UNRATED_LIMIT) {
+        if ($this->unrated_count + 1 > self::UNRATED_LIMIT) {
             return false;
         }
+
         return $this->current_session_flashcards_count + 1 <= $this->max_flashcards_count;
     }
 

@@ -145,23 +145,19 @@ class SessionController extends Controller
         AddSessionFlashcardsHandler $add_session_flashcards,
         GetNextSessionFlashcardsHandler $get_next_session_flashcards,
     ): SessionFlashcardsResource {
-        $command = new RateFlashcardsCommand(
+        $rate_command = new RateFlashcardsCommand(
             new Owner(new OwnerId($request->getUserId()->getValue()), FlashcardOwnerType::USER),
             $request->getSessionId(),
             $request->getRatings(),
         );
+        $add_session_flashcards_command = new AddSessionFlashcards($request->getSessionId(), 5);
 
-        $rate->handle($command);
-
-        $add_session_flashcards->handle(new AddSessionFlashcards($command->getSessionId(), 5));
-
-        $session = $get_session->handle($command->getSessionId());
-
-        $flashcards = $get_next_session_flashcards->handle($session->getId(), 5);
+        $rate->handle($rate_command);
+        $add_session_flashcards->handle($add_session_flashcards_command);
 
         return new SessionFlashcardsResource([
-            'session' => $session,
-            'flashcards' => $flashcards,
+            'session' => $get_session->handle($request->getSessionId()),
+            'flashcards' => $get_next_session_flashcards->handle($request->getSessionId(), 5),
         ]);
     }
 }
