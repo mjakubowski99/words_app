@@ -31,7 +31,8 @@
         "psr-4": {
             "App\\": "app/",
             "User\\": "../User",
-            "UseCases\\": "../UseCases",
+            "Integrations\\": "../Integrations",
+            "Flashcard\\": "../Flashcard",
             "Shared\\": "../Shared",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"

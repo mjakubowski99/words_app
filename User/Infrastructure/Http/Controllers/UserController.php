@@ -4,14 +4,16 @@ declare(strict_types=1);
 
 namespace User\Infrastructure\Http\Controllers;
 
-use UseCases\User\Create;
 use App\Http\OpenApi\Tags;
 use OpenApi\Attributes as OAT;
 use Shared\Http\Request\Request;
 use App\Http\Controllers\Controller;
-use Shared\Auth\ExternalAuthenticable;
+use Shared\Utils\Auth\ExternalAuthenticable;
+use User\Application\Command\CreateExternalUser;
+use User\Application\Query\FindExternalUserHandler;
 use User\Infrastructure\Http\Request\GetUserRequest;
 use User\Infrastructure\Http\Resources\UserResource;
+use User\Application\Command\CreateExternalUserHandler;
 
 class UserController extends Controller
 {
@@ -47,14 +49,25 @@ class UserController extends Controller
             ),
         ],
     )]
-    public function initFirebaseUser(Request $request, Create $use_case): UserResource
+    public function initFirebaseUser(Request $request, CreateExternalUserHandler $create, FindExternalUserHandler $find): UserResource
     {
-        $firebase_authenticable = ExternalAuthenticable::fromFirebase(
-            $request->user('firebase')
+        $firebase_authenticable = ExternalAuthenticable::fromFirebase($request->user('firebase'));
+
+        $command = new CreateExternalUser(
+            $firebase_authenticable->getProviderId(),
+            $firebase_authenticable->getProviderType(),
+            $firebase_authenticable->getEmail(),
+            $firebase_authenticable->getName(),
+            $firebase_authenticable->getPicture()
         );
 
+        $create->handle($command);
+
         return new UserResource(
-            $use_case->createByExternal($firebase_authenticable)
+            $find->handle(
+                $firebase_authenticable->getProviderId(),
+                $firebase_authenticable->getProviderType()
+            )
         );
     }
 

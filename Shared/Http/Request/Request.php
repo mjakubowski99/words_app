@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Shared\Http\Request;
 
-use UseCases\User\Find;
-use UseCases\Contracts\User\IUser;
-use Shared\Utils\ValueObjects\Uuid;
-use Shared\Auth\ExternalAuthenticable;
+use Shared\User\IUser;
+use Shared\User\IUserFacade;
+use Shared\Utils\ValueObjects\UserId;
 use Illuminate\Foundation\Http\FormRequest;
+use Shared\Utils\Auth\ExternalAuthenticable;
 use Mjakubowski\FirebaseAuth\FirebaseAuthenticable;
 
 class Request extends FormRequest
@@ -21,15 +21,18 @@ class Request extends FormRequest
             abort(404);
         }
 
-        /** @var Find $find */
-        $find = app(Find::class);
+        /** @var IUserFacade $user_facade */
+        $user_facade = app(IUserFacade::class);
 
         if ($user instanceof FirebaseAuthenticable) {
-            return $find->findByExternal(
-                ExternalAuthenticable::fromFirebase($user)
+            $authenticable = ExternalAuthenticable::fromFirebase($user);
+
+            return $user_facade->findByExternal(
+                $authenticable->getProviderId(),
+                $authenticable->getProviderType()
             );
         }
 
-        return $find->findById(Uuid::fromString($user->id));
+        return $user_facade->findById(new UserId($user->id));
     }
 }

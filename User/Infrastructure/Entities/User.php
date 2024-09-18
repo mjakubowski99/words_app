@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace User\Infrastructure\Entities;
 
 use App\Models\User as BaseModel;
-use Shared\Utils\ValueObjects\Uuid;
+use Shared\Utils\ValueObjects\UserId;
 use User\Domain\Models\Entities\IUser;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
@@ -19,9 +19,9 @@ class User extends BaseModel implements IUser
 {
     use HasUuids;
 
-    public function getId(): Uuid
+    public function getId(): UserId
     {
-        return Uuid::fromString($this->id);
+        return new UserId($this->id);
     }
 
     public function getName(): string

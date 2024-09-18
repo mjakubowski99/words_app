@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Exceptions;
 
+use Flashcard\Domain\Exceptions\RateableSessionFlashcardNotFound;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
 class Handler extends ExceptionHandler
@@ -25,5 +26,15 @@ class Handler extends ExceptionHandler
     public function register(): void
     {
         $this->reportable(function (\Throwable $e) {});
+
+        $this->renderable(function (RateableSessionFlashcardNotFound $exception, $request) {
+            return response()->json(
+                [
+                    'message' => $exception->getMessage(),
+                    'id' => $exception->getIdentifier(),
+                ],
+                400
+            );
+        });
     }
 }

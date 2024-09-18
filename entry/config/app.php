@@ -9,6 +9,8 @@ use App\Providers\EventServiceProvider;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Support\ServiceProvider;
 use Shared\Providers\SharedServiceProvider;
+use Integrations\IntegrationsServiceProvider;
+use Flashcard\Infrastructure\FlashcardServiceProvider;
 use User\Infrastructure\Providers\UserServiceProvider;
 
 return [
@@ -178,6 +180,8 @@ return [
 
         SharedServiceProvider::class,
         UserServiceProvider::class,
+        FlashcardServiceProvider::class,
+        IntegrationsServiceProvider::class,
     ])->toArray(),
 
     /*
