@@ -67,7 +67,7 @@ class FlashcardCategoryController
     }
 
     #[OAT\Post(
-        path: 'api/flashcards/generate-by-category',
+        path: '/api/flashcards/categories/generate-flashcards',
         operationId: 'flashcards.generate-by-category',
         description: 'Generate flashcards by provided category',
         summary: 'Generate flashcards by provided category',

@@ -11,12 +11,12 @@ Route::group(['middleware' => 'auth:firebase'], function () {
     Route::post('/user/firebase-init', [UserController::class, 'initFirebaseUser'])->name('user.firebase-init');
     Route::get('/user/me', [UserController::class, 'me'])->name('user.me');
 
-    Route::post('/flashcards/generate-by-category', [FlashcardCategoryController::class, 'generateFlashcards'])
-        ->name('flashcards.generate-by-category');
     Route::get('/flashcards/categories/by-user', [FlashcardCategoryController::class, 'index'])
         ->name('flashcards.categories.index');
     Route::get('/flashcards/categories/{category_id}', [FlashcardCategoryController::class, 'get'])
         ->name('flashcards.categories.get');
+    Route::post('/flashcards/categories/generate-flashcards', [FlashcardCategoryController::class, 'generateFlashcards'])
+        ->name('flashcards.categories.generate-flashcards');
 
     Route::get('/flashcards/session/{session_id}', [SessionController::class, 'get'])
         ->name('flashcards.session.get');

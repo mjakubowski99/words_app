@@ -112,7 +112,7 @@ class FlashcardCategoryControllerTest extends TestCase
         // GIVEN
         // WHEN
         $response = $this
-            ->json('POST', route('flashcards.generate-by-category'), [
+            ->json('POST', route('flashcards.categories.generate-flashcards'), [
                 'category_name' => 'Category',
             ]);
 
@@ -127,7 +127,7 @@ class FlashcardCategoryControllerTest extends TestCase
 
         // WHEN
         $response = $this->actingAs($user, 'firebase')
-            ->json('POST', route('flashcards.generate-by-category'), [
+            ->json('POST', route('flashcards.categories.generate-flashcards'), [
                 'category_name' => 'Category',
             ]);
 
