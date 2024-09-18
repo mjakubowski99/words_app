@@ -35,6 +35,6 @@ return new class() extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('session_flashcards');
+        Schema::dropIfExists('learning_session_flashcards');
     }
 };
