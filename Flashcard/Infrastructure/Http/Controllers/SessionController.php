@@ -15,7 +15,7 @@ use Flashcard\Application\Command\RateFlashcards;
 use Flashcard\Application\Query\GetSessionHandler;
 use Flashcard\Application\Command\AddSessionFlashcards;
 use Flashcard\Application\Command\CreateSessionHandler;
-use Flashcard\Application\Command\RateFlashcardsCommand;
+use Flashcard\Application\Command\RateFlashcardsHandler;
 use Flashcard\Infrastructure\Http\Request\GetSessionRequest;
 use Flashcard\Application\Command\AddSessionFlashcardsHandler;
 use Flashcard\Infrastructure\Http\Request\CreateSessionRequest;
@@ -140,12 +140,12 @@ class SessionController extends Controller
     )]
     public function rate(
         RateSessionFlashcardRequest $request,
-        RateFlashcards $rate,
+        RateFlashcardsHandler $rate,
         GetSessionHandler $get_session,
         AddSessionFlashcardsHandler $add_session_flashcards,
         GetNextSessionFlashcardsHandler $get_next_session_flashcards,
     ): SessionFlashcardsResource {
-        $rate_command = new RateFlashcardsCommand(
+        $rate_command = new RateFlashcards(
             new Owner(new OwnerId($request->getUserId()->getValue()), FlashcardOwnerType::USER),
             $request->getSessionId(),
             $request->getRatings(),

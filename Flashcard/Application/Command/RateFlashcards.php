@@ -4,26 +4,32 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\Command;
 
-use Flashcard\Application\Services\IRepetitionAlgorithm;
-use Flashcard\Application\Repository\IRateableSessionFlashcardsRepository;
+use Flashcard\Domain\Models\Owner;
+use Flashcard\Domain\ValueObjects\SessionId;
 
 class RateFlashcards
 {
     public function __construct(
-        private readonly IRateableSessionFlashcardsRepository $repository,
-        private readonly IRepetitionAlgorithm $repetition_algorithm,
+        private Owner $owner,
+        private SessionId $session_id,
+        private array $ratings
     ) {}
 
-    public function handle(RateFlashcardsCommand $command): void
+    public function getOwner(): Owner
     {
-        $session_flashcards = $this->repository->find($command->getSessionId());
+        return $this->owner;
+    }
 
-        foreach ($command->getRatings() as $rating) {
-            $session_flashcards->rate($rating->getSessionFlashcardId(), $rating->getRating());
-        }
+    public function getSessionId(): SessionId
+    {
+        return $this->session_id;
+    }
 
-        $this->repository->save($session_flashcards);
-
-        $this->repetition_algorithm->handle($session_flashcards);
+    /**
+     * @return FlashcardRating[]
+     */
+    public function getRatings(): array
+    {
+        return $this->ratings;
     }
 }

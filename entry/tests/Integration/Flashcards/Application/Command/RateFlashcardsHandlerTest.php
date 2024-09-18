@@ -13,18 +13,18 @@ use App\Models\LearningSessionFlashcard;
 use Flashcard\Application\Command\RateFlashcards;
 use Flashcard\Application\Command\FlashcardRating;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Flashcard\Application\Command\RateFlashcardsCommand;
+use Flashcard\Application\Command\RateFlashcardsHandler;
 
-class RateFlashcardsTest extends TestCase
+class RateFlashcardsHandlerTest extends TestCase
 {
     use DatabaseTransactions;
 
-    private RateFlashcards $command_handler;
+    private RateFlashcardsHandler $command_handler;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->command_handler = $this->app->make(RateFlashcards::class);
+        $this->command_handler = $this->app->make(RateFlashcardsHandler::class);
     }
 
     /**
@@ -46,7 +46,7 @@ class RateFlashcardsTest extends TestCase
             'flashcard_id' => $session_flashcards[0]->flashcard_id,
             'repetition_interval' => 1,
         ]);
-        $command = new RateFlashcardsCommand(
+        $command = new RateFlashcards(
             $user->toOwner(),
             $session->getId(),
             [
