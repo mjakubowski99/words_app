@@ -4,6 +4,6 @@ declare(strict_types=1);
 
 namespace Flashcard\Domain\Exceptions;
 
-use Shared\Exceptions\ApplicationException;
+use Shared\Exceptions\BadRequestException;
 
-class ActiveSessionAlreadyExistsException extends ApplicationException {}
+class ActiveSessionAlreadyExistsException extends BadRequestException {}

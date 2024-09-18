@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Flashcard\Domain\Exceptions;
 
-use Shared\Exceptions\ApplicationException;
+use Shared\Exceptions\ServerErrorException;
 
-class NotImplementedException extends ApplicationException
+class NotImplementedException extends ServerErrorException
 {
     protected $message = 'Not implemented exception';
 }

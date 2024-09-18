@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Flashcard\Domain\Exceptions;
 
-use Shared\Exceptions\ApplicationException;
+use Shared\Exceptions\BadRequestException;
 
-class SessionFlashcardAlreadyRatedException extends ApplicationException
+class SessionFlashcardAlreadyRatedException extends BadRequestException
 {
     private string $identifier;
 

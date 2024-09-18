@@ -62,8 +62,6 @@ class GeminiGenerator implements IFlashcardGenerator
         $pattern = '/```json(.*?)```/s';
         preg_match($pattern, $text, $matches);
 
-        Log::info(json_encode($matches));
-
         if (empty($matches)) {
             $rows = json_decode($text, true);
 

@@ -42,7 +42,7 @@ class SessionControllerTest extends TestCase
                     'cards_per_session',
                     'progress',
                     'is_finished',
-                    'flashcards' => [
+                    'next_flashcards' => [
                         '*' => [
                             'id',
                             'word',
@@ -100,7 +100,7 @@ class SessionControllerTest extends TestCase
                     'cards_per_session',
                     'progress',
                     'is_finished',
-                    'flashcards' => [
+                    'next_flashcards' => [
                         '*' => [
                             'id',
                             'word',

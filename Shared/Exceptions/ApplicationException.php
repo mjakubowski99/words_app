@@ -10,7 +10,7 @@ use Symfony\Component\HttpKernel\Exception\HttpException as BaseHttpException;
 class ApplicationException extends BaseHttpException
 {
     protected $message = 'Some error occurred';
-    protected $code = Response::HTTP_BAD_REQUEST;
+    protected $code = Response::HTTP_EXPECTATION_FAILED;
     protected array $headers = [];
 
     public function __construct(?string $message = null, ?\Throwable $previous = null)
