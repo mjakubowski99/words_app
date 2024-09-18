@@ -5,11 +5,8 @@ declare(strict_types=1);
 namespace App\Models;
 
 use Illuminate\Support\Carbon;
-use Flashcard\Domain\Models\Rating;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
-use Flashcard\Domain\Models\SessionFlashcard;
-use Flashcard\Domain\ValueObjects\FlashcardId;
 use Flashcard\Domain\ValueObjects\SessionFlashcardId;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -46,13 +43,5 @@ class LearningSessionFlashcard extends Model
     public function flashcard(): BelongsTo
     {
         return $this->belongsTo(Flashcard::class);
-    }
-
-    public function toDomainModel(): SessionFlashcard
-    {
-        return (new SessionFlashcard(
-            new FlashcardId($this->flashcard_id),
-            $this->rating ? Rating::from($this->rating) : null,
-        ))->init(new SessionFlashcardId($this->id));
     }
 }

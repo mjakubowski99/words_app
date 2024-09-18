@@ -23,7 +23,7 @@ class SessionReadMapper
             ->first();
 
         if (!$result) {
-            throw new ModelNotFoundException(SessionRead::class, (string) $id->getValue());
+            throw new ModelNotFoundException('Session not found exception');
         }
 
         $rated = $this->db::table('learning_session_flashcards')

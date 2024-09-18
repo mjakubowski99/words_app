@@ -88,7 +88,7 @@ class SessionMapper
             ->first();
 
         if (!$result) {
-            throw new ModelNotFoundException(Session::class, (string) $id->getValue());
+            throw new ModelNotFoundException('Session not found exception');
         }
 
         return $this->map($result);

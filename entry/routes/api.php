@@ -18,8 +18,10 @@ Route::group(['middleware' => 'auth:firebase'], function () {
     Route::get('/flashcards/categories/{category_id}', [FlashcardCategoryController::class, 'get'])
         ->name('flashcards.categories.get');
 
-    Route::get('/flashcards/session/{session_id}', [SessionController::class, 'get']);
-    Route::post('/flashcards/session', [SessionController::class, 'store'])->name('flashcards.session.store');
+    Route::get('/flashcards/session/{session_id}', [SessionController::class, 'get'])
+        ->name('flashcards.session.get');
+    Route::post('/flashcards/session', [SessionController::class, 'store'])
+        ->name('flashcards.session.store');
     Route::put('/flashcards/session/{session_id}/rate-flashcards', [SessionController::class, 'rate'])
         ->name('flashcards.session.rate');
 });

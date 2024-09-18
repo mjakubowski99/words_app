@@ -38,7 +38,7 @@ class FlashcardCategoryMapper
             ->first();
 
         if (!$result) {
-            throw new ModelNotFoundException(Category::class, (string) $id->getValue());
+            throw new ModelNotFoundException('Category not found');
         }
 
         return $this->map($result);
@@ -54,6 +54,13 @@ class FlashcardCategoryMapper
             ->toArray();
 
         return array_map(fn (object $result) => $this->map($result), $results);
+    }
+
+    public function remove(CategoryId $id): void
+    {
+        $this->db::table('flashcard_categories')
+            ->where('id', $id->getValue())
+            ->delete();
     }
 
     private function map(object $data): Category

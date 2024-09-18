@@ -6,6 +6,7 @@ namespace Flashcard\Application\Command;
 
 use Flashcard\Domain\Models\Category;
 use Shared\Utils\ValueObjects\Language;
+use Shared\Exceptions\ApplicationException;
 use Flashcard\Domain\Models\FlashcardPrompt;
 use Flashcard\Domain\ValueObjects\CategoryId;
 use Flashcard\Application\Repository\IFlashcardRepository;
@@ -32,7 +33,7 @@ class GenerateFlashcardsHandler
         $category = $this->category_repository->createCategory($category);
 
         if (!$category instanceof Category) {
-            throw new \Exception('Invalid category type');
+            throw new ApplicationException('Invalid category type');
         }
 
         $flashcards = $this->tryToGenerateFlashcards($command, $category, $prompt);
