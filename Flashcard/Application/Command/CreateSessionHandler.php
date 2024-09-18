@@ -21,7 +21,7 @@ class CreateSessionHandler
     {
         $category = $this->category_repository->findById($command->getCategoryId());
 
-        $this->repository->setAllOwnerSessionsStatus($command->getOwner(), SessionStatus::STARTED);
+        $this->repository->setAllOwnerSessionsStatus($command->getOwner(), SessionStatus::FINISHED);
 
         $session = Session::newSession(
             $command->getOwner(),
