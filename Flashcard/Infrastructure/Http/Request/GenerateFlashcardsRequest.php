@@ -18,7 +18,7 @@ use Flashcard\Application\Command\GenerateFlashcards;
             property: 'category_name',
             description: 'Category name provided by user',
             type: 'string',
-            example: 1,
+            example: 'Two people talk',
         ),
     ]
 )]

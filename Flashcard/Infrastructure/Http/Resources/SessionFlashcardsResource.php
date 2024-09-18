@@ -41,7 +41,7 @@ use Flashcard\Application\ReadModels\SessionFlashcardRead;
                     example: 5,
                 ),
                 new OAT\Property(
-                    property: 'flashcards',
+                    property: 'next_flashcards',
                     description: 'List of flashcards in the session',
                     type: 'array',
                     items: new OAT\Items(
@@ -106,7 +106,7 @@ class SessionFlashcardsResource extends JsonResource
         $session = $this->resource['session'];
 
         /** @var array $flashcards */
-        $flashcards = $this->resource['flashcards'];
+        $flashcards = $this->resource['next_flashcards'];
 
         return [
             'session' => [
@@ -114,7 +114,7 @@ class SessionFlashcardsResource extends JsonResource
                 'cards_per_session' => $session->getCardsPerSession(),
                 'is_finished' => $session->isFinished(),
                 'progress' => $session->getProgress(),
-                'flashcards' => array_map(function (SessionFlashcardRead $flashcard) {
+                'next_flashcards' => array_map(function (SessionFlashcardRead $flashcard) {
                     return [
                         'id' => $flashcard->getId()->getValue(),
                         'word' => $flashcard->getWord(),

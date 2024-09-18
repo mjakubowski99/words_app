@@ -37,11 +37,11 @@ class SessionController extends Controller
             new AddSessionFlashcards($session->getId(), 5)
         );
 
-        $flashcards = $get_next_session_flashcards->handle($request->getSessionId(), 5);
+        $next_flashcards = $get_next_session_flashcards->handle($request->getSessionId(), 5);
 
         return new SessionFlashcardsResource([
             'session' => $session,
-            'flashcards' => $flashcards,
+            'next_flashcards' => $next_flashcards,
         ]);
     }
 
@@ -99,7 +99,7 @@ class SessionController extends Controller
 
         return new SessionFlashcardsResource([
             'session' => $get_session->handle($result->getId()),
-            'flashcards' => $get_next_session_flashcards->handle($result->getId(), 5),
+            'next_flashcards' => $get_next_session_flashcards->handle($result->getId(), 5),
         ]);
     }
 
@@ -157,7 +157,7 @@ class SessionController extends Controller
 
         return new SessionFlashcardsResource([
             'session' => $get_session->handle($request->getSessionId()),
-            'flashcards' => $get_next_session_flashcards->handle($request->getSessionId(), 5),
+            'next_flashcards' => $get_next_session_flashcards->handle($request->getSessionId(), 5),
         ]);
     }
 }
