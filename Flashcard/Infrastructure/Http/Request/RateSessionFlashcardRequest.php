@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Flashcard\Infrastructure\Http\Request;
 
 use OpenApi\Attributes as OAT;
+use Illuminate\Validation\Rule;
 use Shared\Http\Request\Request;
 use Flashcard\Domain\Models\Rating;
 use Shared\Utils\ValueObjects\UserId;
@@ -48,7 +49,11 @@ class RateSessionFlashcardRequest extends Request
         return [
             'ratings' => ['array'],
             'ratings.*.id' => ['required', 'integer'],
-            'ratings.*.rating' => ['required', 'integer'],
+            'ratings.*.rating' => [
+                'required',
+                'integer',
+                Rule::in(array_map(fn ($rating) => $rating->value, Rating::cases())),
+            ],
         ];
     }
 
@@ -71,7 +76,7 @@ class RateSessionFlashcardRequest extends Request
     public function getRatings(): array
     {
         $ratings = [];
-        foreach ($this->input('ratings') as $rating) {
+        foreach ($this->input('ratings', []) as $rating) {
             $ratings[] = new FlashcardRating(
                 new SessionFlashcardId($rating['id']),
                 Rating::from($rating['rating'])

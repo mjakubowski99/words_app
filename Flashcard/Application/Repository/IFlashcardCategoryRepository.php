@@ -17,4 +17,6 @@ interface IFlashcardCategoryRepository
     public function getByOwner(Owner $owner, int $page, int $per_page): array;
 
     public function createCategory(ICategory $category): ICategory;
+
+    public function removeCategory(ICategory $category): void;
 }

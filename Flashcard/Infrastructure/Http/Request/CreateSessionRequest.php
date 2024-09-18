@@ -29,7 +29,7 @@ class CreateSessionRequest extends Request
     public function rules(): array
     {
         return [
-            'cards_per_session' => ['required', 'integer'],
+            'cards_per_session' => ['required', 'integer', 'gte:5', 'lte:100'],
             'category_id' => ['required', 'integer'],
         ];
     }

@@ -4,14 +4,16 @@ declare(strict_types=1);
 
 namespace Flashcard\Domain\Exceptions;
 
-class SessionFlashcardAlreadyRatedException extends \Exception
+use Shared\Exceptions\ApplicationException;
+
+class SessionFlashcardAlreadyRatedException extends ApplicationException
 {
     private string $identifier;
 
-    public function __construct(string $message, string $identifier, int $code = 0, ?\Throwable $previous = null)
+    public function __construct(string $message, string $identifier, ?\Throwable $previous = null)
     {
         $this->identifier = $identifier;
-        parent::__construct($message, $code, $previous);
+        parent::__construct($message, $previous);
     }
 
     public function getIdentifier(): string

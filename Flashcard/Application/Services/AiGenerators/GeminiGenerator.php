@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace Flashcard\Application\Services\AiGenerators;
 
 use Flashcard\Domain\Models\Owner;
+use Illuminate\Support\Facades\Log;
 use Flashcard\Domain\Models\Category;
 use Flashcard\Domain\Models\Flashcard;
 use Flashcard\Domain\Models\FlashcardPrompt;
 use Flashcard\Domain\ValueObjects\FlashcardId;
 use Shared\Integrations\Gemini\IGeminiApiClient;
-use Flashcard\Application\Exceptions\GeminiApiException;
+use Flashcard\Application\Exceptions\AiResponseFailedException;
+use Flashcard\Application\Exceptions\AiResponseProcessingFailException;
 
 class GeminiGenerator implements IFlashcardGenerator
 {
@@ -25,7 +27,13 @@ class GeminiGenerator implements IFlashcardGenerator
         if (!$response->success()) {
             $response = json_encode($response->getErrorResponse());
 
-            throw new GeminiApiException(is_string($response) ? $response : '');
+            Log::error('Generating flashcard categories failed', [
+                'message' => is_string($response) ? $response : '',
+                'owner_id' => $owner->getId(),
+                'category_name' => $category->getName(),
+            ]);
+
+            throw new AiResponseFailedException(is_string($response) ? $response : '');
         }
 
         $text = $response->getGeneratedText();
@@ -54,6 +62,8 @@ class GeminiGenerator implements IFlashcardGenerator
         $pattern = '/```json(.*?)```/s';
         preg_match($pattern, $text, $matches);
 
+        Log::info(json_encode($matches));
+
         if (empty($matches)) {
             $rows = json_decode($text, true);
 
@@ -61,12 +71,16 @@ class GeminiGenerator implements IFlashcardGenerator
                 return $rows;
             }
 
-            throw new \Exception('Failed to parse chat response');
+            throw new AiResponseProcessingFailException();
         }
 
         $json = $matches[1];
         $json = trim($json);
         $rows = json_decode($json, true);
+
+        if (!$rows) {
+            throw new AiResponseProcessingFailException();
+        }
 
         return $rows;
     }

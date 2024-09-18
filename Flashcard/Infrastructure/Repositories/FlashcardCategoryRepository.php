@@ -46,4 +46,9 @@ class FlashcardCategoryRepository implements IFlashcardCategoryRepository
     {
         return $this->mapper->getByOwner($owner, $page, $per_page);
     }
+
+    public function removeCategory(ICategory $category): void
+    {
+        // TODO: Implement removeCategory() method.
+    }
 }

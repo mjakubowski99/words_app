@@ -4,4 +4,6 @@ declare(strict_types=1);
 
 namespace Flashcard\Domain\Exceptions;
 
-class CategoryNotFoundException extends \Exception {}
+use Shared\Exceptions\NotFoundException;
+
+class CategoryNotFoundException extends NotFoundException {}

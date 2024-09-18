@@ -16,8 +16,8 @@ use Flashcard\Application\Command\GenerateFlashcards;
     properties: [
         new OAT\Property(
             property: 'category_name',
-            type: 'string',
             description: 'Category name provided by user',
+            type: 'string',
             example: 1,
         ),
     ]
@@ -27,7 +27,7 @@ class GenerateFlashcardsRequest extends Request
     public function rules(): array
     {
         return [
-            'category_name' => ['required', 'string'],
+            'category_name' => ['required', 'string', 'min:5', 'max:40'],
         ];
     }
 

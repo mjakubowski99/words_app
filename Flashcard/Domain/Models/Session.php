@@ -6,6 +6,7 @@ namespace Flashcard\Domain\Models;
 
 use Shared\Enum\SessionStatus;
 use Flashcard\Domain\Contracts\ICategory;
+use Shared\Exceptions\ForbiddenException;
 use Flashcard\Domain\ValueObjects\SessionId;
 
 class Session
@@ -18,7 +19,9 @@ class Session
         private readonly int $cards_per_session,
         private readonly string $device,
         private readonly ICategory $flashcard_category,
-    ) {}
+    ) {
+        $this->validate();
+    }
 
     public static function newSession(
         Owner $owner,
@@ -75,5 +78,21 @@ class Session
     public function getDevice(): string
     {
         return $this->device;
+    }
+
+    private function validate(): void
+    {
+        if (!$this->flashcard_category->hasOwner()) {
+            return;
+        }
+
+        $category_owner = $this->flashcard_category->getOwner();
+
+        $is_owner = $category_owner->getId()->equals($this->owner->getId())
+            && $category_owner->getOwnerType() === $this->owner->getOwnerType();
+
+        if (!$is_owner) {
+            throw new ForbiddenException('User is not authorized to create this category');
+        }
     }
 }

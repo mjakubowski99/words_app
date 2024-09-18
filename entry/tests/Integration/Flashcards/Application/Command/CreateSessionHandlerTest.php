@@ -8,6 +8,7 @@ use App\Models\User;
 use Shared\User\IUser;
 use App\Models\FlashcardCategory;
 use Tests\Base\FlashcardTestCase;
+use Shared\Exceptions\ForbiddenException;
 use Flashcard\Application\Command\CreateSession;
 use Flashcard\Application\Command\CreateSessionHandler;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -31,7 +32,9 @@ class CreateSessionHandlerTest extends FlashcardTestCase
     {
         // GIVEN
         $user_id = User::factory()->create()->getId();
-        $category_id = $this->createCategoryId(FlashcardCategory::factory()->create());
+        $category_id = $this->createCategoryId(FlashcardCategory::factory()->create([
+            'user_id' => $user_id->getValue(),
+        ]));
         $cards_per_session = 5;
         $device = 'Mozilla/Firefox';
         $user = $this->mockery(IUser::class);
@@ -48,5 +51,31 @@ class CreateSessionHandlerTest extends FlashcardTestCase
 
         // THEN
         $this->assertTrue($result->success());
+    }
+
+    /**
+     * @test
+     */
+    public function createSessionHandler_UserIsNotCategoryOwner_fail(): void
+    {
+        // GIVEN
+        $user_id = User::factory()->create()->getId();
+        $category_id = $this->createCategoryId(FlashcardCategory::factory()->create());
+        $cards_per_session = 5;
+        $device = 'Mozilla/Firefox';
+        $user = $this->mockery(IUser::class);
+        $user->shouldReceive('getId')->andReturn($user_id);
+        $command = new CreateSession(
+            $user,
+            $cards_per_session,
+            $device,
+            $category_id,
+        );
+
+        // THEN
+        $this->expectException(ForbiddenException::class);
+
+        // WHEN
+        $result = $this->command_handler->handle($command);
     }
 }

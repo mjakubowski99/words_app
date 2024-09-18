@@ -6,9 +6,11 @@ namespace Flashcard\Infrastructure\Http\Controllers;
 
 use App\Http\OpenApi\Tags;
 use OpenApi\Attributes as OAT;
+use Shared\Http\Request\Request;
 use Flashcard\Domain\Models\Owner;
 use Shared\Enum\FlashcardOwnerType;
 use Flashcard\Domain\ValueObjects\OwnerId;
+use Flashcard\Domain\ValueObjects\CategoryId;
 use Flashcard\Application\Query\GetMainCategory;
 use Flashcard\Application\Query\GetUserCategories;
 use Flashcard\Application\Query\GetCategoryDetails;
@@ -42,17 +44,9 @@ class FlashcardCategoryController
                     ),
                 ]),
             ),
-            new OAT\Response(
-                response: 401,
-                description: 'bad request',
-                content: new OAT\JsonContent(properties: [
-                    new OAT\Property(
-                        property: 'message',
-                        type: 'string',
-                        example: 'Unauthenticated'
-                    ),
-                ]),
-            ),
+            new OAT\Response(ref: '#/components/responses/bad_request', response: 400),
+            new OAT\Response(ref: '#/components/responses/unauthenticated', response: 401),
+            new OAT\Response(ref: '#/components/responses/validation_error', response: 422),
         ],
     )]
     public function index(
@@ -94,17 +88,9 @@ class FlashcardCategoryController
                     ),
                 ]),
             ),
-            new OAT\Response(
-                response: 401,
-                description: 'bad request',
-                content: new OAT\JsonContent(properties: [
-                    new OAT\Property(
-                        property: 'message',
-                        type: 'string',
-                        example: 'Unauthenticated'
-                    ),
-                ]),
-            ),
+            new OAT\Response(ref: '#/components/responses/bad_request', response: 400),
+            new OAT\Response(ref: '#/components/responses/unauthenticated', response: 401),
+            new OAT\Response(ref: '#/components/responses/validation_error', response: 422),
         ],
     )]
     public function generateFlashcards(
@@ -115,5 +101,12 @@ class FlashcardCategoryController
         $category_id = $generate_flashcards->handle($request->toCommand());
 
         return new CategoryDetailsResource($get_category_details->get($category_id));
+    }
+
+    public function get(
+        Request $request,
+        GetCategoryDetails $get_category_details,
+    ): CategoryDetailsResource {
+        return new CategoryDetailsResource($get_category_details->get(new CategoryId((int) $request->route('category_id'))));
     }
 }

@@ -34,7 +34,9 @@ class SessionRepositoryTest extends FlashcardTestCase
     {
         // GIVEN
         $user = User::factory()->create();
-        $category = FlashcardCategory::factory()->create();
+        $category = FlashcardCategory::factory()->create([
+            'user_id' => $user->id,
+        ]);
         $domain_category = $this->domainCategory($category);
         $session = new Session(
             SessionStatus::STARTED,

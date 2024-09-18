@@ -29,7 +29,7 @@ class IndexFlashcardCategoryRequest extends Request
     {
         return [
             'page' => ['integer', 'gte:0'],
-            'per_page' => ['integer', 'max:30'],
+            'per_page' => ['integer', 'gte:0', 'lte:30'],
         ];
     }
 

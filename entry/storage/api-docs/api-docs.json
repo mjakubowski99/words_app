@@ -51,21 +51,14 @@
                             }
                         }
                     },
+                    "400": {
+                        "$ref": "#/components/responses/bad_request"
+                    },
                     "401": {
-                        "description": "bad request",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Unauthenticated"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
+                        "$ref": "#/components/responses/unauthenticated"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/validation_error"
                     }
                 },
                 "security": [
@@ -111,21 +104,14 @@
                             }
                         }
                     },
+                    "400": {
+                        "$ref": "#/components/responses/bad_request"
+                    },
                     "401": {
-                        "description": "bad request",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Unauthenticated"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
+                        "$ref": "#/components/responses/unauthenticated"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/validation_error"
                     }
                 },
                 "security": [
@@ -765,104 +751,8 @@
                     }
                 }
             },
-            "business_card_accept_regulation": {
-                "description": "Business card accept regulation response.",
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "properties": {
-                                "message": {
-                                    "type": "string",
-                                    "example": "Regulations have been accepted"
-                                }
-                            },
-                            "type": "object"
-                        }
-                    }
-                }
-            },
-            "business_card_activate": {
-                "description": "Business card activate response.",
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "properties": {
-                                "message": {
-                                    "type": "string",
-                                    "example": "The business card has been activated."
-                                }
-                            },
-                            "type": "object"
-                        }
-                    }
-                }
-            },
-            "business_card_not_accept_regulation": {
-                "description": "Business card not accept regulation response.",
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "properties": {
-                                "message": {
-                                    "type": "string",
-                                    "example": "Regulations have not been accepted"
-                                }
-                            },
-                            "type": "object"
-                        }
-                    }
-                }
-            },
-            "business_card_not_activate": {
-                "description": "Business card not activated response.",
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "properties": {
-                                "message": {
-                                    "type": "string",
-                                    "example": "The given code does not exist."
-                                }
-                            },
-                            "type": "object"
-                        }
-                    }
-                }
-            },
-            "coupon_not_found": {
-                "description": "Coupon not found",
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "properties": {
-                                "message": {
-                                    "type": "string",
-                                    "example": "This coupon is not set to user"
-                                }
-                            },
-                            "type": "object"
-                        }
-                    }
-                }
-            },
             "dummy": {
                 "description": "Dummy response, to be created."
-            },
-            "email_verification_required": {
-                "description": "Email verification required response.",
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "properties": {
-                                "message": {
-                                    "type": "string",
-                                    "example": "Please verify your email address before"
-                                }
-                            },
-                            "type": "object"
-                        }
-                    }
-                }
             },
             "forbidden": {
                 "description": "Forbidden response.",
@@ -880,22 +770,6 @@
                     }
                 }
             },
-            "fortune_wheel_error": {
-                "description": "Fortune Wheel error response.",
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "properties": {
-                                "message": {
-                                    "type": "string",
-                                    "example": "Fortune Wheel was already turned."
-                                }
-                            },
-                            "type": "object"
-                        }
-                    }
-                }
-            },
             "method_not_allowed": {
                 "description": "Method not allowed response.",
                 "content": {
@@ -905,22 +779,6 @@
                                 "message": {
                                     "type": "string",
                                     "example": "No route found for \"GET /api\": Method Not Allowed (Allow: POST)"
-                                }
-                            },
-                            "type": "object"
-                        }
-                    }
-                }
-            },
-            "missing_properties": {
-                "description": "Missing properties",
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "properties": {
-                                "message": {
-                                    "type": "string",
-                                    "example": "total"
                                 }
                             },
                             "type": "object"
@@ -963,82 +821,6 @@
                     }
                 }
             },
-            "profile_already_exists_error": {
-                "description": "Profile already exists error response.",
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "properties": {
-                                "message": {
-                                    "type": "string",
-                                    "example": "The Profile for given user already exists."
-                                }
-                            },
-                            "type": "object"
-                        }
-                    }
-                }
-            },
-            "profile_not_found_error": {
-                "description": "Profile not found error response.",
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "properties": {
-                                "message": {
-                                    "type": "string",
-                                    "example": "The Profile for given user was not found."
-                                },
-                                "errors": {
-                                    "properties": {
-                                        "foo.0.bar": {
-                                            "type": "array",
-                                            "items": {
-                                                "type": "string",
-                                                "example": "The Profile for given user was not found."
-                                            }
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            },
-                            "type": "object"
-                        }
-                    }
-                }
-            },
-            "receipt_error": {
-                "description": "Receipt error response.",
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "properties": {
-                                "message": {
-                                    "type": "string",
-                                    "example": "Photo scanning failed"
-                                }
-                            },
-                            "type": "object"
-                        }
-                    }
-                }
-            },
-            "register_error_response": {
-                "description": "Register error response",
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "properties": {
-                                "message": {
-                                    "type": "string",
-                                    "example": "A similar user already exists."
-                                }
-                            },
-                            "type": "object"
-                        }
-                    }
-                }
-            },
             "success": {
                 "description": "Success response.",
                 "content": {
@@ -1071,54 +853,6 @@
                     }
                 }
             },
-            "user_account_banned_error": {
-                "description": "User Account Banned error response.",
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "properties": {
-                                "message": {
-                                    "type": "string",
-                                    "example": "User Account Banned."
-                                }
-                            },
-                            "type": "object"
-                        }
-                    }
-                }
-            },
-            "user_phone_number_not_exist": {
-                "description": "User number does not exist",
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "properties": {
-                                "message": {
-                                    "type": "string",
-                                    "example": "The given phone number does not exist"
-                                }
-                            },
-                            "type": "object"
-                        }
-                    }
-                }
-            },
-            "user_points_response": {
-                "description": "User points response",
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "properties": {
-                                "value": {
-                                    "type": "integer",
-                                    "example": 50
-                                }
-                            },
-                            "type": "object"
-                        }
-                    }
-                }
-            },
             "validation_error": {
                 "description": "Validation error response.",
                 "content": {
@@ -1140,22 +874,6 @@
                                         }
                                     },
                                     "type": "object"
-                                }
-                            },
-                            "type": "object"
-                        }
-                    }
-                }
-            },
-            "verification_pin_error": {
-                "description": "Verification PIN error response.",
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "properties": {
-                                "message": {
-                                    "type": "string",
-                                    "example": "Pin is not correct."
                                 }
                             },
                             "type": "object"

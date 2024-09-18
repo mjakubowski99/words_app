@@ -24,8 +24,8 @@ class GenerateFlashcardsHandler
     {
         $prompt = new FlashcardPrompt(
             $command->getCategoryName(),
-            Language::from(Language::EN),
-            Language::from(Language::PL)
+            Language::from(Language::PL),
+            Language::from(Language::EN)
         );
         $category = new Category($command->getOwner(), mb_strtolower($command->getCategoryName()), $command->getCategoryName());
 
@@ -35,10 +35,21 @@ class GenerateFlashcardsHandler
             throw new \Exception('Invalid category type');
         }
 
-        $flashcards = $this->generator->generate($command->getOwner(), $category, $prompt);
+        $flashcards = $this->tryToGenerateFlashcards($command, $category, $prompt);
 
         $this->repository->createMany($flashcards);
 
         return $category->getId();
+    }
+
+    private function tryToGenerateFlashcards(GenerateFlashcards $command, Category $category, FlashcardPrompt $prompt): array
+    {
+        try {
+            return $this->generator->generate($command->getOwner(), $category, $prompt);
+        } catch (\Throwable $exception) {
+            $this->category_repository->removeCategory($category);
+
+            throw $exception;
+        }
     }
 }

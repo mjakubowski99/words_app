@@ -24,7 +24,9 @@ class SessionControllerTest extends TestCase
     {
         // GIVEN
         $user = User::factory()->create();
-        $category = FlashcardCategory::factory()->create();
+        $category = FlashcardCategory::factory()->create([
+            'user_id' => $user->id,
+        ]);
         $flashcards = Flashcard::factory(3)->create([
             'flashcard_category_id' => $category->id,
         ]);

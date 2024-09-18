@@ -15,6 +15,8 @@ Route::group(['middleware' => 'auth:firebase'], function () {
         ->name('flashcards.generate-by-category');
     Route::get('/flashcards/categories/by-user', [FlashcardCategoryController::class, 'index'])
         ->name('flashcards.categories.index');
+    Route::get('/flashcards/categories/{category_id}', [FlashcardCategoryController::class, 'get'])
+        ->name('flashcards.categories.get');
 
     Route::get('/flashcards/session/{session_id}', [SessionController::class, 'get']);
     Route::post('/flashcards/session', [SessionController::class, 'store'])->name('flashcards.session.store');
