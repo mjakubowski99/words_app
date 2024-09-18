@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Flashcard\Domain\Models;
 
 use Flashcard\Domain\Contracts\ICategory;
+use Flashcard\Domain\Exceptions\InvalidNextSessionFlashcards;
 use Flashcard\Domain\ValueObjects\SessionId;
 use Flashcard\Domain\Exceptions\TooManySessionFlashcardsException;
 
@@ -23,7 +24,9 @@ class NextSessionFlashcards
         private int $max_flashcards_count,
     ) {
         if (!$this->isValid()) {
-            throw new \Exception();
+            throw new InvalidNextSessionFlashcards(
+                "Cannot generate next session flashcards for session: {$this->session_id->getValue()}"
+            );
         }
     }
 

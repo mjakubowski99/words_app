@@ -21,11 +21,6 @@ class MainCategory implements ICategory
         return FlashcardCategoryType::GENERAL;
     }
 
-    public function canCreateSession(Owner $owner): bool
-    {
-        return true;
-    }
-
     public function hasOwner(): bool
     {
         return false;
