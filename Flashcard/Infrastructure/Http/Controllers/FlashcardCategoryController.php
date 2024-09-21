@@ -28,10 +28,21 @@ class FlashcardCategoryController
         description: 'Get user flashcard categories',
         summary: 'Get user flashcard categories',
         security: [['sanctum' => []]],
-        requestBody: new OAT\RequestBody(
-            content: new OAT\JsonContent(ref: '#/components/schemas/Requests\Flashcard\IndexFlashcardCategoryRequest')
-        ),
         tags: [Tags::FLASHCARD],
+        parameters: [
+            new OAT\Parameter(
+                name: 'page',
+                description: 'Categories page number',
+                in: 'query',
+                example: 1,
+            ),
+            new OAT\Parameter(
+                name: 'per_page',
+                description: 'Categories per page',
+                in: 'query',
+                example: 15,
+            ),
+        ],
         responses: [
             new OAT\Response(
                 response: 200,
