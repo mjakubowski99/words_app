@@ -19,7 +19,7 @@ class FlashcardCategoryControllerTest extends FlashcardTestCase
         ]);
 
         // WHEN
-        $response = $this->actingAs($user, 'firebase')
+        $response = $this->actingAs($user, 'sanctum')
             ->json('GET', route('flashcards.categories.index'), [
                 'page' => 1,
                 'per_page' => 15,

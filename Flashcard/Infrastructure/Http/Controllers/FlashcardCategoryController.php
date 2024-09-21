@@ -27,7 +27,7 @@ class FlashcardCategoryController
         operationId: 'flashcards.categories.index',
         description: 'Get user flashcard categories',
         summary: 'Get user flashcard categories',
-        security: [['firebase' => []]],
+        security: [['sanctum' => []]],
         requestBody: new OAT\RequestBody(
             content: new OAT\JsonContent(ref: '#/components/schemas/Requests\Flashcard\IndexFlashcardCategoryRequest')
         ),
@@ -71,7 +71,7 @@ class FlashcardCategoryController
         operationId: 'flashcards.generate-by-category',
         description: 'Generate flashcards by provided category',
         summary: 'Generate flashcards by provided category',
-        security: [['firebase' => []]],
+        security: [['sanctum' => []]],
         requestBody: new OAT\RequestBody(
             content: new OAT\JsonContent(ref: '#/components/schemas/Requests\Flashcard\GenerateFlashcardsRequest')
         ),

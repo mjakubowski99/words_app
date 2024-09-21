@@ -71,7 +71,7 @@ class FlashcardCategoryControllerTest extends TestCase
         ]);
 
         // WHEN
-        $response = $this->actingAs($user, 'firebase')
+        $response = $this->actingAs($user, 'sanctum')
             ->json('GET', route('flashcards.categories.index'));
 
         // THEN
@@ -126,7 +126,7 @@ class FlashcardCategoryControllerTest extends TestCase
         $user = User::factory()->create();
 
         // WHEN
-        $response = $this->actingAs($user, 'firebase')
+        $response = $this->actingAs($user, 'sanctum')
             ->json('POST', route('flashcards.categories.generate-flashcards'), [
                 'category_name' => 'Category',
             ]);

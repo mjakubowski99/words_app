@@ -27,7 +27,7 @@ class SessionControllerTest extends TestCase
 
         // WHEN
         $response = $this
-            ->actingAs($user, 'firebase')
+            ->actingAs($user, 'sanctum')
             ->json('POST', route('flashcards.session.store'), [
                 'cards_per_session' => 10,
                 'category_id' => (new MainCategory())->getId()->getValue(),
@@ -74,7 +74,7 @@ class SessionControllerTest extends TestCase
 
         // WHEN
         $response = $this
-            ->actingAs($user, 'firebase')
+            ->actingAs($user, 'sanctum')
             ->json(
                 'PUT',
                 route(

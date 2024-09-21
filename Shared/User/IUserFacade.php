@@ -12,4 +12,6 @@ interface IUserFacade
     public function findByExternal(string $provider_id, UserProvider $provider): IUser;
 
     public function findById(UserId $id): IUser;
+
+    public function issueToken(UserId $id): string;
 }
