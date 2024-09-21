@@ -72,8 +72,8 @@ class FlashcardCategoryController
                 $request->getPage(),
                 $request->getPerPage(),
             ),
-            'page' => $request->input('page'),
-            'per_page' => $request->input('per_page'),
+            'page' => $request->getPage(),
+            'per_page' => $request->getPerPage(),
         ]);
     }
 
