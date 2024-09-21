@@ -33,7 +33,7 @@ class SessionControllerTest extends TestCase
 
         // WHEN
         $response = $this
-            ->actingAs($user, 'firebase')
+            ->actingAs($user, 'sanctum')
             ->postJson(route('flashcards.session.store'), [
                 'cards_per_session' => 10,
                 'category_id' => $category->id,
@@ -59,7 +59,7 @@ class SessionControllerTest extends TestCase
 
         // WHEN
         $response = $this
-            ->actingAs($user, 'firebase')
+            ->actingAs($user, 'sanctum')
             ->putJson(route('flashcards.session.rate', ['session_id' => $session->id]), [
                 'ratings' => [
                     ['id' => $flashcards[0]->id, 'rating' => Rating::GOOD],
@@ -86,7 +86,7 @@ class SessionControllerTest extends TestCase
 
         // WHEN
         $response = $this
-            ->actingAs($user, 'firebase')
+            ->actingAs($user, 'sanctum')
             ->putJson(route('flashcards.session.rate', ['session_id' => $session->id]), [
                 'ratings' => [
                     ['id' => $flashcards[0]->id, 'rating' => Rating::GOOD],

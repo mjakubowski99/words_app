@@ -32,9 +32,12 @@ class UserControllerTest extends TestCase
         $response->assertStatus(200);
         $response->assertJsonStructure([
             'data' => [
-                'id',
-                'name',
-                'email',
+                'token',
+                'user' => [
+                    'id',
+                    'name',
+                    'email',
+                ],
             ],
         ]);
     }
@@ -59,9 +62,12 @@ class UserControllerTest extends TestCase
         $response->assertStatus(200);
         $response->assertJsonStructure([
             'data' => [
-                'id',
-                'name',
-                'email',
+                'token',
+                'user' => [
+                    'id',
+                    'name',
+                    'email',
+                ],
             ],
         ]);
     }
@@ -75,7 +81,7 @@ class UserControllerTest extends TestCase
         $user = $this->createFirebaseUser(Uuid::make()->getValue(), UserProvider::GOOGLE);
 
         // WHEN
-        $response = $this->actingAs($user, 'firebase')
+        $response = $this->actingAs($user, 'sanctum')
             ->getJson(route('user.me'));
 
         // THEN
@@ -116,24 +122,13 @@ class UserControllerTest extends TestCase
     {
         // GIVEN
         $user = $this->createFirebaseUser(Uuid::make()->getValue(), UserProvider::GOOGLE);
-        User::factory()->create([
-            'provider_id' => $user->getProviderId(),
-            'provider_type' => UserProvider::GOOGLE,
-        ]);
 
         // WHEN
-        $response = $this->actingAs($user, 'firebase')
+        $response = $this->actingAs($user, 'sanctum')
             ->getJson(route('user.me'));
 
         // THEN
-        $response->assertStatus(200);
-        $response->assertJsonStructure([
-            'data' => [
-                'id',
-                'name',
-                'email',
-            ],
-        ]);
+        $response->assertStatus(404);
     }
 
     /**

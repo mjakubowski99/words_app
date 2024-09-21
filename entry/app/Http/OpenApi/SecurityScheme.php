@@ -13,4 +13,11 @@ use OpenApi\Attributes as OAT;
     name: 'Firebase Authorization',
     scheme: 'bearer'
 )]
+#[OAT\SecurityScheme(
+    securityScheme: 'sanctum',
+    type: 'http',
+    description: 'Laravel sanctum tokens',
+    name: 'Authorization token for app',
+    scheme: 'bearer'
+)]
 class SecurityScheme {}

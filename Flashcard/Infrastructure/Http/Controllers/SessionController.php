@@ -50,7 +50,7 @@ class SessionController extends Controller
         operationId: 'flashcard.session.store',
         description: 'Creates flashcard learning session for given category',
         summary: 'Creates flashcard learning session for given category',
-        security: [['firebase' => []]],
+        security: [['sanctum' => []]],
         requestBody: new OAT\RequestBody(
             content: new OAT\JsonContent(ref: '#/components/schemas/Requests\Flashcard\CreateSessionRequest')
         ),
@@ -108,7 +108,7 @@ class SessionController extends Controller
         operationId: 'flashcard.session.rate',
         description: 'Rate session flashcards and get next flashcards to learn',
         summary: 'Rate session flashcards',
-        security: [['firebase' => []]],
+        security: [['sanctum' => []]],
         requestBody: new OAT\RequestBody(
             content: new OAT\JsonContent(ref: '#/components/schemas/Requests\Flashcard\RateSessionFlashcardRequest')
         ),

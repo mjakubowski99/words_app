@@ -7,9 +7,11 @@ namespace User\Infrastructure\Http\Controllers;
 use App\Http\OpenApi\Tags;
 use OpenApi\Attributes as OAT;
 use Shared\Http\Request\Request;
+use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use Shared\Utils\Auth\ExternalAuthenticable;
 use User\Application\Command\CreateExternalUser;
+use User\Application\Command\CreateTokenHandler;
 use User\Application\Query\FindExternalUserHandler;
 use User\Infrastructure\Http\Request\GetUserRequest;
 use User\Infrastructure\Http\Resources\UserResource;
@@ -31,8 +33,19 @@ class UserController extends Controller
                 content: new OAT\JsonContent(properties: [
                     new OAT\Property(
                         property: 'data',
-                        type: 'array',
-                        items: new OAT\Items(ref: '#/components/schemas/Resources\User\UserResource'),
+                        properties: [
+                            new OAT\Property(
+                                property: 'token',
+                                example: '123',
+                                type: 'string'
+                            ),
+                            new OAT\Property(
+                                property: 'data',
+                                type: 'array',
+                                items: new OAT\Items(ref: '#/components/schemas/Resources\User\UserResource'),
+                            ),
+                        ],
+                        type: 'array'
                     ),
                 ]),
             ),
@@ -49,8 +62,12 @@ class UserController extends Controller
             ),
         ],
     )]
-    public function initFirebaseUser(Request $request, CreateExternalUserHandler $create, FindExternalUserHandler $find): UserResource
-    {
+    public function initFirebaseUser(
+        Request $request,
+        CreateExternalUserHandler $create,
+        FindExternalUserHandler $find,
+        CreateTokenHandler $create_token,
+    ): JsonResponse {
         $firebase_authenticable = ExternalAuthenticable::fromFirebase($request->user('firebase'));
 
         $command = new CreateExternalUser(
@@ -63,12 +80,22 @@ class UserController extends Controller
 
         $create->handle($command);
 
-        return new UserResource(
-            $find->handle(
-                $firebase_authenticable->getProviderId(),
-                $firebase_authenticable->getProviderType()
-            )
+        $user = $find->handle(
+            $firebase_authenticable->getProviderId(),
+            $firebase_authenticable->getProviderType()
         );
+
+        return new JsonResponse([
+            'data' => [
+                'token' => $create_token->handle($user->getId()),
+                'user' => new UserResource(
+                    $find->handle(
+                        $firebase_authenticable->getProviderId(),
+                        $firebase_authenticable->getProviderType()
+                    )
+                ),
+            ],
+        ]);
     }
 
     #[OAT\Get(
@@ -76,7 +103,7 @@ class UserController extends Controller
         operationId: 'user.me',
         description: 'User me',
         summary: 'User me',
-        security: [['firebase' => []]],
+        security: [['sanctum' => []]],
         tags: [Tags::USER],
         responses: [
             new OAT\Response(
