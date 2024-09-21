@@ -16,7 +16,7 @@ use OpenApi\Attributes as OAT;
 #[OAT\SecurityScheme(
     securityScheme: 'sanctum',
     type: 'http',
-    description: 'Laravel sanctum tokens',
+    description: 'App authorization tokens',
     name: 'Authorization token for app',
     scheme: 'bearer'
 )]

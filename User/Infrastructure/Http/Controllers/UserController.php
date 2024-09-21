@@ -23,7 +23,7 @@ class UserController extends Controller
         path: '/api/user/firebase-init',
         operationId: 'user.firebase-init',
         description: 'Endpoint should be called after completing login with firebase to init user on backend side',
-        summary: 'Create firebase user if not exists',
+        summary: 'Exchange firebase token for app token and init user if needed',
         security: [['firebase' => []]],
         tags: [Tags::USER],
         responses: [
@@ -36,8 +36,8 @@ class UserController extends Controller
                         properties: [
                             new OAT\Property(
                                 property: 'token',
+                                type: 'string',
                                 example: '123',
-                                type: 'string'
                             ),
                             new OAT\Property(
                                 property: 'data',
@@ -45,7 +45,7 @@ class UserController extends Controller
                                 items: new OAT\Items(ref: '#/components/schemas/Resources\User\UserResource'),
                             ),
                         ],
-                        type: 'array'
+                        type: 'object',
                     ),
                 ]),
             ),
