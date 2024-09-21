@@ -22,7 +22,7 @@ use Flashcard\Infrastructure\Http\Resources\FlashcardCategoriesResource;
 
 class FlashcardCategoryController
 {
-    #[OAT\Post(
+    #[OAT\Get(
         path: '/api/flashcards/categories/by-user',
         operationId: 'flashcards.categories.index',
         description: 'Get user flashcard categories',

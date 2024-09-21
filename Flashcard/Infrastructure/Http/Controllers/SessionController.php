@@ -46,7 +46,7 @@ class SessionController extends Controller
     }
 
     #[OAT\Post(
-        path: '/api/flashcard/session',
+        path: '/api/flashcards/session',
         operationId: 'flashcard.session.store',
         description: 'Creates flashcard learning session for given category',
         summary: 'Creates flashcard learning session for given category',
