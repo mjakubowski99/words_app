@@ -51,6 +51,8 @@ return [
 
             'credentials' => env('FIREBASE_CREDENTIALS', env('GOOGLE_APPLICATION_CREDENTIALS')),
 
+            'android_credentials' => env('ANDROID_FIREBASE_CREDENTIALS', env('GOOGLE_APPLICATION_CREDENTIALS')),
+
             /*
              * ------------------------------------------------------------------------
              * Firebase Auth Component
@@ -209,5 +211,5 @@ return [
                 'guzzle_middlewares' => [],
             ],
         ],
-    ],
+    ]
 ];

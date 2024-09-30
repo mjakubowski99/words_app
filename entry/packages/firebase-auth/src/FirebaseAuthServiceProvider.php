@@ -17,16 +17,5 @@ class FirebaseAuthServiceProvider extends ServiceProvider
         });
     }
 
-    public function register(): void
-    {
-        $this->app->singleton(IdTokenVerifier::class, function ($app) {
-            $project = config('firebase.default');
-
-            if (empty($project)) {
-                throw new \Exception('Missing firebase project id .env variable.');
-            }
-
-            return IdTokenVerifier::createWithProjectId($project);
-        });
-    }
+    public function register(): void {}
 }
