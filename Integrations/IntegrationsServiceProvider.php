@@ -13,5 +13,6 @@ class IntegrationsServiceProvider extends AppServiceProvider
     public function register(): void
     {
         $this->app->bind(IGeminiApiClient::class, GeminiApiClient::class);
+
     }
 }
