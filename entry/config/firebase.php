@@ -211,5 +211,5 @@ return [
                 'guzzle_middlewares' => [],
             ],
         ],
-    ]
+    ],
 ];

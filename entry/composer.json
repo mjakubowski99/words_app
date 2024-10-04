@@ -11,8 +11,8 @@
         "laravel/framework": "^10.10",
         "laravel/pulse": "^1.2",
         "laravel/sanctum": "^3.3",
-        "laravel/tinker": "^2.8",
-        "mjakubowski/firebase-auth": "dev-master"
+        "laravel/socialite": "^5.16",
+        "laravel/tinker": "^2.8"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^3.0",
