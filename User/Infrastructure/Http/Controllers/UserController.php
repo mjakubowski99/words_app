@@ -80,8 +80,8 @@ class UserController extends Controller
             $user->getId(),
             $user->getUserProvider(),
             $user->getEmail(),
-            $user->getName(),
-            $user->getAvatar(),
+            $user->getName() ?? '',
+            $user->getAvatar() ?? ''
         );
 
         $create->handle($command);
