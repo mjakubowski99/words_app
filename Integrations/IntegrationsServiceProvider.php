@@ -13,6 +13,8 @@ class IntegrationsServiceProvider extends AppServiceProvider
     public function register(): void
     {
         $this->app->bind(IGeminiApiClient::class, GeminiApiClient::class);
-
+        $this->app->bind(\Google_Client::class, function ($app) {
+            return new \Google_Client(['client_id' => config('services.google.android_client_id')]);
+        });
     }
 }

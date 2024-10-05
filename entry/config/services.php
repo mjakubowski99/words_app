@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use Shared\Enum\Platform;
 use Shared\Enum\UserProvider;
 
 return [
@@ -38,21 +37,8 @@ return [
     UserProvider::GOOGLE->value => [
         'client_id' => env('GOOGLE_CLIENT_ID'),
         'client_secret' => env('GOOGLE_CLIENT_SECRET'),
-        'redirect' => 'http://example.com/callback-url',
-    ],
+        'redirect' => env('GOOGLE_REDIRECT_URL'),
 
-    'alternatives' => [
-        UserProvider::GOOGLE->value => [
-            Platform::WEB->value => [
-                'client_id' => env('WEB_GOOGLE_CLIENT_ID'),
-                'client_secret' => env('WEB_GOOGLE_CLIENT_SECRET'),
-                'redirect' => 'http://example.com/callback-url',
-            ],
-            Platform::ANDROID->value => [
-                'client_id' => env('ANDROID_GOOGLE_CLIENT_ID'),
-                'client_secret' => env('ANDROID_GOOGLE_CLIENT_SECRET'),
-                'redirect' => 'http://example.com/callback-url',
-            ],
-        ],
+        'android_client_id' => env('ANDROID_GOOGLE_CLIENT_ID', 'dupa'),
     ],
 ];
