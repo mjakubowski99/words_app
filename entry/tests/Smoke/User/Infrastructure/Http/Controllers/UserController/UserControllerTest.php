@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Smoke\User\Infrastructure\Http\Controllers\UserController;
 
+use Illuminate\Support\Facades\Config;
+use Shared\Enum\Platform;
 use Tests\TestCase;
 use App\Models\User;
 use Shared\Enum\UserProvider;
@@ -29,6 +31,38 @@ class UserControllerTest extends TestCase
             ->postJson(route('user.oauth.login'), [
                 'access_token' => 'adsadsdsa',
                 'user_provider' => UserProvider::GOOGLE->value,
+                'platform' => Platform::WEB,
+            ]);
+
+        // THEN
+        $response->assertStatus(200);
+        $response->assertJsonStructure([
+            'data' => [
+                'token',
+                'user' => [
+                    'id',
+                    'name',
+                    'email',
+                ],
+            ],
+        ]);
+    }
+
+    /**
+     * @test
+     */
+    public function loginWithProvider_WhenPlatformIsAndroid_updateConfigs(): void
+    {
+        // GIVEN
+        $user = $this->fakeSocialiteUser();
+        $this->fakeOAuthLogin($user, UserProvider::GOOGLE);
+
+        // WHEN
+        $response = $this
+            ->postJson(route('user.oauth.login'), [
+                'access_token' => 'adsadsdsa',
+                'user_provider' => UserProvider::GOOGLE->value,
+                'platform' => Platform::ANDROID,
             ]);
 
         // THEN
@@ -63,6 +97,7 @@ class UserControllerTest extends TestCase
             ->postJson(route('user.oauth.login'), [
                 'access_token' => '1233212',
                 'user_provider' => UserProvider::GOOGLE->value,
+                'platform' => Platform::WEB->value,
             ]);
 
         // THEN

@@ -74,6 +74,7 @@ class UserController extends Controller
         $user = $get_oauth_user->get(
             $request->getUserProvider(),
             $request->getAccessToken(),
+            $request->getPlatform()
         );
 
         $command = new CreateExternalUser(

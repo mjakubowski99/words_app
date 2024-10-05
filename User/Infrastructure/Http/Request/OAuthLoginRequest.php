@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace User\Infrastructure\Http\Request;
 
+use Shared\Enum\Platform;
 use Shared\Enum\UserProvider;
 use OpenApi\Attributes as OAT;
 use Illuminate\Validation\Rule;
@@ -33,6 +34,7 @@ class OAuthLoginRequest extends FormRequest
         return [
             'access_token' => ['required', 'string'],
             'user_provider' => ['required', Rule::in([UserProvider::GOOGLE->value])],
+            'platform' => ['required', Rule::in([Platform::WEB->value, Platform::ANDROID->value])]
         ];
     }
 
@@ -44,5 +46,10 @@ class OAuthLoginRequest extends FormRequest
     public function getUserProvider(): UserProvider
     {
         return UserProvider::from($this->input('user_provider'));
+    }
+
+    public function getPlatform(): Platform
+    {
+        return Platform::from($this->input('platform'));
     }
 }
