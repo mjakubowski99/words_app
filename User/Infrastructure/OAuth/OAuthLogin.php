@@ -37,12 +37,6 @@ class OAuthLogin implements IOAuthLogin
 
     private function adjustConfigToPlatform(UserProvider $provider, Platform $platform): void
     {
-        if ($platform === Platform::WEB) {
-            //default platform
-            return;
-        }
-
-        Config::set("services.{$provider->value}.client_id", config("services.{$provider->value}.android_client_id"));
-        Config::set("services.{$provider->value}.client_secret", config("services.{$provider->value}.android_client_secret"));
+        Config::set("services.{$provider->value}", config("services.alternatives.{$provider->value}.{$platform->value}"));
     }
 }

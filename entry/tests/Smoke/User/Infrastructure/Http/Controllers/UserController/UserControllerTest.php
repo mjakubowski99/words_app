@@ -46,6 +46,8 @@ class UserControllerTest extends TestCase
                 ],
             ],
         ]);
+        $this->assertArrayHasKey('client_id', Config::get('services.google'));
+        $this->assertArrayHasKey('client_secret', Config::get('services.google'));
     }
 
     /**
