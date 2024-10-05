@@ -56,8 +56,14 @@ class UserControllerTest extends TestCase
     public function loginWithProvider_WhenPlatformIsAndroid_updateConfigs(): void
     {
         // GIVEN
-        $user = $this->fakeSocialiteUser();
-        $this->fakeOAuthLogin($user, UserProvider::GOOGLE);
+        $client = \Mockery::mock(\Google_Client::class);
+        $client->shouldReceive('verifyIdToken')->andReturn([
+            'sub' => '123',
+            'name' => 'Pawel Kowal',
+            'email' => 'email@email.com',
+            'picture' => 'avatar.jpg',
+        ]);
+        $this->app->instance(\Google_Client::class, $client);
 
         // WHEN
         $response = $this

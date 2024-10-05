@@ -25,6 +25,12 @@ use Illuminate\Foundation\Http\FormRequest;
             enum: [UserProvider::GOOGLE->value],
             example: UserProvider::GOOGLE->value
         ),
+        new OAT\Property(
+            property: 'platform',
+            type: 'string',
+            enum: [Platform::WEB->value, Platform::ANDROID->value],
+            example: Platform::WEB->value
+        ),
     ]
 )]
 class OAuthLoginRequest extends FormRequest

@@ -7,15 +7,31 @@ namespace User\Infrastructure\OAuth;
 use Shared\Enum\Platform;
 use Shared\Enum\UserProvider;
 use User\Domain\Contracts\IOAuthUser;
-use Illuminate\Support\Facades\Config;
 use User\Domain\Contracts\IOAuthLogin;
 use Laravel\Socialite\Facades\Socialite;
 
 class OAuthLogin implements IOAuthLogin
 {
+    public function __construct(private \Google_Client $google_Client) {}
+
     public function login(UserProvider $provider, string $access_token, Platform $platform): IOAuthUser
     {
-        $this->adjustConfigToPlatform($provider, $platform);
+        if ($provider === UserProvider::GOOGLE && $platform === Platform::ANDROID) {
+            $payload = $this->google_Client->verifyIdToken($access_token);
+
+            if (!$payload) {
+                throw new \Exception("Failed to verify google id token: {$access_token}");
+            }
+
+            return new OAuthUser(
+                $payload['sub'],
+                $provider,
+                $payload['name'],
+                $payload['email'],
+                $payload['email'],
+                $payload['picture'],
+            );
+        }
 
         $driver = Socialite::driver($provider->value);
 
@@ -30,10 +46,5 @@ class OAuthLogin implements IOAuthLogin
             $user->getNickname(),
             $user->getAvatar()
         );
-    }
-
-    private function adjustConfigToPlatform(UserProvider $provider, Platform $platform): void
-    {
-        Config::set("services.{$provider->value}", config("services.alternatives.{$provider->value}.{$platform->value}"));
     }
 }
