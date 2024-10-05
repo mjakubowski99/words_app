@@ -71,18 +71,18 @@ class UserController extends Controller
         FindExternalUserHandler $find,
         CreateTokenHandler $create_token,
     ): JsonResponse {
-        $user = $get_oauth_user->get(
+        $oauth_user = $get_oauth_user->get(
             $request->getUserProvider(),
             $request->getAccessToken(),
             $request->getPlatform()
         );
 
         $command = new CreateExternalUser(
-            $user->getId(),
-            $user->getUserProvider(),
-            $user->getEmail(),
-            $user->getName() ?? '',
-            $user->getAvatar() ?? ''
+            $oauth_user->getId(),
+            $oauth_user->getUserProvider(),
+            $oauth_user->getEmail(),
+            $oauth_user->getName() ?? '',
+            $oauth_user->getAvatar() ?? ''
         );
 
         $create->handle($command);
@@ -131,6 +131,6 @@ class UserController extends Controller
     )]
     public function me(GetUserRequest $request): UserResource
     {
-        return new UserResource($request->user());
+        return new UserResource($request->current());
     }
 }

@@ -19,10 +19,7 @@ class OAuthLogin implements IOAuthLogin
 
         $driver = Socialite::driver($provider->value);
 
-        if (!method_exists($driver, 'userFromToken')) {
-            throw new \UnexpectedValueException('Unexpected problem');
-        }
-
+        /** @phpstan-ignore-next-line */
         $user = $driver->userFromToken($access_token);
 
         return new OAuthUser(
