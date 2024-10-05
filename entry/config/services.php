@@ -52,7 +52,7 @@ return [
                 'client_id' => env('ANDROID_GOOGLE_CLIENT_ID'),
                 'client_secret' => env('ANDROID_GOOGLE_CLIENT_SECRET'),
                 'redirect' => 'http://example.com/callback-url',
-            ]
-        ]
-    ]
+            ],
+        ],
+    ],
 ];

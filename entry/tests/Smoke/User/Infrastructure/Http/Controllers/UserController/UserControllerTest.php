@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Tests\Smoke\User\Infrastructure\Http\Controllers\UserController;
 
-use Illuminate\Support\Facades\Config;
-use Shared\Enum\Platform;
 use Tests\TestCase;
 use App\Models\User;
+use Shared\Enum\Platform;
 use Shared\Enum\UserProvider;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Auth\Middleware\Authenticate;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 

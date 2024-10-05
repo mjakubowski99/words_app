@@ -34,7 +34,7 @@ class OAuthLoginRequest extends FormRequest
         return [
             'access_token' => ['required', 'string'],
             'user_provider' => ['required', Rule::in([UserProvider::GOOGLE->value])],
-            'platform' => ['required', Rule::in([Platform::WEB->value, Platform::ANDROID->value])]
+            'platform' => ['required', Rule::in([Platform::WEB->value, Platform::ANDROID->value])],
         ];
     }
 

@@ -7,9 +7,9 @@ namespace User\Infrastructure\OAuth;
 use Shared\Enum\Platform;
 use Shared\Enum\UserProvider;
 use User\Domain\Contracts\IOAuthUser;
+use Illuminate\Support\Facades\Config;
 use User\Domain\Contracts\IOAuthLogin;
 use Laravel\Socialite\Facades\Socialite;
-use Illuminate\Support\Facades\Config;
 
 class OAuthLogin implements IOAuthLogin
 {
