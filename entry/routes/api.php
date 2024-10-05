@@ -7,9 +7,8 @@ use User\Infrastructure\Http\Controllers\UserController;
 use Flashcard\Infrastructure\Http\Controllers\SessionController;
 use Flashcard\Infrastructure\Http\Controllers\FlashcardCategoryController;
 
-Route::post('/user/firebase-init', [UserController::class, 'initFirebaseUser'])
-    ->name('user.firebase-init')
-    ->middleware('auth:firebase');
+Route::post('/user/oauth/login', [UserController::class, 'loginWithProvider'])
+    ->name('user.oauth.login');
 
 Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('/user/me', [UserController::class, 'me'])->name('user.me');

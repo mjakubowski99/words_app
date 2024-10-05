@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use App\Models\User;
-use Mjakubowski\FirebaseAuth\FirebaseAuthenticable;
 
 return [
     /*
@@ -71,11 +70,6 @@ return [
         'users' => [
             'driver' => 'eloquent',
             'model' => User::class,
-        ],
-
-        'firebase' => [
-            'driver' => 'eloquent',
-            'model' => FirebaseAuthenticable::class,
         ],
 
         // 'users' => [

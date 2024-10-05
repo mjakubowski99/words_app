@@ -2,6 +2,9 @@
 
 declare(strict_types=1);
 
+use Shared\Enum\Platform;
+use Shared\Enum\UserProvider;
+
 return [
     /*
     |--------------------------------------------------------------------------
@@ -30,5 +33,26 @@ return [
         'key' => env('AWS_ACCESS_KEY_ID'),
         'secret' => env('AWS_SECRET_ACCESS_KEY'),
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
+    ],
+
+    UserProvider::GOOGLE->value => [
+        'client_id' => env('GOOGLE_CLIENT_ID'),
+        'client_secret' => env('GOOGLE_CLIENT_SECRET'),
+        'redirect' => 'http://example.com/callback-url',
+    ],
+
+    'alternatives' => [
+        UserProvider::GOOGLE->value => [
+            Platform::WEB->value => [
+                'client_id' => env('WEB_GOOGLE_CLIENT_ID'),
+                'client_secret' => env('WEB_GOOGLE_CLIENT_SECRET'),
+                'redirect' => 'http://example.com/callback-url',
+            ],
+            Platform::ANDROID->value => [
+                'client_id' => env('ANDROID_GOOGLE_CLIENT_ID'),
+                'client_secret' => env('ANDROID_GOOGLE_CLIENT_SECRET'),
+                'redirect' => 'http://example.com/callback-url',
+            ],
+        ],
     ],
 ];

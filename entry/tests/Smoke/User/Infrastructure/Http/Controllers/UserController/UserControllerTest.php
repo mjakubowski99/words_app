@@ -6,8 +6,9 @@ namespace Tests\Smoke\User\Infrastructure\Http\Controllers\UserController;
 
 use Tests\TestCase;
 use App\Models\User;
+use Shared\Enum\Platform;
 use Shared\Enum\UserProvider;
-use Shared\Utils\ValueObjects\Uuid;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Auth\Middleware\Authenticate;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
@@ -19,14 +20,52 @@ class UserControllerTest extends TestCase
     /**
      * @test
      */
-    public function initFirebaseUser_WhenFirebaseUserAndUserNotExists_createUser(): void
+    public function loginWithProvider_WhenValidOAuthUserAndUserNotExists_createUser(): void
     {
         // GIVEN
-        $user = $this->createFirebaseUser(Uuid::make()->getValue(), UserProvider::GOOGLE);
+        $user = $this->fakeSocialiteUser();
+        $this->fakeOAuthLogin($user, UserProvider::GOOGLE);
 
         // WHEN
-        $response = $this->actingAs($user, 'firebase')
-            ->postJson(route('user.firebase-init'));
+        $response = $this
+            ->postJson(route('user.oauth.login'), [
+                'access_token' => 'adsadsdsa',
+                'user_provider' => UserProvider::GOOGLE->value,
+                'platform' => Platform::WEB,
+            ]);
+
+        // THEN
+        $response->assertStatus(200);
+        $response->assertJsonStructure([
+            'data' => [
+                'token',
+                'user' => [
+                    'id',
+                    'name',
+                    'email',
+                ],
+            ],
+        ]);
+        $this->assertArrayHasKey('client_id', Config::get('services.google'));
+        $this->assertArrayHasKey('client_secret', Config::get('services.google'));
+    }
+
+    /**
+     * @test
+     */
+    public function loginWithProvider_WhenPlatformIsAndroid_updateConfigs(): void
+    {
+        // GIVEN
+        $user = $this->fakeSocialiteUser();
+        $this->fakeOAuthLogin($user, UserProvider::GOOGLE);
+
+        // WHEN
+        $response = $this
+            ->postJson(route('user.oauth.login'), [
+                'access_token' => 'adsadsdsa',
+                'user_provider' => UserProvider::GOOGLE->value,
+                'platform' => Platform::ANDROID,
+            ]);
 
         // THEN
         $response->assertStatus(200);
@@ -45,18 +84,23 @@ class UserControllerTest extends TestCase
     /**
      * @test
      */
-    public function initFirebaseUser_WhenFirebaseUserAndUserExists_success(): void
+    public function loginWithProvider_WhenValidUserAndUserExists_success(): void
     {
         // GIVEN
-        $user = $this->createFirebaseUser(Uuid::make()->getValue(), UserProvider::GOOGLE);
+        $user = $this->fakeSocialiteUser();
+        $this->fakeOAuthLogin($user, UserProvider::GOOGLE);
         User::factory()->create([
-            'provider_id' => $user->getProviderId(),
+            'provider_id' => $user->getId(),
             'provider_type' => UserProvider::GOOGLE,
         ]);
 
         // WHEN
-        $response = $this->actingAs($user, 'firebase')
-            ->postJson(route('user.firebase-init'));
+        $response = $this
+            ->postJson(route('user.oauth.login'), [
+                'access_token' => '1233212',
+                'user_provider' => UserProvider::GOOGLE->value,
+                'platform' => Platform::WEB->value,
+            ]);
 
         // THEN
         $response->assertStatus(200);
@@ -69,25 +113,6 @@ class UserControllerTest extends TestCase
                     'email',
                 ],
             ],
-        ]);
-    }
-
-    /**
-     * @test
-     */
-    public function me_WhenFirebaseUserAndUserNotExists_notFoundException(): void
-    {
-        // GIVEN
-        $user = $this->createFirebaseUser(Uuid::make()->getValue(), UserProvider::GOOGLE);
-
-        // WHEN
-        $response = $this->actingAs($user, 'sanctum')
-            ->getJson(route('user.me'));
-
-        // THEN
-        $response->assertStatus(404);
-        $response->assertJsonStructure([
-            'message',
         ]);
     }
 
@@ -118,17 +143,17 @@ class UserControllerTest extends TestCase
     /**
      * @test
      */
-    public function me_WhenFirebaseUserAndUserExists_success(): void
+    public function me_WhenAuthorized_success(): void
     {
         // GIVEN
-        $user = $this->createFirebaseUser(Uuid::make()->getValue(), UserProvider::GOOGLE);
+        $user = User::factory()->create();
 
         // WHEN
         $response = $this->actingAs($user, 'sanctum')
             ->getJson(route('user.me'));
 
         // THEN
-        $response->assertStatus(404);
+        $response->assertStatus(200);
     }
 
     /**
