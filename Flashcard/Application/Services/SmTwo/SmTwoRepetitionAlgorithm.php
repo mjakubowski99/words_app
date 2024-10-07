@@ -22,15 +22,13 @@ class SmTwoRepetitionAlgorithm implements IRepetitionAlgorithm
             return;
         }
 
-        $rated_flashcard_ids = [];
+        $flashcard_ids = [];
         /** @var RateableSessionFlashcard $session_flashcard */
         foreach ($session_flashcards->all() as $session_flashcard) {
-            if ($session_flashcard->rated()) {
-                $rated_flashcard_ids[] = $session_flashcard->getFlashcardId()->getValue();
-            }
+            $flashcard_ids[] = $session_flashcard->getFlashcardId()->getValue();
         }
 
-        $sm_two_flashcards = $this->repository->findMany($session_flashcards->getOwner(), $rated_flashcard_ids);
+        $sm_two_flashcards = $this->repository->findMany($session_flashcards->getOwner(), $flashcard_ids);
 
         /** @var RateableSessionFlashcard $session_flashcard */
         foreach ($session_flashcards->all() as $session_flashcard) {
