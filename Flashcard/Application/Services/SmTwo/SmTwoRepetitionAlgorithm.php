@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\Services\SmTwo;
 
+use Flashcard\Domain\Models\RateableSessionFlashcard;
 use Flashcard\Domain\Models\RateableSessionFlashcards;
 use Flashcard\Application\Services\IRepetitionAlgorithm;
 use Flashcard\Application\Repository\ISmTwoFlashcardRepository;
+use Flashcard\Domain\Models\SmTwoFlashcard;
 
 class SmTwoRepetitionAlgorithm implements IRepetitionAlgorithm
 {
@@ -21,17 +23,19 @@ class SmTwoRepetitionAlgorithm implements IRepetitionAlgorithm
         }
 
         $rated_flashcard_ids = [];
+        /** @var RateableSessionFlashcard $session_flashcard */
         foreach ($session_flashcards->all() as $session_flashcard) {
             if ($session_flashcard->rated()) {
-                $rated_flashcard_ids[] = $session_flashcard->getFlashcardId();
+                $rated_flashcard_ids[] = $session_flashcard->getFlashcardId()->getValue();
             }
         }
 
         $sm_two_flashcards = $this->repository->findMany($session_flashcards->getOwner(), $rated_flashcard_ids);
 
+        /** @var RateableSessionFlashcard $session_flashcard */
         foreach ($session_flashcards->all() as $session_flashcard) {
             if ($session_flashcard->rated()) {
-                $sm_two_flashcards->fillMissing($session_flashcards->getOwner(), [$session_flashcard->getFlashcardId()]);
+                $sm_two_flashcards->fillIfMissing($session_flashcards->getOwner(), $session_flashcard->getFlashcardId());
 
                 $sm_two_flashcards->updateByRating(
                     $session_flashcard->getFlashcardId(),

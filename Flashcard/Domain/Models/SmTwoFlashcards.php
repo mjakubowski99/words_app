@@ -15,12 +15,10 @@ class SmTwoFlashcards implements \Countable
         $this->validate();
     }
 
-    public function fillMissing(Owner $owner, array $flashcard_ids): void
+    public function fillIfMissing(Owner $owner, FlashcardId $flashcard_id): void
     {
-        foreach ($flashcard_ids as $flashcard_id) {
-            if (!$this->searchKeyByUserFlashcard($flashcard_id)) {
-                $this->sm_two_flashcards[] = new SmTwoFlashcard($owner, $flashcard_id);
-            }
+        if (!$this->searchKeyByUserFlashcard($flashcard_id)) {
+            $this->sm_two_flashcards[] = new SmTwoFlashcard($owner, $flashcard_id);
         }
     }
 
