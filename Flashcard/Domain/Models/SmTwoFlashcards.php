@@ -17,7 +17,7 @@ class SmTwoFlashcards implements \Countable
 
     public function fillIfMissing(Owner $owner, FlashcardId $flashcard_id): void
     {
-        if (!$this->searchKeyByUserFlashcard($flashcard_id)) {
+        if (is_null($this->searchKeyByUserFlashcard($flashcard_id))) {
             $this->sm_two_flashcards[] = new SmTwoFlashcard($owner, $flashcard_id);
         }
     }
