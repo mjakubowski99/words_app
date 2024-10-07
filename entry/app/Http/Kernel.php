@@ -49,7 +49,7 @@ class Kernel extends HttpKernel
         TrimStrings::class,
         ConvertEmptyStringsToNull::class,
         Cors::class,
-        ForceHttps::class,
+//        ForceHttps::class,
     ];
 
     /**
