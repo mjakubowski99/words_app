@@ -27,14 +27,14 @@ class SmTwoFlashcardSelector implements IFlashcardSelector
 
     private function selectGeneral(NextSessionFlashcards $next_session_flashcards, int $limit): array
     {
-        $latest_ids = $this->flashcard_repository->getLatestSessionFlashcardIds($next_session_flashcards->getSessionId(), $limit);
+        $latest_ids = $this->flashcard_repository->getLatestSessionFlashcardIds($next_session_flashcards->getSessionId(), 1);
 
         return $this->repository->getFlashcardsWithLowestRepetitionInterval($next_session_flashcards->getOwner(), $limit, $latest_ids);
     }
 
     private function selectNormal(NextSessionFlashcards $next_session_flashcards, int $limit): array
     {
-        $latest_ids = $this->flashcard_repository->getLatestSessionFlashcardIds($next_session_flashcards->getSessionId(), $limit);
+        $latest_ids = $this->flashcard_repository->getLatestSessionFlashcardIds($next_session_flashcards->getSessionId(), 1);
         $category = $next_session_flashcards->getCategory();
 
         return $this->repository->getFlashcardsWithLowestRepetitionIntervalByCategory($category->getId(), $limit, $latest_ids);
