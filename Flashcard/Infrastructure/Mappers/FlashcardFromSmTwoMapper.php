@@ -28,7 +28,10 @@ class FlashcardFromSmTwoMapper
             ->leftJoin('flashcard_categories', 'flashcard_categories.id', '=', 'flashcards.flashcard_category_id')
             ->leftJoin('sm_two_flashcards', 'sm_two_flashcards.flashcard_id', '=', 'flashcards.id')
             ->take($limit)
-            ->orderByRaw('COALESCE(repetition_interval, 1), RANDOM() ASC')
+            ->orderByRaw('
+                COALESCE(repetition_interval, 0) = 0 DESC,
+                random() * (1.0 / COALESCE(repetition_interval, 1)) DESC
+            ')
             ->select(
                 'flashcards.*',
                 'flashcard_categories.user_id as category_user_id',
@@ -49,7 +52,10 @@ class FlashcardFromSmTwoMapper
             ->where('flashcards.flashcard_category_id', $category_id->getValue())
             ->leftJoin('sm_two_flashcards', 'sm_two_flashcards.flashcard_id', '=', 'flashcards.id')
             ->take($limit)
-            ->orderByRaw('COALESCE(repetition_interval, 1), RANDOM() ASC')
+            ->orderByRaw('
+                COALESCE(repetition_interval, 0) = 0 DESC,
+                random() * (1.0 / COALESCE(repetition_interval, 1)) DESC
+            ')
             ->select(
                 'flashcards.*',
                 'flashcard_categories.user_id as category_user_id',
