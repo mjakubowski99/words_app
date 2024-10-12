@@ -30,7 +30,7 @@ class FlashcardFromSmTwoMapper
             ->take($limit)
             ->orderByRaw('
                 COALESCE(repetition_interval, 0) = 0 DESC,
-                random() * (1.0 / COALESCE(repetition_interval, 1)) DESC
+                random() * 2 * (1.0 / COALESCE(repetition_interval, 1)) DESC
             ')
             ->select(
                 'flashcards.*',
@@ -54,7 +54,7 @@ class FlashcardFromSmTwoMapper
             ->take($limit)
             ->orderByRaw('
                 COALESCE(repetition_interval, 0) = 0 DESC,
-                random() * (1.0 / COALESCE(repetition_interval, 1)) DESC
+                random() * 2 * (1.0 / COALESCE(repetition_interval, 1)) DESC
             ')
             ->select(
                 'flashcards.*',
