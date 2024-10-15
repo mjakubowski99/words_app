@@ -13,7 +13,8 @@
         "laravel/pulse": "^1.2",
         "laravel/sanctum": "^3.3",
         "laravel/socialite": "^5.16",
-        "laravel/tinker": "^2.8"
+        "laravel/tinker": "^2.8",
+        "laravel/telescope": "^5.0"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^3.0",
@@ -22,7 +23,6 @@
         "larastan/larastan": "^2.0",
         "laravel/pint": "^1.0",
         "laravel/sail": "^1.18",
-        "laravel/telescope": "^5.0",
         "mockery/mockery": "^1.4.4",
         "nunomaduro/collision": "^7.0",
         "phpunit/phpunit": "^10.1",

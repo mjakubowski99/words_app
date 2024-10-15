@@ -65,7 +65,7 @@ USER $USER
 
 WORKDIR /var/www/entry
 
-RUN composer install
+RUN composer install --no-dev
 
 EXPOSE 9000
 
