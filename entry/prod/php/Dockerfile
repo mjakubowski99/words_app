@@ -53,7 +53,7 @@ RUN docker-php-ext-install \
     pdo_pgsql \
     zip
 
-COPY entry/docker/config/php/memory-limit-php.ini /usr/local/etc/php/conf.d/memory-limit-php.ini
+COPY entry/prod/php/memory-limit-php.ini /usr/local/etc/php/conf.d/memory-limit-php.ini
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
