@@ -32,7 +32,7 @@ class SmTwoFlashcardSelector implements IFlashcardSelector
         $results = $this->repository->getFlashcardsByRepetitionIntervalProbability($next_session_flashcards->getOwner(), $limit, $latest_ids);
 
         if (count($results) === 0) {
-            return $this->repository->getFlashcardsByRepetitionIntervalProbability($next_session_flashcards->getOwner(), $limit, $latest_ids);
+            return $this->repository->getFlashcardsByRepetitionIntervalProbability($next_session_flashcards->getOwner(), $limit, []);
         }
 
         return $results;
@@ -46,7 +46,7 @@ class SmTwoFlashcardSelector implements IFlashcardSelector
         $results = $this->repository->getFlashcardsByRepetitionIntervalProbabilityAndCategory($category->getId(), $limit, $latest_ids);
 
         if (count($results) === 0) {
-            return $this->repository->getFlashcardsByRepetitionIntervalProbabilityAndCategory($category->getId(), $limit, $latest_ids);
+            return $this->repository->getFlashcardsByRepetitionIntervalProbabilityAndCategory($category->getId(), $limit, []);
         }
 
         return $results;
