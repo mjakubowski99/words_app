@@ -30,7 +30,7 @@ class FlashcardCategoryReadMapper
 
         $results = $this->db::table('flashcards')
             ->latest()
-            ->when($limit !== null, fn($q) => $q->take($limit))
+            ->when($limit !== null, fn ($q) => $q->take($limit))
             ->where('flashcards.flashcard_category_id', $id->getValue())
             ->get()
             ->map(function (object $data) {
