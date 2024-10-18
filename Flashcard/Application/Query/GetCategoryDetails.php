@@ -14,8 +14,8 @@ class GetCategoryDetails
         private IFlashcardCategoryReadRepository $repository,
     ) {}
 
-    public function get(CategoryId $id): CategoryDetailsRead
+    public function get(CategoryId $id, ?int $limit): CategoryDetailsRead
     {
-        return $this->repository->findDetails($id);
+        return $this->repository->findDetails($id, $limit);
     }
 }

@@ -117,7 +117,7 @@ class FlashcardCategoryController
     ): CategoryDetailsResource {
         $result = $generate_flashcards->handle($request->toCommand());
 
-        return (new CategoryDetailsResource($get_category_details->get($result->getCategoryId())))
+        return (new CategoryDetailsResource($get_category_details->get($result->getCategoryId(), $result->getGeneratedCount())))
             ->additional([
                 'merged_to_existing_category' => $result->getMergedToExistingCategory(),
             ]);
@@ -127,6 +127,9 @@ class FlashcardCategoryController
         Request $request,
         GetCategoryDetails $get_category_details,
     ): CategoryDetailsResource {
-        return new CategoryDetailsResource($get_category_details->get(new CategoryId((int) $request->route('category_id'))));
+        return new CategoryDetailsResource($get_category_details->get(
+            new CategoryId((int) $request->route('category_id')),
+            null
+        ));
     }
 }

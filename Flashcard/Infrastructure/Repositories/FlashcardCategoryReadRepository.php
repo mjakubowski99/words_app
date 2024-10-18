@@ -16,9 +16,9 @@ class FlashcardCategoryReadRepository implements IFlashcardCategoryReadRepositor
         private readonly FlashcardCategoryReadMapper $mapper
     ) {}
 
-    public function findDetails(CategoryId $id): CategoryDetailsRead
+    public function findDetails(CategoryId $id, ?int $limit): CategoryDetailsRead
     {
-        return $this->mapper->findDetails($id);
+        return $this->mapper->findDetails($id, $limit);
     }
 
     public function getByOwner(Owner $owner, int $page, int $per_page): array

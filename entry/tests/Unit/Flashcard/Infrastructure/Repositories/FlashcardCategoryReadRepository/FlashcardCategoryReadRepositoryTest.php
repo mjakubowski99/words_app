@@ -32,7 +32,7 @@ class FlashcardCategoryReadRepositoryTest extends TestCase
         ]);
 
         // WHEN
-        $result = $this->repository->findDetails($category->getId());
+        $result = $this->repository->findDetails($category->getId(), null);
 
         // THEN
         $this->assertInstanceOf(CategoryDetailsRead::class, $result);
