@@ -29,6 +29,7 @@ class SessionMapper
             ->where('user_id', $owner->getId())
             ->update([
                 'status' => $status->value,
+                'updated_at' => now(),
             ]);
     }
 
@@ -37,6 +38,8 @@ class SessionMapper
         $category_id = $session->getFlashcardCategory()->getCategoryType() === FlashcardCategoryType::NORMAL ?
             $session->getFlashcardCategory()->getId()->getValue() : null;
 
+        $now = now();
+
         $result = $this->db::table('learning_sessions')
             ->insertGetId([
                 'user_id' => $session->getOwner()->getId()->getValue(),
@@ -44,6 +47,8 @@ class SessionMapper
                 'flashcard_category_id' => $category_id,
                 'cards_per_session' => $session->getCardsPerSession(),
                 'device' => $session->getDevice(),
+                'created_at' => $now,
+                'updated_at' => $now,
             ]);
 
         return new SessionId($result);
@@ -51,6 +56,8 @@ class SessionMapper
 
     public function update(Session $session): void
     {
+        $now = now();
+
         $result = $this->db::table('learning_sessions')
             ->find($session->getId()->getValue());
 
@@ -66,6 +73,7 @@ class SessionMapper
                 'flashcard_category_id' => $session->getFlashcardCategory()->getId()->getValue(),
                 'cards_per_session' => $session->getCardsPerSession(),
                 'device' => $session->getDevice(),
+                'updated_at' => $now,
             ]);
     }
 

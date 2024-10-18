@@ -81,7 +81,6 @@ class SmTwoFlashcardMapper
                         'repetition_ratio' => $flashcard->getRepetitionRatio(),
                         'repetition_interval' => $flashcard->getRepetitionInterval(),
                         'repetition_count' => $flashcard->getRepetitionCount(),
-                        'created_at' => $now,
                         'updated_at' => $now,
                     ]);
             }
