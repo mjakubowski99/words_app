@@ -107,6 +107,15 @@ class FlashcardMapper
         return true;
     }
 
+    public function replaceInSessions(CategoryId $actual_category_id, CategoryId $new_category_id): bool
+    {
+        $this->db::table('learning_sessions')
+            ->where('flashcard_category_id', $actual_category_id)
+            ->update(['flashcard_category_id' => $new_category_id]);
+
+        return true;
+    }
+
     public function map(object $data): Flashcard
     {
         $category = $data->flashcard_category_id ? (new Category(

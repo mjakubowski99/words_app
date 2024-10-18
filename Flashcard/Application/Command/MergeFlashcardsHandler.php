@@ -24,6 +24,8 @@ class MergeFlashcardsHandler
         try {
             $this->repository->replaceCategory($from_category_id, $to_category_id);
 
+            $this->repository->replaceInSessions($from_category_id, $to_category_id);
+
             $category = $this->category_repository->findById($from_category_id);
 
             $this->category_repository->removeCategory($category);

@@ -47,4 +47,9 @@ class FlashcardRepository implements IFlashcardRepository
     {
         return $this->mapper->replaceCategory($actual_category, $new_category);
     }
+
+    public function replaceInSessions(CategoryId $actual_category, CategoryId $new_category): bool
+    {
+        return $this->mapper->replaceInSessions($actual_category, $new_category);
+    }
 }
