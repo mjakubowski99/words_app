@@ -64,6 +64,7 @@ class RateableSessionFlashcardsMapper
                     ->where('id', $flashcard->getId())
                     ->update([
                         'rating' => $flashcard->getRating(),
+                        'updated_at' => now(),
                     ]);
             }
         }

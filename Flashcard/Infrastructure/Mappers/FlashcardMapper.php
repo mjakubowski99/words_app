@@ -102,7 +102,10 @@ class FlashcardMapper
     {
         $this->db::table('flashcards')
             ->where('flashcard_category_id', $actual_category_id)
-            ->update(['flashcard_category_id' => $new_category_id]);
+            ->update([
+                'flashcard_category_id' => $new_category_id,
+                'updated_at' => now(),
+            ]);
 
         return true;
     }
@@ -111,7 +114,10 @@ class FlashcardMapper
     {
         $this->db::table('learning_sessions')
             ->where('flashcard_category_id', $actual_category_id)
-            ->update(['flashcard_category_id' => $new_category_id]);
+            ->update([
+                'flashcard_category_id' => $new_category_id,
+                'updated_at' => now(),
+            ]);
 
         return true;
     }

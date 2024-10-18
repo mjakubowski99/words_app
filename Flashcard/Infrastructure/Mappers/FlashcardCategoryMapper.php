@@ -21,11 +21,15 @@ class FlashcardCategoryMapper
 
     public function create(ICategory $category): CategoryId
     {
+        $now = now();
+
         $result = $this->db::table('flashcard_categories')
             ->insertGetId([
                 'user_id' => $category->getOwner()->getId(),
                 'tag' => $category->getName(),
                 'name' => $category->getName(),
+                'created_at' => $now,
+                'updated_at' => $now,
             ]);
 
         return new CategoryId($result);

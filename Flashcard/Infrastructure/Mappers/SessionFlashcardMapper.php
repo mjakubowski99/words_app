@@ -20,6 +20,7 @@ class SessionFlashcardMapper
             ->where('learning_session_flashcards.learning_session_id', $session_id)
             ->latest()
             ->take($limit)
+            ->selectRaw('DISTINCT flashcard_id, created_at')
             ->pluck('flashcard_id')
             ->toArray();
 
