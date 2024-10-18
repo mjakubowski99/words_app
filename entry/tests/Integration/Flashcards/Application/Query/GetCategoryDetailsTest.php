@@ -31,7 +31,7 @@ class GetCategoryDetailsTest extends TestCase
         ]);
 
         // WHEN
-        $result = $this->query->get($category->getId());
+        $result = $this->query->get($category->getId(), null);
 
         // THEN
         $this->assertSame($category->id, $result->getId()->getValue());

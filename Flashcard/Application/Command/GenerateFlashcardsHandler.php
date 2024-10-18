@@ -33,6 +33,7 @@ final readonly class GenerateFlashcardsHandler
 
         return new GenerateFlashcardsResult(
             $resolved_category->getCategory()->getId(),
+            count($flashcards),
             $resolved_category->isExistingCategory()
         );
     }
