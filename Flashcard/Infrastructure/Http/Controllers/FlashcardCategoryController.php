@@ -97,6 +97,12 @@ class FlashcardCategoryController
                         type: 'array',
                         items: new OAT\Items(ref: '#/components/schemas/Resources\Flashcard\CategoryDetailsResource'),
                     ),
+                    new OAT\Property(
+                        property: 'merged_to_existing_category',
+                        description: "Variable determinate if generated flashcards are merged to existing category or it's brand new category",
+                        type: 'bool',
+                        example: false
+                    ),
                 ]),
             ),
             new OAT\Response(ref: '#/components/responses/bad_request', response: 400),
@@ -109,9 +115,12 @@ class FlashcardCategoryController
         GenerateFlashcardsHandler $generate_flashcards,
         GetCategoryDetails $get_category_details,
     ): CategoryDetailsResource {
-        $category_id = $generate_flashcards->handle($request->toCommand());
+        $result = $generate_flashcards->handle($request->toCommand());
 
-        return new CategoryDetailsResource($get_category_details->get($category_id));
+        return (new CategoryDetailsResource($get_category_details->get($result->getCategoryId())))
+            ->additional([
+                'merged_to_existing_category' => $result->getMergedToExistingCategory(),
+            ]);
     }
 
     public function get(

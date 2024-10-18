@@ -56,6 +56,7 @@ class FlashcardCategoryReadMapper
             ->where('flashcard_categories.user_id', $owner->getId())
             ->take($per_page)
             ->skip(($page - 1) * $per_page)
+            ->latest()
             ->get()
             ->map(function (object $data) {
                 return new OwnerCategoryRead(

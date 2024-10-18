@@ -15,6 +15,8 @@ use Shared\Utils\Storage\IStorage;
 use Shared\Utils\Container\Container;
 use Shared\Utils\Container\IContainer;
 use Illuminate\Support\ServiceProvider;
+use Shared\Database\ITransactionManager;
+use Shared\Database\LaravelTransactionManager;
 
 class SharedServiceProvider extends ServiceProvider
 {
@@ -25,5 +27,6 @@ class SharedServiceProvider extends ServiceProvider
         $this->app->bind(IConfig::class, Config::class);
         $this->app->bind(IStr::class, Str::class);
         $this->app->bind(IContainer::class, Container::class);
+        $this->app->bind(ITransactionManager::class, LaravelTransactionManager::class);
     }
 }

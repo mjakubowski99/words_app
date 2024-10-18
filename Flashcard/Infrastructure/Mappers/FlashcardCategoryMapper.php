@@ -44,6 +44,21 @@ class FlashcardCategoryMapper
         return $this->map($result);
     }
 
+    public function searchByName(Owner $owner, string $name): ?Category
+    {
+        /* @phpstan-ignore-next-line */
+        if ($owner->getOwnerType() !== FlashcardOwnerType::USER) {
+            throw new ModelNotFoundException('This owner does not have categories');
+        }
+
+        $result = $this->db::table('flashcard_categories')
+            ->where('user_id', $owner->getId())
+            ->whereRaw('LOWER(name) = ?', [mb_strtolower($name)])
+            ->first();
+
+        return $result ? $this->map($result) : null;
+    }
+
     public function getByOwner(Owner $owner, int $page, int $per_page): array
     {
         $results = $this->db::table('flashcard_categories')

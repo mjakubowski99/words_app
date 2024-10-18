@@ -27,6 +27,16 @@ class Language
         return new self($value);
     }
 
+    public static function pl(): self
+    {
+        return self::from(self::PL);
+    }
+
+    public static function en(): self
+    {
+        return self::from(self::EN);
+    }
+
     public function getValue(): string
     {
         return $this->value;

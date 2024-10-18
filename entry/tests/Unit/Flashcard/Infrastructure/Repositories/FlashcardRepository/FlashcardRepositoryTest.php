@@ -75,6 +75,32 @@ class FlashcardRepositoryTest extends TestCase
         $this->assertSame($flashcard->getId()->getValue(), $flashcards[0]->getId()->getValue());
     }
 
+    public function test__replaceCategory_replaceCategoryForCorrectFlashcards(): void
+    {
+        // GIVEN
+        $actual_category = FlashcardCategory::factory()->create();
+        $flashcards = Flashcard::factory(2)->create([
+            'flashcard_category_id' => $actual_category->id,
+        ]);
+        $other_flashcard = Flashcard::factory()->create();
+        $new_category = FlashcardCategory::factory()->create();
+
+        // WHEN
+        $this->repository->replaceCategory($actual_category->getId(), $new_category->getId());
+
+        // THEN
+        foreach ($flashcards as $flashcard) {
+            $this->assertDatabaseHas('flashcards', [
+                'id' => $flashcard->id,
+                'flashcard_category_id' => $new_category->id,
+            ]);
+        }
+        $this->assertDatabaseHas('flashcards', [
+            'id' => $other_flashcard->id,
+            'flashcard_category_id' => $other_flashcard->flashcard_category_id,
+        ]);
+    }
+
     public function test__getLatestSessionFlashcardIds_ShouldReturnLatestSessionFlashcardIds(): void
     {
         // GIVEN

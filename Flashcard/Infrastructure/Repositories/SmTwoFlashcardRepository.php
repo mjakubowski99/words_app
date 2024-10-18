@@ -28,13 +28,13 @@ class SmTwoFlashcardRepository implements ISmTwoFlashcardRepository
         $this->mapper->saveMany($sm_two_flashcards);
     }
 
-    public function getFlashcardsWithLowestRepetitionInterval(Owner $owner, int $limit, array $exclude_flashcard_ids): array
+    public function getFlashcardsByRepetitionIntervalProbability(Owner $owner, int $limit, array $exclude_flashcard_ids): array
     {
-        return $this->flashcard_mapper->getFlashcardsWithLowestRepetitionInterval($owner, $limit, $exclude_flashcard_ids);
+        return $this->flashcard_mapper->getFlashcardsByRepetitionIntervalProbability($owner, $limit, $exclude_flashcard_ids);
     }
 
-    public function getFlashcardsWithLowestRepetitionIntervalByCategory(CategoryId $category_id, int $limit, array $exclude_flashcard_ids): array
+    public function getFlashcardsByRepetitionIntervalProbabilityAndCategory(CategoryId $category_id, int $limit, array $exclude_flashcard_ids): array
     {
-        return $this->flashcard_mapper->getFlashcardsWithLowestRepetitionIntervalByCategory($category_id, $limit, $exclude_flashcard_ids);
+        return $this->flashcard_mapper->getFlashcardsByRepetitionIntervalProbabilityAndCategory($category_id, $limit, $exclude_flashcard_ids);
     }
 }

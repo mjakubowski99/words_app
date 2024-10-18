@@ -98,6 +98,15 @@ class FlashcardMapper
         $this->db::table('flashcards')->insert($insert_data);
     }
 
+    public function replaceCategory(CategoryId $actual_category_id, CategoryId $new_category_id): bool
+    {
+        $this->db::table('flashcards')
+            ->where('flashcard_category_id', $actual_category_id)
+            ->update(['flashcard_category_id' => $new_category_id]);
+
+        return true;
+    }
+
     public function map(object $data): Flashcard
     {
         $category = $data->flashcard_category_id ? (new Category(

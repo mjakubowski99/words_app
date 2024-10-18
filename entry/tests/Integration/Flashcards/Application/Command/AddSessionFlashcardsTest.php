@@ -34,6 +34,7 @@ class AddSessionFlashcardsTest extends FlashcardTestCase
         $category = FlashcardCategory::factory()->create();
         $flashcards = Flashcard::factory(3)->create([
             'flashcard_category_id' => $category->id,
+            'user_id' => $user->id,
         ]);
         $session = LearningSession::factory()->create([
             'flashcard_category_id' => $category->id,

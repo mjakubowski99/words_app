@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Middleware;
 
-use Closure;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 class LogMemoryUsage
@@ -10,11 +12,10 @@ class LogMemoryUsage
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
+     * @param  Request $request
      * @return mixed
      */
-    public function handle($request, Closure $next)
+    public function handle($request, \Closure $next)
     {
         // Uruchomienie pomiaru pamięci przed przetworzeniem żądania
         $startMemory = memory_get_usage();
@@ -32,9 +33,8 @@ class LogMemoryUsage
 
         Log::info('Zużycie pamięci: ' . round($memoryUsedKB, 2) . ' KB');
 
-        Log::info('Zużycie pamięci peak start: ' . round($peakStart/1024, 2) . ' KB');
-        Log::info('Zużycie pamięci peak end: ' . round($peakEnd/1024, 2) . ' KB');
-
+        Log::info('Zużycie pamięci peak start: ' . round($peakStart / 1024, 2) . ' KB');
+        Log::info('Zużycie pamięci peak end: ' . round($peakEnd / 1024, 2) . ' KB');
 
         return $response;
     }
