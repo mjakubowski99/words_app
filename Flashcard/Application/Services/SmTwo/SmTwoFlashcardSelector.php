@@ -27,11 +27,13 @@ class SmTwoFlashcardSelector implements IFlashcardSelector
 
     private function selectGeneral(NextSessionFlashcards $next_session_flashcards, int $limit): array
     {
-        $latest_ids = $this->flashcard_repository->getLatestSessionFlashcardIds($next_session_flashcards->getSessionId(), 1);
+        $latest_limit = 3;
+
+        $latest_ids = $this->flashcard_repository->getLatestSessionFlashcardIds($next_session_flashcards->getSessionId(), $latest_limit);
 
         $results = $this->repository->getFlashcardsByRepetitionIntervalProbability($next_session_flashcards->getOwner(), $limit, $latest_ids);
 
-        if (count($results) === 0) {
+        if (count($results) < $limit) {
             return $this->repository->getFlashcardsByRepetitionIntervalProbability($next_session_flashcards->getOwner(), $limit, []);
         }
 
@@ -40,12 +42,13 @@ class SmTwoFlashcardSelector implements IFlashcardSelector
 
     private function selectNormal(NextSessionFlashcards $next_session_flashcards, int $limit): array
     {
-        $latest_ids = $this->flashcard_repository->getLatestSessionFlashcardIds($next_session_flashcards->getSessionId(), 1);
+        $latest_limit = 3;
+        $latest_ids = $this->flashcard_repository->getLatestSessionFlashcardIds($next_session_flashcards->getSessionId(), $latest_limit);
         $category = $next_session_flashcards->getCategory();
 
         $results = $this->repository->getFlashcardsByRepetitionIntervalProbabilityAndCategory($category->getId(), $limit, $latest_ids);
 
-        if (count($results) === 0) {
+        if (count($results) < $limit) {
             return $this->repository->getFlashcardsByRepetitionIntervalProbabilityAndCategory($category->getId(), $limit, []);
         }
 
