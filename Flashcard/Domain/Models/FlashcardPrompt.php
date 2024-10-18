@@ -9,6 +9,9 @@ use Flashcard\Domain\Exceptions\InvalidPromptException;
 
 class FlashcardPrompt
 {
+    private readonly Language $word_lang;
+    private readonly Language $translation_lang;
+
     private string $prompt = '
         Jesteś algorytmem ai generującym słowa do nauki angielskiego.
         Bazujesz na krzywej zapominania i algorytmach typu Anki lub super memo.
@@ -31,10 +34,10 @@ class FlashcardPrompt
 
     public function __construct(
         private readonly string $category,
-        private readonly Language $word_lang,
-        private readonly Language $translation_lang,
     ) {
         $this->buildPrompt();
+        $this->word_lang = Language::en();
+        $this->translation_lang = Language::pl();
     }
 
     public function getPrompt(): string

@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\Services\SmTwo;
 
+use Illuminate\Support\Facades\Log;
 use Flashcard\Domain\Models\RateableSessionFlashcard;
 use Flashcard\Domain\Models\RateableSessionFlashcards;
 use Flashcard\Application\Services\IRepetitionAlgorithm;
 use Flashcard\Application\Repository\ISmTwoFlashcardRepository;
-use Flashcard\Domain\Models\SmTwoFlashcard;
-use Illuminate\Support\Facades\Log;
 
 class SmTwoRepetitionAlgorithm implements IRepetitionAlgorithm
 {
@@ -24,6 +23,7 @@ class SmTwoRepetitionAlgorithm implements IRepetitionAlgorithm
         }
 
         $flashcard_ids = [];
+
         /** @var RateableSessionFlashcard $session_flashcard */
         foreach ($session_flashcards->all() as $session_flashcard) {
             $flashcard_ids[] = $session_flashcard->getFlashcardId()->getValue();

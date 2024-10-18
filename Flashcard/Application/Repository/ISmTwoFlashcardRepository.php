@@ -16,7 +16,7 @@ interface ISmTwoFlashcardRepository
     public function saveMany(SmTwoFlashcards $sm_two_flashcards): void;
 
     /** @return Flashcard[] */
-    public function getFlashcardsWithLowestRepetitionIntervalByCategory(CategoryId $category_id, int $limit, array $exclude_flashcard_ids): array;
+    public function getFlashcardsByRepetitionIntervalProbabilityAndCategory(CategoryId $category_id, int $limit, array $exclude_flashcard_ids): array;
 
-    public function getFlashcardsWithLowestRepetitionInterval(Owner $owner, int $limit, array $exclude_flashcard_ids): array;
+    public function getFlashcardsByRepetitionIntervalProbability(Owner $owner, int $limit, array $exclude_flashcard_ids): array;
 }

@@ -6,11 +6,13 @@ namespace Tests\Integration\Flashcards\Application\Command;
 
 use Tests\TestCase;
 use App\Models\User;
+use App\Models\FlashcardCategory;
 use Illuminate\Support\Facades\Http;
 use Integrations\Gemini\GeminiApiClient;
 use Flashcard\Application\Command\GenerateFlashcards;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Flashcard\Application\Command\GenerateFlashcardsHandler;
+use Flashcard\Application\Exceptions\AiResponseFailedException;
 
 class GenerateFlashcardsHandlerTest extends TestCase
 {
@@ -20,10 +22,12 @@ class GenerateFlashcardsHandlerTest extends TestCase
 
     private GeminiApiClient $client;
 
+    private string $response;
+
     protected function setUp(): void
     {
         parent::setUp();
-        $response = '{
+        $this->response = '{
                "candidates":[
                   {
                      "content":{
@@ -62,15 +66,15 @@ class GenerateFlashcardsHandlerTest extends TestCase
                   "totalTokenCount":842
                }
             }';
-        Http::fake([
-            '*' => Http::response(json_decode($response, true)),
-        ]);
         $this->handler = $this->app->make(GenerateFlashcardsHandler::class);
     }
 
     public function test__handle_ShouldGenerateFlashcards(): void
     {
         // GIVEN
+        Http::fake([
+            '*' => Http::response(json_decode($this->response, true)),
+        ]);
         $category_name = 'Category';
         $user = User::factory()->create();
         $command = new GenerateFlashcards(
@@ -79,7 +83,7 @@ class GenerateFlashcardsHandlerTest extends TestCase
         );
 
         // WHEN
-        $category_id = $this->handler->handle($command);
+        $result = $this->handler->handle($command);
 
         // THEN
         $this->assertDatabaseHas('flashcard_categories', [
@@ -87,7 +91,82 @@ class GenerateFlashcardsHandlerTest extends TestCase
             'user_id' => $command->getOwner()->getId(),
         ]);
         $this->assertDatabaseHas('flashcards', [
-            'flashcard_category_id' => $category_id->getValue(),
+            'flashcard_category_id' => $result->getCategoryId(),
+        ]);
+        $this->assertFalse($result->getMergedToExistingCategory());
+    }
+
+    public function test__WhenCategoryAlreadyExists_ShouldGenerateFlashcardsAndAssignThemToExistingCategory(): void
+    {
+        // GIVEN
+        Http::fake([
+            '*' => Http::response(json_decode($this->response, true)),
+        ]);
+        $category_name = 'Category';
+        $user = User::factory()->create();
+        $category = FlashcardCategory::factory()->create(['name' => $category_name, 'user_id' => $user->id]);
+        $command = new GenerateFlashcards(
+            $user->toOwner(),
+            $category_name
+        );
+
+        // WHEN
+        $result = $this->handler->handle($command);
+
+        // THEN
+        $this->assertDatabaseHas('flashcards', [
+            'flashcard_category_id' => $result->getCategoryId(),
+        ]);
+        $this->assertTrue($result->getMergedToExistingCategory());
+    }
+
+    public function test__WhenCategoryAlreadyExistsAndApiFail_ShouldNotRemoveCategory(): void
+    {
+        // GIVEN
+        Http::fake([
+            '*' => Http::response(['message' => 'Error'], 400),
+        ]);
+        $category_name = 'Category';
+        $user = User::factory()->create();
+        $category = FlashcardCategory::factory()->create(['name' => $category_name, 'user_id' => $user->id]);
+        $command = new GenerateFlashcards(
+            $user->toOwner(),
+            $category_name
+        );
+
+        $this->expectException(AiResponseFailedException::class);
+
+        // WHEN
+        $this->handler->handle($command);
+
+        // THEN
+        $this->assertDatabaseHas('flashcard_categories', [
+            'id' => $category->id,
+        ]);
+    }
+
+    public function test__WhenNewCategoryAndApiFail_ShouldRemoveCategory(): void
+    {
+        // GIVEN
+        Http::fake([
+            '*' => Http::response(['message' => 'Error'], 400),
+        ]);
+        $category_name = 'Category';
+        $user = User::factory()->create();
+        $command = new GenerateFlashcards(
+            $user->toOwner(),
+            $category_name
+        );
+
+        $this->expectException(AiResponseFailedException::class);
+
+        // WHEN
+        $this->handler->handle($command);
+
+        // THEN
+        $this->assertDatabaseMissing('flashcard_categories', [
+            'user_id' => $user->id,
+            'name' => $category_name,
         ]);
     }
 }

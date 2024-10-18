@@ -42,4 +42,9 @@ class FlashcardRepository implements IFlashcardRepository
     {
         return $this->session_flashcard_mapper->getLatestSessionFlashcardIds($session_id, $limit);
     }
+
+    public function replaceCategory(CategoryId $actual_category, CategoryId $new_category): bool
+    {
+        return $this->mapper->replaceCategory($actual_category, $new_category);
+    }
 }

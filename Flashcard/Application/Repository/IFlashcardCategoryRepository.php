@@ -13,6 +13,8 @@ interface IFlashcardCategoryRepository
 {
     public function findById(CategoryId $id): ICategory;
 
+    public function searchByName(Owner $owner, string $name): ?ICategory;
+
     /** @return Category[] */
     public function getByOwner(Owner $owner, int $page, int $per_page): array;
 

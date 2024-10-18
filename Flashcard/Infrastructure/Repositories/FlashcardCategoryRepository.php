@@ -30,6 +30,11 @@ class FlashcardCategoryRepository implements IFlashcardCategoryRepository
         return $this->mapper->findById($id);
     }
 
+    public function searchByName(Owner $owner, string $name): ?ICategory
+    {
+        return $this->mapper->searchByName($owner, $name);
+    }
+
     public function createCategory(ICategory $category): ICategory
     {
         if ($category->getCategoryType() === FlashcardCategoryType::GENERAL) {

@@ -25,6 +25,8 @@ use Flashcard\Infrastructure\Http\Resources\SessionFlashcardsResource;
 
 class SessionController extends Controller
 {
+    public const FLASHCARDS_LIMIT = 1;
+
     public function get(
         GetSessionRequest $request,
         AddSessionFlashcardsHandler $add_session_flashcards,
@@ -34,10 +36,10 @@ class SessionController extends Controller
         $session = $get_session->handle($request->getSessionId());
 
         $add_session_flashcards->handle(
-            new AddSessionFlashcards($session->getId(), 5)
+            new AddSessionFlashcards($session->getId(), self::FLASHCARDS_LIMIT)
         );
 
-        $next_flashcards = $get_next_session_flashcards->handle($request->getSessionId(), 5);
+        $next_flashcards = $get_next_session_flashcards->handle($request->getSessionId(), self::FLASHCARDS_LIMIT);
 
         return new SessionFlashcardsResource([
             'session' => $session,
@@ -94,12 +96,12 @@ class SessionController extends Controller
         }
 
         $add_session_flashcards->handle(
-            new AddSessionFlashcards($result->getId(), 5)
+            new AddSessionFlashcards($result->getId(), self::FLASHCARDS_LIMIT)
         );
 
         return new SessionFlashcardsResource([
             'session' => $get_session->handle($result->getId()),
-            'next_flashcards' => $get_next_session_flashcards->handle($result->getId(), 5),
+            'next_flashcards' => $get_next_session_flashcards->handle($result->getId(), self::FLASHCARDS_LIMIT),
         ]);
     }
 
@@ -150,14 +152,14 @@ class SessionController extends Controller
             $request->getSessionId(),
             $request->getRatings(),
         );
-        $add_session_flashcards_command = new AddSessionFlashcards($request->getSessionId(), 5);
+        $add_session_flashcards_command = new AddSessionFlashcards($request->getSessionId(), self::FLASHCARDS_LIMIT);
 
         $rate->handle($rate_command);
         $add_session_flashcards->handle($add_session_flashcards_command);
 
         return new SessionFlashcardsResource([
             'session' => $get_session->handle($request->getSessionId()),
-            'next_flashcards' => $get_next_session_flashcards->handle($request->getSessionId(), 5),
+            'next_flashcards' => $get_next_session_flashcards->handle($request->getSessionId(), self::FLASHCARDS_LIMIT),
         ]);
     }
 }

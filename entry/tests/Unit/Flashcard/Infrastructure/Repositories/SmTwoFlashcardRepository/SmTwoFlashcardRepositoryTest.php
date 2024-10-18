@@ -79,17 +79,14 @@ class SmTwoFlashcardRepositoryTest extends FlashcardTestCase
     /**
      * @test
      */
-    public function getFlashcardsWithLowestRepetitionIntervalByCategory_ShouldReturnFlashcardsSortedByRepetitionInterval(): void
+    public function getFlashcardsWithLowestRepetitionIntervalByCategory_ShouldReturnFlashcards(): void
     {
         // GIVEN
         $user = User::factory()->create();
         $category = FlashcardCategory::factory()->create();
-        $flashcards = [
-            SmTwoFlashcard::factory()->create([
-                'flashcard_id' => Flashcard::factory()->create(['flashcard_category_id' => $category->id]),
-                'user_id' => $user->id,
-                'repetition_interval' => 5,
-            ]),
+
+        $flashcard = Flashcard::factory()->create(['flashcard_category_id' => $category->id]);
+        $sm_two_flashcards = [
             SmTwoFlashcard::factory()->create([
                 'flashcard_id' => Flashcard::factory()->create(['flashcard_category_id' => $category->id]),
                 'user_id' => $user->id,
@@ -101,15 +98,11 @@ class SmTwoFlashcardRepositoryTest extends FlashcardTestCase
                 'repetition_interval' => 6,
             ]),
         ];
-        $expected = [$flashcards[1], $flashcards[0], $flashcards[2]];
 
         // WHEN
-        $results = $this->repository->getFlashcardsWithLowestRepetitionIntervalByCategory($category->getId(), 5, []);
+        $results = $this->repository->getFlashcardsByRepetitionIntervalProbabilityAndCategory($category->getId(), 5, []);
 
         // THEN
         $this->assertCount(3, $results);
-        $this->assertSame($expected[0]->flashcard_id, $results[0]->getId()->getValue());
-        $this->assertSame($expected[1]->flashcard_id, $results[1]->getId()->getValue());
-        $this->assertSame($expected[2]->flashcard_id, $results[2]->getId()->getValue());
     }
 }

@@ -7,11 +7,13 @@ namespace Tests\Unit\Flashcard\Infrastructure\Repositories\FlashcardCategoryRepo
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\FlashcardCategory;
+use Flashcard\Domain\Models\Owner;
 use Shared\Enum\FlashcardOwnerType;
 use Flashcard\Domain\Models\Category;
 use Shared\Enum\FlashcardCategoryType;
 use Flashcard\Domain\Contracts\ICategory;
 use Flashcard\Domain\Models\MainCategory;
+use Flashcard\Domain\ValueObjects\OwnerId;
 use Flashcard\Domain\Exceptions\CannotCreateCategoryException;
 use Flashcard\Infrastructure\Repositories\FlashcardCategoryRepository;
 
@@ -133,5 +135,38 @@ class FlashcardCategoryRepositoryTest extends TestCase
         $this->assertCount(1, $results);
         $this->assertInstanceOf(Category::class, $results[0]);
         $this->assertSame($user_categories[1]->id, $results[0]->getId()->getValue());
+    }
+
+    public function test__searchByName_shouldReturnUserCategory(): void
+    {
+        // GIVEN
+        $user = User::factory()->create();
+        FlashcardCategory::factory()->create(['name' => 'Category']);
+        $expected_category = FlashcardCategory::factory()->create(['name' => 'Category', 'user_id' => $user->id]);
+        $owner = new Owner(new OwnerId($user->id), FlashcardOwnerType::USER);
+
+        // WHEN
+        $category = $this->repository->searchByName($owner, 'category');
+
+        // THEN
+        $this->assertSame($expected_category->id, $category->getId()->getValue());
+        $this->assertSame($expected_category->name, $category->getName());
+        $this->assertSame($user->id, $category->getOwner()->getId()->getValue());
+    }
+
+    public function test__searchByName_shouldCorrectlySearchByNAME(): void
+    {
+        // GIVEN
+        $user = User::factory()->create();
+        FlashcardCategory::factory()->create(['name' => 'Category 1', 'user_id' => $user->id]);
+        $expected_category = FlashcardCategory::factory()->create(['name' => 'Category', 'user_id' => $user->id]);
+        $owner = new Owner(new OwnerId($user->id), FlashcardOwnerType::USER);
+
+        // WHEN
+        $category = $this->repository->searchByName($owner, 'category');
+
+        // THEN
+        $this->assertSame($expected_category->id, $category->getId()->getValue());
+        $this->assertSame($expected_category->name, $category->getName());
     }
 }

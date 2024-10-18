@@ -6,10 +6,10 @@ namespace App\Http;
 
 use App\Http\Middleware\Cors;
 use App\Http\Middleware\ForceHttps;
-use App\Http\Middleware\LogMemoryUsage;
 use App\Http\Middleware\TrimStrings;
 use App\Http\Middleware\TrustProxies;
 use App\Http\Middleware\EncryptCookies;
+use App\Http\Middleware\LogMemoryUsage;
 use App\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Auth\Middleware\Authorize;
 use App\Http\Middleware\ValidateSignature;
@@ -50,7 +50,7 @@ class Kernel extends HttpKernel
         TrimStrings::class,
         ConvertEmptyStringsToNull::class,
         Cors::class,
-//        ForceHttps::class,
+        //        ForceHttps::class,
     ];
 
     /**
@@ -72,7 +72,7 @@ class Kernel extends HttpKernel
             // \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
             ThrottleRequests::class . ':api',
             SubstituteBindings::class,
-            LogMemoryUsage::class,
+            // LogMemoryUsage::class,
         ],
     ];
 
