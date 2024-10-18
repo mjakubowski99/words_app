@@ -26,4 +26,5 @@ interface IFlashcardRepository
     public function getLatestSessionFlashcardIds(SessionId $session_id, int $limit): array;
 
     public function replaceCategory(CategoryId $actual_category, CategoryId $new_category): bool;
+    public function replaceInSessions(CategoryId $actual_category, CategoryId $new_category): bool;
 }
