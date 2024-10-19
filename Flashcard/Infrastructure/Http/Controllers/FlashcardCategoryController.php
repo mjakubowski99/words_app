@@ -123,6 +123,30 @@ class FlashcardCategoryController
             ]);
     }
 
+    #[OAT\Get(
+        path: '/api/flashcards/categories/{category_id}',
+        operationId: 'flashcards.categories.get',
+        description: 'Get flashcard details for category',
+        summary: 'Get flashcards and category details',
+        security: [['sanctum' => []]],
+        tags: [Tags::FLASHCARD],
+        responses: [
+            new OAT\Response(
+                response: 200,
+                description: 'success',
+                content: new OAT\JsonContent(properties: [
+                    new OAT\Property(
+                        property: 'data',
+                        type: 'array',
+                        items: new OAT\Items(ref: '#/components/schemas/Resources\Flashcard\CategoryDetailsResource'),
+                    ),
+                ]),
+            ),
+            new OAT\Response(ref: '#/components/responses/bad_request', response: 400),
+            new OAT\Response(ref: '#/components/responses/unauthenticated', response: 401),
+            new OAT\Response(ref: '#/components/responses/validation_error', response: 422),
+        ],
+    )]
     public function get(
         Request $request,
         GetCategoryDetails $get_category_details,
