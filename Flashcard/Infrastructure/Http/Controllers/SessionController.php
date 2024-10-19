@@ -105,8 +105,8 @@ class SessionController extends Controller
         ]);
     }
 
-    #[OAT\Post(
-        path: '/api/flashcard/session/{session_id}/rate-flashcards',
+    #[OAT\Put(
+        path: '/api/flashcards/session/{session_id}/rate-flashcards',
         operationId: 'flashcard.session.rate',
         description: 'Rate session flashcards and get next flashcards to learn',
         summary: 'Rate session flashcards',
