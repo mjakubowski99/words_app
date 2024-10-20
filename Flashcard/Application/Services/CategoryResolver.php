@@ -6,6 +6,7 @@ namespace Flashcard\Application\Services;
 
 use Flashcard\Domain\Models\Owner;
 use Flashcard\Domain\Models\Category;
+use Flashcard\Domain\ValueObjects\CategoryId;
 use Flashcard\Application\DTO\ResolvedCategory;
 use Flashcard\Application\Repository\IFlashcardCategoryRepository;
 
@@ -15,7 +16,7 @@ class CategoryResolver
         private IFlashcardCategoryRepository $repository
     ) {}
 
-    public function resolve(Owner $owner, string $name): ResolvedCategory
+    public function resolveByName(Owner $owner, string $name): ResolvedCategory
     {
         $existing_category = $this->repository->searchByName($owner, $name);
 
@@ -31,5 +32,12 @@ class CategoryResolver
         $category = $this->repository->createCategory($category);
 
         return new ResolvedCategory(false, $category);
+    }
+
+    public function resolveById(CategoryId $id): ResolvedCategory
+    {
+        $category = $this->repository->findById($id);
+
+        return new ResolvedCategory(true, $category);
     }
 }

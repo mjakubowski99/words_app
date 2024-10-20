@@ -74,7 +74,7 @@ class FlashcardFromSmTwoMapper
             new Owner(new OwnerId($data->category_user_id), FlashcardOwnerType::USER),
             $data->category_tag,
             $data->category_name,
-        ))->init(new CategoryId($data->flashcard_category_id)) : Category::empty();
+        ))->init(new CategoryId($data->flashcard_category_id)) : null;
 
         return new Flashcard(
             new FlashcardId($data->id),

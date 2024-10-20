@@ -31,7 +31,7 @@ class NextSessionFlashcardsMapper
         return new NextSessionFlashcards(
             $id,
             $session->getOwner(),
-            $session->getFlashcardCategory(),
+            $session->hasFlashcardCategory() ? $session->getFlashcardCategory() : null,
             $count,
             $unrated_count,
             $session->getCardsPerSession(),

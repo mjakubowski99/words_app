@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Flashcard\Domain\Models;
 
-use Flashcard\Domain\Contracts\ICategory;
 use Flashcard\Domain\ValueObjects\SessionId;
 use Flashcard\Domain\Exceptions\InvalidNextSessionFlashcards;
 use Flashcard\Domain\Exceptions\TooManySessionFlashcardsException;
@@ -18,7 +17,7 @@ class NextSessionFlashcards
     public function __construct(
         private SessionId $session_id,
         private Owner $owner,
-        private ICategory $category,
+        private ?Category $category,
         private int $current_session_flashcards_count,
         private int $unrated_count,
         private int $max_flashcards_count,
@@ -40,7 +39,12 @@ class NextSessionFlashcards
         return $this->owner;
     }
 
-    public function getCategory(): ICategory
+    public function hasCategory(): bool
+    {
+        return $this->category !== null;
+    }
+
+    public function getCategory(): Category
     {
         return $this->category;
     }

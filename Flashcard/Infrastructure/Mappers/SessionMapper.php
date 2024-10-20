@@ -10,8 +10,6 @@ use Illuminate\Support\Facades\DB;
 use Shared\Enum\FlashcardOwnerType;
 use Flashcard\Domain\Models\Session;
 use Flashcard\Domain\Models\Category;
-use Shared\Enum\FlashcardCategoryType;
-use Flashcard\Domain\Models\MainCategory;
 use Flashcard\Domain\ValueObjects\OwnerId;
 use Flashcard\Domain\ValueObjects\SessionId;
 use Flashcard\Domain\ValueObjects\CategoryId;
@@ -35,16 +33,13 @@ class SessionMapper
 
     public function create(Session $session): SessionId
     {
-        $category_id = $session->getFlashcardCategory()->getCategoryType() === FlashcardCategoryType::NORMAL ?
-            $session->getFlashcardCategory()->getId()->getValue() : null;
-
         $now = now();
 
         $result = $this->db::table('learning_sessions')
             ->insertGetId([
                 'user_id' => $session->getOwner()->getId()->getValue(),
                 'status' => $session->getStatus()->value,
-                'flashcard_category_id' => $category_id,
+                'flashcard_category_id' => $session->hasFlashcardCategory() ? $session->getFlashcardCategory()->getId() : null,
                 'cards_per_session' => $session->getCardsPerSession(),
                 'device' => $session->getDevice(),
                 'created_at' => $now,
@@ -70,7 +65,7 @@ class SessionMapper
             ->update([
                 'user_id' => $session->getOwner()->getId()->getValue(),
                 'status' => $session->getStatus()->value,
-                'flashcard_category_id' => $session->getFlashcardCategory()->getId()->getValue(),
+                'flashcard_category_id' => $session->hasFlashcardCategory() ? $session->getFlashcardCategory()->getId() : null,
                 'cards_per_session' => $session->getCardsPerSession(),
                 'device' => $session->getDevice(),
                 'updated_at' => $now,
@@ -104,7 +99,7 @@ class SessionMapper
 
     public function map(object $data): Session
     {
-        $category = $data->category_id === null ? new MainCategory() : (new Category(
+        $category = $data->category_id === null ? null : (new Category(
             new Owner(new OwnerId($data->user_id), FlashcardOwnerType::USER),
             $data->tag,
             $data->name,

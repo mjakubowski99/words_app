@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 namespace Flashcard\Domain\Models;
 
-use Shared\Enum\FlashcardCategoryType;
-use Flashcard\Domain\Contracts\ICategory;
 use Flashcard\Domain\ValueObjects\CategoryId;
 
-class Category implements ICategory
+class Category
 {
     private CategoryId $id;
 
@@ -17,11 +15,6 @@ class Category implements ICategory
         private string $tag,
         private string $name,
     ) {}
-
-    public static function empty(): MainCategory
-    {
-        return new MainCategory();
-    }
 
     public function init(CategoryId $id): self
     {
@@ -53,10 +46,5 @@ class Category implements ICategory
     public function getName(): string
     {
         return $this->name;
-    }
-
-    public function getCategoryType(): FlashcardCategoryType
-    {
-        return FlashcardCategoryType::NORMAL;
     }
 }

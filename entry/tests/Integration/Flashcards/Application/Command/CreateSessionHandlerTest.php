@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Integration\Flashcards\Application\Command;
 
 use App\Models\User;
+use Shared\Enum\LearningSessionType;
 use Shared\User\IUser;
 use App\Models\FlashcardCategory;
 use Tests\Base\FlashcardTestCase;
@@ -44,6 +45,7 @@ class CreateSessionHandlerTest extends FlashcardTestCase
             $cards_per_session,
             $device,
             $category_id,
+            LearningSessionType::LEARN_FLASHCARDS_IN_CATEGORY,
         );
 
         // WHEN
@@ -70,6 +72,7 @@ class CreateSessionHandlerTest extends FlashcardTestCase
             $cards_per_session,
             $device,
             $category_id,
+            LearningSessionType::LEARN_FLASHCARDS_IN_CATEGORY,
         );
 
         // THEN

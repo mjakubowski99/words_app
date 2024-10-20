@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\Services\SmTwo;
 
-use Shared\Enum\FlashcardCategoryType;
 use Flashcard\Domain\Models\NextSessionFlashcards;
 use Flashcard\Application\Services\IFlashcardSelector;
 use Flashcard\Application\Repository\IFlashcardRepository;
@@ -19,10 +18,11 @@ class SmTwoFlashcardSelector implements IFlashcardSelector
 
     public function select(NextSessionFlashcards $next_session_flashcards, int $limit): array
     {
-        return match ($next_session_flashcards->getCategory()->getCategoryType()) {
-            FlashcardCategoryType::GENERAL => $this->selectGeneral($next_session_flashcards, $limit),
-            FlashcardCategoryType::NORMAL => $this->selectNormal($next_session_flashcards, $limit),
-        };
+        if ($next_session_flashcards->hasCategory()) {
+            return $this->selectNormal($next_session_flashcards, $limit);
+        }
+
+        return $this->selectGeneral($next_session_flashcards, $limit);
     }
 
     private function selectGeneral(NextSessionFlashcards $next_session_flashcards, int $limit): array

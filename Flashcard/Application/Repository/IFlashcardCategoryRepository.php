@@ -6,19 +6,18 @@ namespace Flashcard\Application\Repository;
 
 use Flashcard\Domain\Models\Owner;
 use Flashcard\Domain\Models\Category;
-use Flashcard\Domain\Contracts\ICategory;
 use Flashcard\Domain\ValueObjects\CategoryId;
 
 interface IFlashcardCategoryRepository
 {
-    public function findById(CategoryId $id): ICategory;
+    public function findById(CategoryId $id): Category;
 
-    public function searchByName(Owner $owner, string $name): ?ICategory;
+    public function searchByName(Owner $owner, string $name): ?Category;
 
     /** @return Category[] */
     public function getByOwner(Owner $owner, int $page, int $per_page): array;
 
-    public function createCategory(ICategory $category): ICategory;
+    public function createCategory(Category $category): Category;
 
-    public function removeCategory(ICategory $category): void;
+    public function removeCategory(Category $category): void;
 }

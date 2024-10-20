@@ -19,7 +19,9 @@ class CreateSessionHandler
 
     public function handle(CreateSession $command): CreateSessionResultDTO
     {
-        $category = $this->category_repository->findById($command->getCategoryId());
+        $category = $command->hasCategoryId()
+            ? $this->category_repository->findById($command->getCategoryId()) :
+            null;
 
         $this->repository->setAllOwnerSessionsStatus($command->getOwner(), SessionStatus::FINISHED);
 

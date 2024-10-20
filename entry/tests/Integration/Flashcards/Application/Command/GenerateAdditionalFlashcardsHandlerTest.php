@@ -2,23 +2,31 @@
 
 declare(strict_types=1);
 
-namespace Tests\Smoke\Flashcard;
+namespace Integration\Flashcards\Application\Command;
 
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\FlashcardCategory;
 use Illuminate\Support\Facades\Http;
+use Integrations\Gemini\GeminiApiClient;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Flashcard\Application\Command\RegenerateAdditionalFlashcardsHandler;
 
-class FlashcardCategoryControllerTest extends TestCase
+class GenerateAdditionalFlashcardsHandlerTest extends TestCase
 {
     use DatabaseTransactions;
+
+    private RegenerateAdditionalFlashcardsHandler $handler;
+
+    private GeminiApiClient $client;
+
+    private string $response;
 
     protected function setUp(): void
     {
         parent::setUp();
         Http::preventStrayRequests();
-        $response = '{
+        $this->response = '{
                "candidates":[
                   {
                      "content":{
@@ -57,94 +65,26 @@ class FlashcardCategoryControllerTest extends TestCase
                   "totalTokenCount":842
                }
             }';
-        Http::fake([
-            '*' => Http::response(json_decode($response, true)),
-        ]);
+        $this->handler = $this->app->make(RegenerateAdditionalFlashcardsHandler::class);
     }
 
-    public function test__index_WhenUserAuthorized_success(): void
+    public function test__handle_ShouldGenerateFlashcards(): void
     {
         // GIVEN
+        Http::fake([
+            '*' => Http::response(json_decode($this->response, true)),
+        ]);
         $user = User::factory()->create();
         $category = FlashcardCategory::factory()->create([
             'user_id' => $user->id,
         ]);
 
         // WHEN
-        $response = $this->actingAs($user, 'sanctum')
-            ->json('GET', route('flashcards.categories.index'));
+        $this->handler->handle($user->toOwner(), $category->getId());
 
         // THEN
-        $response->assertStatus(200);
-        $response->assertJsonStructure([
-            'data' => [
-                'categories' => [
-                    '*' => [
-                        'id',
-                        'name',
-                    ],
-                ],
-                'page',
-                'per_page',
-            ],
-        ]);
-    }
-
-    public function test__index_WhenUserUnauthorized_fail(): void
-    {
-        // GIVEN
-        $user = User::factory()->create();
-
-        // WHEN
-        $response = $this
-            ->json('GET', route('flashcards.categories.index'));
-
-        // THEN
-        $response->assertStatus(401);
-    }
-
-    public function test__generateFlashcards_UserNotAuthorized_unauthorized(): void
-    {
-        // GIVEN
-        // WHEN
-        $response = $this
-            ->json('POST', route('flashcards.categories.generate-flashcards'), [
-                'category_name' => 'Category',
-            ]);
-
-        // THEN
-        $response->assertStatus(401);
-    }
-
-    public function test__generateFlashcards_UserAuthorized_success(): void
-    {
-        // GIVEN
-        $user = User::factory()->create();
-
-        // WHEN
-        $response = $this->actingAs($user, 'sanctum')
-            ->json('POST', route('flashcards.categories.generate-flashcards'), [
-                'category_name' => 'Category',
-            ]);
-
-        // THEN
-        $response->assertStatus(200);
-        $response->assertJsonStructure([
-            'data' => [
-                'id',
-                'name',
-                'flashcards' => [
-                    '*' => [
-                        'id',
-                        'word',
-                        'word_lang',
-                        'translation',
-                        'translation_lang',
-                        'context',
-                        'context_translation',
-                    ],
-                ],
-            ],
+        $this->assertDatabaseHas('flashcards', [
+            'flashcard_category_id' => $category->getId(),
         ]);
     }
 }
