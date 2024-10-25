@@ -45,12 +45,17 @@ class RateableSessionFlashcardRepositoryTest extends TestCase
         $this->assertSame($session->user_id, $result->getOwner()->getId()->getValue());
     }
 
-    public function test__create_ShouldPersistFlashcardRatings(): void
+    public function test__save_ShouldPersistFlashcardRatings(): void
     {
         // GIVEN
         $session = LearningSession::factory()->create();
-        $learning_session_flashcard = LearningSessionFlashcard::factory()->create([
+        $not_to_rate = LearningSessionFlashcard::factory()->create([
             'learning_session_id' => $session->id,
+            'rating' => null,
+        ]);
+        $learning_session_flashcards = LearningSessionFlashcard::factory(2)->create([
+            'learning_session_id' => $session->id,
+            'rating' => null,
         ]);
         $user = User::factory()->create();
 
@@ -62,12 +67,17 @@ class RateableSessionFlashcardRepositoryTest extends TestCase
             10,
             [
                 new RateableSessionFlashcard(
-                    $learning_session_flashcard->getId(),
-                    $learning_session_flashcard->flashcard->getId(),
+                    $learning_session_flashcards[0]->getId(),
+                    $learning_session_flashcards[0]->flashcard->getId(),
+                ),
+                new RateableSessionFlashcard(
+                    $learning_session_flashcards[1]->getId(),
+                    $learning_session_flashcards[1]->flashcard->getId(),
                 ),
             ]
         );
-        $flashcards->rate($learning_session_flashcard->getId(), Rating::WEAK);
+        $flashcards->rate($learning_session_flashcards[0]->getId(), Rating::WEAK);
+        $flashcards->rate($learning_session_flashcards[1]->getId(), Rating::GOOD);
 
         // WHEN
         $this->repository->save($flashcards);
@@ -78,8 +88,16 @@ class RateableSessionFlashcardRepositoryTest extends TestCase
             'status' => SessionStatus::FINISHED->value,
         ]);
         $this->assertDatabaseHas('learning_session_flashcards', [
-            'learning_session_id' => $session->id,
+            'id' => $learning_session_flashcards[0]->id,
             'rating' => Rating::WEAK,
+        ]);
+        $this->assertDatabaseHas('learning_session_flashcards', [
+            'id' => $learning_session_flashcards[1]->id,
+            'rating' => Rating::GOOD,
+        ]);
+        $this->assertDatabaseHas('learning_session_flashcards', [
+            'id' => $not_to_rate->id,
+            'rating' => null,
         ]);
     }
 }

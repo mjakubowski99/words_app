@@ -20,4 +20,11 @@ class Request extends FormRequest
 
         return $user_facade->findById(new UserId($user->id));
     }
+
+    public function currentId($guard = null): UserId
+    {
+        $user = $this->user($guard);
+
+        return new UserId($user->id);
+    }
 }

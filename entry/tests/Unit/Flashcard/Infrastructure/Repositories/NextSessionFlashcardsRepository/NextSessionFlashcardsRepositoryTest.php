@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Flashcard\Infrastructure\Repositories\NextSessionFlashcardsRepository;
 
+use App\Models\LearningSessionFlashcard;
 use Tests\TestCase;
 use App\Models\Flashcard;
 use App\Models\LearningSession;
@@ -27,6 +28,10 @@ class NextSessionFlashcardsRepositoryTest extends TestCase
     {
         // GIVEN
         $session = LearningSession::factory()->create();
+        $flashcards = LearningSessionFlashcard::factory()->create([
+            'learning_session_id' => $session->id,
+            'rating' => null,
+        ]);
 
         // WHEN
         $result = $this->repository->find($session->getId());

@@ -25,7 +25,9 @@ class SmTwoRepetitionAlgorithm implements IRepetitionAlgorithm
 
         /** @var RateableSessionFlashcard $session_flashcard */
         foreach ($session_flashcards->all() as $session_flashcard) {
-            $flashcard_ids[] = $session_flashcard->getFlashcardId()->getValue();
+            if ($session_flashcard->rated()) {
+                $flashcard_ids[] = $session_flashcard->getFlashcardId()->getValue();
+            }
         }
 
         $sm_two_flashcards = $this->repository->findMany($session_flashcards->getOwner(), $flashcard_ids);

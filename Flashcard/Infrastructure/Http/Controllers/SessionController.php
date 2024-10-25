@@ -21,30 +21,24 @@ use Flashcard\Application\Command\AddSessionFlashcardsHandler;
 use Flashcard\Infrastructure\Http\Request\CreateSessionRequest;
 use Flashcard\Application\Query\GetNextSessionFlashcardsHandler;
 use Flashcard\Infrastructure\Http\Request\RateSessionFlashcardRequest;
-use Flashcard\Infrastructure\Http\Resources\SessionFlashcardsResource;
+use Flashcard\Infrastructure\Http\Resources\NextSessionFlashcardsResource;
 
 class SessionController extends Controller
 {
-    public const FLASHCARDS_LIMIT = 1;
+    public const FLASHCARDS_LIMIT = 4;
 
     public function get(
         GetSessionRequest $request,
         AddSessionFlashcardsHandler $add_session_flashcards,
-        GetSessionHandler $get_session,
         GetNextSessionFlashcardsHandler $get_next_session_flashcards,
-    ): JsonResponse|SessionFlashcardsResource {
-        $session = $get_session->handle($request->getSessionId());
-
+    ): JsonResponse|NextSessionFlashcardsResource {
         $add_session_flashcards->handle(
-            new AddSessionFlashcards($session->getId(), self::FLASHCARDS_LIMIT)
+            new AddSessionFlashcards($request->getSessionId(), self::FLASHCARDS_LIMIT)
         );
 
-        $next_flashcards = $get_next_session_flashcards->handle($request->getSessionId(), self::FLASHCARDS_LIMIT);
-
-        return new SessionFlashcardsResource([
-            'session' => $session,
-            'next_flashcards' => $next_flashcards,
-        ]);
+        return new NextSessionFlashcardsResource(
+            $get_next_session_flashcards->handle($request->getSessionId(), self::FLASHCARDS_LIMIT)
+        );
     }
 
     #[OAT\Post(
@@ -86,9 +80,8 @@ class SessionController extends Controller
         CreateSessionRequest $request,
         CreateSessionHandler $create_session,
         AddSessionFlashcardsHandler $add_session_flashcards,
-        GetSessionHandler $get_session,
         GetNextSessionFlashcardsHandler $get_next_session_flashcards,
-    ): JsonResponse|SessionFlashcardsResource {
+    ): JsonResponse|NextSessionFlashcardsResource {
         $result = $create_session->handle($request->toCommand());
 
         if (!$result->success()) {
@@ -99,10 +92,9 @@ class SessionController extends Controller
             new AddSessionFlashcards($result->getId(), self::FLASHCARDS_LIMIT)
         );
 
-        return new SessionFlashcardsResource([
-            'session' => $get_session->handle($result->getId()),
-            'next_flashcards' => $get_next_session_flashcards->handle($result->getId(), self::FLASHCARDS_LIMIT),
-        ]);
+        return new NextSessionFlashcardsResource(
+            $get_next_session_flashcards->handle($result->getId(), self::FLASHCARDS_LIMIT)
+        );
     }
 
     #[OAT\Put(
@@ -143,12 +135,11 @@ class SessionController extends Controller
     public function rate(
         RateSessionFlashcardRequest $request,
         RateFlashcardsHandler $rate,
-        GetSessionHandler $get_session,
         AddSessionFlashcardsHandler $add_session_flashcards,
         GetNextSessionFlashcardsHandler $get_next_session_flashcards,
-    ): SessionFlashcardsResource {
+    ): NextSessionFlashcardsResource {
         $rate_command = new RateFlashcards(
-            new Owner(new OwnerId($request->getUserId()->getValue()), FlashcardOwnerType::USER),
+            new Owner(new OwnerId($request->currentId()->getValue()), FlashcardOwnerType::USER),
             $request->getSessionId(),
             $request->getRatings(),
         );
@@ -157,9 +148,8 @@ class SessionController extends Controller
         $rate->handle($rate_command);
         $add_session_flashcards->handle($add_session_flashcards_command);
 
-        return new SessionFlashcardsResource([
-            'session' => $get_session->handle($request->getSessionId()),
-            'next_flashcards' => $get_next_session_flashcards->handle($request->getSessionId(), self::FLASHCARDS_LIMIT),
-        ]);
+        return new NextSessionFlashcardsResource(
+            $get_next_session_flashcards->handle($request->getSessionId(), self::FLASHCARDS_LIMIT)
+        );
     }
 }

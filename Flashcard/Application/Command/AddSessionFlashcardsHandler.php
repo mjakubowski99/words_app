@@ -18,12 +18,12 @@ class AddSessionFlashcardsHandler
 
     public function handle(AddSessionFlashcards $command): void
     {
-        $session_flashcards = $this->next_session_flashcards_repository->find($command->getSessionId());
+        $next_session_flashcards = $this->next_session_flashcards_repository->find($command->getSessionId());
 
-        $flashcards = $this->selector->select($session_flashcards, $command->getLimit());
+        $flashcards = $this->selector->select($next_session_flashcards, $command->getLimit());
 
-        $session_flashcards = $this->service->add($session_flashcards, $flashcards);
+        $next_session_flashcards = $this->service->add($next_session_flashcards, $flashcards);
 
-        $this->next_session_flashcards_repository->save($session_flashcards);
+        $this->next_session_flashcards_repository->save($next_session_flashcards);
     }
 }
