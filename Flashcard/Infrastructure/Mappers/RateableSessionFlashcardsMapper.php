@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Mappers;
 
+use Shared\Enum\SessionStatus;
 use Flashcard\Domain\Models\Owner;
-use Flashcard\Domain\ValueObjects\OwnerId;
 use Illuminate\Support\Facades\DB;
+use Shared\Enum\FlashcardOwnerType;
+use Flashcard\Domain\ValueObjects\OwnerId;
 use Flashcard\Domain\ValueObjects\SessionId;
 use Flashcard\Domain\ValueObjects\FlashcardId;
 use Flashcard\Domain\Models\RateableSessionFlashcard;
 use Flashcard\Domain\ValueObjects\SessionFlashcardId;
 use Flashcard\Domain\Models\RateableSessionFlashcards;
-use Shared\Enum\FlashcardOwnerType;
-use Shared\Enum\SessionStatus;
 
 class RateableSessionFlashcardsMapper
 {
@@ -23,7 +23,7 @@ class RateableSessionFlashcardsMapper
 
     public function find(SessionId $id): RateableSessionFlashcards
     {
-        $stmt = "
+        $stmt = '
             WITH flashcards_data AS (
                 SELECT id, flashcard_id 
                 FROM learning_session_flashcards
@@ -53,15 +53,15 @@ class RateableSessionFlashcardsMapper
                 rated_flashcard_count AS rfc ON true
             LEFT JOIN 
                 flashcards_data AS lsf ON true;
-        ";
+        ';
 
         $results = $this->db::select($stmt, [
             $id->getValue(),
             $id->getValue(),
-            $id->getValue()
+            $id->getValue(),
         ]);
 
-        $flashcards = array_filter($results, fn(object $result) => $result->id !== null);
+        $flashcards = array_filter($results, fn (object $result) => $result->id !== null);
 
         $flashcards = array_map(fn (object $result) => new RateableSessionFlashcard(
             new SessionFlashcardId($result->id),
@@ -93,14 +93,14 @@ class RateableSessionFlashcardsMapper
         }
 
         $ids = [];
-        $rating_statement = "CASE ";
+        $rating_statement = 'CASE ';
         foreach ($flashcards->getRateableSessionFlashcards() as $flashcard) {
             if ($flashcard->rated()) {
                 $rating_statement .= "WHEN id = {$flashcard->getId()->getValue()} THEN {$flashcard->getRating()->value}\n";
                 $ids[] = $flashcard->getId()->getValue();
             }
         }
-        $rating_statement .= " END";
+        $rating_statement .= ' END';
 
         $this->db::table('learning_session_flashcards')
             ->where('learning_session_id', $flashcards->getSessionId())

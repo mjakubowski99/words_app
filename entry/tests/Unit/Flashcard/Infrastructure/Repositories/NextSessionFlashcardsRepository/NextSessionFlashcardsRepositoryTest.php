@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Flashcard\Infrastructure\Repositories\NextSessionFlashcardsRepository;
 
-use App\Models\LearningSessionFlashcard;
 use Tests\TestCase;
 use App\Models\Flashcard;
 use App\Models\LearningSession;
+use App\Models\LearningSessionFlashcard;
 use Flashcard\Domain\Models\NextSessionFlashcards;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Flashcard\Infrastructure\Repositories\NextSessionFlashcardsRepository;

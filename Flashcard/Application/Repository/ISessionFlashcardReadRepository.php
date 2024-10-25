@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\Repository;
 
-use Flashcard\Application\ReadModels\SessionFlashcardsRead;
 use Flashcard\Domain\ValueObjects\SessionId;
+use Flashcard\Application\ReadModels\SessionFlashcardsRead;
 
 interface ISessionFlashcardReadRepository
 {

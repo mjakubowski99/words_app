@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Mappers;
 
-use Flashcard\Application\ReadModels\SessionFlashcardsRead;
-use Illuminate\Support\Facades\DB;
 use Shared\Enum\SessionStatus;
+use Illuminate\Support\Facades\DB;
 use Shared\Utils\ValueObjects\Language;
 use Flashcard\Domain\ValueObjects\SessionId;
 use Flashcard\Domain\ValueObjects\SessionFlashcardId;
 use Flashcard\Application\ReadModels\SessionFlashcardRead;
+use Flashcard\Application\ReadModels\SessionFlashcardsRead;
 
 class SessionFlashcardReadMapper
 {
@@ -20,7 +20,7 @@ class SessionFlashcardReadMapper
 
     public function findUnratedById(SessionId $session_id, int $limit): SessionFlashcardsRead
     {
-        $stmt = "
+        $stmt = '
             WITH session_data AS (
                 SELECT 
                     id, 
@@ -78,13 +78,13 @@ class SessionFlashcardReadMapper
                 session_data
             LEFT JOIN flashcards_data on true
             LEFT JOIN rated_count on true;
-        ";
+        ';
 
         $results = $this->db::select($stmt, [
             $session_id->getValue(),
             $session_id->getValue(),
             $limit,
-            $session_id->getValue()
+            $session_id->getValue(),
         ]);
 
         $session_flashcards = array_filter($results, function (object $result) {

@@ -12,7 +12,6 @@ use Shared\Enum\FlashcardOwnerType;
 use App\Http\Controllers\Controller;
 use Flashcard\Domain\ValueObjects\OwnerId;
 use Flashcard\Application\Command\RateFlashcards;
-use Flashcard\Application\Query\GetSessionHandler;
 use Flashcard\Application\Command\AddSessionFlashcards;
 use Flashcard\Application\Command\CreateSessionHandler;
 use Flashcard\Application\Command\RateFlashcardsHandler;

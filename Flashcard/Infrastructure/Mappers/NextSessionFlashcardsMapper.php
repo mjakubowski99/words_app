@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Mappers;
 
-use Flashcard\Domain\Models\Category;
 use Flashcard\Domain\Models\Owner;
-use Flashcard\Domain\ValueObjects\CategoryId;
-use Flashcard\Domain\ValueObjects\OwnerId;
 use Illuminate\Support\Facades\DB;
-use Flashcard\Domain\ValueObjects\SessionId;
-use Flashcard\Domain\Models\NextSessionFlashcards;
 use Shared\Enum\FlashcardOwnerType;
+use Flashcard\Domain\Models\Category;
+use Flashcard\Domain\ValueObjects\OwnerId;
+use Flashcard\Domain\ValueObjects\SessionId;
+use Flashcard\Domain\ValueObjects\CategoryId;
+use Flashcard\Domain\Models\NextSessionFlashcards;
 
 class NextSessionFlashcardsMapper
 {
@@ -24,7 +24,7 @@ class NextSessionFlashcardsMapper
     {
         $session = $this->session_mapper->find($id);
 
-        $stmt = "
+        $stmt = '
             WITH session_data AS (
                 SELECT 
                     learning_sessions.id AS session_id,
@@ -71,12 +71,12 @@ class NextSessionFlashcardsMapper
                 session_data,
                 all_count,
                 unrated_count;
-        ";
+        ';
 
         $results = $this->db::select($stmt, [
             $session->getId(),
             $session->getId(),
-            $session->getId()
+            $session->getId(),
         ]);
 
         $result = $results[0];
