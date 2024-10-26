@@ -39,8 +39,7 @@ RUN apt-get update && apt-get install -y \
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # configure php extensions
-RUN docker-php-ext-configure intl &&  \
-    docker-php-ext-configure gd --enable-gd --with-freetype --with-jpeg
+RUN docker-php-ext-configure intl;
 
 # install php extensions
 RUN docker-php-ext-install \
@@ -53,7 +52,10 @@ RUN docker-php-ext-install \
     pdo_pgsql \
     zip
 
+RUN docker-php-ext-install opcache;
+
 COPY entry/prod/php/memory-limit-php.ini /usr/local/etc/php/conf.d/memory-limit-php.ini
+COPY entry/prod/php/opcache.ini /usr/local/etc/php/conf.d/opcache.ini
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
