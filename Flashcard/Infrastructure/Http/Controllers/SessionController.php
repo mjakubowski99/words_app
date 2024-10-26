@@ -24,7 +24,7 @@ use Flashcard\Infrastructure\Http\Resources\NextSessionFlashcardsResource;
 
 class SessionController extends Controller
 {
-    public const FLASHCARDS_LIMIT = 4;
+    public const FLASHCARDS_LIMIT = 3;
 
     public function get(
         GetSessionRequest $request,
@@ -145,6 +145,7 @@ class SessionController extends Controller
         $add_session_flashcards_command = new AddSessionFlashcards($request->getSessionId(), self::FLASHCARDS_LIMIT);
 
         $rate->handle($rate_command);
+
         $add_session_flashcards->handle($add_session_flashcards_command);
 
         return new NextSessionFlashcardsResource(

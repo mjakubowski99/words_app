@@ -32,6 +32,9 @@ class RateableSessionFlashcardRepositoryTest extends TestCase
         // GIVEN
         $session = LearningSession::factory()->create();
         LearningSessionFlashcard::factory()->create([
+            'rating' => null,
+        ]);
+        $flashcard = LearningSessionFlashcard::factory()->create([
             'learning_session_id' => $session->id,
             'rating' => null,
         ]);
@@ -41,8 +44,31 @@ class RateableSessionFlashcardRepositoryTest extends TestCase
 
         // THEN
         $this->assertSame($session->id, $result->getSessionId()->getValue());
-        $this->assertSame($session->status, $result->getStatus()->value);
+        $this->assertSame($flashcard->id, $result->getRateableSessionFlashcards()[0]->getId()->getValue());
+        $this->assertFalse($result->getRateableSessionFlashcards()[0]->rated());
+    }
+
+    public function test__find_ShouldFindOnlyUnratedFlashcards(): void
+    {
+        // GIVEN
+        $session = LearningSession::factory()->create();
+        LearningSessionFlashcard::factory()->create([
+            'learning_session_id' => $session->id,
+            'rating' => Rating::GOOD,
+        ]);
+        $flashcard = LearningSessionFlashcard::factory()->create([
+            'learning_session_id' => $session->id,
+            'rating' => null,
+        ]);
+
+        // WHEN
+        $result = $this->repository->find($session->getId());
+
+        // THEN
+        $this->assertSame($session->id, $result->getSessionId()->getValue());
         $this->assertSame($session->user_id, $result->getOwner()->getId()->getValue());
+        $this->assertSame(1, count($result->getRateableSessionFlashcards()));
+        $this->assertSame($flashcard->id, $result->getRateableSessionFlashcards()[0]->getId()->getValue());
     }
 
     public function test__save_ShouldPersistFlashcardRatings(): void

@@ -39,6 +39,16 @@ class NextSessionFlashcards
         return $this->owner;
     }
 
+    public function getUnratedCount(): int
+    {
+        return $this->unrated_count;
+    }
+
+    public function getCurrentSessionFlashcardsCount(): int
+    {
+        return $this->current_session_flashcards_count;
+    }
+
     public function hasCategory(): bool
     {
         return $this->category !== null;

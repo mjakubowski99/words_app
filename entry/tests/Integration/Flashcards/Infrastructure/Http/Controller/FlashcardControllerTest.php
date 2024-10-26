@@ -47,6 +47,25 @@ class FlashcardControllerTest extends TestCase
         ]);
     }
 
+    public function test__Store_WhenUserNotAuthorized_fail(): void
+    {
+        // GIVEN
+        $user = User::factory()->create();
+        $category = FlashcardCategory::factory()->create();
+        // WHEN
+        $response = $this->actingAs($user)
+            ->json('POST', route('flashcards.store'), [
+                'flashcard_category_id' => $category->id,
+                'word' => 'Word',
+                'translation' => 'Translation',
+                'context' => 'Context',
+                'context_translation' => 'Context translation',
+            ]);
+
+        // THEN
+        $response->assertStatus(403);
+    }
+
     public function test__Update_WhenUserAuthorized_UpdateFlashcard(): void
     {
         // GIVEN
@@ -84,6 +103,29 @@ class FlashcardControllerTest extends TestCase
         ]);
     }
 
+    public function test__Update_WhenUserNotAuthorized_fail(): void
+    {
+        // GIVEN
+        $user = User::factory()->create();
+        $category = FlashcardCategory::factory()->create();
+        $flashcard = Flashcard::factory()->create([
+            'flashcard_category_id' => $category->id,
+        ]);
+
+        // WHEN
+        $response = $this->actingAs($user)
+            ->json('PUT', route('flashcards.update', ['flashcard_id' => $flashcard->id]), [
+                'flashcard_category_id' => $category->id,
+                'word' => 'Word',
+                'translation' => 'Translation',
+                'context' => 'Context',
+                'context_translation' => 'Context translation',
+            ]);
+
+        // THEN
+        $response->assertStatus(403);
+    }
+
     public function test__Delete_WhenUserAuthorized_DeleteFlashcard(): void
     {
         // GIVEN
@@ -105,5 +147,19 @@ class FlashcardControllerTest extends TestCase
         $this->assertDatabaseMissing('flashcards', [
             'id' => $flashcard->id,
         ]);
+    }
+
+    public function test__Delete_WhenUserNotAuthorized_fail(): void
+    {
+        // GIVEN
+        $user = User::factory()->create();
+        $flashcard = Flashcard::factory()->create();
+
+        // WHEN
+        $response = $this->actingAs($user)
+            ->json('DELETE', route('flashcards.delete', ['flashcard_id' => $flashcard->id]));
+
+        // THEN
+        $response->assertStatus(403);
     }
 }

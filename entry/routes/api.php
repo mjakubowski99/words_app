@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use User\Infrastructure\Http\Controllers\UserController;
 use Flashcard\Infrastructure\Http\Controllers\SessionController;
@@ -9,7 +10,17 @@ use Flashcard\Infrastructure\Http\Controllers\FlashcardController;
 use Flashcard\Infrastructure\Http\Controllers\FlashcardCategoryController;
 
 Route::get('/test', function () {
-    return 1;
+    dd(DB::select("
+    explain analyze update
+        learning_session_flashcards
+        set
+          rating = CASE
+            WHEN id = 7060 THEN 1
+          END,
+          updated_at = '2024-10-26 12:13:30'
+        where
+          learning_session_id = '7055'
+          and id in (7060)"));
 });
 
 Route::post('/user/oauth/login', [UserController::class, 'loginWithProvider'])

@@ -8,6 +8,7 @@ use Flashcard\Domain\Models\Owner;
 use Illuminate\Support\Facades\DB;
 use Shared\Enum\FlashcardOwnerType;
 use Flashcard\Domain\Models\Category;
+use Shared\Exceptions\NotFoundException;
 use Flashcard\Domain\ValueObjects\OwnerId;
 use Flashcard\Domain\ValueObjects\SessionId;
 use Flashcard\Domain\ValueObjects\CategoryId;
@@ -25,78 +26,72 @@ class NextSessionFlashcardsMapper
         $session = $this->session_mapper->find($id);
 
         $stmt = '
-            WITH session_data AS (
+                WITH session_data AS (
+                    SELECT 
+                        ls.id AS session_id,
+                        ls.user_id,
+                        ls.cards_per_session,
+                        ls.status AS session_status,
+                        fc.id AS category_id,
+                        fc.name AS category_name,
+                        fc.tag AS category_tag
+                    FROM 
+                        learning_sessions AS ls
+                    LEFT JOIN 
+                        flashcard_categories AS fc ON fc.id = ls.flashcard_category_id
+                    WHERE 
+                        ls.id = ?
+                ),
+                counts AS (
+                    SELECT 
+                        lsf.learning_session_id,
+                        COUNT(lsf.id) AS all_count,
+                        COUNT(CASE WHEN lsf.rating IS NULL THEN 1 END) AS unrated_count
+                    FROM 
+                        learning_session_flashcards AS lsf
+                    WHERE 
+                        lsf.learning_session_id = ?
+                    GROUP BY 
+                        lsf.learning_session_id
+                )
                 SELECT 
-                    learning_sessions.id AS session_id,
-                    learning_sessions.user_id as user_id,
-                    learning_sessions.cards_per_session AS cards_per_session,
-                    learning_sessions.status AS session_status,
-                    flashcard_categories.id AS category_id,
-                    flashcard_categories.name AS category_name,
-                    flashcard_categories.tag AS category_tag
+                    sd.session_id,
+                    sd.user_id,
+                    sd.cards_per_session,
+                    sd.session_status,
+                    sd.category_id,
+                    sd.category_name,
+                    sd.category_tag,
+                    c.unrated_count,
+                    c.all_count
                 FROM 
-                    learning_sessions
+                    session_data AS sd
                 LEFT JOIN 
-                    flashcard_categories ON flashcard_categories.id = learning_sessions.flashcard_category_id
-                WHERE 
-                    learning_sessions.id = ?
-            ),
-            all_count AS (
-                SELECT 
-                    COUNT(id) AS count 
-                FROM 
-                    learning_session_flashcards
-                WHERE 
-                    learning_session_id = ?
-            ),
-            unrated_count AS (
-                SELECT 
-                    COUNT(id) AS count
-                FROM 
-                    learning_session_flashcards
-                WHERE 
-                    learning_session_id = ? AND rating IS NULL 
-            )
-            SELECT 
-                session_data.session_id,
-                session_data.user_id,
-                session_data.cards_per_session,
-                session_data.session_status,
-                session_data.category_id,
-                session_data.category_name,
-                session_data.category_tag,
-                unrated_count.count AS unrated_count,
-                all_count.count AS all_count
-            FROM
-                session_data,
-                all_count,
-                unrated_count;
+                    counts AS c ON c.learning_session_id = sd.session_id;
         ';
 
         $results = $this->db::select($stmt, [
             $session->getId(),
             $session->getId(),
-            $session->getId(),
         ]);
+
+        if (count($results) === 0) {
+            throw new NotFoundException("Session with id: {$id->getValue()} not found");
+        }
 
         $result = $results[0];
 
-        $owner = new Owner(new OwnerId($result->user_id), FlashcardOwnerType::USER);
+        $owner = $this->mapOwner($result);
 
-        $category = $result->category_id ? new Category(
-            $owner,
-            $result->category_tag,
-            $result->category_name
-        ) : null;
-        $category?->init(new CategoryId($result->category_id));
+        $category = $this->mapCategory($owner, $result);
 
         return new NextSessionFlashcards(
             $id,
-            new Owner(new OwnerId($result->user_id), FlashcardOwnerType::USER),
+            $owner,
             $category,
-            $result->all_count,
-            $result->unrated_count,
-            $result->cards_per_session,
+            $result->all_count ?? 0,
+            $result->unrated_count ?? 0,
+            $result->cards_per_session
         );
     }
 
@@ -116,5 +111,22 @@ class NextSessionFlashcardsMapper
         }
 
         $this->db::table('learning_session_flashcards')->insert($insert_data);
+    }
+
+    private function mapOwner(object $result): Owner
+    {
+        return new Owner(new OwnerId($result->user_id), FlashcardOwnerType::USER);
+    }
+
+    private function mapCategory(Owner $owner, object $result): ?Category
+    {
+        $category = $result->category_id ? new Category(
+            $owner,
+            $result->category_tag,
+            $result->category_name
+        ) : null;
+        $category?->init(new CategoryId($result->category_id));
+
+        return $category;
     }
 }
