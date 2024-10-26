@@ -10,7 +10,6 @@ use App\Models\LearningSession;
 use App\Models\FlashcardCategory;
 use Tests\Base\FlashcardTestCase;
 use Flashcard\Domain\Models\Session;
-use Flashcard\Domain\Models\MainCategory;
 use Flashcard\Domain\ValueObjects\SessionId;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Flashcard\Infrastructure\Repositories\SessionRepository;
@@ -51,31 +50,6 @@ class SessionRepositoryTest extends FlashcardTestCase
         $this->assertDatabaseHas('learning_sessions', [
             'id' => $session_id->getValue(),
             'user_id' => $user->id,
-        ]);
-    }
-
-    /**
-     * @test
-     */
-    public function create_MainCategory_success(): void
-    {
-        // GIVEN
-        $user = User::factory()->create();
-        $category = new MainCategory();
-        $session = new Session(
-            SessionStatus::STARTED,
-            $user->toOwner(),
-            10,
-            'Mozilla/Firefox',
-            $category
-        );
-
-        $session_id = $this->repository->create($session);
-
-        $this->assertDatabaseHas('learning_sessions', [
-            'id' => $session_id->getValue(),
-            'user_id' => $user->id,
-            'flashcard_category_id' => null,
         ]);
     }
 

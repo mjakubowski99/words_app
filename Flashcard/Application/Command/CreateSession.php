@@ -7,6 +7,7 @@ namespace Flashcard\Application\Command;
 use Shared\User\IUser;
 use Flashcard\Domain\Models\Owner;
 use Shared\Enum\FlashcardOwnerType;
+use Shared\Enum\LearningSessionType;
 use Flashcard\Domain\ValueObjects\OwnerId;
 use Flashcard\Domain\ValueObjects\CategoryId;
 
@@ -18,7 +19,8 @@ final readonly class CreateSession
         IUser $user,
         private int $cards_per_session,
         private string $device,
-        private CategoryId $category_id,
+        private ?CategoryId $category_id,
+        private LearningSessionType $learning_session_type,
     ) {
         $this->owner = new Owner(
             new OwnerId($user->getId()->getValue()),
@@ -41,8 +43,18 @@ final readonly class CreateSession
         return $this->device;
     }
 
+    public function hasCategoryId(): bool
+    {
+        return $this->category_id !== null;
+    }
+
     public function getCategoryId(): CategoryId
     {
         return $this->category_id;
+    }
+
+    public function getLearningSessionType(): LearningSessionType
+    {
+        return $this->learning_session_type;
     }
 }

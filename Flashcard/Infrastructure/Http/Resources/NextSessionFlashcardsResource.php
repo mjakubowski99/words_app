@@ -7,8 +7,8 @@ namespace Flashcard\Infrastructure\Http\Resources;
 use OpenApi\Attributes as OAT;
 use Shared\Utils\ValueObjects\Language;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Flashcard\Application\ReadModels\SessionRead;
 use Flashcard\Application\ReadModels\SessionFlashcardRead;
+use Flashcard\Application\ReadModels\SessionFlashcardsRead;
 
 #[OAT\Schema(
     schema: 'Resources\Flashcard\SessionFlashcardsResource',
@@ -98,22 +98,19 @@ use Flashcard\Application\ReadModels\SessionFlashcardRead;
         ),
     ]
 )]
-class SessionFlashcardsResource extends JsonResource
+/**
+ * @property SessionFlashcardsRead $resource
+ */
+class NextSessionFlashcardsResource extends JsonResource
 {
     public function toArray($request): array
     {
-        /** @var SessionRead $session */
-        $session = $this->resource['session'];
-
-        /** @var array $flashcards */
-        $flashcards = $this->resource['next_flashcards'];
-
         return [
             'session' => [
-                'id' => $session->getId()->getValue(),
-                'cards_per_session' => $session->getCardsPerSession(),
-                'is_finished' => $session->isFinished(),
-                'progress' => $session->getProgress(),
+                'id' => $this->resource->getSessionId()->getValue(),
+                'cards_per_session' => $this->resource->getCardsPerSession(),
+                'is_finished' => $this->resource->getIsFinished(),
+                'progress' => $this->resource->getProgress(),
                 'next_flashcards' => array_map(function (SessionFlashcardRead $flashcard) {
                     return [
                         'id' => $flashcard->getId()->getValue(),
@@ -124,7 +121,7 @@ class SessionFlashcardsResource extends JsonResource
                         'context' => $flashcard->getContext(),
                         'context_translation' => $flashcard->getContextTranslation(),
                     ];
-                }, $flashcards),
+                }, $this->resource->getSessionFlashcards()),
             ],
         ];
     }

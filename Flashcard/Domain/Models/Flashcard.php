@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Flashcard\Domain\Models;
 
 use Shared\Utils\ValueObjects\Language;
-use Flashcard\Domain\Contracts\ICategory;
 use Flashcard\Domain\ValueObjects\FlashcardId;
 
 final class Flashcard
@@ -19,7 +18,7 @@ final class Flashcard
         private string $context,
         private string $context_translation,
         private ?Owner $owner,
-        private ?ICategory $category,
+        private ?Category $category,
     ) {}
 
     public function getId(): FlashcardId
@@ -67,7 +66,12 @@ final class Flashcard
         return $this->owner;
     }
 
-    public function getCategory(): ICategory
+    public function hasCategory(): bool
+    {
+        return $this->category !== null;
+    }
+
+    public function getCategory(): Category
     {
         return $this->category;
     }

@@ -10,11 +10,7 @@ use App\Models\FlashcardCategory;
 use Flashcard\Domain\Models\Owner;
 use Shared\Enum\FlashcardOwnerType;
 use Flashcard\Domain\Models\Category;
-use Shared\Enum\FlashcardCategoryType;
-use Flashcard\Domain\Contracts\ICategory;
-use Flashcard\Domain\Models\MainCategory;
 use Flashcard\Domain\ValueObjects\OwnerId;
-use Flashcard\Domain\Exceptions\CannotCreateCategoryException;
 use Flashcard\Infrastructure\Repositories\FlashcardCategoryRepository;
 
 class FlashcardCategoryRepositoryTest extends TestCase
@@ -25,18 +21,6 @@ class FlashcardCategoryRepositoryTest extends TestCase
     {
         parent::setUp();
         $this->repository = $this->app->make(FlashcardCategoryRepository::class);
-    }
-
-    public function test__findById_WhenMainCategory_success(): void
-    {
-        // GIVEN
-        $category_id = new MainCategory();
-
-        // WHEN
-        $result = $this->repository->findById($category_id->getId());
-
-        // THEN
-        $this->assertInstanceOf(MainCategory::class, $result);
     }
 
     public function test__findById_WhenNormalCategory_success(): void
@@ -52,7 +36,6 @@ class FlashcardCategoryRepositoryTest extends TestCase
         $this->assertInstanceOf(Category::class, $result);
         $this->assertSame($category->getId()->getValue(), $result->getId()->getValue());
         $this->assertSame($category->name, $result->getName());
-        $this->assertSame(FlashcardCategoryType::NORMAL, $result->getCategoryType());
         $this->assertSame($category->user->getId()->getValue(), $result->getOwner()->getId()->getValue());
         $this->assertSame(FlashcardOwnerType::USER, $result->getOwner()->getOwnerType());
     }
@@ -60,13 +43,12 @@ class FlashcardCategoryRepositoryTest extends TestCase
     public function test__createCategory_ShouldCreateCategory(): void
     {
         // GIVEN
-        $category = \Mockery::mock(ICategory::class);
+        $category = \Mockery::mock(Category::class);
         $user = User::factory()->create();
         $category->allows([
             'getName' => 'Cat name',
             'hasOwner' => true,
             'getOwner' => $user->toOwner(),
-            'getCategoryType' => FlashcardCategoryType::NORMAL,
         ]);
 
         // WHEN
@@ -77,25 +59,6 @@ class FlashcardCategoryRepositoryTest extends TestCase
             'name' => 'Cat name',
             'user_id' => $user->id,
         ]);
-    }
-
-    public function test__createCategory_WhenMainCategory_fail(): void
-    {
-        // GIVEN
-        $category = \Mockery::mock(ICategory::class);
-        $user = User::factory()->create();
-        $category->allows([
-            'getName' => 'Cat name',
-            'hasOwner' => false,
-            'getOwner' => null,
-            'getCategoryType' => FlashcardCategoryType::GENERAL,
-        ]);
-
-        // THEN
-        $this->expectException(CannotCreateCategoryException::class);
-
-        // WHEN
-        $this->repository->createCategory($category);
     }
 
     public function test__getByOwner_ReturnOnlyUserCategories(): void
@@ -117,7 +80,6 @@ class FlashcardCategoryRepositoryTest extends TestCase
         $this->assertSame($user_category->name, $results[0]->getName());
         $this->assertSame($user_category->user_id, $results[0]->getOwner()->getId()->getValue());
         $this->assertSame(FlashcardOwnerType::USER, $results[0]->getOwner()->getOwnerType());
-        $this->assertSame(FlashcardCategoryType::NORMAL, $results[0]->getCategoryType());
     }
 
     public function test__getByOwner_paginationWorks(): void

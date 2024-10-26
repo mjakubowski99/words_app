@@ -20,18 +20,21 @@ class SessionReadMapper
     {
         $result = $this->db::table('learning_sessions')
             ->where('learning_sessions.id', $id->getValue())
+            ->selectRaw('
+                learning_sessions.*,
+                (
+                    SELECT COUNT(id) FROM learning_session_flashcards 
+                    WHERE learning_session_id = learning_sessions.id
+                    and rating is not null
+                ) as flashcards_count
+            ')
             ->first();
 
         if (!$result) {
             throw new ModelNotFoundException('Session not found exception');
         }
 
-        $rated = $this->db::table('learning_session_flashcards')
-            ->where('learning_session_flashcards.learning_session_id', $id)
-            ->whereNotNull('rating')
-            ->count();
-
-        return $this->map($result, $rated);
+        return $this->map($result, $result->flashcards_count);
     }
 
     public function map(object $data, int $rated): SessionRead

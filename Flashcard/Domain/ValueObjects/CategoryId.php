@@ -4,22 +4,6 @@ declare(strict_types=1);
 
 namespace Flashcard\Domain\ValueObjects;
 
-final readonly class CategoryId
-{
-    private int $value;
+use Shared\Utils\ValueObjects\IntegerId;
 
-    public function __construct(int $value)
-    {
-        $this->value = $value;
-    }
-
-    public function getValue(): int
-    {
-        return $this->value;
-    }
-
-    public function __toString(): string
-    {
-        return (string) $this->value;
-    }
-}
+class CategoryId extends IntegerId {}

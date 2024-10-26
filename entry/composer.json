@@ -71,7 +71,7 @@
             "@php artisan l5-swagger:generate"
         ],
         "test": [
-            "@php ./vendor/bin/phpunit tests/"
+            "XDEBUG_MODE=off ./vendor/bin/phpunit tests/"
         ]
     },
     "extra": {

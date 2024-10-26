@@ -8,7 +8,6 @@ use Flashcard\Domain\Models\Owner;
 use Illuminate\Support\Facades\DB;
 use Shared\Enum\FlashcardOwnerType;
 use Flashcard\Domain\Models\Category;
-use Flashcard\Domain\Contracts\ICategory;
 use Flashcard\Domain\ValueObjects\OwnerId;
 use Flashcard\Domain\ValueObjects\CategoryId;
 use Flashcard\Domain\Exceptions\ModelNotFoundException;
@@ -19,7 +18,7 @@ class FlashcardCategoryMapper
         private readonly DB $db,
     ) {}
 
-    public function create(ICategory $category): CategoryId
+    public function create(Category $category): CategoryId
     {
         $now = now();
 

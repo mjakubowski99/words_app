@@ -12,8 +12,14 @@ use Flashcard\Domain\ValueObjects\FlashcardId;
 
 interface IFlashcardRepository
 {
+    public function find(FlashcardId $id): Flashcard;
+
     /** @param Flashcard[] $flashcards */
     public function createMany(array $flashcards): void;
+
+    public function update(Flashcard $flashcard): void;
+
+    public function delete(FlashcardId $id): void;
 
     public function getRandomFlashcards(Owner $owner, int $limit, array $exclude_flashcard_ids): array;
 

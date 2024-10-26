@@ -8,6 +8,7 @@ use App\Models\User;
 use Shared\User\IUser;
 use App\Models\FlashcardCategory;
 use Tests\Base\FlashcardTestCase;
+use Shared\Enum\LearningSessionType;
 use Shared\Exceptions\ForbiddenException;
 use Flashcard\Application\Command\CreateSession;
 use Flashcard\Application\Command\CreateSessionHandler;
@@ -44,6 +45,7 @@ class CreateSessionHandlerTest extends FlashcardTestCase
             $cards_per_session,
             $device,
             $category_id,
+            LearningSessionType::LEARN_FLASHCARDS_IN_CATEGORY,
         );
 
         // WHEN
@@ -70,6 +72,7 @@ class CreateSessionHandlerTest extends FlashcardTestCase
             $cards_per_session,
             $device,
             $category_id,
+            LearningSessionType::LEARN_FLASHCARDS_IN_CATEGORY,
         );
 
         // THEN
