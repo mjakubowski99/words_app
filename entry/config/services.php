@@ -39,6 +39,7 @@ return [
         'client_secret' => env('GOOGLE_CLIENT_SECRET'),
         'redirect' => env('GOOGLE_REDIRECT_URL'),
 
-        'android_client_id' => env('ANDROID_GOOGLE_CLIENT_ID', 'dupa'),
+        'android_client_id' => env('ANDROID_GOOGLE_CLIENT_ID', 'android'),
+        'ios_client_id' => env('IOS_GOOGLE_CLIENT_ID', 'ios'),
     ],
 ];

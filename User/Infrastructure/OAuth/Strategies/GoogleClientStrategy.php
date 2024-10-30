@@ -9,7 +9,7 @@ use Shared\Enum\UserProvider;
 use User\Domain\Contracts\IOAuthUser;
 use User\Infrastructure\OAuth\OAuthUser;
 
-class GoogleAndroidStrategy implements IOAuthLoginStrategy
+class GoogleClientStrategy implements IOAuthLoginStrategy
 {
     public function __construct(private \Google_Client $google_Client) {}
 
