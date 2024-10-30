@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 use App\Providers\AppServiceProvider;
 use App\Providers\AuthServiceProvider;
-use Illuminate\Support\Facades\Facade;
 use App\Providers\EventServiceProvider;
 use App\Providers\RouteServiceProvider;
-use Illuminate\Support\ServiceProvider;
-use Shared\Providers\SharedServiceProvider;
-use Integrations\IntegrationsServiceProvider;
 use Flashcard\Infrastructure\FlashcardServiceProvider;
+use Illuminate\Support\Facades\Facade;
+use Illuminate\Support\ServiceProvider;
+use Integrations\IntegrationsServiceProvider;
+use Shared\Providers\SharedServiceProvider;
 use User\Infrastructure\Providers\UserServiceProvider;
 
 return [
@@ -182,6 +182,7 @@ return [
         UserServiceProvider::class,
         FlashcardServiceProvider::class,
         IntegrationsServiceProvider::class,
+        Admin\AdminPanelProvider::class,
     ])->toArray(),
 
     /*
