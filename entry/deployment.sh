@@ -27,6 +27,21 @@ fi
 REMOTE_COMMANDS=$(cat <<EOF
 set -e  # Przerwij wykonanie przy błędzie dowolnej komendy
 echo -e '${GREEN}Połączono pomyślnie!${RESET}'
+
+echo -e 'Pulling changes...'
+cd /home/$SERVER_USER/voca_app \
+&& {
+    git checkout . \
+    && git pull origin master \
+    && echo -e '${GREEN}Changes pulled successfully deployed!${RESET}'
+} || {
+    echo -e "${RED}Wystąpił błąd podczas pobierania zmian z repozytorium.${RESET}" 1>&2
+    exit 1
+}
+
+sleep 1;
+
+
 cd /home/$SERVER_USER/voca_app/entry/prod \
 
 {
