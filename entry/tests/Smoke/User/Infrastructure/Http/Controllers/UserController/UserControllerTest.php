@@ -10,7 +10,9 @@ use Shared\Enum\Platform;
 use Shared\Enum\UserProvider;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Auth\Middleware\Authenticate;
+use User\Infrastructure\OAuth\Google\IosGoogleClient;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use User\Infrastructure\OAuth\Google\AndroidGoogleClient;
 
 class UserControllerTest extends TestCase
 {
@@ -56,14 +58,14 @@ class UserControllerTest extends TestCase
     public function loginWithProvider_WhenPlatformIsAndroid_updateConfigs(): void
     {
         // GIVEN
-        $client = \Mockery::mock(\Google_Client::class);
+        $client = \Mockery::mock(AndroidGoogleClient::class);
         $client->shouldReceive('verifyIdToken')->andReturn([
             'sub' => '123',
             'name' => 'Pawel Kowal',
             'email' => 'email@email.com',
             'picture' => 'avatar.jpg',
         ]);
-        $this->app->instance(\Google_Client::class, $client);
+        $this->app->instance(AndroidGoogleClient::class, $client);
 
         // WHEN
         $response = $this
@@ -71,6 +73,43 @@ class UserControllerTest extends TestCase
                 'access_token' => 'adsadsdsa',
                 'user_provider' => UserProvider::GOOGLE->value,
                 'platform' => Platform::ANDROID,
+            ]);
+
+        // THEN
+        $response->assertStatus(200);
+        $response->assertJsonStructure([
+            'data' => [
+                'token',
+                'user' => [
+                    'id',
+                    'name',
+                    'email',
+                ],
+            ],
+        ]);
+    }
+
+    /**
+     * @test
+     */
+    public function loginWithProvider_WhenPlatformIsIos_updateConfigs(): void
+    {
+        // GIVEN
+        $client = \Mockery::mock(IosGoogleClient::class);
+        $client->shouldReceive('verifyIdToken')->andReturn([
+            'sub' => '123',
+            'name' => 'Pawel Kowal',
+            'email' => 'email@email.com',
+            'picture' => 'avatar.jpg',
+        ]);
+        $this->app->instance(IosGoogleClient::class, $client);
+
+        // WHEN
+        $response = $this
+            ->postJson(route('user.oauth.login'), [
+                'access_token' => 'adsadsdsa',
+                'user_provider' => UserProvider::GOOGLE->value,
+                'platform' => Platform::IOS,
             ]);
 
         // THEN
