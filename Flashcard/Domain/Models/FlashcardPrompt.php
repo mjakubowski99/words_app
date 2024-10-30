@@ -36,8 +36,8 @@ class FlashcardPrompt
         private readonly string $category,
     ) {
         $this->buildPrompt();
-        $this->word_lang = Language::en();
-        $this->translation_lang = Language::pl();
+        $this->word_lang = Language::pl();
+        $this->translation_lang = Language::en();
     }
 
     public function getPrompt(): string

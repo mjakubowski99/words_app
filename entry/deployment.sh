@@ -33,7 +33,7 @@ cd /home/$SERVER_USER/voca_app \
 && {
     git checkout . \
     && git pull origin master \
-    && echo -e '${GREEN}Changes pulled successfully deployed!${RESET}'
+    && echo -e '${GREEN}Changes pulled successfully!${RESET}'
 } || {
     echo -e "${RED}Wystąpił błąd podczas pobierania zmian z repozytorium.${RESET}" 1>&2
     exit 1
@@ -51,6 +51,7 @@ cd /home/$SERVER_USER/voca_app/entry/prod \
   && docker compose exec php php artisan optimize:clear \
   && docker compose exec php php artisan optimize \
   && docker compose exec php php artisan migrate --force \
+  && docker compose exec php composer open-api \
   && echo -e '${GREEN}Successfully deployed!${RESET}'
 } || {
   echo -e "${RED}Deployment failed.${RESET}" 1>&2
