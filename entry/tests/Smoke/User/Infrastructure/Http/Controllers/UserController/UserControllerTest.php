@@ -55,7 +55,7 @@ class UserControllerTest extends TestCase
     /**
      * @test
      */
-    public function loginWithProvider_WhenPlatformIsAndroid_updateConfigs(): void
+    public function loginWithProvider_WhenPlatformIsAndroid_success(): void
     {
         // GIVEN
         $client = \Mockery::mock(AndroidGoogleClient::class);
@@ -92,7 +92,7 @@ class UserControllerTest extends TestCase
     /**
      * @test
      */
-    public function loginWithProvider_WhenPlatformIsIos_updateConfigs(): void
+    public function loginWithProvider_WhenPlatformIsIos_success(): void
     {
         // GIVEN
         $client = \Mockery::mock(IosGoogleClient::class);
