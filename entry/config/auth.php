@@ -118,4 +118,6 @@ return [
     */
 
     'password_timeout' => 10800,
+
+    'debug_oauth_login' => env('DEBUG_OAUTH_LOGIN', false),
 ];
