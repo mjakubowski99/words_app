@@ -90,12 +90,14 @@ class SmTwoFlashcardRepositoryTest extends FlashcardTestCase
             SmTwoFlashcard::factory()->create([
                 'flashcard_id' => Flashcard::factory()->create(['flashcard_category_id' => $category->id]),
                 'user_id' => $user->id,
-                'repetition_interval' => 4,
+                'repetition_interval' => 2,
+                'updated_at' => now()->subDays(3),
             ]),
             SmTwoFlashcard::factory()->create([
                 'flashcard_id' => Flashcard::factory()->create(['flashcard_category_id' => $category->id]),
                 'user_id' => $user->id,
-                'repetition_interval' => 6,
+                'repetition_interval' => 3,
+                'updated_at' => now()->subDays(3),
             ]),
         ];
 
