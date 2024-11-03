@@ -39,7 +39,8 @@ class FlashcardFromSmTwoMapper
                 CASE 
                     WHEN repetition_interval IS NOT NULL THEN 1
                     ELSE 0
-                END DESC
+                END DESC,
+                RANDOM()
             ')
             ->select(
                 'flashcards.*',
@@ -74,7 +75,8 @@ class FlashcardFromSmTwoMapper
                 CASE 
                     WHEN repetition_interval IS NOT NULL THEN 1
                     ELSE 0
-                END DESC
+                END DESC,
+                RANDOM()
             ')
             ->select(
                 'flashcards.*',
