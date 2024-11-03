@@ -35,7 +35,11 @@ class FlashcardFromSmTwoMapper
                     THEN 1
                     ELSE 0
                 END DESC,
-                COALESCE(repetition_interval, 1.0) ASC
+                COALESCE(repetition_interval, 1.0) ASC,
+                CASE 
+                    WHEN repetition_interval IS NOT NULL THEN 1
+                    ELSE 0
+                END DESC
             ')
             ->select(
                 'flashcards.*',
@@ -66,7 +70,11 @@ class FlashcardFromSmTwoMapper
                     THEN 1
                     ELSE 0
                 END DESC,
-                COALESCE(repetition_interval, 1.0) ASC
+                COALESCE(repetition_interval, 1.0) ASC,
+                CASE 
+                    WHEN repetition_interval IS NOT NULL THEN 1
+                    ELSE 0
+                END DESC
             ')
             ->select(
                 'flashcards.*',
