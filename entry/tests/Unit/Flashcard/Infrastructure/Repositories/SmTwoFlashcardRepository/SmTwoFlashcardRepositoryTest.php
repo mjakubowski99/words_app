@@ -100,7 +100,7 @@ class SmTwoFlashcardRepositoryTest extends FlashcardTestCase
         ];
 
         // WHEN
-        $results = $this->repository->getFlashcardsByRepetitionIntervalProbabilityAndCategory($category->getId(), 5, []);
+        $results = $this->repository->getFlashcardsByLowestRepetitionIntervalAndCategory($category->getId(), 5, []);
 
         // THEN
         $this->assertCount(3, $results);

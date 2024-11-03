@@ -20,7 +20,7 @@ class FlashcardFromSmTwoMapper
         private readonly DB $db
     ) {}
 
-    public function getFlashcardsByRepetitionIntervalProbability(Owner $owner, int $limit, array $exclude_flashcard_ids): array
+    public function getFlashcardsWithLowerRepetitionInterval(Owner $owner, int $limit, array $exclude_flashcard_ids): array
     {
         return $this->db::table('flashcards')
             ->whereNotIn('flashcards.id', array_map(fn (FlashcardId $id) => $id->getValue(), $exclude_flashcard_ids))
@@ -29,8 +29,7 @@ class FlashcardFromSmTwoMapper
             ->leftJoin('sm_two_flashcards', 'sm_two_flashcards.flashcard_id', '=', 'flashcards.id')
             ->take($limit)
             ->orderByRaw('
-                COALESCE(repetition_interval, 0) = 0 DESC,
-                random() * 2 * (1.0 / COALESCE(repetition_interval, 1)) DESC
+                COALESCE(repetition_interval, 1.0) ASC
             ')
             ->select(
                 'flashcards.*',
@@ -44,7 +43,7 @@ class FlashcardFromSmTwoMapper
             })->toArray();
     }
 
-    public function getFlashcardsByRepetitionIntervalProbabilityAndCategory(CategoryId $category_id, int $limit, array $exclude_flashcard_ids): array
+    public function getFlashcardsByLowestRepetitionIntervalByCategory(CategoryId $category_id, int $limit, array $exclude_flashcard_ids): array
     {
         return $this->db::table('flashcards')
             ->whereNotIn('flashcards.id', array_map(fn (FlashcardId $id) => $id->getValue(), $exclude_flashcard_ids))
@@ -53,8 +52,7 @@ class FlashcardFromSmTwoMapper
             ->leftJoin('sm_two_flashcards', 'sm_two_flashcards.flashcard_id', '=', 'flashcards.id')
             ->take($limit)
             ->orderByRaw('
-                COALESCE(repetition_interval, 0) = 0 DESC,
-                random() * 2 * (1.0 / COALESCE(repetition_interval, 1)) DESC
+                COALESCE(repetition_interval, 1.0) ASC
             ')
             ->select(
                 'flashcards.*',

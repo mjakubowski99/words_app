@@ -31,10 +31,10 @@ class SmTwoFlashcardSelector implements IFlashcardSelector
 
         $latest_ids = $this->flashcard_repository->getLatestSessionFlashcardIds($next_session_flashcards->getSessionId(), $latest_limit);
 
-        $results = $this->repository->getFlashcardsByRepetitionIntervalProbability($next_session_flashcards->getOwner(), $limit, $latest_ids);
+        $results = $this->repository->getFlashcardsByLowestRepetitionInterval($next_session_flashcards->getOwner(), $limit, $latest_ids);
 
         if (count($results) < $limit) {
-            return $this->repository->getFlashcardsByRepetitionIntervalProbability($next_session_flashcards->getOwner(), $limit, []);
+            return $this->repository->getFlashcardsByLowestRepetitionInterval($next_session_flashcards->getOwner(), $limit, []);
         }
 
         return $results;
@@ -46,10 +46,10 @@ class SmTwoFlashcardSelector implements IFlashcardSelector
         $latest_ids = $this->flashcard_repository->getLatestSessionFlashcardIds($next_session_flashcards->getSessionId(), $latest_limit);
         $category = $next_session_flashcards->getCategory();
 
-        $results = $this->repository->getFlashcardsByRepetitionIntervalProbabilityAndCategory($category->getId(), $limit, $latest_ids);
+        $results = $this->repository->getFlashcardsByLowestRepetitionIntervalAndCategory($category->getId(), $limit, $latest_ids);
 
         if (count($results) < $limit) {
-            return $this->repository->getFlashcardsByRepetitionIntervalProbabilityAndCategory($category->getId(), $limit, []);
+            return $this->repository->getFlashcardsByLowestRepetitionIntervalAndCategory($category->getId(), $limit, []);
         }
 
         return $results;
