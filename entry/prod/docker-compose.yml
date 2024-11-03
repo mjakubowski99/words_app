@@ -15,12 +15,14 @@ services:
     volumes:
       - ../storage:/var/www/entry/storage
       - ../.env:/var/www/entry/.env
+      - ./php/php-fpm.conf:/usr/local/etc/php-fpm.d/www.conf:ro
     extra_hosts:
       - "host.docker.internal:host-gateway"
     ports:
       - "9000:9000"
     networks:
       - prod-network
+      - shared_network
 
   nginx:
     container_name: "${PROJECT_NAME}_prod_nginx"
@@ -43,3 +45,5 @@ services:
 
 networks:
   prod-network:
+  shared_network:
+      external: true
