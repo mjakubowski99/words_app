@@ -56,8 +56,6 @@ class FlashcardFromSmTwoMapper
 
     public function getFlashcardsByLowestRepetitionIntervalByCategory(CategoryId $category_id, int $limit, array $exclude_flashcard_ids): array
     {
-        $date = today();
-
         return $this->db::table('flashcards')
             ->whereNotIn('flashcards.id', array_map(fn (FlashcardId $id) => $id->getValue(), $exclude_flashcard_ids))
             ->leftJoin('flashcard_categories', 'flashcard_categories.id', '=', 'flashcards.flashcard_category_id')
@@ -66,16 +64,16 @@ class FlashcardFromSmTwoMapper
             ->take($limit)
             ->orderByRaw('
                 CASE 
+                    WHEN repetition_interval IS NULL THEN 1
+                    ELSE 0
+                END DESC,
+                CASE 
                     WHEN sm_two_flashcards.updated_at IS NOT NULL AND sm_two_flashcards.repetition_interval IS NOT NULL 
                          AND DATE(sm_two_flashcards.updated_at) + CAST(sm_two_flashcards.repetition_interval AS INTEGER) <= CURRENT_DATE
                     THEN 1
                     ELSE 0
                 END DESC,
                 COALESCE(repetition_interval, 1.0) ASC,
-                CASE 
-                    WHEN repetition_interval IS NOT NULL THEN 1
-                    ELSE 0
-                END DESC,
                 RANDOM()
             ')
             ->select(
