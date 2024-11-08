@@ -33,10 +33,7 @@ class FlashcardFromSmTwoMapper
             ->orderByRaw("
                 CASE 
                     WHEN sm_two_flashcards.updated_at IS NOT NULL AND sm_two_flashcards.repetition_interval IS NOT NULL 
-                         AND DATE(sm_two_flashcards.updated_at) + CAST(sm_two_flashcards.repetition_interval AS INTEGER) < CURRENT_DATE
-                    THEN 2
-                    WHEN sm_two_flashcards.updated_at IS NOT NULL AND sm_two_flashcards.repetition_interval IS NOT NULL 
-                         AND DATE(sm_two_flashcards.updated_at) + CAST(sm_two_flashcards.repetition_interval AS INTEGER) = CURRENT_DATE
+                         AND DATE(sm_two_flashcards.updated_at) + CAST(sm_two_flashcards.repetition_interval AS INTEGER) <= CURRENT_DATE
                     THEN 1
                     ELSE 0
                 END DESC," .
@@ -75,10 +72,7 @@ class FlashcardFromSmTwoMapper
                 END DESC,
                 CASE 
                     WHEN sm_two_flashcards.updated_at IS NOT NULL AND sm_two_flashcards.repetition_interval IS NOT NULL 
-                         AND DATE(sm_two_flashcards.updated_at) + CAST(sm_two_flashcards.repetition_interval AS INTEGER) < CURRENT_DATE
-                    THEN 2
-                    WHEN sm_two_flashcards.updated_at IS NOT NULL AND sm_two_flashcards.repetition_interval IS NOT NULL 
-                         AND DATE(sm_two_flashcards.updated_at) + CAST(sm_two_flashcards.repetition_interval AS INTEGER) = CURRENT_DATE
+                         AND DATE(sm_two_flashcards.updated_at) + CAST(sm_two_flashcards.repetition_interval AS INTEGER) <= CURRENT_DATE
                     THEN 1
                     ELSE 0
                 END DESC," .
