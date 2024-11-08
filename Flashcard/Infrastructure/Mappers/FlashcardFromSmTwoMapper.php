@@ -20,28 +20,34 @@ class FlashcardFromSmTwoMapper
         private readonly DB $db
     ) {}
 
-    public function getFlashcardsWithLowerRepetitionInterval(Owner $owner, int $limit, array $exclude_flashcard_ids): array
+    public function getFlashcardsWithLowerRepetitionInterval(Owner $owner, int $limit, array $exclude_flashcard_ids, bool $skip_hard): array
     {
+        $random = round(lcg_value(), 2);
+
         return $this->db::table('flashcards')
             ->whereNotIn('flashcards.id', array_map(fn (FlashcardId $id) => $id->getValue(), $exclude_flashcard_ids))
             ->where('flashcards.user_id', $owner->getId())
             ->leftJoin('flashcard_categories', 'flashcard_categories.id', '=', 'flashcards.flashcard_category_id')
             ->leftJoin('sm_two_flashcards', 'sm_two_flashcards.flashcard_id', '=', 'flashcards.id')
             ->take($limit)
-            ->orderByRaw('
+            ->orderByRaw("
                 CASE 
                     WHEN sm_two_flashcards.updated_at IS NOT NULL AND sm_two_flashcards.repetition_interval IS NOT NULL 
-                         AND DATE(sm_two_flashcards.updated_at) + CAST(sm_two_flashcards.repetition_interval AS INTEGER) <= CURRENT_DATE 
+                         AND DATE(sm_two_flashcards.updated_at) + CAST(sm_two_flashcards.repetition_interval AS INTEGER) < CURRENT_DATE
+                    THEN 2
+                    WHEN sm_two_flashcards.updated_at IS NOT NULL AND sm_two_flashcards.repetition_interval IS NOT NULL 
+                         AND DATE(sm_two_flashcards.updated_at) + CAST(sm_two_flashcards.repetition_interval AS INTEGER) = CURRENT_DATE
                     THEN 1
                     ELSE 0
-                END DESC,
-                COALESCE(repetition_interval, 1.0) ASC,
+                END DESC," .
+                ($skip_hard ? "CASE WHEN COALESCE(repetition_interval, 1.0) = 1.0 THEN 0 ELSE 1 END DESC," : "")
+            . "COALESCE(repetition_interval, 1.0) ASC,
                 CASE 
-                    WHEN repetition_interval IS NOT NULL THEN 1
-                    ELSE 0
+                    WHEN repetition_interval IS NOT NULL AND {$random} < 0.7 THEN 1
+                ELSE 0
                 END DESC,
-                RANDOM()
-            ')
+                sm_two_flashcards.updated_at ASC NULLS FIRST
+            ")
             ->select(
                 'flashcards.*',
                 'flashcard_categories.user_id as category_user_id',
@@ -54,7 +60,7 @@ class FlashcardFromSmTwoMapper
             })->toArray();
     }
 
-    public function getFlashcardsByLowestRepetitionIntervalByCategory(CategoryId $category_id, int $limit, array $exclude_flashcard_ids): array
+    public function getFlashcardsByLowestRepetitionIntervalByCategory(CategoryId $category_id, int $limit, array $exclude_flashcard_ids, bool $skip_hard): array
     {
         return $this->db::table('flashcards')
             ->whereNotIn('flashcards.id', array_map(fn (FlashcardId $id) => $id->getValue(), $exclude_flashcard_ids))
@@ -62,20 +68,24 @@ class FlashcardFromSmTwoMapper
             ->where('flashcards.flashcard_category_id', $category_id->getValue())
             ->leftJoin('sm_two_flashcards', 'sm_two_flashcards.flashcard_id', '=', 'flashcards.id')
             ->take($limit)
-            ->orderByRaw('
+            ->orderByRaw("
                 CASE 
                     WHEN repetition_interval IS NULL THEN 1
                     ELSE 0
                 END DESC,
                 CASE 
                     WHEN sm_two_flashcards.updated_at IS NOT NULL AND sm_two_flashcards.repetition_interval IS NOT NULL 
-                         AND DATE(sm_two_flashcards.updated_at) + CAST(sm_two_flashcards.repetition_interval AS INTEGER) <= CURRENT_DATE
+                         AND DATE(sm_two_flashcards.updated_at) + CAST(sm_two_flashcards.repetition_interval AS INTEGER) < CURRENT_DATE
+                    THEN 2
+                    WHEN sm_two_flashcards.updated_at IS NOT NULL AND sm_two_flashcards.repetition_interval IS NOT NULL 
+                         AND DATE(sm_two_flashcards.updated_at) + CAST(sm_two_flashcards.repetition_interval AS INTEGER) = CURRENT_DATE
                     THEN 1
                     ELSE 0
-                END DESC,
-                COALESCE(repetition_interval, 1.0) ASC,
-                RANDOM()
-            ')
+                END DESC," .
+                ($skip_hard ? "CASE WHEN COALESCE(repetition_interval, 1.0) = 1.0 THEN 0 ELSE 1 END DESC," : "")
+                . "COALESCE(repetition_interval, 1.0) ASC,
+                sm_two_flashcards.updated_at ASC NULLS FIRST"
+            )
             ->select(
                 'flashcards.*',
                 'flashcard_categories.user_id as category_user_id',

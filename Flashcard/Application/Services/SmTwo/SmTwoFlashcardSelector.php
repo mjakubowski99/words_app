@@ -29,9 +29,11 @@ class SmTwoFlashcardSelector implements IFlashcardSelector
     {
         $latest_limit = 2;
 
+        $skip_hard = $next_session_flashcards->getCurrentSessionFlashcardsCount() % 5 === 0;
+
         $latest_ids = $this->flashcard_repository->getLatestSessionFlashcardIds($next_session_flashcards->getSessionId(), $latest_limit);
 
-        $results = $this->repository->getFlashcardsByLowestRepetitionInterval($next_session_flashcards->getOwner(), $limit, $latest_ids);
+        $results = $this->repository->getFlashcardsByLowestRepetitionInterval($next_session_flashcards->getOwner(), $limit, $latest_ids, $skip_hard);
 
         if (count($results) < $limit) {
             return $this->repository->getFlashcardsByLowestRepetitionInterval($next_session_flashcards->getOwner(), $limit, []);
@@ -46,7 +48,9 @@ class SmTwoFlashcardSelector implements IFlashcardSelector
         $latest_ids = $this->flashcard_repository->getLatestSessionFlashcardIds($next_session_flashcards->getSessionId(), $latest_limit);
         $category = $next_session_flashcards->getCategory();
 
-        $results = $this->repository->getFlashcardsByLowestRepetitionIntervalAndCategory($category->getId(), $limit, $latest_ids);
+        $skip_hard = $next_session_flashcards->getCurrentSessionFlashcardsCount() % 5 === 0;
+
+        $results = $this->repository->getFlashcardsByLowestRepetitionIntervalAndCategory($category->getId(), $limit, $latest_ids, $skip_hard);
 
         if (count($results) < $limit) {
             return $this->repository->getFlashcardsByLowestRepetitionIntervalAndCategory($category->getId(), $limit, []);
