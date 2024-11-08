@@ -63,7 +63,7 @@ class SmTwoFlashcard
     {
         if ($rating->value >= Rating::GOOD->value) {
             if ($this->repetition_count === 0) {
-                $this->repetition_interval = 1.0;
+                $this->repetition_interval = Rating::GOOD ? 1.0 : 6.0;
             } elseif ($this->repetition_count === 1) {
                 $this->repetition_interval = 6.0;
             } else {
