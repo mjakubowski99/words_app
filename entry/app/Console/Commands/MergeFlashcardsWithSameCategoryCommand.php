@@ -6,8 +6,11 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use App\Models\FlashcardCategory;
+use Flashcard\Domain\Models\Owner;
+use Shared\Enum\FlashcardOwnerType;
+use Flashcard\Domain\ValueObjects\OwnerId;
 use App\Console\Traits\EnsureDatabaseDriver;
-use Flashcard\Application\Command\MergeFlashcardsHandler;
+use Flashcard\Application\Command\MergeFlashcardCategoriesHandler;
 
 class MergeFlashcardsWithSameCategoryCommand extends Command
 {
@@ -17,7 +20,7 @@ class MergeFlashcardsWithSameCategoryCommand extends Command
 
     protected $description = 'This command merges flashcards with same category!';
 
-    public function handle(MergeFlashcardsHandler $handler): void
+    public function handle(MergeFlashcardCategoriesHandler $handler): void
     {
         $this->ensureDefaultDriverIsPostgres();
 
@@ -32,7 +35,7 @@ class MergeFlashcardsWithSameCategoryCommand extends Command
             });
     }
 
-    private function mergeDuplicates(string $category_name, string $user_id, MergeFlashcardsHandler $handler): void
+    private function mergeDuplicates(string $category_name, string $user_id, MergeFlashcardCategoriesHandler $handler): void
     {
         $categories = FlashcardCategory::query()
             ->where('user_id', $user_id)
@@ -48,7 +51,10 @@ class MergeFlashcardsWithSameCategoryCommand extends Command
         for ($i = 1; $i < count($categories); ++$i) {
             $from_category = $categories[$i]->getId();
             $to_category = $selected_category->getId();
-            $handler->handle($from_category, $to_category);
+
+            $owner = new Owner(new OwnerId($selected_category->user_id), FlashcardOwnerType::USER);
+
+            $handler->handle($owner, $from_category, $to_category);
         }
     }
 }

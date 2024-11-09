@@ -13,8 +13,8 @@ class GetUserCategories
     public function __construct(private IFlashcardCategoryReadRepository $repository) {}
 
     /** @return OwnerCategoryRead[] */
-    public function handle(Owner $owner, int $page, int $per_page): array
+    public function handle(Owner $owner, ?string $search, int $page, int $per_page): array
     {
-        return $this->repository->getByOwner($owner, $page, $per_page);
+        return $this->repository->getByOwner($owner, $search, $page, $per_page);
     }
 }

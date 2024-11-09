@@ -16,13 +16,13 @@ class FlashcardCategoryReadRepository implements IFlashcardCategoryReadRepositor
         private readonly FlashcardCategoryReadMapper $mapper
     ) {}
 
-    public function findDetails(CategoryId $id, ?int $limit): CategoryDetailsRead
+    public function findDetails(CategoryId $id, ?string $search, int $page, int $per_page): CategoryDetailsRead
     {
-        return $this->mapper->findDetails($id, $limit);
+        return $this->mapper->findDetails($id, $search, $page, $per_page);
     }
 
-    public function getByOwner(Owner $owner, int $page, int $per_page): array
+    public function getByOwner(Owner $owner, ?string $search, int $page, int $per_page): array
     {
-        return $this->mapper->getByOwner($owner, $page, $per_page);
+        return $this->mapper->getByOwner($owner, $search, $page, $per_page);
     }
 }

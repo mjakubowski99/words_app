@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Flashcard\Infrastructure\Http\Request;
 
 use Shared\Http\Request\Request;
-use Shared\Utils\ValueObjects\UserId;
+use Flashcard\Domain\ValueObjects\CategoryId;
 
-class IndexFlashcardCategoryRequest extends Request
+class GetCategoryDetailsRequest extends Request
 {
     public function rules(): array
     {
@@ -18,9 +18,9 @@ class IndexFlashcardCategoryRequest extends Request
         ];
     }
 
-    public function getUserId(): UserId
+    public function getCategoryId(): CategoryId
     {
-        return $this->current()->getId();
+        return new CategoryId((int) $this->route('category_id'));
     }
 
     public function getSearch(): ?string

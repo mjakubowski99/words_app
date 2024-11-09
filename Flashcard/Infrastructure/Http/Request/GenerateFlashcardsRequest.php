@@ -28,7 +28,19 @@ class GenerateFlashcardsRequest extends Request
     {
         return [
             'category_name' => ['required', 'string', 'min:5', 'max:40'],
+            'page' => ['integer', 'gte:0'],
+            'per_page' => ['integer', 'gte:0', 'lte:30'],
         ];
+    }
+
+    public function getPage(): int
+    {
+        return (int) ($this->query('page') ?? 1);
+    }
+
+    public function getPerPage(): int
+    {
+        return (int) ($this->query('per_page') ?? 15);
     }
 
     public function getCategoryName(): string

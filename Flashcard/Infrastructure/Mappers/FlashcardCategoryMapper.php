@@ -34,6 +34,20 @@ class FlashcardCategoryMapper
         return new CategoryId($result);
     }
 
+    public function update(Category $category): void
+    {
+        $now = now();
+
+        $this->db::table('flashcard_categories')
+            ->where('id', $category->getId()->getValue())
+            ->update([
+                'user_id' => $category->getOwner()->getId(),
+                'tag' => $category->getName(),
+                'name' => $category->getName(),
+                'updated_at' => $now,
+            ]);
+    }
+
     public function findById(CategoryId $id): Category
     {
         $result = $this->db::table('flashcard_categories')

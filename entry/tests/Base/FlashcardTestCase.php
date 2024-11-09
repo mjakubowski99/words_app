@@ -6,6 +6,7 @@ namespace Tests\Base;
 
 use Tests\TestCase;
 use App\Models\User;
+use App\Models\Flashcard;
 use App\Models\SmTwoFlashcard;
 use App\Models\LearningSession;
 use App\Models\FlashcardCategory;
@@ -19,6 +20,26 @@ use Flashcard\Domain\ValueObjects\SessionFlashcardId;
 
 abstract class FlashcardTestCase extends TestCase
 {
+    public function createFlashcard(array $attributes = []): Flashcard
+    {
+        return Flashcard::factory()->create($attributes);
+    }
+
+    public function createFlashcardCategory(array $attributes = []): FlashcardCategory
+    {
+        return FlashcardCategory::factory()->create($attributes);
+    }
+
+    public function createLearningSession(array $attributes = []): LearningSession
+    {
+        return LearningSession::factory()->create($attributes);
+    }
+
+    public function createLearningSessionFlashcard(array $attributes = []): LearningSessionFlashcard
+    {
+        return LearningSessionFlashcard::factory()->create($attributes);
+    }
+
     public function createSessionFlashcardId(LearningSessionFlashcard $flashcard): SessionFlashcardId
     {
         return new SessionFlashcardId($flashcard->id);
