@@ -79,7 +79,7 @@ class SmTwoFlashcardRepositoryTest extends FlashcardTestCase
     /**
      * @test
      */
-    public function getFlashcardsWithLowestRepetitionIntervalByCategory_ShouldReturnFlashcards(): void
+    public function getNextFlashcardsByCategory_ShouldReturnFlashcards(): void
     {
         // GIVEN
         $user = User::factory()->create();
@@ -102,7 +102,7 @@ class SmTwoFlashcardRepositoryTest extends FlashcardTestCase
         ];
 
         // WHEN
-        $results = $this->repository->getFlashcardsByLowestRepetitionIntervalAndCategory($category->getId(), 5, []);
+        $results = $this->repository->getNextFlashcardsByCategory($category->getId(), 5, []);
 
         // THEN
         $this->assertCount(3, $results);

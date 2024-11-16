@@ -29,14 +29,14 @@ class SmTwoFlashcardSelector implements IFlashcardSelector
     {
         $latest_limit = 2;
 
-        $skip_hard = $next_session_flashcards->getCurrentSessionFlashcardsCount() % 5 === 0;
+        $get_latest = $next_session_flashcards->getCurrentSessionFlashcardsCount() % 9 === 0;
 
         $latest_ids = $this->flashcard_repository->getLatestSessionFlashcardIds($next_session_flashcards->getSessionId(), $latest_limit);
 
-        $results = $this->repository->getFlashcardsByLowestRepetitionInterval($next_session_flashcards->getOwner(), $limit, $latest_ids, $skip_hard);
+        $results = $this->repository->getNextFlashcards($next_session_flashcards->getOwner(), $limit, $latest_ids, $get_latest);
 
         if (count($results) < $limit) {
-            return $this->repository->getFlashcardsByLowestRepetitionInterval($next_session_flashcards->getOwner(), $limit, []);
+            return $this->repository->getNextFlashcards($next_session_flashcards->getOwner(), $limit, []);
         }
 
         return $results;
@@ -48,12 +48,12 @@ class SmTwoFlashcardSelector implements IFlashcardSelector
         $latest_ids = $this->flashcard_repository->getLatestSessionFlashcardIds($next_session_flashcards->getSessionId(), $latest_limit);
         $category = $next_session_flashcards->getCategory();
 
-        $skip_hard = $next_session_flashcards->getCurrentSessionFlashcardsCount() % 5 === 0;
+        $skip_hard = $next_session_flashcards->getCurrentSessionFlashcardsCount() % 9 === 0;
 
-        $results = $this->repository->getFlashcardsByLowestRepetitionIntervalAndCategory($category->getId(), $limit, $latest_ids, $skip_hard);
+        $results = $this->repository->getNextFlashcardsByCategory($category->getId(), $limit, $latest_ids, $skip_hard);
 
         if (count($results) < $limit) {
-            return $this->repository->getFlashcardsByLowestRepetitionIntervalAndCategory($category->getId(), $limit, []);
+            return $this->repository->getNextFlashcardsByCategory($category->getId(), $limit, []);
         }
 
         return $results;

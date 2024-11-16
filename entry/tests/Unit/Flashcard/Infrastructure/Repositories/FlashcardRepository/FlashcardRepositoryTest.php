@@ -7,6 +7,7 @@ namespace Tests\Unit\Flashcard\Infrastructure\Repositories\FlashcardRepository;
 use App\Models\User;
 use App\Models\FlashcardCategory;
 use Tests\Base\FlashcardTestCase;
+use Flashcard\Domain\Models\Flashcard;
 use Shared\Utils\ValueObjects\Language;
 use Flashcard\Domain\ValueObjects\FlashcardId;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -31,7 +32,7 @@ class FlashcardRepositoryTest extends FlashcardTestCase
         $categories = FlashcardCategory::factory(2)->create();
 
         $flashcards = [
-            new \Flashcard\Domain\Models\Flashcard(
+            new Flashcard(
                 new FlashcardId(0),
                 'word',
                 Language::from('en'),
@@ -42,7 +43,7 @@ class FlashcardRepositoryTest extends FlashcardTestCase
                 $users[0]->toOwner(),
                 $categories[0]->toDomainModel()
             ),
-            new \Flashcard\Domain\Models\Flashcard(
+            new Flashcard(
                 new FlashcardId(0),
                 'word 1',
                 Language::from('pl'),
