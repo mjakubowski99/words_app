@@ -7,7 +7,7 @@ namespace Integration\Flashcards\Infrastructure\Http\Controller;
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\Flashcard;
-use App\Models\FlashcardCategory;
+use App\Models\FlashcardDeck;
 use Shared\Utils\ValueObjects\Language;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
@@ -19,14 +19,14 @@ class FlashcardControllerTest extends TestCase
     {
         // GIVEN
         $user = User::factory()->create();
-        $category = FlashcardCategory::factory()->create([
+        $deck = FlashcardDeck::factory()->create([
             'user_id' => $user->id,
         ]);
 
         // WHEN
         $response = $this->actingAs($user)
             ->json('POST', route('flashcards.store'), [
-                'flashcard_category_id' => $category->id,
+                'flashcard_category_id' => $deck->id,
                 'word' => 'Word',
                 'translation' => 'Translation',
                 'context' => 'Context',
@@ -37,13 +37,13 @@ class FlashcardControllerTest extends TestCase
         $response->assertStatus(204);
         $this->assertDatabaseHas('flashcards', [
             'user_id' => $user->id,
-            'flashcard_category_id' => $category->id,
-            'word' => 'Word',
-            'context' => 'Context',
-            'translation' => 'Translation',
-            'context_translation' => 'Context translation',
-            'word_lang' => Language::PL,
-            'translation_lang' => Language::EN,
+            'flashcard_deck_id' => $deck->id,
+            'front_word' => 'Word',
+            'front_context' => 'Context',
+            'back_word' => 'Translation',
+            'back_context' => 'Context translation',
+            'front_lang' => Language::PL,
+            'back_lang' => Language::EN,
         ]);
     }
 
@@ -51,11 +51,11 @@ class FlashcardControllerTest extends TestCase
     {
         // GIVEN
         $user = User::factory()->create();
-        $category = FlashcardCategory::factory()->create();
+        $deck = FlashcardDeck::factory()->create();
         // WHEN
         $response = $this->actingAs($user)
             ->json('POST', route('flashcards.store'), [
-                'flashcard_category_id' => $category->id,
+                'flashcard_category_id' => $deck->id,
                 'word' => 'Word',
                 'translation' => 'Translation',
                 'context' => 'Context',
@@ -70,18 +70,18 @@ class FlashcardControllerTest extends TestCase
     {
         // GIVEN
         $user = User::factory()->create();
-        $category = FlashcardCategory::factory()->create([
+        $deck = FlashcardDeck::factory()->create([
             'user_id' => $user->id,
         ]);
         $flashcard = Flashcard::factory()->create([
             'user_id' => $user->id,
-            'flashcard_category_id' => $category->id,
+            'flashcard_deck_id' => $deck->id,
         ]);
 
         // WHEN
         $response = $this->actingAs($user)
             ->json('PUT', route('flashcards.update', ['flashcard_id' => $flashcard->id]), [
-                'flashcard_category_id' => $category->id,
+                'flashcard_category_id' => $deck->id,
                 'word' => 'Word',
                 'translation' => 'Translation',
                 'context' => 'Context',
@@ -93,13 +93,13 @@ class FlashcardControllerTest extends TestCase
         $this->assertDatabaseHas('flashcards', [
             'id' => $flashcard->id,
             'user_id' => $user->id,
-            'flashcard_category_id' => $category->id,
-            'word' => 'Word',
-            'context' => 'Context',
-            'translation' => 'Translation',
-            'context_translation' => 'Context translation',
-            'word_lang' => Language::PL,
-            'translation_lang' => Language::EN,
+            'flashcard_deck_id' => $deck->id,
+            'front_word' => 'Word',
+            'front_context' => 'Context',
+            'back_word' => 'Translation',
+            'back_context' => 'Context translation',
+            'front_lang' => Language::PL,
+            'back_lang' => Language::EN,
         ]);
     }
 
@@ -107,15 +107,15 @@ class FlashcardControllerTest extends TestCase
     {
         // GIVEN
         $user = User::factory()->create();
-        $category = FlashcardCategory::factory()->create();
+        $deck = FlashcardDeck::factory()->create();
         $flashcard = Flashcard::factory()->create([
-            'flashcard_category_id' => $category->id,
+            'flashcard_deck_id' => $deck->id,
         ]);
 
         // WHEN
         $response = $this->actingAs($user)
             ->json('PUT', route('flashcards.update', ['flashcard_id' => $flashcard->id]), [
-                'flashcard_category_id' => $category->id,
+                'flashcard_category_id' => $deck->id,
                 'word' => 'Word',
                 'translation' => 'Translation',
                 'context' => 'Context',
@@ -130,12 +130,12 @@ class FlashcardControllerTest extends TestCase
     {
         // GIVEN
         $user = User::factory()->create();
-        $category = FlashcardCategory::factory()->create([
+        $deck = FlashcardDeck::factory()->create([
             'user_id' => $user->id,
         ]);
         $flashcard = Flashcard::factory()->create([
             'user_id' => $user->id,
-            'flashcard_category_id' => $category->id,
+            'flashcard_deck_id' => $deck->id,
         ]);
 
         // WHEN

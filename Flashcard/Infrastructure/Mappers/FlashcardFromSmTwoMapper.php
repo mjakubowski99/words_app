@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Mappers;
 
+use Flashcard\Domain\Models\Deck;
 use Flashcard\Domain\Models\Owner;
 use Illuminate\Support\Facades\DB;
 use Shared\Enum\FlashcardOwnerType;
-use Flashcard\Domain\Models\Category;
 use Flashcard\Domain\Models\Flashcard;
 use Shared\Utils\ValueObjects\Language;
 use Flashcard\Domain\ValueObjects\OwnerId;
-use Flashcard\Domain\ValueObjects\CategoryId;
 use Flashcard\Domain\ValueObjects\FlashcardId;
+use Flashcard\Domain\ValueObjects\FlashcardDeckId;
 
 class FlashcardFromSmTwoMapper
 {
@@ -27,7 +27,7 @@ class FlashcardFromSmTwoMapper
         return $this->db::table('flashcards')
             ->whereNotIn('flashcards.id', array_map(fn (FlashcardId $id) => $id->getValue(), $exclude_flashcard_ids))
             ->where('flashcards.user_id', $owner->getId())
-            ->leftJoin('flashcard_categories', 'flashcard_categories.id', '=', 'flashcards.flashcard_category_id')
+            ->leftJoin('flashcard_decks', 'flashcard_decks.id', '=', 'flashcards.flashcard_deck_id')
             ->leftJoin('sm_two_flashcards', 'sm_two_flashcards.flashcard_id', '=', 'flashcards.id')
             ->take($limit)
             ->orderByRaw('
@@ -48,9 +48,9 @@ class FlashcardFromSmTwoMapper
             ")
             ->select(
                 'flashcards.*',
-                'flashcard_categories.user_id as category_user_id',
-                'flashcard_categories.tag as category_tag',
-                'flashcard_categories.name as category_name',
+                'flashcard_decks.user_id as deck_user_id',
+                'flashcard_decks.tag as deck_tag',
+                'flashcard_decks.name as deck_name',
             )
             ->get()
             ->map(function (object $flashcard) {
@@ -58,12 +58,12 @@ class FlashcardFromSmTwoMapper
             })->toArray();
     }
 
-    public function getNextFlashcardsByCategory(CategoryId $category_id, int $limit, array $exclude_flashcard_ids, bool $get_oldest): array
+    public function getNextFlashcardsByDeck(FlashcardDeckId $deck_id, int $limit, array $exclude_flashcard_ids, bool $get_oldest): array
     {
         return $this->db::table('flashcards')
             ->whereNotIn('flashcards.id', array_map(fn (FlashcardId $id) => $id->getValue(), $exclude_flashcard_ids))
-            ->leftJoin('flashcard_categories', 'flashcard_categories.id', '=', 'flashcards.flashcard_category_id')
-            ->where('flashcards.flashcard_category_id', $category_id->getValue())
+            ->leftJoin('flashcard_decks', 'flashcard_decks.id', '=', 'flashcards.flashcard_deck_id')
+            ->where('flashcards.flashcard_deck_id', $deck_id->getValue())
             ->leftJoin('sm_two_flashcards', 'sm_two_flashcards.flashcard_id', '=', 'flashcards.id')
             ->take($limit)
             ->orderByRaw(
@@ -85,9 +85,9 @@ class FlashcardFromSmTwoMapper
             )
             ->select(
                 'flashcards.*',
-                'flashcard_categories.user_id as category_user_id',
-                'flashcard_categories.tag as category_tag',
-                'flashcard_categories.name as category_name',
+                'flashcard_decks.user_id as deck_user_id',
+                'flashcard_decks.tag as deck_tag',
+                'flashcard_decks.name as deck_name',
             )
             ->get()
             ->map(function (object $flashcard) {
@@ -97,22 +97,22 @@ class FlashcardFromSmTwoMapper
 
     private function map(object $data): Flashcard
     {
-        $category = $data->flashcard_category_id ? (new Category(
-            new Owner(new OwnerId($data->category_user_id), FlashcardOwnerType::USER),
-            $data->category_tag,
-            $data->category_name,
-        ))->init(new CategoryId($data->flashcard_category_id)) : null;
+        $deck = $data->flashcard_deck_id ? (new Deck(
+            new Owner(new OwnerId($data->deck_user_id), FlashcardOwnerType::USER),
+            $data->deck_tag,
+            $data->deck_name,
+        ))->init(new FlashcardDeckId($data->flashcard_deck_id)) : null;
 
         return new Flashcard(
             new FlashcardId($data->id),
-            $data->word,
-            Language::from($data->word_lang),
-            $data->translation,
-            Language::from($data->translation_lang),
-            $data->context,
-            $data->context_translation,
+            $data->front_word,
+            Language::from($data->front_lang),
+            $data->back_word,
+            Language::from($data->back_lang),
+            $data->front_context,
+            $data->back_context,
             new Owner(new OwnerId($data->user_id), FlashcardOwnerType::USER),
-            $category,
+            $deck,
         );
     }
 }

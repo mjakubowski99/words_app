@@ -6,7 +6,7 @@ namespace Flashcard\Infrastructure\Http\Request;
 
 use Shared\Http\Request\Request;
 use Flashcard\Domain\Models\Owner;
-use Flashcard\Domain\ValueObjects\CategoryId;
+use Flashcard\Domain\ValueObjects\FlashcardDeckId;
 
 class RegenerateFlashcardsRequest extends Request
 {
@@ -33,8 +33,8 @@ class RegenerateFlashcardsRequest extends Request
         return Owner::fromUser($this->current()->getId());
     }
 
-    public function getCategoryId(): CategoryId
+    public function getDeckId(): FlashcardDeckId
     {
-        return new CategoryId((int) $this->route('category_id'));
+        return new FlashcardDeckId((int) $this->route('category_id'));
     }
 }

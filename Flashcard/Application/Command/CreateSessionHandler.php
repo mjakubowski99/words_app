@@ -8,19 +8,19 @@ use Shared\Enum\SessionStatus;
 use Flashcard\Domain\Models\Session;
 use Flashcard\Application\DTO\CreateSessionResultDTO;
 use Flashcard\Application\Repository\ISessionRepository;
-use Flashcard\Application\Repository\IFlashcardCategoryRepository;
+use Flashcard\Application\Repository\IFlashcardDeckRepository;
 
 class CreateSessionHandler
 {
     public function __construct(
         private readonly ISessionRepository $repository,
-        private readonly IFlashcardCategoryRepository $category_repository,
+        private readonly IFlashcardDeckRepository $deck_repository,
     ) {}
 
     public function handle(CreateSession $command): CreateSessionResultDTO
     {
-        $category = $command->hasCategoryId()
-            ? $this->category_repository->findById($command->getCategoryId()) :
+        $deck = $command->hasDeckId()
+            ? $this->deck_repository->findById($command->getDeckId()) :
             null;
 
         $this->repository->setAllOwnerSessionsStatus($command->getOwner(), SessionStatus::FINISHED);
@@ -29,7 +29,7 @@ class CreateSessionHandler
             $command->getOwner(),
             $command->getCardsPerSession(),
             $command->getDevice(),
-            $category,
+            $deck,
         );
 
         $session_id = $this->repository->create($session);

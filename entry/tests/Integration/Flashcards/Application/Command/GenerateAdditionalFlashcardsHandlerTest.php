@@ -6,7 +6,7 @@ namespace Integration\Flashcards\Application\Command;
 
 use Tests\TestCase;
 use App\Models\User;
-use App\Models\FlashcardCategory;
+use App\Models\FlashcardDeck;
 use Illuminate\Support\Facades\Http;
 use Integrations\Gemini\GeminiApiClient;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -75,16 +75,16 @@ class GenerateAdditionalFlashcardsHandlerTest extends TestCase
             '*' => Http::response(json_decode($this->response, true)),
         ]);
         $user = User::factory()->create();
-        $category = FlashcardCategory::factory()->create([
+        $deck = FlashcardDeck::factory()->create([
             'user_id' => $user->id,
         ]);
 
         // WHEN
-        $this->handler->handle($user->toOwner(), $category->getId());
+        $this->handler->handle($user->toOwner(), $deck->getId());
 
         // THEN
         $this->assertDatabaseHas('flashcards', [
-            'flashcard_category_id' => $category->getId(),
+            'flashcard_deck_id' => $deck->getId(),
         ]);
     }
 }

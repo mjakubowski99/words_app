@@ -8,33 +8,33 @@ use Flashcard\Domain\Models\Flashcard;
 use Shared\Exceptions\ForbiddenException;
 use Flashcard\Domain\ValueObjects\FlashcardId;
 use Flashcard\Application\Repository\IFlashcardRepository;
-use Flashcard\Application\Repository\IFlashcardCategoryRepository;
+use Flashcard\Application\Repository\IFlashcardDeckRepository;
 
 class CreateFlashcardHandler
 {
     public function __construct(
-        private IFlashcardCategoryRepository $category_repository,
+        private IFlashcardDeckRepository $deck_repository,
         private IFlashcardRepository $repository
     ) {}
 
     public function handle(CreateFlashcard $command): void
     {
-        $category = $this->category_repository->findById($command->getCategoryId());
+        $deck = $this->deck_repository->findById($command->getDeckId());
 
-        if (!$category->getOwner()->equals($command->getOwner())) {
-            throw new ForbiddenException('You must be category owner to create flashcard');
+        if (!$deck->getOwner()->equals($command->getOwner())) {
+            throw new ForbiddenException('You must be deck owner to create flashcard');
         }
 
         $flashcard = new Flashcard(
             FlashcardId::noId(),
-            $command->getWord(),
-            $command->getWordLang(),
-            $command->getTranslation(),
-            $command->getTranslationLang(),
-            $command->getContext(),
-            $command->getContextTranslation(),
+            $command->getFrontWord(),
+            $command->getFrontLang(),
+            $command->getBackWord(),
+            $command->getBackLang(),
+            $command->getFrontContext(),
+            $command->getBackContext(),
             $command->getOwner(),
-            $category,
+            $deck,
         );
 
         $this->repository->createMany([$flashcard]);

@@ -7,7 +7,7 @@ namespace Flashcard\Application\Repository;
 use Flashcard\Domain\Models\Owner;
 use Flashcard\Domain\Models\Flashcard;
 use Flashcard\Domain\Models\SmTwoFlashcards;
-use Flashcard\Domain\ValueObjects\CategoryId;
+use Flashcard\Domain\ValueObjects\FlashcardDeckId;
 
 interface ISmTwoFlashcardRepository
 {
@@ -16,7 +16,7 @@ interface ISmTwoFlashcardRepository
     public function saveMany(SmTwoFlashcards $sm_two_flashcards): void;
 
     /** @return Flashcard[] */
-    public function getNextFlashcardsByCategory(CategoryId $category_id, int $limit, array $exclude_flashcard_ids, bool $get_oldest = false): array;
+    public function getNextFlashcardsByDeck(FlashcardDeckId $deck_id, int $limit, array $exclude_flashcard_ids, bool $get_oldest = false): array;
 
     /** @return Flashcard[] */
     public function getNextFlashcards(Owner $owner, int $limit, array $exclude_flashcard_ids, bool $get_oldest = false): array;

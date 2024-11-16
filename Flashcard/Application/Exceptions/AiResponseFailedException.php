@@ -6,5 +6,5 @@ namespace Flashcard\Application\Exceptions;
 
 class AiResponseFailedException extends \Exception
 {
-    protected $message = 'Sorry ;( our AI was not able generate category. Please try again!';
+    protected $message = 'Sorry ;( our AI was not able generate deck. Please try again!';
 }

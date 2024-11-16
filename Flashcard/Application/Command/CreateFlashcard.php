@@ -6,19 +6,19 @@ namespace Flashcard\Application\Command;
 
 use Flashcard\Domain\Models\Owner;
 use Shared\Utils\ValueObjects\Language;
-use Flashcard\Domain\ValueObjects\CategoryId;
+use Flashcard\Domain\ValueObjects\FlashcardDeckId;
 
 class CreateFlashcard
 {
     public function __construct(
         private Owner $owner,
-        private CategoryId $category_id,
-        private Language $word_lang,
-        private string $word,
-        private string $context,
-        private Language $translation_lang,
-        private string $translation,
-        private string $context_translation,
+        private FlashcardDeckId $deck_id,
+        private Language $front_lang,
+        private string $front_word,
+        private string $front_context,
+        private Language $back_lang,
+        private string $back_word,
+        private string $back_context,
     ) {}
 
     public function getOwner(): Owner
@@ -26,38 +26,38 @@ class CreateFlashcard
         return $this->owner;
     }
 
-    public function getCategoryId(): CategoryId
+    public function getDeckId(): FlashcardDeckId
     {
-        return $this->category_id;
+        return $this->deck_id;
     }
 
-    public function getWordLang(): Language
+    public function getFrontLang(): Language
     {
-        return $this->word_lang;
+        return $this->front_lang;
     }
 
-    public function getWord(): string
+    public function getFrontWord(): string
     {
-        return $this->word;
+        return $this->front_word;
     }
 
-    public function getContext(): string
+    public function getFrontContext(): string
     {
-        return $this->context;
+        return $this->front_context;
     }
 
-    public function getTranslationLang(): Language
+    public function getBackLang(): Language
     {
-        return $this->translation_lang;
+        return $this->back_lang;
     }
 
-    public function getTranslation(): string
+    public function getBackWord(): string
     {
-        return $this->translation;
+        return $this->back_word;
     }
 
-    public function getContextTranslation(): string
+    public function getBackContext(): string
     {
-        return $this->context_translation;
+        return $this->back_context;
     }
 }

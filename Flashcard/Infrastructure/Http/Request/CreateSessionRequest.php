@@ -7,8 +7,8 @@ namespace Flashcard\Infrastructure\Http\Request;
 use OpenApi\Attributes as OAT;
 use Shared\Http\Request\Request;
 use Shared\Enum\LearningSessionType;
-use Flashcard\Domain\ValueObjects\CategoryId;
 use Flashcard\Application\Command\CreateSession;
+use Flashcard\Domain\ValueObjects\FlashcardDeckId;
 
 #[OAT\Schema(
     schema: 'Requests\Flashcard\CreateSessionRequest',
@@ -41,7 +41,7 @@ class CreateSessionRequest extends Request
             $this->current(),
             (int) $this->input('cards_per_session'),
             $this->userAgent(),
-            $this->input('category_id') !== null ? new CategoryId((int) $this->input('category_id')) : null,
+            $this->input('category_id') !== null ? new FlashcardDeckId((int) $this->input('category_id')) : null,
             $this->input('category_id') !== null ?
                 LearningSessionType::LEARN_FLASHCARDS_IN_CATEGORY
                 : LearningSessionType::LEARN_YOUR_ALL_FLASHCARDS,

@@ -17,7 +17,7 @@ class NextSessionFlashcards
     public function __construct(
         private SessionId $session_id,
         private Owner $owner,
-        private ?Category $category,
+        private ?Deck $deck,
         private int $current_session_flashcards_count,
         private int $unrated_count,
         private int $max_flashcards_count,
@@ -49,14 +49,14 @@ class NextSessionFlashcards
         return $this->current_session_flashcards_count;
     }
 
-    public function hasCategory(): bool
+    public function hasDeck(): bool
     {
-        return $this->category !== null;
+        return $this->deck !== null;
     }
 
-    public function getCategory(): Category
+    public function getDeck(): Deck
     {
-        return $this->category;
+        return $this->deck;
     }
 
     public function isValid(): bool

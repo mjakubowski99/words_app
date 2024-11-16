@@ -36,12 +36,12 @@ class SessionFlashcardReadMapper
                 SELECT 
                     learning_session_flashcards.id, 
                     learning_session_flashcards.rating,
-                    flashcards.word,
-                    flashcards.word_lang,
-                    flashcards.translation,
-                    flashcards.translation_lang,
-                    flashcards.context,
-                    flashcards.context_translation
+                    flashcards.front_word,
+                    flashcards.front_lang,
+                    flashcards.back_word,
+                    flashcards.back_lang,
+                    flashcards.front_context,
+                    flashcards.back_context
                 FROM 
                     learning_session_flashcards
                 LEFT JOIN
@@ -63,12 +63,12 @@ class SessionFlashcardReadMapper
             SELECT 
                 flashcards_data.id, 
                 flashcards_data.rating,
-                flashcards_data.word,
-                flashcards_data.word_lang,
-                flashcards_data.translation,
-                flashcards_data.translation_lang,
-                flashcards_data.context,
-                flashcards_data.context_translation,
+                flashcards_data.front_word,
+                flashcards_data.front_lang,
+                flashcards_data.back_word,
+                flashcards_data.back_lang,
+                flashcards_data.front_context,
+                flashcards_data.back_context,
                 session_data.id AS session_id,
                 session_data.status as status,
                 session_data.cards_per_session,
@@ -108,12 +108,12 @@ class SessionFlashcardReadMapper
     {
         return new SessionFlashcardRead(
             new SessionFlashcardId($data->id),
-            $data->word,
-            Language::from($data->word_lang),
-            $data->translation,
-            Language::from($data->translation_lang),
-            $data->context,
-            $data->context_translation
+            $data->front_word,
+            Language::from($data->front_lang),
+            $data->back_word,
+            Language::from($data->back_lang),
+            $data->front_context,
+            $data->back_context
         );
     }
 }

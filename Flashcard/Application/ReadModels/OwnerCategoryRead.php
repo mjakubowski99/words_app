@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\ReadModels;
 
-use Flashcard\Domain\ValueObjects\CategoryId;
+use Flashcard\Domain\ValueObjects\FlashcardDeckId;
 
 class OwnerCategoryRead
 {
-    public function __construct(private CategoryId $id, private string $name) {}
+    public function __construct(private FlashcardDeckId $id, private string $name) {}
 
-    public function getId(): CategoryId
+    public function getId(): FlashcardDeckId
     {
         return $this->id;
     }

@@ -6,8 +6,8 @@ namespace Tests\Integration\Flashcards\Application\Command;
 
 use App\Models\User;
 use App\Models\Flashcard;
+use App\Models\FlashcardDeck;
 use App\Models\LearningSession;
-use App\Models\FlashcardCategory;
 use Tests\Base\FlashcardTestCase;
 use Flashcard\Application\Command\AddSessionFlashcards;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -31,13 +31,15 @@ class AddSessionFlashcardsTest extends FlashcardTestCase
     {
         // GIVEN
         $user = User::factory()->create();
-        $category = FlashcardCategory::factory()->create();
+        $deck = FlashcardDeck::factory()->create([
+            'user_id' => $user->id,
+        ]);
         $flashcards = Flashcard::factory(3)->create([
-            'flashcard_category_id' => $category->id,
+            'flashcard_deck_id' => $deck->id,
             'user_id' => $user->id,
         ]);
         $session = LearningSession::factory()->create([
-            'flashcard_category_id' => $category->id,
+            'flashcard_deck_id' => $deck->id,
             'user_id' => $user->id,
         ]);
         $command = new AddSessionFlashcards($session->getId(), 2);

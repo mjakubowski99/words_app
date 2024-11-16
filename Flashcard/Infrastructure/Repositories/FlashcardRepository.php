@@ -7,8 +7,8 @@ namespace Flashcard\Infrastructure\Repositories;
 use Flashcard\Domain\Models\Owner;
 use Flashcard\Domain\Models\Flashcard;
 use Flashcard\Domain\ValueObjects\SessionId;
-use Flashcard\Domain\ValueObjects\CategoryId;
 use Flashcard\Domain\ValueObjects\FlashcardId;
+use Flashcard\Domain\ValueObjects\FlashcardDeckId;
 use Flashcard\Infrastructure\Mappers\FlashcardMapper;
 use Flashcard\Application\Repository\IFlashcardRepository;
 use Flashcard\Infrastructure\Mappers\SessionFlashcardMapper;
@@ -26,7 +26,7 @@ class FlashcardRepository implements IFlashcardRepository
         return $this->mapper->getRandomFlashcards($owner, $limit, $exclude_flashcard_ids);
     }
 
-    public function getRandomFlashcardsByCategory(CategoryId $id, int $limit, array $exclude_flashcard_ids): array
+    public function getRandomFlashcardsByCategory(FlashcardDeckId $id, int $limit, array $exclude_flashcard_ids): array
     {
         return $this->mapper->getRandomFlashcardsByCategory($id, $limit, $exclude_flashcard_ids);
     }
@@ -51,9 +51,9 @@ class FlashcardRepository implements IFlashcardRepository
         $this->mapper->delete($id);
     }
 
-    public function getByCategory(CategoryId $category_id): array
+    public function getByDeck(FlashcardDeckId $deck_id): array
     {
-        return $this->mapper->getByCategory($category_id);
+        return $this->mapper->getByCategory($deck_id);
     }
 
     public function getLatestSessionFlashcardIds(SessionId $session_id, int $limit): array
@@ -61,13 +61,13 @@ class FlashcardRepository implements IFlashcardRepository
         return $this->session_flashcard_mapper->getLatestSessionFlashcardIds($session_id, $limit);
     }
 
-    public function replaceCategory(CategoryId $actual_category, CategoryId $new_category): bool
+    public function replaceDeck(FlashcardDeckId $actual_deck, FlashcardDeckId $new_deck): bool
     {
-        return $this->mapper->replaceCategory($actual_category, $new_category);
+        return $this->mapper->replaceDeck($actual_deck, $new_deck);
     }
 
-    public function replaceInSessions(CategoryId $actual_category, CategoryId $new_category): bool
+    public function replaceInSessions(FlashcardDeckId $actual_deck, FlashcardDeckId $new_deck): bool
     {
-        return $this->mapper->replaceInSessions($actual_category, $new_category);
+        return $this->mapper->replaceInSessions($actual_deck, $new_deck);
     }
 }

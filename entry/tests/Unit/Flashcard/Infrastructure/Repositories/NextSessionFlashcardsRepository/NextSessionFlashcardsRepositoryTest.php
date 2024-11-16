@@ -6,8 +6,8 @@ namespace Tests\Unit\Flashcard\Infrastructure\Repositories\NextSessionFlashcards
 
 use Tests\TestCase;
 use App\Models\Flashcard;
+use App\Models\FlashcardDeck;
 use App\Models\LearningSession;
-use App\Models\FlashcardCategory;
 use Flashcard\Domain\Models\Rating;
 use App\Models\LearningSessionFlashcard;
 use Flashcard\Domain\Models\NextSessionFlashcards;
@@ -29,7 +29,14 @@ class NextSessionFlashcardsRepositoryTest extends TestCase
     public function test__find_NoFlashcards_ShouldFindCorrectObject(): void
     {
         // GIVEN
-        $session = LearningSession::factory()->create();
+        $user = $this->createUser();
+        $deck = FlashcardDeck::factory()->create([
+            'user_id' => $user->id,
+        ]);
+        $session = LearningSession::factory()->create([
+            'user_id' => $user->id,
+            'flashcard_deck_id' => $deck->id,
+        ]);
 
         // WHEN
         $result = $this->repository->find($session->getId());
@@ -43,7 +50,9 @@ class NextSessionFlashcardsRepositoryTest extends TestCase
     public function test__find_HasFlashcards_ShouldFindCorrectObject(): void
     {
         // GIVEN
-        $session = LearningSession::factory()->create();
+        $session = LearningSession::factory()->create([
+            'flashcard_deck_id' => null,
+        ]);
         LearningSessionFlashcard::factory()->create([
             'learning_session_id' => $session->id,
             'rating' => null,
@@ -63,11 +72,11 @@ class NextSessionFlashcardsRepositoryTest extends TestCase
         $this->assertSame(2, $result->getCurrentSessionFlashcardsCount());
     }
 
-    public function test__find_WhenNoCategory_ShouldFindCorrectObject(): void
+    public function test__find_WhenNoDeck_ShouldFindCorrectObject(): void
     {
         // GIVEN
         $session = LearningSession::factory()->create([
-            'flashcard_category_id' => null,
+            'flashcard_deck_id' => null,
         ]);
         LearningSessionFlashcard::factory()->create([
             'learning_session_id' => $session->id,
@@ -80,15 +89,19 @@ class NextSessionFlashcardsRepositoryTest extends TestCase
         // THEN
         $this->assertSame($session->id, $result->getSessionId()->getValue());
         $this->assertSame($session->user_id, $result->getOwner()->getId()->getValue());
-        $this->assertFalse($result->hasCategory());
+        $this->assertFalse($result->hasDeck());
     }
 
-    public function test__find_MultipleCategories_ShouldFindCorrectObject(): void
+    public function test__find_MultipleDecks_ShouldFindCorrectObject(): void
     {
         // GIVEN
-        $categories = FlashcardCategory::factory(2)->create();
+        $user = $this->createUser();
+        $decks = FlashcardDeck::factory(2)->create([
+            'user_id' => $user->id,
+        ]);
         $session = LearningSession::factory()->create([
-            'flashcard_category_id' => $categories[1]->id,
+            'user_id' => $user->id,
+            'flashcard_deck_id' => $decks[1]->id,
         ]);
 
         // WHEN
@@ -96,9 +109,9 @@ class NextSessionFlashcardsRepositoryTest extends TestCase
 
         // THEN
         $this->assertSame($session->id, $result->getSessionId()->getValue());
-        $this->assertSame($categories[1]->id, $result->getCategory()->getId()->getValue());
-        $this->assertSame($categories[1]->name, $result->getCategory()->getName());
-        $this->assertSame($categories[1]->tag, $result->getCategory()->getTag());
+        $this->assertSame($decks[1]->id, $result->getDeck()->getId()->getValue());
+        $this->assertSame($decks[1]->name, $result->getDeck()->getName());
+        $this->assertSame($decks[1]->tag, $result->getDeck()->getTag());
     }
 
     public function test__save_ShouldSaveObject(): void
@@ -109,7 +122,7 @@ class NextSessionFlashcardsRepositoryTest extends TestCase
         $object = new NextSessionFlashcards(
             $session->getId(),
             $session->user->toOwner(),
-            $session->category->toDomainModel(),
+            $session->deck->toDomainModel(),
             8,
             2,
             10

@@ -24,14 +24,14 @@ class UpdateFlashcardHandler
 
         $flashcard = new Flashcard(
             $command->getId(),
-            $command->getWord(),
-            $command->getWordLang(),
-            $command->getTranslation(),
-            $command->getTranslationLang(),
-            $command->getContext(),
-            $command->getContextTranslation(),
+            $command->getFrontWord(),
+            $command->getFrontLang(),
+            $command->getBackWord(),
+            $command->getBackLang(),
+            $command->getFrontContext(),
+            $command->getBackContext(),
             $command->getOwner(),
-            $flashcard->getCategory()
+            $flashcard->getDeck()
         );
 
         $this->repository->update($flashcard);

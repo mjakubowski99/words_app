@@ -6,8 +6,8 @@ namespace Tests\Unit\Flashcard\Infrastructure\Repositories\SmTwoFlashcardReposit
 
 use App\Models\User;
 use App\Models\Flashcard;
+use App\Models\FlashcardDeck;
 use App\Models\SmTwoFlashcard;
-use App\Models\FlashcardCategory;
 use Tests\Base\FlashcardTestCase;
 use Flashcard\Domain\Models\SmTwoFlashcards;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -79,22 +79,22 @@ class SmTwoFlashcardRepositoryTest extends FlashcardTestCase
     /**
      * @test
      */
-    public function getNextFlashcardsByCategory_ShouldReturnFlashcards(): void
+    public function getNextFlashcardsByDeck_ShouldReturnFlashcards(): void
     {
         // GIVEN
         $user = User::factory()->create();
-        $category = FlashcardCategory::factory()->create();
+        $deck = FlashcardDeck::factory()->create();
 
-        $flashcard = Flashcard::factory()->create(['flashcard_category_id' => $category->id]);
+        $flashcard = Flashcard::factory()->create(['flashcard_deck_id' => $deck->id]);
         $sm_two_flashcards = [
             SmTwoFlashcard::factory()->create([
-                'flashcard_id' => Flashcard::factory()->create(['flashcard_category_id' => $category->id]),
+                'flashcard_id' => Flashcard::factory()->create(['flashcard_deck_id' => $deck->id]),
                 'user_id' => $user->id,
                 'repetition_interval' => 2,
                 'updated_at' => now()->subDays(3),
             ]),
             SmTwoFlashcard::factory()->create([
-                'flashcard_id' => Flashcard::factory()->create(['flashcard_category_id' => $category->id]),
+                'flashcard_id' => Flashcard::factory()->create(['flashcard_deck_id' => $deck->id]),
                 'user_id' => $user->id,
                 'repetition_interval' => 3,
                 'updated_at' => now()->subDays(3),
@@ -102,7 +102,7 @@ class SmTwoFlashcardRepositoryTest extends FlashcardTestCase
         ];
 
         // WHEN
-        $results = $this->repository->getNextFlashcardsByCategory($category->getId(), 5, []);
+        $results = $this->repository->getNextFlashcardsByDeck($deck->getId(), 5, []);
 
         // THEN
         $this->assertCount(3, $results);

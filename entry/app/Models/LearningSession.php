@@ -20,22 +20,14 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property        string                  $status
  * @property        string                  $device
  * @property        int                     $cards_per_session
- * @property        int                     $flashcard_category_id
+ * @property        int                     $flashcard_deck_id
  * @property        null|Carbon             $created_at
  * @property        null|Carbon             $updated_at
- * @property        FlashcardCategory       $category
+ * @property        FlashcardDeck           $deck
  * @method   static LearningSessionFactory  factory($count = null, $state = [])
  * @method   static Builder|LearningSession newModelQuery()
  * @method   static Builder|LearningSession newQuery()
  * @method   static Builder|LearningSession query()
- * @method   static Builder|LearningSession whereCardsPerSession($value)
- * @method   static Builder|LearningSession whereCreatedAt($value)
- * @method   static Builder|LearningSession whereDevice($value)
- * @method   static Builder|LearningSession whereFlashcardCategoryId($value)
- * @method   static Builder|LearningSession whereId($value)
- * @method   static Builder|LearningSession whereStatus($value)
- * @method   static Builder|LearningSession whereUpdatedAt($value)
- * @method   static Builder|LearningSession whereUserId($value)
  * @mixin \Eloquent
  */
 class LearningSession extends Model
@@ -52,9 +44,9 @@ class LearningSession extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function category(): BelongsTo
+    public function deck(): BelongsTo
     {
-        return $this->belongsTo(FlashcardCategory::class, 'flashcard_category_id');
+        return $this->belongsTo(FlashcardDeck::class, 'flashcard_deck_id');
     }
 
     public function toDomainModel(): Session
@@ -64,7 +56,7 @@ class LearningSession extends Model
             $this->user->toOwner(),
             $this->cards_per_session,
             $this->device,
-            $this->category()->first()->toDomainModel(),
+            $this->deck()->first()->toDomainModel(),
         ))->init(new SessionId($this->id));
     }
 }

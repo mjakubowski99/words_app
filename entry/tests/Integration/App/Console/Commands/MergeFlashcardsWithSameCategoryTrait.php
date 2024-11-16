@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\Integration\App\Console\Commands;
 
 use App\Models\Flashcard;
-use App\Models\FlashcardCategory;
+use App\Models\FlashcardDeck;
 use Illuminate\Support\Collection;
 
 trait MergeFlashcardsWithSameCategoryTrait
@@ -15,46 +15,46 @@ trait MergeFlashcardsWithSameCategoryTrait
         return Flashcard::factory()->create($attributes);
     }
 
-    private function createFlashcardCategory(array $attributes = []): FlashcardCategory
+    private function createFlashcardDeck(array $attributes = []): FlashcardDeck
     {
-        return FlashcardCategory::factory()->create($attributes);
+        return FlashcardDeck::factory()->create($attributes);
     }
 
-    private function generateFlashcardsForCategories(array|Collection $categories): array|Collection
+    private function generateFlashcardsForDecks(array|Collection $decks): array|Collection
     {
         $flashcards = [];
-        foreach ($categories as $category) {
-            $flashcards[] = Flashcard::factory()->create(['flashcard_category_id' => $category->id]);
+        foreach ($decks as $deck) {
+            $flashcards[] = Flashcard::factory()->create(['flashcard_deck_id' => $deck->id]);
         }
 
         return $flashcards;
     }
 
-    private function assertFlashcardsHasNewCategory(array|Collection $flashcards, FlashcardCategory $expected_category): void
+    private function assertFlashcardsHasNewDeck(array|Collection $flashcards, FlashcardDeck $expected_deck): void
     {
         foreach ($flashcards as $flashcard) {
             $this->assertDatabaseHas('flashcards', [
                 'id' => $flashcard->id,
-                'flashcard_category_id' => $expected_category->id,
+                'flashcard_deck_id' => $expected_deck->id,
             ]);
         }
     }
 
-    private function assertFlashcardsHasSameCategory(array|Collection $flashcards): void
+    private function assertFlashcardsHasSameDeck(array|Collection $flashcards): void
     {
         foreach ($flashcards as $flashcard) {
             $this->assertDatabaseHas('flashcards', [
                 'id' => $flashcard->id,
-                'flashcard_category_id' => $flashcard->flashcard_category_id,
+                'flashcard_deck_id' => $flashcard->flashcard_deck_id,
             ]);
         }
     }
 
-    private function assertFlashcardsCategoriesDeleted(array|Collection $categories): void
+    private function assertFlashcardsDecksDeleted(array|Collection $decks): void
     {
-        foreach ($categories as $category) {
-            $this->assertDatabaseMissing('flashcard_categories', [
-                'id' => $category->id,
+        foreach ($decks as $deck) {
+            $this->assertDatabaseMissing('flashcard_decks', [
+                'id' => $deck->id,
             ]);
         }
     }
