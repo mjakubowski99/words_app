@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Tests\Unit\Flashcard\Infrastructure\Repositories\SessionRepository;
 
 use App\Models\User;
+use App\Models\FlashcardDeck;
 use Shared\Enum\SessionStatus;
 use App\Models\LearningSession;
-use App\Models\FlashcardCategory;
 use Tests\Base\FlashcardTestCase;
 use Flashcard\Domain\Models\Session;
 use Flashcard\Domain\ValueObjects\SessionId;
@@ -33,16 +33,16 @@ class SessionRepositoryTest extends FlashcardTestCase
     {
         // GIVEN
         $user = User::factory()->create();
-        $category = FlashcardCategory::factory()->create([
+        $deck = FlashcardDeck::factory()->create([
             'user_id' => $user->id,
         ]);
-        $domain_category = $this->domainCategory($category);
+        $domain_deck = $this->domainDeck($deck);
         $session = new Session(
             SessionStatus::STARTED,
             $user->toOwner(),
             10,
             'Mozilla/Firefox',
-            $domain_category,
+            $domain_deck,
         );
 
         $session_id = $this->repository->create($session);
@@ -59,7 +59,9 @@ class SessionRepositoryTest extends FlashcardTestCase
     public function find_ShouldFindSession(): void
     {
         // GIVEN
-        $session = LearningSession::factory()->create();
+        $session = LearningSession::factory()->create([
+            'flashcard_deck_id' => null,
+        ]);
 
         // WHEN
         $result = $this->repository->find(new SessionId($session->id));

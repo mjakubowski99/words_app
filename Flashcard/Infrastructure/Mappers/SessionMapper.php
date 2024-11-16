@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace Flashcard\Infrastructure\Mappers;
 
 use Shared\Enum\SessionStatus;
+use Flashcard\Domain\Models\Deck;
 use Flashcard\Domain\Models\Owner;
 use Illuminate\Support\Facades\DB;
 use Shared\Enum\FlashcardOwnerType;
 use Flashcard\Domain\Models\Session;
-use Flashcard\Domain\Models\Category;
 use Flashcard\Domain\ValueObjects\OwnerId;
 use Flashcard\Domain\ValueObjects\SessionId;
-use Flashcard\Domain\ValueObjects\CategoryId;
+use Flashcard\Domain\ValueObjects\FlashcardDeckId;
 use Flashcard\Domain\Exceptions\ModelNotFoundException;
 
 class SessionMapper
@@ -39,7 +39,7 @@ class SessionMapper
             ->insertGetId([
                 'user_id' => $session->getOwner()->getId()->getValue(),
                 'status' => $session->getStatus()->value,
-                'flashcard_category_id' => $session->hasFlashcardCategory() ? $session->getFlashcardCategory()->getId() : null,
+                'flashcard_deck_id' => $session->hasFlashcardDeck() ? $session->getDeck()->getId() : null,
                 'cards_per_session' => $session->getCardsPerSession(),
                 'device' => $session->getDevice(),
                 'created_at' => $now,
@@ -65,7 +65,7 @@ class SessionMapper
             ->update([
                 'user_id' => $session->getOwner()->getId()->getValue(),
                 'status' => $session->getStatus()->value,
-                'flashcard_category_id' => $session->hasFlashcardCategory() ? $session->getFlashcardCategory()->getId() : null,
+                'flashcard_deck_id' => $session->hasFlashcardDeck() ? $session->getDeck()->getId() : null,
                 'cards_per_session' => $session->getCardsPerSession(),
                 'device' => $session->getDevice(),
                 'updated_at' => $now,
@@ -76,17 +76,17 @@ class SessionMapper
     {
         $result = $this->db::table('learning_sessions')
             ->where('learning_sessions.id', $id->getValue())
-            ->leftJoin('flashcard_categories', 'flashcard_categories.id', '=', 'learning_sessions.flashcard_category_id')
+            ->leftJoin('flashcard_decks', 'flashcard_decks.id', '=', 'learning_sessions.flashcard_deck_id')
             ->select(
                 'learning_sessions.id',
                 'learning_sessions.user_id',
                 'learning_sessions.status',
                 'learning_sessions.cards_per_session',
                 'learning_sessions.device',
-                'flashcard_categories.id as category_id',
-                'flashcard_categories.user_id as category_user_id',
-                'flashcard_categories.tag',
-                'flashcard_categories.name',
+                'flashcard_decks.id as deck_id',
+                'flashcard_decks.user_id as deck_user_id',
+                'flashcard_decks.tag as deck_tag',
+                'flashcard_decks.name as deck_name',
             )
             ->first();
 
@@ -99,18 +99,18 @@ class SessionMapper
 
     public function map(object $data): Session
     {
-        $category = $data->category_id === null ? null : (new Category(
-            new Owner(new OwnerId($data->user_id), FlashcardOwnerType::USER),
-            $data->tag,
-            $data->name,
-        ))->init(new CategoryId($data->category_id));
+        $deck = $data->deck_id === null ? null : (new Deck(
+            new Owner(new OwnerId($data->deck_user_id), FlashcardOwnerType::USER),
+            $data->deck_tag,
+            $data->deck_name,
+        ))->init(new FlashcardDeckId($data->deck_id));
 
         return (new Session(
             SessionStatus::from($data->status),
             new Owner(new OwnerId($data->user_id), FlashcardOwnerType::USER),
             $data->cards_per_session,
             $data->device,
-            $category,
+            $deck,
         ))->init(new SessionId($data->id));
     }
 }

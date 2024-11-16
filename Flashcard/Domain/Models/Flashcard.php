@@ -11,14 +11,14 @@ final class Flashcard
 {
     public function __construct(
         private FlashcardId $id,
-        private string $word,
-        private Language $word_lang,
-        private string $translation,
-        private Language $translation_lang,
-        private string $context,
-        private string $context_translation,
+        private string $front_word,
+        private Language $front_lang,
+        private string $back_word,
+        private Language $back_lang,
+        private string $front_context,
+        private string $back_context,
         private ?Owner $owner,
-        private ?Category $category,
+        private ?Deck $deck,
     ) {}
 
     public function getId(): FlashcardId
@@ -26,34 +26,34 @@ final class Flashcard
         return $this->id;
     }
 
-    public function getWord(): string
+    public function getFrontWord(): string
     {
-        return $this->word;
+        return $this->front_word;
     }
 
-    public function getWordLang(): Language
+    public function getFrontLang(): Language
     {
-        return $this->word_lang;
+        return $this->front_lang;
     }
 
-    public function getTranslation(): string
+    public function getBackWord(): string
     {
-        return $this->translation;
+        return $this->back_word;
     }
 
-    public function getTranslationLang(): Language
+    public function getBackLang(): Language
     {
-        return $this->translation_lang;
+        return $this->back_lang;
     }
 
-    public function getContext(): string
+    public function getFrontContext(): string
     {
-        return $this->context;
+        return $this->front_context;
     }
 
-    public function getContextTranslation(): string
+    public function getBackContext(): string
     {
-        return $this->context_translation;
+        return $this->back_context;
     }
 
     public function hasOwner(): bool
@@ -66,13 +66,13 @@ final class Flashcard
         return $this->owner;
     }
 
-    public function hasCategory(): bool
+    public function hasDeck(): bool
     {
-        return $this->category !== null;
+        return $this->deck !== null;
     }
 
-    public function getCategory(): Category
+    public function getDeck(): Deck
     {
-        return $this->category;
+        return $this->deck;
     }
 }

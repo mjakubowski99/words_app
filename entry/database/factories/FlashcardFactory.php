@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Database\Factories;
 
 use App\Models\User;
-use App\Models\FlashcardCategory;
+use App\Models\FlashcardDeck;
 use Shared\Utils\ValueObjects\Language;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -17,14 +17,14 @@ class FlashcardFactory extends Factory
     public function definition(): array
     {
         return [
-            'flashcard_category_id' => FlashcardCategory::factory()->create(),
+            'flashcard_deck_id' => FlashcardDeck::factory()->create(),
             'user_id' => fn () => User::factory()->create(),
-            'word' => $this->faker->name,
-            'word_lang' => Language::PL,
-            'translation' => $this->faker->name,
-            'translation_lang' => Language::EN,
-            'context' => 'Context',
-            'context_translation' => 'Context translation',
+            'front_word' => $this->faker->name,
+            'front_lang' => Language::PL,
+            'back_word' => $this->faker->name,
+            'back_lang' => Language::EN,
+            'front_context' => 'Context',
+            'back_context' => 'Context translation',
         ];
     }
 }

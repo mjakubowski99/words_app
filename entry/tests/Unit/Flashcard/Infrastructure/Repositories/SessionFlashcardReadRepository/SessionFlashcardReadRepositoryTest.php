@@ -43,11 +43,11 @@ class SessionFlashcardReadRepositoryTest extends TestCase
         // THEN
         $this->assertCount(1, $result->getSessionFlashcards());
         $this->assertSame($expected->id, $session_flashcards[0]->getId()->getValue());
-        $this->assertSame($expected->flashcard->translation, $session_flashcards[0]->getTranslation());
-        $this->assertSame($expected->flashcard->word_lang, $session_flashcards[0]->getWordLang()->getValue());
-        $this->assertSame($expected->flashcard->translation_lang, $session_flashcards[0]->getTranslationLang()->getValue());
-        $this->assertSame($expected->flashcard->translation, $session_flashcards[0]->getTranslation());
-        $this->assertSame($expected->flashcard->context, $session_flashcards[0]->getContext());
-        $this->assertSame($expected->flashcard->context_translation, $session_flashcards[0]->getContextTranslation());
+        $this->assertSame($expected->flashcard->front_word, $session_flashcards[0]->getFrontWord());
+        $this->assertSame($expected->flashcard->front_lang, $session_flashcards[0]->getFrontLang()->getValue());
+        $this->assertSame($expected->flashcard->back_lang, $session_flashcards[0]->getBackLang()->getValue());
+        $this->assertSame($expected->flashcard->back_word, $session_flashcards[0]->getBackWord());
+        $this->assertSame($expected->flashcard->front_context, $session_flashcards[0]->getFrontContext());
+        $this->assertSame($expected->flashcard->back_context, $session_flashcards[0]->getBackContext());
     }
 }

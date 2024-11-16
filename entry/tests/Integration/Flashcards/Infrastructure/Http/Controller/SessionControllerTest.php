@@ -7,8 +7,8 @@ namespace Tests\Integration\Flashcards\Infrastructure\Http\Controller;
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\Flashcard;
+use App\Models\FlashcardDeck;
 use App\Models\LearningSession;
-use App\Models\FlashcardCategory;
 use Flashcard\Domain\Models\Rating;
 use App\Models\LearningSessionFlashcard;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -24,11 +24,11 @@ class SessionControllerTest extends TestCase
     {
         // GIVEN
         $user = User::factory()->create();
-        $category = FlashcardCategory::factory()->create([
+        $deck = FlashcardDeck::factory()->create([
             'user_id' => $user->id,
         ]);
         $flashcards = Flashcard::factory(3)->create([
-            'flashcard_category_id' => $category->id,
+            'flashcard_deck_id' => $deck->id,
         ]);
 
         // WHEN
@@ -36,7 +36,7 @@ class SessionControllerTest extends TestCase
             ->actingAs($user, 'sanctum')
             ->postJson(route('flashcards.session.store'), [
                 'cards_per_session' => 10,
-                'category_id' => $category->id,
+                'category_id' => $deck->id,
                 'flashcards_limit' => 5,
             ]);
 
@@ -51,7 +51,9 @@ class SessionControllerTest extends TestCase
     {
         // GIVEN
         $user = User::factory()->create();
-        $session = LearningSession::factory()->create();
+        $session = LearningSession::factory()->create([
+            'flashcard_deck_id' => null,
+        ]);
         $flashcards = LearningSessionFlashcard::factory(4)->create([
             'learning_session_id' => $session->id,
             'rating' => null,

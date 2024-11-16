@@ -6,28 +6,28 @@ namespace Flashcard\Application\Command;
 
 use Flashcard\Domain\Models\Owner;
 use Shared\Exceptions\ForbiddenException;
-use Flashcard\Domain\ValueObjects\CategoryId;
-use Flashcard\Application\Services\CategoryResolver;
+use Flashcard\Application\Services\DeckResolver;
+use Flashcard\Domain\ValueObjects\FlashcardDeckId;
 use Flashcard\Application\Services\FlashcardGeneratorService;
 
 class RegenerateAdditionalFlashcardsHandler
 {
     public function __construct(
-        private CategoryResolver $category_resolver,
+        private DeckResolver $deck_resolver,
         private FlashcardGeneratorService $flashcard_generator_service,
     ) {}
 
-    public function handle(Owner $owner, CategoryId $id): void
+    public function handle(Owner $owner, FlashcardDeckId $id): void
     {
-        $resolved_category = $this->category_resolver->resolveById($id);
+        $resolved_deck = $this->deck_resolver->resolveById($id);
 
-        if (!$resolved_category->getCategory()->getOwner()->equals($owner)) {
-            throw new ForbiddenException('You must be category owner');
+        if (!$resolved_deck->getDeck()->getOwner()->equals($owner)) {
+            throw new ForbiddenException('You must be deck owner');
         }
 
         $this->flashcard_generator_service->generate(
-            $resolved_category,
-            $resolved_category->getCategory()->getName()
+            $resolved_deck,
+            $resolved_deck->getDeck()->getName()
         );
     }
 }

@@ -6,7 +6,7 @@ namespace Flashcard\Infrastructure\Http\Request;
 
 use Shared\Http\Request\Request;
 use Flashcard\Domain\Models\Owner;
-use Flashcard\Domain\ValueObjects\CategoryId;
+use Flashcard\Domain\ValueObjects\FlashcardDeckId;
 
 class MergeFlashcardsRequest extends Request
 {
@@ -27,13 +27,13 @@ class MergeFlashcardsRequest extends Request
         return $this->input('new_name');
     }
 
-    public function getFromCategoryId(): CategoryId
+    public function getFromDeckId(): FlashcardDeckId
     {
-        return new CategoryId((int) $this->route('from_category_id'));
+        return new FlashcardDeckId((int) $this->route('from_category_id'));
     }
 
-    public function getToCategoryId(): CategoryId
+    public function getToDeckId(): FlashcardDeckId
     {
-        return new CategoryId((int) $this->route('to_category_id'));
+        return new FlashcardDeckId((int) $this->route('to_category_id'));
     }
 }

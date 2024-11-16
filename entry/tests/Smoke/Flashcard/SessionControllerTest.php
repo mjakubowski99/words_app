@@ -7,8 +7,8 @@ namespace Tests\Smoke\Flashcard;
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\Flashcard;
+use App\Models\FlashcardDeck;
 use App\Models\LearningSession;
-use App\Models\FlashcardCategory;
 use Flashcard\Domain\Models\Rating;
 use App\Models\LearningSessionFlashcard;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -21,12 +21,12 @@ class SessionControllerTest extends TestCase
     {
         // GIVEN
         $user = User::factory()->create();
-        $category = FlashcardCategory::factory()->create([
+        $deck = FlashcardDeck::factory()->create([
             'user_id' => $user->id,
         ]);
         $flashcard = Flashcard::factory()->create([
             'user_id' => $user->id,
-            'flashcard_category_id' => $category->id,
+            'flashcard_deck_id' => $deck->id,
         ]);
 
         // WHEN
@@ -34,7 +34,7 @@ class SessionControllerTest extends TestCase
             ->actingAs($user, 'sanctum')
             ->json('POST', route('flashcards.session.store'), [
                 'cards_per_session' => 10,
-                'category_id' => $flashcard->flashcard_category_id,
+                'category_id' => $flashcard->flashcard_deck_id,
             ]);
 
         // THEN
@@ -106,7 +106,9 @@ class SessionControllerTest extends TestCase
     {
         // GIVEN
         $user = User::factory()->create();
-        $learning_session = LearningSession::factory()->create();
+        $learning_session = LearningSession::factory()->create([
+            'flashcard_deck_id' => null,
+        ]);
         $session_flashcard = LearningSessionFlashcard::factory()->create([
             'learning_session_id' => $learning_session->id,
             'rating' => null,
@@ -165,7 +167,7 @@ class SessionControllerTest extends TestCase
         // GIVEN
         $user = User::factory()->create();
         $learning_session = LearningSession::factory()->create([
-            'flashcard_category_id' => null,
+            'flashcard_deck_id' => null,
         ]);
         $session_flashcard = LearningSessionFlashcard::factory()->create([
             'learning_session_id' => $learning_session->id,

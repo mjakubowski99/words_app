@@ -9,7 +9,7 @@ use Flashcard\Domain\Models\Owner;
 use Shared\Enum\FlashcardOwnerType;
 use Shared\Enum\LearningSessionType;
 use Flashcard\Domain\ValueObjects\OwnerId;
-use Flashcard\Domain\ValueObjects\CategoryId;
+use Flashcard\Domain\ValueObjects\FlashcardDeckId;
 
 final readonly class CreateSession
 {
@@ -19,7 +19,7 @@ final readonly class CreateSession
         IUser $user,
         private int $cards_per_session,
         private string $device,
-        private ?CategoryId $category_id,
+        private ?FlashcardDeckId $deck_id,
         private LearningSessionType $learning_session_type,
     ) {
         $this->owner = new Owner(
@@ -43,14 +43,14 @@ final readonly class CreateSession
         return $this->device;
     }
 
-    public function hasCategoryId(): bool
+    public function hasDeckId(): bool
     {
-        return $this->category_id !== null;
+        return $this->deck_id !== null;
     }
 
-    public function getCategoryId(): CategoryId
+    public function getDeckId(): FlashcardDeckId
     {
-        return $this->category_id;
+        return $this->deck_id;
     }
 
     public function getLearningSessionType(): LearningSessionType

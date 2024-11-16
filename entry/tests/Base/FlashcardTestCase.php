@@ -7,15 +7,15 @@ namespace Tests\Base;
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\Flashcard;
+use App\Models\FlashcardDeck;
 use App\Models\SmTwoFlashcard;
 use App\Models\LearningSession;
-use App\Models\FlashcardCategory;
-use Flashcard\Domain\Models\Category;
+use Flashcard\Domain\Models\Deck;
 use Shared\Utils\ValueObjects\UserId;
 use App\Models\LearningSessionFlashcard;
 use Flashcard\Domain\ValueObjects\SessionId;
-use Flashcard\Domain\ValueObjects\CategoryId;
 use Flashcard\Domain\ValueObjects\FlashcardId;
+use Flashcard\Domain\ValueObjects\FlashcardDeckId;
 use Flashcard\Domain\ValueObjects\SessionFlashcardId;
 
 abstract class FlashcardTestCase extends TestCase
@@ -25,9 +25,9 @@ abstract class FlashcardTestCase extends TestCase
         return Flashcard::factory()->create($attributes);
     }
 
-    public function createFlashcardCategory(array $attributes = []): FlashcardCategory
+    public function createFlashcardDeck(array $attributes = []): FlashcardDeck
     {
-        return FlashcardCategory::factory()->create($attributes);
+        return FlashcardDeck::factory()->create($attributes);
     }
 
     public function createLearningSession(array $attributes = []): LearningSession
@@ -60,17 +60,17 @@ abstract class FlashcardTestCase extends TestCase
         return new SessionId($session->id);
     }
 
-    public function createCategoryId(FlashcardCategory $category): CategoryId
+    public function createDeckId(FlashcardDeck $deck): FlashcardDeckId
     {
-        return new CategoryId($category->id);
+        return new FlashcardDeckId($deck->id);
     }
 
-    public function domainCategory(FlashcardCategory $category): Category
+    public function domainDeck(FlashcardDeck $deck): Deck
     {
-        return (new Category(
-            $category->user->toOwner(),
-            $category->tag,
-            $category->name,
-        ))->init(new CategoryId($category->id));
+        return (new Deck(
+            $deck->user->toOwner(),
+            $deck->tag,
+            $deck->name,
+        ))->init(new FlashcardDeckId($deck->id));
     }
 }

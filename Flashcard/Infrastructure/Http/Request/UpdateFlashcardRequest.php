@@ -8,9 +8,9 @@ use OpenApi\Attributes as OAT;
 use Shared\Http\Request\Request;
 use Flashcard\Domain\Models\Owner;
 use Shared\Utils\ValueObjects\Language;
-use Flashcard\Domain\ValueObjects\CategoryId;
 use Flashcard\Domain\ValueObjects\FlashcardId;
 use Flashcard\Application\Command\UpdateFlashcard;
+use Flashcard\Domain\ValueObjects\FlashcardDeckId;
 
 #[OAT\Schema(
     schema: 'Requests\Flashcard\UpdateFlashcardRequest',
@@ -60,7 +60,7 @@ class UpdateFlashcardRequest extends Request
         return new UpdateFlashcard(
             new FlashcardId((int) $this->route('flashcard_id')),
             Owner::fromUser($user->getId()),
-            new CategoryId($this->input('flashcard_category_id')),
+            new FlashcardDeckId($this->input('flashcard_category_id')),
             Language::pl(),
             $this->input('word'),
             $this->input('context'),

@@ -10,7 +10,7 @@ class GenerateFlashcards
 {
     public function __construct(
         private readonly Owner $owner,
-        private readonly string $category_name
+        private readonly string $deck_name
     ) {}
 
     public function getOwner(): Owner
@@ -18,8 +18,8 @@ class GenerateFlashcards
         return $this->owner;
     }
 
-    public function getCategoryName(): string
+    public function getDeckName(): string
     {
-        return $this->category_name;
+        return $this->deck_name;
     }
 }

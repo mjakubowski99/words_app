@@ -7,8 +7,8 @@ namespace Flashcard\Application\Repository;
 use Flashcard\Domain\Models\Owner;
 use Flashcard\Domain\Models\Flashcard;
 use Flashcard\Domain\ValueObjects\SessionId;
-use Flashcard\Domain\ValueObjects\CategoryId;
 use Flashcard\Domain\ValueObjects\FlashcardId;
+use Flashcard\Domain\ValueObjects\FlashcardDeckId;
 
 interface IFlashcardRepository
 {
@@ -24,15 +24,15 @@ interface IFlashcardRepository
     /** @return Flashcard[] */
     public function getRandomFlashcards(Owner $owner, int $limit, array $exclude_flashcard_ids): array;
 
-    public function getRandomFlashcardsByCategory(CategoryId $id, int $limit, array $exclude_flashcard_ids): array;
+    public function getRandomFlashcardsByCategory(FlashcardDeckId $id, int $limit, array $exclude_flashcard_ids): array;
 
     /** @return Flashcard[] */
-    public function getByCategory(CategoryId $category_id): array;
+    public function getByDeck(FlashcardDeckId $deck_id): array;
 
     /** @return FlashcardId[] */
     public function getLatestSessionFlashcardIds(SessionId $session_id, int $limit): array;
 
-    public function replaceCategory(CategoryId $actual_category, CategoryId $new_category): bool;
+    public function replaceDeck(FlashcardDeckId $actual_deck, FlashcardDeckId $new_deck): bool;
 
-    public function replaceInSessions(CategoryId $actual_category, CategoryId $new_category): bool;
+    public function replaceInSessions(FlashcardDeckId $actual_deck, FlashcardDeckId $new_deck): bool;
 }

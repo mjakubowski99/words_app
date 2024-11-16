@@ -6,7 +6,7 @@ namespace Tests\Integration\Flashcards\Application\Command;
 
 use Tests\TestCase;
 use App\Models\User;
-use App\Models\FlashcardCategory;
+use App\Models\FlashcardDeck;
 use Illuminate\Support\Facades\Http;
 use Integrations\Gemini\GeminiApiClient;
 use Flashcard\Application\Command\GenerateFlashcards;
@@ -75,25 +75,25 @@ class GenerateFlashcardsHandlerTest extends TestCase
         Http::fake([
             '*' => Http::response(json_decode($this->response, true)),
         ]);
-        $category_name = 'Category';
+        $deck_name = 'Category';
         $user = User::factory()->create();
         $command = new GenerateFlashcards(
             $user->toOwner(),
-            $category_name
+            $deck_name
         );
 
         // WHEN
         $result = $this->handler->handle($command);
 
         // THEN
-        $this->assertDatabaseHas('flashcard_categories', [
-            'name' => $category_name,
+        $this->assertDatabaseHas('flashcard_decks', [
+            'name' => $deck_name,
             'user_id' => $command->getOwner()->getId(),
         ]);
         $this->assertDatabaseHas('flashcards', [
-            'flashcard_category_id' => $result->getCategoryId(),
+            'flashcard_deck_id' => $result->getDeckId(),
         ]);
-        $this->assertFalse($result->getMergedToExistingCategory());
+        $this->assertFalse($result->getMergedToExistingDeck());
     }
 
     public function test__WhenCategoryAlreadyExists_ShouldGenerateFlashcardsAndAssignThemToExistingCategory(): void
@@ -102,12 +102,12 @@ class GenerateFlashcardsHandlerTest extends TestCase
         Http::fake([
             '*' => Http::response(json_decode($this->response, true)),
         ]);
-        $category_name = 'Category';
+        $deck_name = 'Category';
         $user = User::factory()->create();
-        $category = FlashcardCategory::factory()->create(['name' => $category_name, 'user_id' => $user->id]);
+        FlashcardDeck::factory()->create(['name' => $deck_name, 'user_id' => $user->id]);
         $command = new GenerateFlashcards(
             $user->toOwner(),
-            $category_name
+            $deck_name
         );
 
         // WHEN
@@ -115,9 +115,9 @@ class GenerateFlashcardsHandlerTest extends TestCase
 
         // THEN
         $this->assertDatabaseHas('flashcards', [
-            'flashcard_category_id' => $result->getCategoryId(),
+            'flashcard_deck_id' => $result->getDeckId(),
         ]);
-        $this->assertTrue($result->getMergedToExistingCategory());
+        $this->assertTrue($result->getMergedToExistingDeck());
     }
 
     public function test__WhenCategoryAlreadyExistsAndApiFail_ShouldNotRemoveCategory(): void
@@ -126,12 +126,12 @@ class GenerateFlashcardsHandlerTest extends TestCase
         Http::fake([
             '*' => Http::response(['message' => 'Error'], 400),
         ]);
-        $category_name = 'Category';
+        $deck_name = 'Category';
         $user = User::factory()->create();
-        $category = FlashcardCategory::factory()->create(['name' => $category_name, 'user_id' => $user->id]);
+        $deck = FlashcardDeck::factory()->create(['name' => $deck_name, 'user_id' => $user->id]);
         $command = new GenerateFlashcards(
             $user->toOwner(),
-            $category_name
+            $deck_name
         );
 
         $this->expectException(AiResponseFailedException::class);
@@ -140,8 +140,8 @@ class GenerateFlashcardsHandlerTest extends TestCase
         $this->handler->handle($command);
 
         // THEN
-        $this->assertDatabaseHas('flashcard_categories', [
-            'id' => $category->id,
+        $this->assertDatabaseHas('flashcard_decks', [
+            'id' => $deck->id,
         ]);
     }
 
@@ -151,11 +151,11 @@ class GenerateFlashcardsHandlerTest extends TestCase
         Http::fake([
             '*' => Http::response(['message' => 'Error'], 400),
         ]);
-        $category_name = 'Category';
+        $deck_name = 'Category';
         $user = User::factory()->create();
         $command = new GenerateFlashcards(
             $user->toOwner(),
-            $category_name
+            $deck_name
         );
 
         $this->expectException(AiResponseFailedException::class);
@@ -164,9 +164,9 @@ class GenerateFlashcardsHandlerTest extends TestCase
         $this->handler->handle($command);
 
         // THEN
-        $this->assertDatabaseMissing('flashcard_categories', [
+        $this->assertDatabaseMissing('flashcard_decks', [
             'user_id' => $user->id,
-            'name' => $category_name,
+            'name' => $deck_name,
         ]);
     }
 }

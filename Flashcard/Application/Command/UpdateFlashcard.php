@@ -6,31 +6,31 @@ namespace Flashcard\Application\Command;
 
 use Flashcard\Domain\Models\Owner;
 use Shared\Utils\ValueObjects\Language;
-use Flashcard\Domain\ValueObjects\CategoryId;
 use Flashcard\Domain\ValueObjects\FlashcardId;
+use Flashcard\Domain\ValueObjects\FlashcardDeckId;
 
 class UpdateFlashcard extends CreateFlashcard
 {
     public function __construct(
         private readonly FlashcardId $id,
         Owner $owner,
-        CategoryId $category_id,
-        Language $word_lang,
-        string $word,
-        string $context,
-        Language $translation_lang,
-        string $translation,
-        string $context_translation,
+        FlashcardDeckId $deck_id,
+        Language $front_lang,
+        string $front_word,
+        string $front_context,
+        Language $back_lang,
+        string $back_word,
+        string $back_context,
     ) {
         parent::__construct(
             $owner,
-            $category_id,
-            $word_lang,
-            $word,
-            $context,
-            $translation_lang,
-            $translation,
-            $context_translation
+            $deck_id,
+            $front_lang,
+            $front_word,
+            $front_context,
+            $back_lang,
+            $back_word,
+            $back_context
         );
     }
 

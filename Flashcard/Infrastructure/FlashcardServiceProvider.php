@@ -11,22 +11,22 @@ use Flashcard\Application\Services\IRepetitionAlgorithm;
 use Flashcard\Application\Repository\IFlashcardRepository;
 use Flashcard\Application\Repository\ISessionReadRepository;
 use Flashcard\Infrastructure\Repositories\SessionRepository;
+use Flashcard\Application\Repository\IFlashcardDeckRepository;
 use Flashcard\Infrastructure\Repositories\FlashcardRepository;
 use Flashcard\Application\Repository\ISmTwoFlashcardRepository;
 use Flashcard\Application\Services\AiGenerators\GeminiGenerator;
 use Flashcard\Application\Services\SmTwo\SmTwoFlashcardSelector;
 use Flashcard\Infrastructure\Repositories\SessionReadRepository;
-use Flashcard\Application\Repository\IFlashcardCategoryRepository;
+use Flashcard\Application\Repository\IFlashcardDeckReadRepository;
 use Flashcard\Application\Services\SmTwo\SmTwoRepetitionAlgorithm;
+use Flashcard\Infrastructure\Repositories\FlashcardDeckRepository;
 use Flashcard\Infrastructure\Repositories\SmTwoFlashcardRepository;
 use Flashcard\Application\Services\AiGenerators\IFlashcardGenerator;
 use Flashcard\Application\Repository\ISessionFlashcardReadRepository;
-use Flashcard\Application\Repository\IFlashcardCategoryReadRepository;
 use Flashcard\Application\Repository\INextSessionFlashcardsRepository;
-use Flashcard\Infrastructure\Repositories\FlashcardCategoryRepository;
+use Flashcard\Infrastructure\Repositories\FlashcardDeckReadRepository;
 use Flashcard\Infrastructure\Repositories\SessionFlashcardReadRepository;
 use Flashcard\Application\Repository\IRateableSessionFlashcardsRepository;
-use Flashcard\Infrastructure\Repositories\FlashcardCategoryReadRepository;
 use Flashcard\Infrastructure\Repositories\NextSessionFlashcardsRepository;
 use Flashcard\Infrastructure\Repositories\RateableSessionFlashcardsRepository;
 
@@ -39,13 +39,13 @@ class FlashcardServiceProvider extends ServiceProvider
         $this->app->bind(IRateableSessionFlashcardsRepository::class, RateableSessionFlashcardsRepository::class);
         $this->app->bind(INextSessionFlashcardsRepository::class, NextSessionFlashcardsRepository::class);
         $this->app->bind(ISessionFlashcardReadRepository::class, SessionFlashcardReadRepository::class);
-        $this->app->bind(IFlashcardCategoryRepository::class, FlashcardCategoryRepository::class);
-        $this->app->bind(IFlashcardCategoryRepository::class, FlashcardCategoryRepository::class);
+        $this->app->bind(IFlashcardDeckRepository::class, FlashcardDeckRepository::class);
+        $this->app->bind(IFlashcardDeckRepository::class, FlashcardDeckRepository::class);
         $this->app->bind(IRepetitionAlgorithm::class, SmTwoRepetitionAlgorithm::class);
         $this->app->bind(IFlashcardSelector::class, SmTwoFlashcardSelector::class);
         $this->app->bind(ISmTwoFlashcardRepository::class, SmTwoFlashcardRepository::class);
         $this->app->bind(IFlashcardRepository::class, FlashcardRepository::class);
         $this->app->bind(IFlashcardGenerator::class, GeminiGenerator::class);
-        $this->app->bind(IFlashcardCategoryReadRepository::class, FlashcardCategoryReadRepository::class);
+        $this->app->bind(IFlashcardDeckReadRepository::class, FlashcardDeckReadRepository::class);
     }
 }

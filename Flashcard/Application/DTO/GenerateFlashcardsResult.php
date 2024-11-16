@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\DTO;
 
-use Flashcard\Domain\ValueObjects\CategoryId;
+use Flashcard\Domain\ValueObjects\FlashcardDeckId;
 
 class GenerateFlashcardsResult
 {
     public function __construct(
-        private readonly CategoryId $id,
+        private readonly FlashcardDeckId $id,
         private int $generated_count,
-        private readonly bool $merged_to_existing_category
+        private readonly bool $merged_to_existing_deck
     ) {}
 
-    public function getCategoryId(): CategoryId
+    public function getDeckId(): FlashcardDeckId
     {
         return $this->id;
     }
@@ -24,8 +24,8 @@ class GenerateFlashcardsResult
         return $this->generated_count;
     }
 
-    public function getMergedToExistingCategory(): bool
+    public function getMergedToExistingDeck(): bool
     {
-        return $this->merged_to_existing_category;
+        return $this->merged_to_existing_deck;
     }
 }

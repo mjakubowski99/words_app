@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Tests\Unit\Flashcard\Domain\Models\NextSessionFlashcards;
 
 use Tests\TestCase;
+use Flashcard\Domain\Models\Deck;
 use Flashcard\Domain\Models\Owner;
 use Shared\Enum\FlashcardOwnerType;
 use Shared\Utils\ValueObjects\Uuid;
-use Flashcard\Domain\Models\Category;
 use Flashcard\Domain\Models\Flashcard;
 use Shared\Utils\ValueObjects\Language;
 use Flashcard\Domain\ValueObjects\OwnerId;
@@ -82,9 +82,9 @@ class NextSessionFlashcardsTest extends TestCase
         $model->addNext($flashcard);
     }
 
-    private function makeCategory(Owner $owner): Category
+    private function makeCategory(Owner $owner): Deck
     {
-        return new Category($owner, 'tag', 'name');
+        return new Deck($owner, 'tag', 'name');
     }
 
     private function makeOwner(): Owner

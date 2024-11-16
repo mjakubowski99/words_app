@@ -11,12 +11,12 @@ class SessionFlashcardRead
 {
     public function __construct(
         private readonly SessionFlashcardId $id,
-        private readonly string $word,
-        private readonly Language $word_lang,
-        private readonly string $translation,
-        private readonly Language $translation_lang,
-        private readonly string $context,
-        private readonly string $context_translation,
+        private readonly string $front_word,
+        private readonly Language $front_lang,
+        private readonly string $back_word,
+        private readonly Language $back_lang,
+        private readonly string $front_context,
+        private readonly string $back_context,
     ) {}
 
     public function getId(): SessionFlashcardId
@@ -24,33 +24,33 @@ class SessionFlashcardRead
         return $this->id;
     }
 
-    public function getWord(): string
+    public function getFrontWord(): string
     {
-        return $this->word;
+        return $this->front_word;
     }
 
-    public function getWordLang(): Language
+    public function getFrontLang(): Language
     {
-        return $this->word_lang;
+        return $this->front_lang;
     }
 
-    public function getTranslation(): string
+    public function getBackWord(): string
     {
-        return $this->translation;
+        return $this->back_word;
     }
 
-    public function getTranslationLang(): Language
+    public function getBackLang(): Language
     {
-        return $this->translation_lang;
+        return $this->back_lang;
     }
 
-    public function getContext(): string
+    public function getFrontContext(): string
     {
-        return $this->context;
+        return $this->front_context;
     }
 
-    public function getContextTranslation(): string
+    public function getBackContext(): string
     {
-        return $this->context_translation;
+        return $this->back_context;
     }
 }

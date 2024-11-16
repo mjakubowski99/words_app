@@ -17,7 +17,7 @@ class Session
         private readonly Owner $owner,
         private readonly int $cards_per_session,
         private readonly string $device,
-        private readonly ?Category $flashcard_category,
+        private readonly ?Deck $deck,
     ) {
         $this->validate();
     }
@@ -26,14 +26,14 @@ class Session
         Owner $owner,
         int $cards_per_session,
         string $device,
-        ?Category $category
+        ?Deck $deck
     ): self {
         return new Session(
             SessionStatus::STARTED,
             $owner,
             $cards_per_session,
             $device,
-            $category
+            $deck
         );
     }
 
@@ -49,14 +49,14 @@ class Session
         return $this->id;
     }
 
-    public function hasFlashcardCategory(): bool
+    public function hasFlashcardDeck(): bool
     {
-        return $this->flashcard_category !== null;
+        return $this->deck !== null;
     }
 
-    public function getFlashcardCategory(): Category
+    public function getDeck(): Deck
     {
-        return $this->flashcard_category;
+        return $this->deck;
     }
 
     public function getStatus(): SessionStatus
@@ -86,14 +86,14 @@ class Session
 
     private function validate(): void
     {
-        if (!$this->hasFlashcardCategory() || !$this->flashcard_category->hasOwner()) {
+        if (!$this->hasFlashcardDeck() || !$this->deck->hasOwner()) {
             return;
         }
 
-        $is_owner = $this->flashcard_category->getOwner()->equals($this->owner);
+        $is_owner = $this->deck->getOwner()->equals($this->owner);
 
         if (!$is_owner) {
-            throw new ForbiddenException('User is not authorized to create this category');
+            throw new ForbiddenException('User is not authorized to create this deck');
         }
     }
 }

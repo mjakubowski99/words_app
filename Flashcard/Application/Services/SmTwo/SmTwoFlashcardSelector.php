@@ -18,7 +18,7 @@ class SmTwoFlashcardSelector implements IFlashcardSelector
 
     public function select(NextSessionFlashcards $next_session_flashcards, int $limit): array
     {
-        if ($next_session_flashcards->hasCategory()) {
+        if ($next_session_flashcards->hasDeck()) {
             return $this->selectNormal($next_session_flashcards, $limit);
         }
 
@@ -46,14 +46,14 @@ class SmTwoFlashcardSelector implements IFlashcardSelector
     {
         $latest_limit = 2;
         $latest_ids = $this->flashcard_repository->getLatestSessionFlashcardIds($next_session_flashcards->getSessionId(), $latest_limit);
-        $category = $next_session_flashcards->getCategory();
+        $deck = $next_session_flashcards->getDeck();
 
         $skip_hard = $next_session_flashcards->getCurrentSessionFlashcardsCount() % 5 === 0;
 
-        $results = $this->repository->getNextFlashcardsByCategory($category->getId(), $limit, $latest_ids, $skip_hard);
+        $results = $this->repository->getNextFlashcardsByDeck($deck->getId(), $limit, $latest_ids, $skip_hard);
 
         if (count($results) < $limit) {
-            return $this->repository->getNextFlashcardsByCategory($category->getId(), $limit, []);
+            return $this->repository->getNextFlashcardsByDeck($deck->getId(), $limit, []);
         }
 
         return $results;

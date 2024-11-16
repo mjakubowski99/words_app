@@ -6,7 +6,7 @@ namespace Tests\Integration\Flashcards\Application\Command;
 
 use App\Models\User;
 use Shared\User\IUser;
-use App\Models\FlashcardCategory;
+use App\Models\FlashcardDeck;
 use Tests\Base\FlashcardTestCase;
 use Shared\Enum\LearningSessionType;
 use Shared\Exceptions\ForbiddenException;
@@ -33,7 +33,7 @@ class CreateSessionHandlerTest extends FlashcardTestCase
     {
         // GIVEN
         $user_id = User::factory()->create()->getId();
-        $category_id = $this->createCategoryId(FlashcardCategory::factory()->create([
+        $deck_id = $this->createDeckId(FlashcardDeck::factory()->create([
             'user_id' => $user_id->getValue(),
         ]));
         $cards_per_session = 5;
@@ -44,7 +44,7 @@ class CreateSessionHandlerTest extends FlashcardTestCase
             $user,
             $cards_per_session,
             $device,
-            $category_id,
+            $deck_id,
             LearningSessionType::LEARN_FLASHCARDS_IN_CATEGORY,
         );
 
@@ -58,11 +58,11 @@ class CreateSessionHandlerTest extends FlashcardTestCase
     /**
      * @test
      */
-    public function createSessionHandler_UserIsNotCategoryOwner_fail(): void
+    public function createSessionHandler_UserIsNotDeckOwner_fail(): void
     {
         // GIVEN
         $user_id = User::factory()->create()->getId();
-        $category_id = $this->createCategoryId(FlashcardCategory::factory()->create());
+        $deck_id = $this->createDeckId(FlashcardDeck::factory()->create());
         $cards_per_session = 5;
         $device = 'Mozilla/Firefox';
         $user = $this->mockery(IUser::class);
@@ -71,7 +71,7 @@ class CreateSessionHandlerTest extends FlashcardTestCase
             $user,
             $cards_per_session,
             $device,
-            $category_id,
+            $deck_id,
             LearningSessionType::LEARN_FLASHCARDS_IN_CATEGORY,
         );
 

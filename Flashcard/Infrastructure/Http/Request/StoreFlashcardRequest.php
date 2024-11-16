@@ -8,8 +8,8 @@ use OpenApi\Attributes as OAT;
 use Shared\Http\Request\Request;
 use Flashcard\Domain\Models\Owner;
 use Shared\Utils\ValueObjects\Language;
-use Flashcard\Domain\ValueObjects\CategoryId;
 use Flashcard\Application\Command\CreateFlashcard;
+use Flashcard\Domain\ValueObjects\FlashcardDeckId;
 
 #[OAT\Schema(
     schema: 'Requests\Flashcard\StoreFlashcardRequest',
@@ -65,7 +65,7 @@ class StoreFlashcardRequest extends Request
 
         return new CreateFlashcard(
             Owner::fromUser($user->getId()),
-            new CategoryId($this->input('flashcard_category_id')),
+            new FlashcardDeckId($this->input('flashcard_category_id')),
             Language::pl(),
             $this->input('word'),
             $this->input('context'),

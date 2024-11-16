@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\Services\AiGenerators;
 
+use Flashcard\Domain\Models\Deck;
 use Flashcard\Domain\Models\Owner;
 use Illuminate\Support\Facades\Log;
-use Flashcard\Domain\Models\Category;
 use Flashcard\Domain\Models\Flashcard;
 use Flashcard\Domain\Models\FlashcardPrompt;
 use Flashcard\Domain\ValueObjects\FlashcardId;
@@ -20,17 +20,17 @@ class GeminiGenerator implements IFlashcardGenerator
         private IGeminiApiClient $client
     ) {}
 
-    public function generate(Owner $owner, Category $category, FlashcardPrompt $prompt): array
+    public function generate(Owner $owner, Deck $deck, FlashcardPrompt $prompt): array
     {
         $response = $this->client->generateText($prompt->getPrompt());
 
         if (!$response->success()) {
             $response = json_encode($response->getErrorResponse());
 
-            Log::error('Generating flashcard categories failed', [
+            Log::error('Generating flashcard decks failed', [
                 'message' => is_string($response) ? $response : '',
                 'owner_id' => $owner->getId(),
-                'category_name' => $category->getName(),
+                'deck_name' => $deck->getName(),
             ]);
 
             throw new AiResponseFailedException(is_string($response) ? $response : '');
@@ -50,7 +50,7 @@ class GeminiGenerator implements IFlashcardGenerator
                 (string) $row['sentence'],
                 (string) $row['sentence_trans'],
                 $owner,
-                $category,
+                $deck,
             );
         }
 

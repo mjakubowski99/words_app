@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Mappers;
 
+use Flashcard\Domain\Models\Deck;
 use Flashcard\Domain\Models\Owner;
 use Illuminate\Support\Facades\DB;
 use Shared\Enum\FlashcardOwnerType;
-use Flashcard\Domain\Models\Category;
 use Shared\Exceptions\NotFoundException;
 use Flashcard\Domain\ValueObjects\OwnerId;
 use Flashcard\Domain\ValueObjects\SessionId;
-use Flashcard\Domain\ValueObjects\CategoryId;
 use Flashcard\Domain\Models\NextSessionFlashcards;
+use Flashcard\Domain\ValueObjects\FlashcardDeckId;
 
 class NextSessionFlashcardsMapper
 {
@@ -32,13 +32,13 @@ class NextSessionFlashcardsMapper
                         ls.user_id,
                         ls.cards_per_session,
                         ls.status AS session_status,
-                        fc.id AS category_id,
-                        fc.name AS category_name,
-                        fc.tag AS category_tag
+                        fd.id AS deck_id,
+                        fd.name AS deck_name,
+                        fd.tag AS deck_tag
                     FROM 
                         learning_sessions AS ls
                     LEFT JOIN 
-                        flashcard_categories AS fc ON fc.id = ls.flashcard_category_id
+                        flashcard_decks AS fd ON fd.id = ls.flashcard_deck_id
                     WHERE 
                         ls.id = ?
                 ),
@@ -59,9 +59,9 @@ class NextSessionFlashcardsMapper
                     sd.user_id,
                     sd.cards_per_session,
                     sd.session_status,
-                    sd.category_id,
-                    sd.category_name,
-                    sd.category_tag,
+                    sd.deck_id,
+                    sd.deck_name,
+                    sd.deck_tag,
                     c.unrated_count,
                     c.all_count
                 FROM 
@@ -83,12 +83,12 @@ class NextSessionFlashcardsMapper
 
         $owner = $this->mapOwner($result);
 
-        $category = $this->mapCategory($owner, $result);
+        $deck = $this->mapDeck($owner, $result);
 
         return new NextSessionFlashcards(
             $id,
             $owner,
-            $category,
+            $deck,
             $result->all_count ?? 0,
             $result->unrated_count ?? 0,
             $result->cards_per_session
@@ -118,15 +118,15 @@ class NextSessionFlashcardsMapper
         return new Owner(new OwnerId($result->user_id), FlashcardOwnerType::USER);
     }
 
-    private function mapCategory(Owner $owner, object $result): ?Category
+    private function mapDeck(Owner $owner, object $result): ?Deck
     {
-        $category = $result->category_id ? new Category(
+        $deck = $result->deck_id ? new Deck(
             $owner,
-            $result->category_tag,
-            $result->category_name
+            $result->deck_tag,
+            $result->deck_name
         ) : null;
-        $category?->init(new CategoryId($result->category_id));
+        $deck?->init(new FlashcardDeckId($result->deck_id));
 
-        return $category;
+        return $deck;
     }
 }

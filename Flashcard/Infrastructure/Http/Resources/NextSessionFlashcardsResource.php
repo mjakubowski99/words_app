@@ -114,12 +114,12 @@ class NextSessionFlashcardsResource extends JsonResource
                 'next_flashcards' => array_map(function (SessionFlashcardRead $flashcard) {
                     return [
                         'id' => $flashcard->getId()->getValue(),
-                        'word' => $flashcard->getWord(),
-                        'word_lang' => $flashcard->getWordLang()->getValue(),
-                        'translation' => $flashcard->getTranslation(),
-                        'translation_lang' => $flashcard->getTranslationLang()->getValue(),
-                        'context' => $flashcard->getContext(),
-                        'context_translation' => $flashcard->getContextTranslation(),
+                        'word' => $flashcard->getFrontWord(),
+                        'word_lang' => $flashcard->getFrontLang()->getValue(),
+                        'translation' => $flashcard->getBackWord(),
+                        'translation_lang' => $flashcard->getBackLang()->getValue(),
+                        'context' => $flashcard->getFrontContext(),
+                        'context_translation' => $flashcard->getBackContext(),
                     ];
                 }, $this->resource->getSessionFlashcards()),
             ],

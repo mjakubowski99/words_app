@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\DTO;
 
-use Flashcard\Domain\ValueObjects\CategoryId;
+use Flashcard\Domain\ValueObjects\FlashcardDeckId;
 
 class MainFlashcardCategoryDTO
 {
     public function __construct(
-        private readonly CategoryId $id,
+        private readonly FlashcardDeckId $id,
         private readonly string $name,
     ) {}
 
-    public function getId(): CategoryId
+    public function getId(): FlashcardDeckId
     {
         return $this->id;
     }
