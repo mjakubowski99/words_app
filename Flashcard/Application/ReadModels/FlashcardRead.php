@@ -17,6 +17,7 @@ class FlashcardRead
         private Language $translation_lang,
         private string $context,
         private string $context_translation,
+        private GeneralRating $general_rating,
     ) {}
 
     public function getId(): FlashcardId
@@ -52,5 +53,10 @@ class FlashcardRead
     public function getContextTranslation(): string
     {
         return $this->context_translation;
+    }
+
+    public function getGeneralRating(): GeneralRating
+    {
+        return $this->general_rating;
     }
 }

@@ -2,26 +2,11 @@
 
 declare(strict_types=1);
 
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use User\Infrastructure\Http\Controllers\UserController;
 use Flashcard\Infrastructure\Http\Controllers\SessionController;
 use Flashcard\Infrastructure\Http\Controllers\FlashcardController;
 use Flashcard\Infrastructure\Http\Controllers\FlashcardCategoryController;
-
-Route::get('/test', function () {
-    dd(DB::select("
-    explain analyze update
-        learning_session_flashcards
-        set
-          rating = CASE
-            WHEN id = 7060 THEN 1
-          END,
-          updated_at = '2024-10-26 12:13:30'
-        where
-          learning_session_id = '7055'
-          and id in (7060)"));
-});
 
 Route::post('/user/oauth/login', [UserController::class, 'loginWithProvider'])
     ->name('user.oauth.login');
@@ -39,6 +24,8 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         ->name('flashcards.categories.get');
     Route::post('/flashcards/categories/generate-flashcards', [FlashcardCategoryController::class, 'generateFlashcards'])
         ->name('flashcards.categories.generate-flashcards');
+    Route::post('/flashcards/categories/{from_category_id}/merge-flashcards/{to_category_id}', [FlashcardCategoryController::class, 'merge'])
+        ->name('flashcards.categories.merge-flashcards');
     Route::put('/flashcards/categories/{category_id}/generate-flashcards', [FlashcardCategoryController::class, 'regenerateFlashcards'])
         ->name('flashcards.categories.regenerate-flashcards');
 

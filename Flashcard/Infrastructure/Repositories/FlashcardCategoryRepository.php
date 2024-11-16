@@ -33,6 +33,11 @@ class FlashcardCategoryRepository implements IFlashcardCategoryRepository
         return $this->findById($category_id);
     }
 
+    public function updateCategory(Category $category): void
+    {
+        $this->mapper->update($category);
+    }
+
     /** @return Category[] */
     public function getByOwner(Owner $owner, int $page, int $per_page): array
     {

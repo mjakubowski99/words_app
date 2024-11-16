@@ -11,8 +11,8 @@ use Flashcard\Application\ReadModels\CategoryDetailsRead;
 
 interface IFlashcardCategoryReadRepository
 {
-    public function findDetails(CategoryId $id, ?int $limit): CategoryDetailsRead;
+    public function findDetails(CategoryId $id, ?string $search, int $page, int $per_page): CategoryDetailsRead;
 
     /** @return OwnerCategoryRead[] */
-    public function getByOwner(Owner $owner, int $page, int $per_page): array;
+    public function getByOwner(Owner $owner, ?string $search, int $page, int $per_page): array;
 }

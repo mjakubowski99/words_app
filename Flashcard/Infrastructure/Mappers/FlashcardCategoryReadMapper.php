@@ -10,6 +10,7 @@ use Shared\Utils\ValueObjects\Language;
 use Flashcard\Domain\ValueObjects\CategoryId;
 use Flashcard\Domain\ValueObjects\FlashcardId;
 use Flashcard\Application\ReadModels\FlashcardRead;
+use Flashcard\Application\ReadModels\GeneralRating;
 use Flashcard\Application\ReadModels\OwnerCategoryRead;
 use Flashcard\Domain\Exceptions\ModelNotFoundException;
 use Flashcard\Application\ReadModels\CategoryDetailsRead;
@@ -20,7 +21,7 @@ class FlashcardCategoryReadMapper
         private readonly DB $db,
     ) {}
 
-    public function findDetails(CategoryId $id, ?int $limit): CategoryDetailsRead
+    public function findDetails(CategoryId $id, ?string $search, int $page, int $per_page): CategoryDetailsRead
     {
         $category = $this->db::table('flashcard_categories')->find($id->getValue());
 
@@ -30,8 +31,26 @@ class FlashcardCategoryReadMapper
 
         $results = $this->db::table('flashcards')
             ->latest()
-            ->when($limit !== null, fn ($q) => $q->take($limit))
+            ->when(!is_null($search), function ($query) use ($search) {
+                return $query->where(function ($q) use ($search) {
+                    $search = mb_strtolower($search);
+
+                    return $q->where(DB::raw('LOWER(flashcards.word)'), 'LIKE', '%' . $search . '%')
+                        ->orWhere(DB::raw('LOWER(flashcards.translation)'), 'LIKE', '%' . $search . '%');
+                });
+            })
             ->where('flashcards.flashcard_category_id', $id->getValue())
+            ->take($per_page)
+            ->skip(($page - 1) * $per_page)
+            ->selectRaw('
+                flashcards.*,
+                (SELECT learning_session_flashcards.rating
+                 FROM learning_session_flashcards 
+                 WHERE flashcards.id = learning_session_flashcards.flashcard_id
+                 ORDER BY learning_session_flashcards.updated_at DESC
+                 LIMIT 1
+                ) as last_rating
+            ')
             ->get()
             ->map(function (object $data) {
                 return new FlashcardRead(
@@ -42,6 +61,7 @@ class FlashcardCategoryReadMapper
                     Language::from($data->translation_lang),
                     $data->context,
                     $data->context_translation,
+                    new GeneralRating($data->last_rating)
                 );
             })->toArray();
 
@@ -52,10 +72,13 @@ class FlashcardCategoryReadMapper
         );
     }
 
-    public function getByOwner(Owner $owner, int $page, int $per_page): array
+    public function getByOwner(Owner $owner, ?string $search, int $page, int $per_page): array
     {
         return $this->db::table('flashcard_categories')
             ->where('flashcard_categories.user_id', $owner->getId())
+            ->when(!is_null($search), function ($query) use ($search) {
+                return $query->where(DB::raw('LOWER(flashcard_categories.name)'), 'LIKE', '%' . mb_strtolower($search) . '%');
+            })
             ->take($per_page)
             ->skip(($page - 1) * $per_page)
             ->latest()

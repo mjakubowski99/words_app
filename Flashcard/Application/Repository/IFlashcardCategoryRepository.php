@@ -19,5 +19,7 @@ interface IFlashcardCategoryRepository
 
     public function createCategory(Category $category): Category;
 
+    public function updateCategory(Category $category): void;
+
     public function removeCategory(Category $category): void;
 }

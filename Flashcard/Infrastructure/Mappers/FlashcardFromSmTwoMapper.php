@@ -20,7 +20,7 @@ class FlashcardFromSmTwoMapper
         private readonly DB $db
     ) {}
 
-    public function getFlashcardsWithLowerRepetitionInterval(Owner $owner, int $limit, array $exclude_flashcard_ids, bool $skip_hard): array
+    public function getNextFlashcards(Owner $owner, int $limit, array $exclude_flashcard_ids, bool $get_oldest): array
     {
         $random = round(lcg_value(), 2);
 
@@ -30,14 +30,15 @@ class FlashcardFromSmTwoMapper
             ->leftJoin('flashcard_categories', 'flashcard_categories.id', '=', 'flashcards.flashcard_category_id')
             ->leftJoin('sm_two_flashcards', 'sm_two_flashcards.flashcard_id', '=', 'flashcards.id')
             ->take($limit)
-            ->orderByRaw("
+            ->orderByRaw('
                 CASE 
                     WHEN sm_two_flashcards.updated_at IS NOT NULL AND sm_two_flashcards.repetition_interval IS NOT NULL 
                          AND DATE(sm_two_flashcards.updated_at) + CAST(sm_two_flashcards.repetition_interval AS INTEGER) <= CURRENT_DATE
                     THEN 1
                     ELSE 0
-                END DESC," .
-                ($skip_hard ? "CASE WHEN COALESCE(repetition_interval, 1.0) = 1.0 THEN 0 ELSE 1 END DESC," : "")
+                END DESC,' .
+                ($get_oldest ? 'CASE WHEN COALESCE(repetition_interval, 1.0) > 1.0 THEN 1 ELSE 0 END ASC,' : '') .
+                ($get_oldest ? 'sm_two_flashcards.updated_at ASC NULLS FIRST,' : '')
             . "COALESCE(repetition_interval, 1.0) ASC,
                 CASE 
                     WHEN repetition_interval IS NOT NULL AND {$random} < 0.7 THEN 1
@@ -57,7 +58,7 @@ class FlashcardFromSmTwoMapper
             })->toArray();
     }
 
-    public function getFlashcardsByLowestRepetitionIntervalByCategory(CategoryId $category_id, int $limit, array $exclude_flashcard_ids, bool $skip_hard): array
+    public function getNextFlashcardsByCategory(CategoryId $category_id, int $limit, array $exclude_flashcard_ids, bool $get_oldest): array
     {
         return $this->db::table('flashcards')
             ->whereNotIn('flashcards.id', array_map(fn (FlashcardId $id) => $id->getValue(), $exclude_flashcard_ids))
@@ -65,7 +66,8 @@ class FlashcardFromSmTwoMapper
             ->where('flashcards.flashcard_category_id', $category_id->getValue())
             ->leftJoin('sm_two_flashcards', 'sm_two_flashcards.flashcard_id', '=', 'flashcards.id')
             ->take($limit)
-            ->orderByRaw("
+            ->orderByRaw(
+                '
                 CASE 
                     WHEN repetition_interval IS NULL THEN 1
                     ELSE 0
@@ -75,10 +77,11 @@ class FlashcardFromSmTwoMapper
                          AND DATE(sm_two_flashcards.updated_at) + CAST(sm_two_flashcards.repetition_interval AS INTEGER) <= CURRENT_DATE
                     THEN 1
                     ELSE 0
-                END DESC," .
-                ($skip_hard ? "CASE WHEN COALESCE(repetition_interval, 1.0) = 1.0 THEN 0 ELSE 1 END DESC," : "")
-                . "COALESCE(repetition_interval, 1.0) ASC,
-                sm_two_flashcards.updated_at ASC NULLS FIRST"
+                END DESC,' .
+                ($get_oldest ? 'CASE WHEN COALESCE(repetition_interval, 1.0) > 1.0 THEN 1 ELSE 0 END ASC,' : '') .
+                ($get_oldest ? 'sm_two_flashcards.updated_at ASC NULLS FIRST,' : '')
+                . 'COALESCE(repetition_interval, 1.0) ASC,
+                sm_two_flashcards.updated_at ASC NULLS FIRST'
             )
             ->select(
                 'flashcards.*',

@@ -20,6 +20,7 @@ class FlashcardRepository implements IFlashcardRepository
         private SessionFlashcardMapper $session_flashcard_mapper,
     ) {}
 
+    /** @return Flashcard[] */
     public function getRandomFlashcards(Owner $owner, int $limit, array $exclude_flashcard_ids): array
     {
         return $this->mapper->getRandomFlashcards($owner, $limit, $exclude_flashcard_ids);

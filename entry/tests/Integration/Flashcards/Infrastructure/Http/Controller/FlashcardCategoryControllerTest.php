@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Tests\Integration\Flashcards\Infrastructure\Http\Controller;
 
-use App\Models\User;
-use App\Models\FlashcardCategory;
 use Tests\Base\FlashcardTestCase;
 
 class FlashcardCategoryControllerTest extends FlashcardTestCase
@@ -13,10 +11,9 @@ class FlashcardCategoryControllerTest extends FlashcardTestCase
     public function test__index_success(): void
     {
         // GIVEN
-        $user = User::factory()->create();
-        FlashcardCategory::factory(2)->create([
-            'user_id' => $user->id,
-        ]);
+        $user = $this->createUser();
+        $this->createFlashcardCategory(['user_id' => $user->id]);
+        $this->createFlashcardCategory(['user_id' => $user->id]);
 
         // WHEN
         $response = $this->actingAs($user, 'sanctum')

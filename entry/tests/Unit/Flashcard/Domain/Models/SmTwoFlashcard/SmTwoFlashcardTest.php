@@ -73,13 +73,13 @@ class SmTwoFlashcardTest extends TestCase
             'expected_repetition_count' => 1,
         ];
 
-        yield 'When Rating=VERY_GOOD and repetition_count=0 should set repetition interval to 1' => [
+        yield 'When Rating=VERY_GOOD and repetition_count=0 should set repetition interval to 6' => [
             'rating' => Rating::VERY_GOOD,
             'repetition_ratio' => 3.98,
             'repetition_interval' => 4,
             'repetition_count' => 0,
             'expected_repetition_ratio' => 4.08,
-            'expected_repetition_interval' => 1.0,
+            'expected_repetition_interval' => 6.0,
             'expected_repetition_count' => 1,
         ];
 
