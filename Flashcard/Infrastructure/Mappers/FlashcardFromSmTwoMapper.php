@@ -37,6 +37,7 @@ class FlashcardFromSmTwoMapper
                     THEN 1
                     ELSE 0
                 END DESC,' .
+                ($get_oldest ? 'CASE WHEN COALESCE(repetition_interval, 1.0) > 1.0 THEN 1 ELSE 0 END ASC,' : '') .
                 ($get_oldest ? 'sm_two_flashcards.updated_at ASC NULLS FIRST,' : '')
             . "COALESCE(repetition_interval, 1.0) ASC,
                 CASE 
@@ -77,6 +78,7 @@ class FlashcardFromSmTwoMapper
                     THEN 1
                     ELSE 0
                 END DESC,' .
+                ($get_oldest ? 'CASE WHEN COALESCE(repetition_interval, 1.0) > 1.0 THEN 1 ELSE 0 END ASC,' : '') .
                 ($get_oldest ? 'sm_two_flashcards.updated_at ASC NULLS FIRST,' : '')
                 . 'COALESCE(repetition_interval, 1.0) ASC,
                 sm_two_flashcards.updated_at ASC NULLS FIRST'

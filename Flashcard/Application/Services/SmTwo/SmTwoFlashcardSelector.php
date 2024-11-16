@@ -29,7 +29,7 @@ class SmTwoFlashcardSelector implements IFlashcardSelector
     {
         $latest_limit = 2;
 
-        $get_latest = $next_session_flashcards->getCurrentSessionFlashcardsCount() % 9 === 0;
+        $get_latest = $next_session_flashcards->getCurrentSessionFlashcardsCount() % 5 === 0;
 
         $latest_ids = $this->flashcard_repository->getLatestSessionFlashcardIds($next_session_flashcards->getSessionId(), $latest_limit);
 
@@ -48,7 +48,7 @@ class SmTwoFlashcardSelector implements IFlashcardSelector
         $latest_ids = $this->flashcard_repository->getLatestSessionFlashcardIds($next_session_flashcards->getSessionId(), $latest_limit);
         $category = $next_session_flashcards->getCategory();
 
-        $skip_hard = $next_session_flashcards->getCurrentSessionFlashcardsCount() % 9 === 0;
+        $skip_hard = $next_session_flashcards->getCurrentSessionFlashcardsCount() % 5 === 0;
 
         $results = $this->repository->getNextFlashcardsByCategory($category->getId(), $limit, $latest_ids, $skip_hard);
 
