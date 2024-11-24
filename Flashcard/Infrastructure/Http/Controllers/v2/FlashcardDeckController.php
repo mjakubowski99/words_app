@@ -134,13 +134,21 @@ class FlashcardDeckController
         ]);
     }
 
-    #[OAT\Post(
+    #[OAT\Put(
         path: '/api/v2/flashcards/decks/{flashcard_deck_id}/generate-flashcards',
         operationId: 'v2.flashcards.decks.deck.generate-flashcards',
         description: 'Generate flashcards for existing deck',
         summary: 'Generate flashcards for provided category',
         security: [['sanctum' => []]],
         tags: [Tags::V2, Tags::FLASHCARD],
+        parameters: [
+            new OAT\Parameter(
+                name: 'flashcard_deck_id',
+                description: 'Flashcard deck id',
+                in: 'path',
+                example: 1,
+             )
+        ],
         responses: [
             new OAT\Response(
                 response: 200,
