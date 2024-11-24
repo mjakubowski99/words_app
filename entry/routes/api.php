@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
 use User\Infrastructure\Http\Controllers\UserController;
-use Flashcard\Infrastructure\Http\Controllers\SessionController;
-use Flashcard\Infrastructure\Http\Controllers\FlashcardController;
-use Flashcard\Infrastructure\Http\Controllers\FlashcardDeckController;
+use Flashcard\Infrastructure\Http\Controllers\v1\SessionController;
+use Flashcard\Infrastructure\Http\Controllers\v1\FlashcardController;
+use Flashcard\Infrastructure\Http\Controllers\v1\FlashcardDeckController;
 
 Route::post('/user/oauth/login', [UserController::class, 'loginWithProvider'])
     ->name('user.oauth.login');

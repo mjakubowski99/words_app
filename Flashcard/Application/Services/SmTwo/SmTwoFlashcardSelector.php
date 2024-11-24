@@ -7,6 +7,7 @@ namespace Flashcard\Application\Services\SmTwo;
 use Flashcard\Domain\Models\NextSessionFlashcards;
 use Flashcard\Application\Services\IFlashcardSelector;
 use Flashcard\Application\Repository\IFlashcardRepository;
+use Flashcard\Application\Repository\FlashcardSortCriteria;
 use Flashcard\Application\Repository\ISmTwoFlashcardRepository;
 
 class SmTwoFlashcardSelector implements IFlashcardSelector
@@ -29,14 +30,28 @@ class SmTwoFlashcardSelector implements IFlashcardSelector
     {
         $latest_limit = 2;
 
-        $get_latest = $next_session_flashcards->getCurrentSessionFlashcardsCount() % 5 === 0;
+        $prioritize_not_hard_flashcards = $next_session_flashcards->getCurrentSessionFlashcardsCount() % 5 === 0;
 
         $latest_ids = $this->flashcard_repository->getLatestSessionFlashcardIds($next_session_flashcards->getSessionId(), $latest_limit);
 
-        $results = $this->repository->getNextFlashcards($next_session_flashcards->getOwner(), $limit, $latest_ids, $get_latest);
+        $criteria = $prioritize_not_hard_flashcards ? [
+            FlashcardSortCriteria::PLANNED_FLASHCARDS_FOR_CURRENT_DATE_FIRST,
+            FlashcardSortCriteria::HARD_FLASHCARDS_FIRST,
+            FlashcardSortCriteria::RANDOMIZE_LATEST_FLASHCARDS_ORDER,
+            FlashcardSortCriteria::OLDEST_UPDATE_FLASHCARDS_FIRST,
+        ] : [
+            FlashcardSortCriteria::PLANNED_FLASHCARDS_FOR_CURRENT_DATE_FIRST,
+            FlashcardSortCriteria::NOT_HARD_FLASHCARDS_FIRST,
+            FlashcardSortCriteria::OLDEST_UPDATE_FLASHCARDS_FIRST,
+            FlashcardSortCriteria::HARD_FLASHCARDS_FIRST,
+            FlashcardSortCriteria::RANDOMIZE_LATEST_FLASHCARDS_ORDER,
+            FlashcardSortCriteria::OLDEST_UPDATE_FLASHCARDS_FIRST,
+        ];
+
+        $results = $this->repository->getNextFlashcards($next_session_flashcards->getOwner(), $limit, $latest_ids, $criteria);
 
         if (count($results) < $limit) {
-            return $this->repository->getNextFlashcards($next_session_flashcards->getOwner(), $limit, []);
+            return $this->repository->getNextFlashcards($next_session_flashcards->getOwner(), $limit, [], $criteria);
         }
 
         return $results;
@@ -48,12 +63,26 @@ class SmTwoFlashcardSelector implements IFlashcardSelector
         $latest_ids = $this->flashcard_repository->getLatestSessionFlashcardIds($next_session_flashcards->getSessionId(), $latest_limit);
         $deck = $next_session_flashcards->getDeck();
 
-        $skip_hard = $next_session_flashcards->getCurrentSessionFlashcardsCount() % 5 === 0;
+        $prioritize_not_hard_flashcards = $next_session_flashcards->getCurrentSessionFlashcardsCount() % 5 === 0;
 
-        $results = $this->repository->getNextFlashcardsByDeck($deck->getId(), $limit, $latest_ids, $skip_hard);
+        $criteria = $prioritize_not_hard_flashcards ? [
+            FlashcardSortCriteria::NOT_RATED_FLASHCARDS_FIRST,
+            FlashcardSortCriteria::PLANNED_FLASHCARDS_FOR_CURRENT_DATE_FIRST,
+            FlashcardSortCriteria::HARD_FLASHCARDS_FIRST,
+            FlashcardSortCriteria::OLDEST_UPDATE_FLASHCARDS_FIRST,
+        ] : [
+            FlashcardSortCriteria::NOT_RATED_FLASHCARDS_FIRST,
+            FlashcardSortCriteria::NOT_HARD_FLASHCARDS_FIRST,
+            FlashcardSortCriteria::OLDEST_UPDATE_FLASHCARDS_FIRST,
+            FlashcardSortCriteria::PLANNED_FLASHCARDS_FOR_CURRENT_DATE_FIRST,
+            FlashcardSortCriteria::HARD_FLASHCARDS_FIRST,
+            FlashcardSortCriteria::OLDEST_UPDATE_FLASHCARDS_FIRST,
+        ];
+
+        $results = $this->repository->getNextFlashcardsByDeck($deck->getId(), $limit, $latest_ids, $criteria);
 
         if (count($results) < $limit) {
-            return $this->repository->getNextFlashcardsByDeck($deck->getId(), $limit, []);
+            return $this->repository->getNextFlashcardsByDeck($deck->getId(), $limit, [], $criteria);
         }
 
         return $results;

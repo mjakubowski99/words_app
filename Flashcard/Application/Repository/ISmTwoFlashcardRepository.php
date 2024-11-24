@@ -15,9 +15,15 @@ interface ISmTwoFlashcardRepository
 
     public function saveMany(SmTwoFlashcards $sm_two_flashcards): void;
 
-    /** @return Flashcard[] */
-    public function getNextFlashcardsByDeck(FlashcardDeckId $deck_id, int $limit, array $exclude_flashcard_ids, bool $get_oldest = false): array;
+    /**
+     * @param  FlashcardSortCriteria[] $sort_criteria
+     * @return Flashcard[]
+     */
+    public function getNextFlashcardsByDeck(FlashcardDeckId $deck_id, int $limit, array $exclude_flashcard_ids, array $sort_criteria): array;
 
-    /** @return Flashcard[] */
-    public function getNextFlashcards(Owner $owner, int $limit, array $exclude_flashcard_ids, bool $get_oldest = false): array;
+    /**
+     * @param  FlashcardSortCriteria[] $sort_criteria
+     * @return Flashcard[]
+     */
+    public function getNextFlashcards(Owner $owner, int $limit, array $exclude_flashcard_ids, array $sort_criteria): array;
 }

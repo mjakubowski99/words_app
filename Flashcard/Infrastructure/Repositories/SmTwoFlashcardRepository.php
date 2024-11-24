@@ -8,14 +8,18 @@ use Flashcard\Domain\Models\Owner;
 use Flashcard\Domain\Models\SmTwoFlashcards;
 use Flashcard\Domain\ValueObjects\FlashcardDeckId;
 use Flashcard\Infrastructure\Mappers\SmTwoFlashcardMapper;
+use Flashcard\Application\Repository\FlashcardSortCriteria;
 use Flashcard\Infrastructure\Mappers\FlashcardFromSmTwoMapper;
 use Flashcard\Application\Repository\ISmTwoFlashcardRepository;
+use Flashcard\Infrastructure\SortCriteria\Postgres\PostgresSortCriteria;
+use Flashcard\Infrastructure\Factories\Postgres\FlashcardSortCriteriaFactory;
 
 class SmTwoFlashcardRepository implements ISmTwoFlashcardRepository
 {
     public function __construct(
         private SmTwoFlashcardMapper $mapper,
         private FlashcardFromSmTwoMapper $flashcard_mapper,
+        private FlashcardSortCriteriaFactory $sort_criteria_factory,
     ) {}
 
     public function findMany(Owner $owner, array $flashcard_ids): SmTwoFlashcards
@@ -28,13 +32,24 @@ class SmTwoFlashcardRepository implements ISmTwoFlashcardRepository
         $this->mapper->saveMany($sm_two_flashcards);
     }
 
-    public function getNextFlashcards(Owner $owner, int $limit, array $exclude_flashcard_ids, bool $get_oldest = false): array
+    public function getNextFlashcards(Owner $owner, int $limit, array $exclude_flashcard_ids, array $sort_criteria): array
     {
-        return $this->flashcard_mapper->getNextFlashcards($owner, $limit, $exclude_flashcard_ids, $get_oldest);
+        return $this->flashcard_mapper->getNextFlashcards($owner, $limit, $exclude_flashcard_ids, $this->buildCriteria($sort_criteria));
     }
 
-    public function getNextFlashcardsByDeck(FlashcardDeckId $deck_id, int $limit, array $exclude_flashcard_ids, bool $get_oldest = false): array
+    public function getNextFlashcardsByDeck(FlashcardDeckId $deck_id, int $limit, array $exclude_flashcard_ids, array $sort_criteria): array
     {
-        return $this->flashcard_mapper->getNextFlashcardsByDeck($deck_id, $limit, $exclude_flashcard_ids, $get_oldest);
+        return $this->flashcard_mapper->getNextFlashcardsByDeck($deck_id, $limit, $exclude_flashcard_ids, $this->buildCriteria($sort_criteria));
+    }
+
+    /**
+     * @param  FlashcardSortCriteria[] $sort_criteria
+     * @return PostgresSortCriteria[]
+     */
+    private function buildCriteria(array $sort_criteria): array
+    {
+        return array_map(function (FlashcardSortCriteria $criteria) {
+            return $this->sort_criteria_factory->make($criteria);
+        }, $sort_criteria);
     }
 }

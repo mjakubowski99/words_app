@@ -11,6 +11,7 @@ use App\Models\SmTwoFlashcard;
 use Tests\Base\FlashcardTestCase;
 use Flashcard\Domain\Models\SmTwoFlashcards;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Flashcard\Application\Repository\FlashcardSortCriteria;
 use Flashcard\Infrastructure\Repositories\SmTwoFlashcardRepository;
 
 class SmTwoFlashcardRepositoryTest extends FlashcardTestCase
@@ -102,7 +103,16 @@ class SmTwoFlashcardRepositoryTest extends FlashcardTestCase
         ];
 
         // WHEN
-        $results = $this->repository->getNextFlashcardsByDeck($deck->getId(), 5, []);
+        $results = $this->repository->getNextFlashcardsByDeck($deck->getId(), 5, [], [
+            FlashcardSortCriteria::HARD_FLASHCARDS_FIRST,
+            FlashcardSortCriteria::OLDEST_UPDATE_FLASHCARDS_FIRST,
+            FlashcardSortCriteria::OLDEST_UPDATE_FLASHCARDS_FIRST,
+            FlashcardSortCriteria::RANDOMIZE_LATEST_FLASHCARDS_ORDER,
+            FlashcardSortCriteria::NOT_RATED_FLASHCARDS_FIRST,
+            FlashcardSortCriteria::RANDOMIZE_LATEST_FLASHCARDS_ORDER,
+            FlashcardSortCriteria::PLANNED_FLASHCARDS_FOR_CURRENT_DATE_FIRST,
+            FlashcardSortCriteria::LOWEST_REPETITION_INTERVAL_FIRST,
+        ]);
 
         // THEN
         $this->assertCount(3, $results);
