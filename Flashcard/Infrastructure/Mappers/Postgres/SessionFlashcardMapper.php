@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Mappers\Postgres;
 
-use Flashcard\Domain\ValueObjects\FlashcardId;
-use Flashcard\Domain\ValueObjects\SessionId;
 use Illuminate\Support\Facades\DB;
+use Flashcard\Domain\ValueObjects\SessionId;
+use Flashcard\Domain\ValueObjects\FlashcardId;
 
 class SessionFlashcardMapper
 {

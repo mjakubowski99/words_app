@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Flashcard\Infrastructure\Repositories\Postgres\RateableSessionFlashcardRepository;
 
-use App\Models\LearningSession;
-use App\Models\LearningSessionFlashcard;
+use Tests\TestCase;
 use App\Models\User;
+use Shared\Enum\SessionStatus;
+use App\Models\LearningSession;
+use Flashcard\Domain\Models\Rating;
+use App\Models\LearningSessionFlashcard;
 use Flashcard\Domain\Models\RateableSessionFlashcard;
 use Flashcard\Domain\Models\RateableSessionFlashcards;
-use Flashcard\Domain\Models\Rating;
-use Flashcard\Infrastructure\Repositories\Postgres\RateableSessionFlashcardsRepository;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Shared\Enum\SessionStatus;
-use Tests\TestCase;
+use Flashcard\Infrastructure\Repositories\Postgres\RateableSessionFlashcardsRepository;
 
 class RateableSessionFlashcardRepositoryTest extends TestCase
 {

@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Flashcard\Infrastructure\Repositories\Postgres\FlashcardDeckReadRepository;
 
+use Tests\TestCase;
+use App\Models\User;
 use App\Models\Flashcard;
 use App\Models\FlashcardDeck;
-use App\Models\LearningSessionFlashcard;
-use App\Models\User;
-use Flashcard\Application\ReadModels\DeckDetailsRead;
-use Flashcard\Application\ReadModels\FlashcardRead;
-use Flashcard\Application\ReadModels\OwnerCategoryRead;
-use Flashcard\Domain\Models\Rating;
-use Flashcard\Infrastructure\Repositories\Postgres\FlashcardDeckReadRepository;
 use Shared\Enum\GeneralRatingType;
-use Tests\TestCase;
+use Flashcard\Domain\Models\Rating;
+use App\Models\LearningSessionFlashcard;
+use Flashcard\Application\ReadModels\FlashcardRead;
+use Flashcard\Application\ReadModels\DeckDetailsRead;
+use Flashcard\Application\ReadModels\OwnerCategoryRead;
+use Flashcard\Infrastructure\Repositories\Postgres\FlashcardDeckReadRepository;
 
 class FlashcardDeckReadRepositoryTest extends TestCase
 {

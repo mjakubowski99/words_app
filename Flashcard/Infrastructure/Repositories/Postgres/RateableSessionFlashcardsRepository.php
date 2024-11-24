@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Repositories\Postgres;
 
-use Flashcard\Application\Repository\IRateableSessionFlashcardsRepository;
-use Flashcard\Domain\Models\RateableSessionFlashcards;
 use Flashcard\Domain\ValueObjects\SessionId;
+use Flashcard\Domain\Models\RateableSessionFlashcards;
+use Flashcard\Application\Repository\IRateableSessionFlashcardsRepository;
 use Flashcard\Infrastructure\Mappers\Postgres\RateableSessionFlashcardsMapper;
 
 class RateableSessionFlashcardsRepository implements IRateableSessionFlashcardsRepository

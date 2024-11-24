@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Flashcard\Infrastructure\Repositories\Postgres\FlashcardDeckRepository;
 
-use App\Models\FlashcardDeck;
+use Tests\TestCase;
 use App\Models\User;
+use App\Models\FlashcardDeck;
 use Flashcard\Domain\Models\Deck;
 use Flashcard\Domain\Models\Owner;
+use Shared\Enum\FlashcardOwnerType;
 use Flashcard\Domain\ValueObjects\OwnerId;
 use Flashcard\Infrastructure\Repositories\Postgres\FlashcardDeckRepository;
-use Shared\Enum\FlashcardOwnerType;
-use Tests\TestCase;
 
 class FlashcardDeckRepositoryTest extends TestCase
 {

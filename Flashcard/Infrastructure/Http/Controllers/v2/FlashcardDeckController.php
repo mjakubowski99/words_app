@@ -147,7 +147,7 @@ class FlashcardDeckController
                 description: 'Flashcard deck id',
                 in: 'path',
                 example: 1,
-             )
+            ),
         ],
         responses: [
             new OAT\Response(

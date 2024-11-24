@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Repositories\Postgres;
 
-use Flashcard\Application\Repository\FlashcardSortCriteria;
-use Flashcard\Application\Repository\ISmTwoFlashcardRepository;
 use Flashcard\Domain\Models\Owner;
 use Flashcard\Domain\Models\SmTwoFlashcards;
 use Flashcard\Domain\ValueObjects\FlashcardDeckId;
-use Flashcard\Infrastructure\Factories\Postgres\FlashcardSortCriteriaFactory;
-use Flashcard\Infrastructure\Mappers\Postgres\FlashcardFromSmTwoMapper;
+use Flashcard\Application\Repository\FlashcardSortCriteria;
+use Flashcard\Application\Repository\ISmTwoFlashcardRepository;
 use Flashcard\Infrastructure\Mappers\Postgres\SmTwoFlashcardMapper;
+use Flashcard\Infrastructure\Mappers\Postgres\FlashcardFromSmTwoMapper;
 use Flashcard\Infrastructure\SortCriteria\Postgres\PostgresSortCriteria;
+use Flashcard\Infrastructure\Factories\Postgres\FlashcardSortCriteriaFactory;
 
 class SmTwoFlashcardRepository implements ISmTwoFlashcardRepository
 {

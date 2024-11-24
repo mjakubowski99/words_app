@@ -1,13 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Console\Commands;
 
-use App\Console\Traits\EnsureDatabaseDriver;
 use App\Models\User;
+use Shared\User\IUserFacade;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Hash;
-use Shared\User\IUserFacade;
 use Shared\Utils\ValueObjects\UserId;
+use App\Console\Traits\EnsureDatabaseDriver;
 
 class GenerateTestingUserCommand extends Command
 {
@@ -22,7 +24,7 @@ class GenerateTestingUserCommand extends Command
         $this->ensureDefaultDriverIsPostgres();
 
         if (config('app.env') !== 'local') {
-            $this->error("This action is only allowed for local environments!");
+            $this->error('This action is only allowed for local environments!');
         }
 
         $email = 'email@email.com';

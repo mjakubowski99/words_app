@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Flashcard\Infrastructure\Repositories\Postgres\FlashcardRepository\GetLatestSessionFlashcardIds;
 
-use Flashcard\Domain\ValueObjects\FlashcardId;
-use Flashcard\Infrastructure\Repositories\Postgres\FlashcardRepository;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\Base\FlashcardTestCase;
+use Flashcard\Domain\ValueObjects\FlashcardId;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Flashcard\Infrastructure\Repositories\Postgres\FlashcardRepository;
 
 class FlashcardRepositoryTest extends FlashcardTestCase
 {

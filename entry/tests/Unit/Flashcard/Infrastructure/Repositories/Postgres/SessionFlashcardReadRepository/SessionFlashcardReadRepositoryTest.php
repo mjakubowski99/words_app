@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Flashcard\Infrastructure\Repositories\Postgres\SessionFlashcardReadRepository;
 
-use App\Models\LearningSession;
-use App\Models\LearningSessionFlashcard;
-use Flashcard\Domain\Models\Rating;
-use Flashcard\Infrastructure\Repositories\Postgres\SessionFlashcardReadRepository;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
+use App\Models\LearningSession;
+use Flashcard\Domain\Models\Rating;
+use App\Models\LearningSessionFlashcard;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Flashcard\Infrastructure\Repositories\Postgres\SessionFlashcardReadRepository;
 
 class SessionFlashcardReadRepositoryTest extends TestCase
 {

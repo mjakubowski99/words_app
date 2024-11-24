@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace Flashcard\Infrastructure\Mappers\Postgres;
 
 use Flashcard\Domain\Models\Owner;
+use Illuminate\Support\Facades\DB;
+use Shared\Enum\FlashcardOwnerType;
+use Flashcard\Domain\ValueObjects\OwnerId;
 use Flashcard\Domain\Models\SmTwoFlashcard;
 use Flashcard\Domain\Models\SmTwoFlashcards;
 use Flashcard\Domain\ValueObjects\FlashcardId;
-use Flashcard\Domain\ValueObjects\OwnerId;
-use Illuminate\Support\Facades\DB;
-use Shared\Enum\FlashcardOwnerType;
 
 class SmTwoFlashcardMapper
 {

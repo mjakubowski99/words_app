@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Repositories\Postgres;
 
+use Flashcard\Domain\ValueObjects\SessionId;
 use Flashcard\Application\ReadModels\SessionFlashcardsRead;
 use Flashcard\Application\Repository\ISessionFlashcardReadRepository;
-use Flashcard\Domain\ValueObjects\SessionId;
 use Flashcard\Infrastructure\Mappers\Postgres\SessionFlashcardReadMapper;
 
 class SessionFlashcardReadRepository implements ISessionFlashcardReadRepository

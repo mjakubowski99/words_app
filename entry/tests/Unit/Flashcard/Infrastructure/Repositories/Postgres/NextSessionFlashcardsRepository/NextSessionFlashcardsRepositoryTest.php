@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Flashcard\Infrastructure\Repositories\Postgres\NextSessionFlashcardsRepository;
 
+use Tests\TestCase;
 use App\Models\Flashcard;
 use App\Models\FlashcardDeck;
 use App\Models\LearningSession;
+use Flashcard\Domain\Models\Rating;
 use App\Models\LearningSessionFlashcard;
 use Flashcard\Domain\Models\NextSessionFlashcards;
-use Flashcard\Domain\Models\Rating;
-use Flashcard\Infrastructure\Repositories\Postgres\NextSessionFlashcardsRepository;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Tests\TestCase;
+use Flashcard\Infrastructure\Repositories\Postgres\NextSessionFlashcardsRepository;
 
 class NextSessionFlashcardsRepositoryTest extends TestCase
 {

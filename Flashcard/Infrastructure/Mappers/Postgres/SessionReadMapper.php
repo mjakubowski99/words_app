@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Mappers\Postgres;
 
+use Shared\Enum\SessionStatus;
+use Illuminate\Support\Facades\DB;
+use Flashcard\Domain\ValueObjects\SessionId;
 use Flashcard\Application\ReadModels\SessionRead;
 use Flashcard\Domain\Exceptions\ModelNotFoundException;
-use Flashcard\Domain\ValueObjects\SessionId;
-use Illuminate\Support\Facades\DB;
-use Shared\Enum\SessionStatus;
 
 class SessionReadMapper
 {

@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Repositories\Postgres;
 
-use Flashcard\Application\Repository\IFlashcardRepository;
-use Flashcard\Domain\Models\Flashcard;
 use Flashcard\Domain\Models\Owner;
-use Flashcard\Domain\ValueObjects\FlashcardDeckId;
-use Flashcard\Domain\ValueObjects\FlashcardId;
+use Flashcard\Domain\Models\Flashcard;
 use Flashcard\Domain\ValueObjects\SessionId;
+use Flashcard\Domain\ValueObjects\FlashcardId;
+use Flashcard\Domain\ValueObjects\FlashcardDeckId;
+use Flashcard\Application\Repository\IFlashcardRepository;
 use Flashcard\Infrastructure\Mappers\Postgres\FlashcardMapper;
 use Flashcard\Infrastructure\Mappers\Postgres\SessionFlashcardMapper;
 

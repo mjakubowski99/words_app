@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Flashcard\Infrastructure\Repositories\Postgres\SmTwoFlashcardRepository;
 
+use App\Models\User;
 use App\Models\Flashcard;
 use App\Models\FlashcardDeck;
 use App\Models\SmTwoFlashcard;
-use App\Models\User;
-use Flashcard\Application\Repository\FlashcardSortCriteria;
-use Flashcard\Domain\Models\SmTwoFlashcards;
-use Flashcard\Infrastructure\Repositories\Postgres\SmTwoFlashcardRepository;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\Base\FlashcardTestCase;
+use Flashcard\Domain\Models\SmTwoFlashcards;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Flashcard\Application\Repository\FlashcardSortCriteria;
+use Flashcard\Infrastructure\Repositories\Postgres\SmTwoFlashcardRepository;
 
 class SmTwoFlashcardRepositoryTest extends FlashcardTestCase
 {

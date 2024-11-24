@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Flashcard\Infrastructure\Repositories\Postgres\SessionRepository;
 
-use App\Models\FlashcardDeck;
-use App\Models\LearningSession;
 use App\Models\User;
+use App\Models\FlashcardDeck;
+use Shared\Enum\SessionStatus;
+use App\Models\LearningSession;
+use Tests\Base\FlashcardTestCase;
 use Flashcard\Domain\Models\Session;
 use Flashcard\Domain\ValueObjects\SessionId;
-use Flashcard\Infrastructure\Repositories\Postgres\SessionRepository;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Shared\Enum\SessionStatus;
-use Tests\Base\FlashcardTestCase;
+use Flashcard\Infrastructure\Repositories\Postgres\SessionRepository;
 
 class SessionRepositoryTest extends FlashcardTestCase
 {

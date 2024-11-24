@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Repositories\Postgres;
 
-use Flashcard\Application\ReadModels\DeckDetailsRead;
-use Flashcard\Application\Repository\IFlashcardDeckReadRepository;
 use Flashcard\Domain\Models\Owner;
 use Flashcard\Domain\ValueObjects\FlashcardDeckId;
+use Flashcard\Application\ReadModels\DeckDetailsRead;
+use Flashcard\Application\Repository\IFlashcardDeckReadRepository;
 use Flashcard\Infrastructure\Mappers\Postgres\FlashcardCategoryReadMapper;
 
 class FlashcardDeckReadRepository implements IFlashcardDeckReadRepository

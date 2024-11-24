@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Repositories\Postgres;
 
-use Flashcard\Application\Repository\INextSessionFlashcardsRepository;
-use Flashcard\Domain\Models\NextSessionFlashcards;
 use Flashcard\Domain\ValueObjects\SessionId;
+use Flashcard\Domain\Models\NextSessionFlashcards;
+use Flashcard\Application\Repository\INextSessionFlashcardsRepository;
 use Flashcard\Infrastructure\Mappers\Postgres\NextSessionFlashcardsMapper;
 
 class NextSessionFlashcardsRepository implements INextSessionFlashcardsRepository

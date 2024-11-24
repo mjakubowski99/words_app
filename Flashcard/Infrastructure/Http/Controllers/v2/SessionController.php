@@ -112,7 +112,7 @@ class SessionController extends Controller
                 description: 'Session id',
                 in: 'path',
                 example: 1,
-            )
+            ),
         ],
         responses: [
             new OAT\Response(
