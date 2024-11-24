@@ -7,7 +7,7 @@ namespace App\Http\OpenApi;
 use OpenApi\Attributes as OAT;
 
 #[OAT\Server(
-    url: 'http://localhost',
+    url: 'http://localhost:8001',
     description: 'localhost'
 )]
 #[OAT\Server(

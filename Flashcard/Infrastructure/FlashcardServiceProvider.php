@@ -10,25 +10,25 @@ use Flashcard\Application\Repository\ISessionRepository;
 use Flashcard\Application\Services\IRepetitionAlgorithm;
 use Flashcard\Application\Repository\IFlashcardRepository;
 use Flashcard\Application\Repository\ISessionReadRepository;
-use Flashcard\Infrastructure\Repositories\SessionRepository;
 use Flashcard\Application\Repository\IFlashcardDeckRepository;
-use Flashcard\Infrastructure\Repositories\FlashcardRepository;
 use Flashcard\Application\Repository\ISmTwoFlashcardRepository;
 use Flashcard\Application\Services\AiGenerators\GeminiGenerator;
 use Flashcard\Application\Services\SmTwo\SmTwoFlashcardSelector;
-use Flashcard\Infrastructure\Repositories\SessionReadRepository;
 use Flashcard\Application\Repository\IFlashcardDeckReadRepository;
 use Flashcard\Application\Services\SmTwo\SmTwoRepetitionAlgorithm;
-use Flashcard\Infrastructure\Repositories\FlashcardDeckRepository;
-use Flashcard\Infrastructure\Repositories\SmTwoFlashcardRepository;
 use Flashcard\Application\Services\AiGenerators\IFlashcardGenerator;
 use Flashcard\Application\Repository\ISessionFlashcardReadRepository;
+use Flashcard\Infrastructure\Repositories\Postgres\SessionRepository;
 use Flashcard\Application\Repository\INextSessionFlashcardsRepository;
-use Flashcard\Infrastructure\Repositories\FlashcardDeckReadRepository;
-use Flashcard\Infrastructure\Repositories\SessionFlashcardReadRepository;
+use Flashcard\Infrastructure\Repositories\Postgres\FlashcardRepository;
+use Flashcard\Infrastructure\Repositories\Postgres\SessionReadRepository;
 use Flashcard\Application\Repository\IRateableSessionFlashcardsRepository;
-use Flashcard\Infrastructure\Repositories\NextSessionFlashcardsRepository;
-use Flashcard\Infrastructure\Repositories\RateableSessionFlashcardsRepository;
+use Flashcard\Infrastructure\Repositories\Postgres\FlashcardDeckRepository;
+use Flashcard\Infrastructure\Repositories\Postgres\SmTwoFlashcardRepository;
+use Flashcard\Infrastructure\Repositories\Postgres\FlashcardDeckReadRepository;
+use Flashcard\Infrastructure\Repositories\Postgres\SessionFlashcardReadRepository;
+use Flashcard\Infrastructure\Repositories\Postgres\NextSessionFlashcardsRepository;
+use Flashcard\Infrastructure\Repositories\Postgres\RateableSessionFlashcardsRepository;
 
 class FlashcardServiceProvider extends ServiceProvider
 {
