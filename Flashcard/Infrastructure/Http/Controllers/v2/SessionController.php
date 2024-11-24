@@ -106,6 +106,14 @@ class SessionController extends Controller
             content: new OAT\JsonContent(ref: '#/components/schemas/Requests\Flashcard\v2\RateSessionFlashcardRequest')
         ),
         tags: [Tags::V2, Tags::FLASHCARD],
+        parameters: [
+            new OAT\Parameter(
+                name: 'session_id',
+                description: 'Session id',
+                in: 'path',
+                example: 1,
+            )
+        ],
         responses: [
             new OAT\Response(
                 response: 200,

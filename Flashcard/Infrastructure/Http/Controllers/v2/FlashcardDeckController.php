@@ -223,6 +223,12 @@ class FlashcardDeckController
         tags: [Tags::V2, Tags::FLASHCARD],
         parameters: [
             new OAT\Parameter(
+                name: 'flashcard_deck_id',
+                description: 'Flashcard deck id',
+                in: 'path',
+                example: 1,
+            ),
+            new OAT\Parameter(
                 name: 'search',
                 description: 'Search flashcards parameter',
                 in: 'query',
