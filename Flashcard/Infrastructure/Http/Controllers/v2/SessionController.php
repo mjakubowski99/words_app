@@ -43,8 +43,8 @@ class SessionController extends Controller
     #[OAT\Post(
         path: '/api/v2/flashcards/session',
         operationId: 'v2.flashcard.session.store',
-        description: 'Creates flashcard learning session for given category',
-        summary: 'Creates flashcard learning session for given category',
+        description: 'Creates flashcard learning session for given deck',
+        summary: 'Creates flashcard learning session for given deck',
         security: [['sanctum' => []]],
         requestBody: new OAT\RequestBody(
             content: new OAT\JsonContent(ref: '#/components/schemas/Requests\Flashcard\v2\CreateSessionRequest')
