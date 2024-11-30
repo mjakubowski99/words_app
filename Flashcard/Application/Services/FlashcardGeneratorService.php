@@ -20,7 +20,7 @@ class FlashcardGeneratorService
 
     public function generate(ResolvedDeck $deck, string $deck_name): array
     {
-        $prompt = new FlashcardPrompt($deck_name);
+        $prompt = new FlashcardPrompt($deck_name, $deck->getDeck()->getDefaultLanguageLevel());
 
         try {
             $flashcards = $this->generator->generate($deck->getDeck()->getOwner(), $deck->getDeck(), $prompt);

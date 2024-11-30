@@ -6,6 +6,7 @@ namespace Database\Factories;
 
 use App\Models\User;
 use App\Models\FlashcardDeck;
+use Shared\Enum\LanguageLevel;
 use Shared\Utils\ValueObjects\Language;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -20,11 +21,12 @@ class FlashcardFactory extends Factory
             'flashcard_deck_id' => FlashcardDeck::factory()->create(),
             'user_id' => fn () => User::factory()->create(),
             'front_word' => $this->faker->name,
-            'front_lang' => Language::PL,
+            'front_lang' => Language::pl()->getValue(),
             'back_word' => $this->faker->name,
-            'back_lang' => Language::EN,
+            'back_lang' => Language::en()->getValue(),
             'front_context' => 'Context',
             'back_context' => 'Context translation',
+            'language_level' => LanguageLevel::A1->value,
         ];
     }
 }

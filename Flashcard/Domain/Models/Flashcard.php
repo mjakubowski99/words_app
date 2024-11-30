@@ -4,11 +4,17 @@ declare(strict_types=1);
 
 namespace Flashcard\Domain\Models;
 
+use Shared\Enum\LanguageLevel;
 use Shared\Utils\ValueObjects\Language;
 use Flashcard\Domain\ValueObjects\FlashcardId;
 
 final class Flashcard
 {
+    private Language $learned_language;
+
+    /**
+     * @throws \Exception
+     */
     public function __construct(
         private FlashcardId $id,
         private string $front_word,
@@ -19,7 +25,14 @@ final class Flashcard
         private string $back_context,
         private ?Owner $owner,
         private ?Deck $deck,
-    ) {}
+        private LanguageLevel $level,
+    ) {
+        $this->learned_language = Language::from($this->back_lang->getValue());
+
+        if (!in_array($this->level, $this->learned_language->getAvailableLanguages())) {
+            throw new \Exception("Invalid language level: {$this->level->value} for language {$this->learned_language}");
+        }
+    }
 
     public function getId(): FlashcardId
     {
@@ -74,5 +87,15 @@ final class Flashcard
     public function getDeck(): Deck
     {
         return $this->deck;
+    }
+
+    public function getLearnedLanguage(): Language
+    {
+        return $this->learned_language;
+    }
+
+    public function getLanguageLevel(): LanguageLevel
+    {
+        return $this->level;
     }
 }

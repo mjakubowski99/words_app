@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Unit\Flashcard\Domain\Models\NextSessionFlashcards;
 
 use Tests\TestCase;
+use Shared\Enum\LanguageLevel;
 use Flashcard\Domain\Models\Deck;
 use Flashcard\Domain\Models\Owner;
 use Shared\Enum\FlashcardOwnerType;
@@ -84,7 +85,7 @@ class NextSessionFlashcardsTest extends TestCase
 
     private function makeCategory(Owner $owner): Deck
     {
-        return new Deck($owner, 'tag', 'name');
+        return new Deck($owner, 'tag', 'name', LanguageLevel::A2);
     }
 
     private function makeOwner(): Owner
@@ -97,13 +98,14 @@ class NextSessionFlashcardsTest extends TestCase
         return new Flashcard(
             new FlashcardId(1),
             'word',
-            Language::from(Language::PL),
+            Language::pl(),
             'trans',
-            Language::from(Language::EN),
+            Language::en(),
             'context',
             'context_translation',
             $owner,
             null,
+            LanguageLevel::A1,
         );
     }
 }

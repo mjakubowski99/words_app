@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Flashcard\Infrastructure\Http\Request\v2;
 
 use OpenApi\Attributes as OAT;
+use Shared\Enum\LanguageLevel;
 use Shared\Http\Request\Request;
 use Flashcard\Domain\Models\Owner;
 use Shared\Enum\FlashcardOwnerType;
@@ -28,6 +29,7 @@ class GenerateFlashcardsRequest extends Request
     {
         return [
             'category_name' => ['required', 'string', 'min:5', 'max:40'],
+            'language_level' => ['nullable', 'string'],
             'page' => ['integer', 'gte:0'],
             'per_page' => ['integer', 'gte:0', 'lte:30'],
         ];
@@ -48,11 +50,17 @@ class GenerateFlashcardsRequest extends Request
         return $this->input('category_name');
     }
 
+    public function getLanguageLevel(): LanguageLevel
+    {
+        return $this->input('language_level') ? LanguageLevel::from($this->input('language_level')) : LanguageLevel::default();
+    }
+
     public function toCommand(): GenerateFlashcards
     {
         return new GenerateFlashcards(
             new Owner(new OwnerId($this->current()->getId()->getValue()), FlashcardOwnerType::USER),
-            $this->getCategoryName()
+            $this->getCategoryName(),
+            $this->getLanguageLevel()
         );
     }
 }

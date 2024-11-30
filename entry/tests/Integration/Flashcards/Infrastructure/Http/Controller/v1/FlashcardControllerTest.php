@@ -42,8 +42,8 @@ class FlashcardControllerTest extends TestCase
             'front_context' => 'Context',
             'back_word' => 'Translation',
             'back_context' => 'Context translation',
-            'front_lang' => Language::PL,
-            'back_lang' => Language::EN,
+            'front_lang' => Language::pl(),
+            'back_lang' => Language::en(),
         ]);
     }
 
@@ -98,8 +98,8 @@ class FlashcardControllerTest extends TestCase
             'front_context' => 'Context',
             'back_word' => 'Translation',
             'back_context' => 'Context translation',
-            'front_lang' => Language::PL,
-            'back_lang' => Language::EN,
+            'front_lang' => Language::pl(),
+            'back_lang' => Language::en(),
         ]);
     }
 

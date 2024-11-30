@@ -35,6 +35,7 @@ class CreateFlashcardHandler
             $command->getBackContext(),
             $command->getOwner(),
             $deck,
+            $command->getLanguageLevel()
         );
 
         $this->repository->createMany([$flashcard]);

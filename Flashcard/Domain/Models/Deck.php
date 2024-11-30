@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Flashcard\Domain\Models;
 
+use Shared\Enum\LanguageLevel;
 use Flashcard\Domain\ValueObjects\FlashcardDeckId;
 
 class Deck
@@ -14,6 +15,7 @@ class Deck
         private Owner $owner,
         private string $tag,
         private string $name,
+        private LanguageLevel $default_language_level,
     ) {}
 
     public function init(FlashcardDeckId $id): self
@@ -51,5 +53,10 @@ class Deck
     public function setName(string $name): void
     {
         $this->name = $name;
+    }
+
+    public function getDefaultLanguageLevel(): LanguageLevel
+    {
+        return $this->default_language_level;
     }
 }

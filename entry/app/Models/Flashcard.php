@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use Illuminate\Support\Carbon;
+use Shared\Enum\LanguageLevel;
 use Illuminate\Database\Eloquent\Model;
 use Shared\Utils\ValueObjects\Language;
 use Database\Factories\FlashcardFactory;
@@ -45,7 +46,7 @@ class Flashcard extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function category(): BelongsTo
+    public function deck(): BelongsTo
     {
         return $this->belongsTo(FlashcardDeck::class, 'flashcard_deck_id');
     }
@@ -61,7 +62,8 @@ class Flashcard extends Model
             $this->front_context,
             $this->back_context,
             $this->user->toOwner(),
-            $this->category->toDomainModel(),
+            $this->deck->toDomainModel(),
+            LanguageLevel::from($this->deck->default_language_level),
         );
     }
 }

@@ -7,6 +7,7 @@ namespace Tests\Unit\Flashcard\Infrastructure\Repositories\Postgres\FlashcardDec
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\FlashcardDeck;
+use Shared\Enum\LanguageLevel;
 use Flashcard\Domain\Models\Deck;
 use Flashcard\Domain\Models\Owner;
 use Shared\Enum\FlashcardOwnerType;
@@ -49,6 +50,7 @@ class FlashcardDeckRepositoryTest extends TestCase
             'getName' => 'Cat name',
             'hasOwner' => true,
             'getOwner' => $user->toOwner(),
+            'getDefaultLanguageLevel' => LanguageLevel::A1,
         ]);
 
         // WHEN

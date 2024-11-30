@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\Command;
 
+use Shared\Enum\LanguageLevel;
 use Flashcard\Domain\Models\Owner;
 use Shared\Utils\ValueObjects\Language;
 use Flashcard\Domain\ValueObjects\FlashcardId;
@@ -21,6 +22,7 @@ class UpdateFlashcard extends CreateFlashcard
         Language $back_lang,
         string $back_word,
         string $back_context,
+        LanguageLevel $level,
     ) {
         parent::__construct(
             $owner,
@@ -30,7 +32,8 @@ class UpdateFlashcard extends CreateFlashcard
             $front_context,
             $back_lang,
             $back_word,
-            $back_context
+            $back_context,
+            $level
         );
     }
 

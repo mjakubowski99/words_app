@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Flashcard\Infrastructure\Http\Request\v2;
 
 use OpenApi\Attributes as OAT;
+use Shared\Enum\LanguageLevel;
 use Shared\Http\Request\Request;
 use Flashcard\Domain\Models\Owner;
 use Shared\Utils\ValueObjects\Language;
@@ -44,6 +45,21 @@ use Flashcard\Domain\ValueObjects\FlashcardDeckId;
             type: 'string',
             example: 'Adam eats apple',
         ),
+        new OAT\Property(
+            property: 'language_level',
+            description: 'Language level. Default value is: ' . LanguageLevel::DEFAULT,
+            type: 'string',
+            enum: [
+                LanguageLevel::A1,
+                LanguageLevel::A2,
+                LanguageLevel::B1,
+                LanguageLevel::B1,
+                LanguageLevel::C1,
+                LanguageLevel::C2,
+            ],
+            example: LanguageLevel::C1,
+            nullable: true
+        ),
     ]
 )]
 class StoreFlashcardRequest extends Request
@@ -56,6 +72,7 @@ class StoreFlashcardRequest extends Request
             'back_word' => ['required', 'string', 'max:255'],
             'front_context' => ['required', 'string', 'max:255'],
             'back_context' => ['required', 'string', 'max:255'],
+            'language_level' => ['nullable', 'string'],
         ];
     }
 
@@ -71,7 +88,8 @@ class StoreFlashcardRequest extends Request
             $this->input('front_context'),
             Language::en(),
             $this->input('back_word'),
-            $this->input('back_context')
+            $this->input('back_context'),
+            $this->input('language_level') ? LanguageLevel::from($this->input('language_level')) : LanguageLevel::default()
         );
     }
 }

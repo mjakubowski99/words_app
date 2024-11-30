@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\Command;
 
+use Shared\Enum\LanguageLevel;
 use Flashcard\Domain\Models\Owner;
 use Shared\Utils\ValueObjects\Language;
 use Flashcard\Domain\ValueObjects\FlashcardDeckId;
@@ -19,6 +20,7 @@ class CreateFlashcard
         private Language $back_lang,
         private string $back_word,
         private string $back_context,
+        private LanguageLevel $language_level,
     ) {}
 
     public function getOwner(): Owner
@@ -59,5 +61,10 @@ class CreateFlashcard
     public function getBackContext(): string
     {
         return $this->back_context;
+    }
+
+    public function getLanguageLevel(): LanguageLevel
+    {
+        return $this->language_level;
     }
 }

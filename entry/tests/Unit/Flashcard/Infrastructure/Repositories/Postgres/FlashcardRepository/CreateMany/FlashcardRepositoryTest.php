@@ -6,6 +6,7 @@ namespace Tests\Unit\Flashcard\Infrastructure\Repositories\Postgres\FlashcardRep
 
 use App\Models\User;
 use App\Models\FlashcardDeck;
+use Shared\Enum\LanguageLevel;
 use Tests\Base\FlashcardTestCase;
 use Flashcard\Domain\Models\Flashcard;
 use Shared\Utils\ValueObjects\Language;
@@ -41,7 +42,8 @@ class FlashcardRepositoryTest extends FlashcardTestCase
                 'context',
                 'context_translation',
                 $users[0]->toOwner(),
-                $decks[0]->toDomainModel()
+                $decks[0]->toDomainModel(),
+                LanguageLevel::A1
             ),
             new Flashcard(
                 new FlashcardId(0),
@@ -52,7 +54,8 @@ class FlashcardRepositoryTest extends FlashcardTestCase
                 'context 1',
                 'context_translation 1',
                 $users[1]->toOwner(),
-                $decks[1]->toDomainModel()
+                $decks[1]->toDomainModel(),
+                LanguageLevel::A1
             ),
         ];
 

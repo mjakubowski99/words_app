@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Flashcard\Infrastructure\Http\Request\v1;
 
 use OpenApi\Attributes as OAT;
+use Shared\Enum\LanguageLevel;
 use Shared\Http\Request\Request;
 use Flashcard\Domain\Models\Owner;
 use Shared\Enum\FlashcardOwnerType;
@@ -52,7 +53,8 @@ class GenerateFlashcardsRequest extends Request
     {
         return new GenerateFlashcards(
             new Owner(new OwnerId($this->current()->getId()->getValue()), FlashcardOwnerType::USER),
-            $this->getCategoryName()
+            $this->getCategoryName(),
+            LanguageLevel::A1
         );
     }
 }

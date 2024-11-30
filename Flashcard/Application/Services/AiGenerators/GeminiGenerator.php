@@ -51,6 +51,7 @@ class GeminiGenerator implements IFlashcardGenerator
                 (string) $row['sentence_trans'],
                 $owner,
                 $deck,
+                $deck->getDefaultLanguageLevel(),
             );
         }
 

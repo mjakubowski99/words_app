@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Http\Resources\v2;
 
+use Shared\Enum\Language;
 use OpenApi\Attributes as OAT;
 use Shared\Enum\GeneralRatingType;
-use Shared\Utils\ValueObjects\Language;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Flashcard\Application\ReadModels\FlashcardRead;
 use Flashcard\Application\ReadModels\DeckDetailsRead;
