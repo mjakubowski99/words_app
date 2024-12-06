@@ -70,11 +70,11 @@ class SmTwoFlashcardSelector implements IFlashcardSelector
         $criteria = $prioritize_not_hard_flashcards ? [
             FlashcardSortCriteria::NOT_RATED_FLASHCARDS_FIRST,
             FlashcardSortCriteria::PLANNED_FLASHCARDS_FOR_CURRENT_DATE_FIRST,
-            FlashcardSortCriteria::HARD_FLASHCARDS_FIRST,
+            FlashcardSortCriteria::NOT_HARD_FLASHCARDS_FIRST,
             FlashcardSortCriteria::OLDEST_UPDATE_FLASHCARDS_FIRST,
         ] : [
             FlashcardSortCriteria::NOT_RATED_FLASHCARDS_FIRST,
-            FlashcardSortCriteria::NOT_HARD_FLASHCARDS_FIRST,
+            FlashcardSortCriteria::HARD_FLASHCARDS_FIRST,
             FlashcardSortCriteria::OLDEST_UPDATE_FLASHCARDS_FIRST,
             FlashcardSortCriteria::PLANNED_FLASHCARDS_FOR_CURRENT_DATE_FIRST,
             FlashcardSortCriteria::HARD_FLASHCARDS_FIRST,
