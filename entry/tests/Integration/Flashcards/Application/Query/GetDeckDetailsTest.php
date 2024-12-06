@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Integration\Flashcards\Application\Query;
 
+use Shared\Enum\LanguageLevel;
 use Tests\TestCase;
 use App\Models\Flashcard;
 use App\Models\FlashcardDeck;
@@ -26,8 +27,9 @@ class GetDeckDetailsTest extends TestCase
     {
         // GIVEN
         $deck = FlashcardDeck::factory()->create();
-        Flashcard::factory()->create([
+        $flashcard = Flashcard::factory()->create([
             'flashcard_deck_id' => $deck->id,
+            'language_level' => LanguageLevel::C1->value,
         ]);
 
         // WHEN
@@ -36,5 +38,7 @@ class GetDeckDetailsTest extends TestCase
         // THEN
         $this->assertSame($deck->id, $result->getId()->getValue());
         $this->assertSame($deck->name, $result->getName());
+        $this->assertSame(1, count($result->getFlashcards()));
+        $this->assertSame($flashcard->language_level, $result->getFlashcards()[0]->getLanguageLevel()->value);
     }
 }

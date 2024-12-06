@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Mappers\Postgres;
 
+use Shared\Enum\LanguageLevel;
 use Shared\Enum\SessionStatus;
 use Illuminate\Support\Facades\DB;
 use Shared\Utils\ValueObjects\Language;
@@ -41,7 +42,8 @@ class SessionFlashcardReadMapper
                     flashcards.back_word,
                     flashcards.back_lang,
                     flashcards.front_context,
-                    flashcards.back_context
+                    flashcards.back_context,
+                    flashcards.language_level
                 FROM 
                     learning_session_flashcards
                 LEFT JOIN
@@ -69,6 +71,7 @@ class SessionFlashcardReadMapper
                 flashcards_data.back_lang,
                 flashcards_data.front_context,
                 flashcards_data.back_context,
+                flashcards_data.language_level,
                 session_data.id AS session_id,
                 session_data.status as status,
                 session_data.cards_per_session,
@@ -113,7 +116,8 @@ class SessionFlashcardReadMapper
             $data->back_word,
             Language::from($data->back_lang),
             $data->front_context,
-            $data->back_context
+            $data->back_context,
+            LanguageLevel::from($data->language_level)
         );
     }
 }
