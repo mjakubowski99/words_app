@@ -9,6 +9,7 @@ use Flashcard\Infrastructure\SortCriteria\Postgres\HardFlashcardsFirst;
 use Flashcard\Infrastructure\SortCriteria\Postgres\PostgresSortCriteria;
 use Flashcard\Infrastructure\SortCriteria\Postgres\NotHardFlashcardsFirst;
 use Flashcard\Infrastructure\SortCriteria\Postgres\NotRatedFlashcardsFirst;
+use Flashcard\Infrastructure\SortCriteria\Postgres\OlderThanFiveMinutesAgo;
 use Flashcard\Infrastructure\SortCriteria\Postgres\OldestUpdateFlashcardsFirst;
 use Flashcard\Infrastructure\SortCriteria\Postgres\RandomizeLatestFlashcardOrder;
 use Flashcard\Infrastructure\SortCriteria\Postgres\PlannedFlashcardsForCurrentDateFirst;
@@ -26,6 +27,7 @@ class FlashcardSortCriteriaFactory
             FlashcardSortCriteria::OLDEST_UPDATE_FLASHCARDS_FIRST => new OldestUpdateFlashcardsFirst(),
             FlashcardSortCriteria::NOT_HARD_FLASHCARDS_FIRST => new NotHardFlashcardsFirst(),
             FlashcardSortCriteria::HARD_FLASHCARDS_FIRST => new HardFlashcardsFirst(),
+            FlashcardSortCriteria::OLDER_THAN_FIVE_MINUTES_AGO_FIRST => new OlderThanFiveMinutesAgo(),
         };
     }
 }
