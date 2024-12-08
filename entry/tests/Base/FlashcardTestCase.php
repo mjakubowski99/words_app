@@ -25,6 +25,11 @@ abstract class FlashcardTestCase extends TestCase
         return Flashcard::factory()->create($attributes);
     }
 
+    public function createSmTwoFlashcard(array $attributes = []): SmTwoFlashcard
+    {
+        return SmTwoFlashcard::factory()->create($attributes);
+    }
+
     public function createFlashcardDeck(array $attributes = []): FlashcardDeck
     {
         return FlashcardDeck::factory()->create($attributes);
