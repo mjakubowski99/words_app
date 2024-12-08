@@ -54,7 +54,7 @@ class GenerateFlashcardsRequest extends Request
         return new GenerateFlashcards(
             new Owner(new OwnerId($this->current()->getId()->getValue()), FlashcardOwnerType::USER),
             $this->getCategoryName(),
-            LanguageLevel::A1
+            LanguageLevel::default()
         );
     }
 }

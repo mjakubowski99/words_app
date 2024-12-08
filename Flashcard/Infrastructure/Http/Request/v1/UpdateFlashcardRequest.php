@@ -68,7 +68,7 @@ class UpdateFlashcardRequest extends Request
             Language::en(),
             $this->input('translation'),
             $this->input('context_translation'),
-            LanguageLevel::A1
+            LanguageLevel::default()
         );
     }
 }
