@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Integration\Flashcards\Infrastructure\Http\Controller\v2;
 
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\Base\FlashcardTestCase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class FlashcardDeckControllerTest extends FlashcardTestCase
 {

@@ -7,7 +7,6 @@ namespace Tests\Unit\Flashcard\Infrastructure\Repositories\Postgres\FlashcardDec
 use App\Models\User;
 use App\Models\Flashcard;
 use App\Models\FlashcardDeck;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Shared\Enum\LanguageLevel;
 use Tests\Base\FlashcardTestCase;
 use Shared\Enum\GeneralRatingType;
@@ -16,6 +15,7 @@ use App\Models\LearningSessionFlashcard;
 use Flashcard\Application\ReadModels\FlashcardRead;
 use Flashcard\Application\ReadModels\DeckDetailsRead;
 use Flashcard\Application\ReadModels\OwnerCategoryRead;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Flashcard\Infrastructure\Repositories\Postgres\FlashcardDeckReadRepository;
 
 class FlashcardDeckReadRepositoryTest extends FlashcardTestCase
