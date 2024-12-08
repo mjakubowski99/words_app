@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Mappers\Postgres;
 
+use Shared\Enum\LanguageLevel;
 use Flashcard\Domain\Models\Deck;
 use Flashcard\Domain\Models\Owner;
 use Illuminate\Support\Facades\DB;
@@ -27,6 +28,7 @@ class FlashcardDeckMapper
                 'user_id' => $deck->getOwner()->getId(),
                 'tag' => $deck->getName(),
                 'name' => $deck->getName(),
+                'default_language_level' => $deck->getDefaultLanguageLevel(),
                 'created_at' => $now,
                 'updated_at' => $now,
             ]);
@@ -44,6 +46,7 @@ class FlashcardDeckMapper
                 'user_id' => $deck->getOwner()->getId(),
                 'tag' => $deck->getName(),
                 'name' => $deck->getName(),
+                'default_language_level' => $deck->getDefaultLanguageLevel(),
                 'updated_at' => $now,
             ]);
     }
@@ -101,6 +104,7 @@ class FlashcardDeckMapper
             new Owner(new OwnerId($data->user_id), FlashcardOwnerType::USER),
             $data->tag,
             $data->name,
+            LanguageLevel::from($data->default_language_level),
         ))->init(new FlashcardDeckId($data->id));
     }
 }

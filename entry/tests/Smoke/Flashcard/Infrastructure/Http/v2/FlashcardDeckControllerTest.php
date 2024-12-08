@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Smoke\Flashcard\Infrastructure\Http\v2;
 
+use Shared\Enum\LanguageLevel;
 use Tests\Traits\GeminiApiFaker;
 use Tests\Base\FlashcardTestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -103,6 +104,7 @@ class FlashcardDeckControllerTest extends FlashcardTestCase
         $response = $this->actingAs($user, 'sanctum')
             ->json('POST', route('v2.flashcards.decks.generate-flashcards'), [
                 'category_name' => 'Category',
+                'language_level' => LanguageLevel::C1,
             ]);
 
         // THEN
@@ -120,6 +122,7 @@ class FlashcardDeckControllerTest extends FlashcardTestCase
                         'back_lang',
                         'front_context',
                         'back_context',
+                        'language_level',
                     ],
                 ],
             ],

@@ -29,6 +29,10 @@ use Flashcard\Application\ReadModels\OwnerCategoryRead;
                         type: 'string',
                         example: 'Two people talk'
                     ),
+                    new OAT\Property(
+                        property: 'language_level',
+                        ref: '#/components/schemas/LanguageLevel'
+                    ),
                 ],
                 type: 'object'
             )
@@ -59,6 +63,7 @@ class FlashcardDecksResource extends JsonResource
                 return [
                     'id' => $resource->getId()->getValue(),
                     'name' => $resource->getName(),
+                    'language_level' => $resource->getLanguageLevel()->value,
                 ];
             }, $user_decks),
             'page' => $page,

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Mappers\Postgres;
 
+use Shared\Enum\LanguageLevel;
 use Shared\Enum\SessionStatus;
 use Flashcard\Domain\Models\Deck;
 use Flashcard\Domain\Models\Owner;
@@ -87,6 +88,7 @@ class SessionMapper
                 'flashcard_decks.user_id as deck_user_id',
                 'flashcard_decks.tag as deck_tag',
                 'flashcard_decks.name as deck_name',
+                'flashcard_decks.default_language_level as deck_default_language_level',
             )
             ->first();
 
@@ -103,6 +105,7 @@ class SessionMapper
             new Owner(new OwnerId($data->deck_user_id), FlashcardOwnerType::USER),
             $data->deck_tag,
             $data->deck_name,
+            LanguageLevel::from($data->deck_default_language_level)
         ))->init(new FlashcardDeckId($data->deck_id));
 
         return (new Session(

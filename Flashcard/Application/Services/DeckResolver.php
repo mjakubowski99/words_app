@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\Services;
 
+use Shared\Enum\LanguageLevel;
 use Flashcard\Domain\Models\Deck;
 use Flashcard\Domain\Models\Owner;
 use Flashcard\Application\DTO\ResolvedDeck;
@@ -16,7 +17,7 @@ class DeckResolver
         private IFlashcardDeckRepository $repository
     ) {}
 
-    public function resolveByName(Owner $owner, string $name): ResolvedDeck
+    public function resolveByName(Owner $owner, string $name, LanguageLevel $level): ResolvedDeck
     {
         $existing_deck = $this->repository->searchByName($owner, $name);
 
@@ -27,7 +28,8 @@ class DeckResolver
         $deck = new Deck(
             $owner,
             mb_strtolower($name),
-            $name
+            $name,
+            $level,
         );
         $deck = $this->repository->create($deck);
 

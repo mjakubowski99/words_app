@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Mappers\Postgres;
 
+use Shared\Enum\LanguageLevel;
 use Flashcard\Domain\Models\Owner;
 use Illuminate\Support\Facades\DB;
 use Shared\Utils\ValueObjects\Language;
@@ -15,7 +16,7 @@ use Flashcard\Application\ReadModels\DeckDetailsRead;
 use Flashcard\Application\ReadModels\OwnerCategoryRead;
 use Flashcard\Domain\Exceptions\ModelNotFoundException;
 
-class FlashcardCategoryReadMapper
+class FlashcardDeckReadMapper
 {
     public function __construct(
         private readonly DB $db,
@@ -61,7 +62,8 @@ class FlashcardCategoryReadMapper
                     Language::from($data->back_lang),
                     $data->front_context,
                     $data->back_context,
-                    new GeneralRating($data->last_rating)
+                    new GeneralRating($data->last_rating),
+                    LanguageLevel::from($data->language_level),
                 );
             })->toArray();
 
@@ -82,11 +84,21 @@ class FlashcardCategoryReadMapper
             ->take($per_page)
             ->skip(($page - 1) * $per_page)
             ->latest()
+            ->select(
+                'flashcard_decks.*',
+                DB::raw('(SELECT language_level
+                    FROM flashcards
+                    WHERE flashcards.flashcard_deck_id = flashcard_decks.id
+                    GROUP BY language_level
+                    ORDER BY COUNT(*) DESC
+                LIMIT 1) as most_frequent_language_level')
+            )
             ->get()
             ->map(function (object $data) {
                 return new OwnerCategoryRead(
                     new FlashcardDeckId($data->id),
                     $data->name,
+                    LanguageLevel::from($data->most_frequent_language_level ?? $data->default_language_level)
                 );
             })->toArray();
     }

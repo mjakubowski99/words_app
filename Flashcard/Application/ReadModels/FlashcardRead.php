@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\ReadModels;
 
+use Shared\Enum\LanguageLevel;
 use Shared\Utils\ValueObjects\Language;
 use Flashcard\Domain\ValueObjects\FlashcardId;
 
@@ -18,6 +19,7 @@ class FlashcardRead
         private string $front_context,
         private string $back_context,
         private GeneralRating $general_rating,
+        private LanguageLevel $language_level,
     ) {}
 
     public function getId(): FlashcardId
@@ -58,5 +60,10 @@ class FlashcardRead
     public function getGeneralRating(): GeneralRating
     {
         return $this->general_rating;
+    }
+
+    public function getLanguageLevel(): LanguageLevel
+    {
+        return $this->language_level;
     }
 }

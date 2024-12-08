@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use Illuminate\Support\Carbon;
+use Shared\Enum\LanguageLevel;
 use Flashcard\Domain\Models\Deck;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
@@ -48,6 +49,7 @@ class FlashcardDeck extends Model
             $this->user->toOwner(),
             $this->tag,
             $this->name,
+            LanguageLevel::from($this->default_language_level),
         ))->init(new FlashcardDeckId($this->id));
     }
 }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Flashcard\Infrastructure\Http\Request\v1;
 
 use OpenApi\Attributes as OAT;
+use Shared\Enum\LanguageLevel;
 use Shared\Http\Request\Request;
 use Flashcard\Domain\Models\Owner;
 use Shared\Utils\ValueObjects\Language;
@@ -66,7 +67,8 @@ class UpdateFlashcardRequest extends Request
             $this->input('context'),
             Language::en(),
             $this->input('translation'),
-            $this->input('context_translation')
+            $this->input('context_translation'),
+            LanguageLevel::default()
         );
     }
 }

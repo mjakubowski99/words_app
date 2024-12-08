@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Models\Flashcard;
 use App\Models\FlashcardDeck;
 use App\Models\SmTwoFlashcard;
+use Shared\Enum\LanguageLevel;
 use App\Models\LearningSession;
 use Flashcard\Domain\Models\Deck;
 use Shared\Utils\ValueObjects\UserId;
@@ -76,6 +77,7 @@ abstract class FlashcardTestCase extends TestCase
             $deck->user->toOwner(),
             $deck->tag,
             $deck->name,
+            LanguageLevel::from($deck->default_language_level)
         ))->init(new FlashcardDeckId($deck->id));
     }
 }

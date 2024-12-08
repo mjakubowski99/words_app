@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Mappers\Postgres;
 
+use Shared\Enum\LanguageLevel;
 use Flashcard\Domain\Models\Deck;
 use Flashcard\Domain\Models\Owner;
 use Illuminate\Support\Facades\DB;
@@ -34,7 +35,8 @@ class NextSessionFlashcardsMapper
                         ls.status AS session_status,
                         fd.id AS deck_id,
                         fd.name AS deck_name,
-                        fd.tag AS deck_tag
+                        fd.tag AS deck_tag,
+                        fd.default_language_level AS deck_default_language_level 
                     FROM 
                         learning_sessions AS ls
                     LEFT JOIN 
@@ -62,6 +64,7 @@ class NextSessionFlashcardsMapper
                     sd.deck_id,
                     sd.deck_name,
                     sd.deck_tag,
+                    sd.deck_default_language_level,
                     c.unrated_count,
                     c.all_count
                 FROM 
@@ -123,7 +126,8 @@ class NextSessionFlashcardsMapper
         $deck = $result->deck_id ? new Deck(
             $owner,
             $result->deck_tag,
-            $result->deck_name
+            $result->deck_name,
+            LanguageLevel::from($result->deck_default_language_level)
         ) : null;
         $deck?->init(new FlashcardDeckId($result->deck_id));
 

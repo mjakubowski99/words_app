@@ -2,12 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Integration\Flashcards\Infrastructure\Http\Controller\v1;
+namespace Tests\Integration\Flashcards\Infrastructure\Http\Controller\v1;
 
 use Tests\Base\FlashcardTestCase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class FlashcardDeckControllerTest extends FlashcardTestCase
 {
+    use DatabaseTransactions;
+
     public function test__index_success(): void
     {
         // GIVEN

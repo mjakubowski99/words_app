@@ -4,20 +4,23 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Flashcard\Infrastructure\Repositories\Postgres\FlashcardDeckReadRepository;
 
-use Tests\TestCase;
 use App\Models\User;
 use App\Models\Flashcard;
 use App\Models\FlashcardDeck;
+use Shared\Enum\LanguageLevel;
+use Tests\Base\FlashcardTestCase;
 use Shared\Enum\GeneralRatingType;
 use Flashcard\Domain\Models\Rating;
 use App\Models\LearningSessionFlashcard;
 use Flashcard\Application\ReadModels\FlashcardRead;
 use Flashcard\Application\ReadModels\DeckDetailsRead;
 use Flashcard\Application\ReadModels\OwnerCategoryRead;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Flashcard\Infrastructure\Repositories\Postgres\FlashcardDeckReadRepository;
 
-class FlashcardDeckReadRepositoryTest extends TestCase
+class FlashcardDeckReadRepositoryTest extends FlashcardTestCase
 {
+    use DatabaseTransactions;
     private FlashcardDeckReadRepository $repository;
 
     protected function setUp(): void
@@ -112,6 +115,7 @@ class FlashcardDeckReadRepositoryTest extends TestCase
         $other_deck = FlashcardDeck::factory()->create();
         $user_deck = FlashcardDeck::factory()->create([
             'user_id' => $user->id,
+            'default_language_level' => LanguageLevel::B1,
         ]);
 
         // WHEN
@@ -122,6 +126,7 @@ class FlashcardDeckReadRepositoryTest extends TestCase
         $this->assertInstanceOf(OwnerCategoryRead::class, $results[0]);
         $this->assertSame($user_deck->id, $results[0]->getId()->getValue());
         $this->assertSame($user_deck->name, $results[0]->getName());
+        $this->assertSame($user_deck->default_language_level->value, $results[0]->getLanguageLevel()->value);
     }
 
     public function test__getByOwner_paginationWorks(): void
@@ -161,5 +166,29 @@ class FlashcardDeckReadRepositoryTest extends TestCase
         $this->assertCount(1, $results);
         $this->assertInstanceOf(OwnerCategoryRead::class, $results[0]);
         $this->assertSame($expected->id, $results[0]->getId()->getValue());
+    }
+
+    public function test__getByOwner_levelIsMostFrequentFlashcardLanguageLevel(): void
+    {
+        // GIVEN
+        $user = User::factory()->create();
+        $expected = FlashcardDeck::factory()->create([
+            'user_id' => $user->id,
+            'name' => 'Alan',
+        ]);
+        $this->createFlashcard(['flashcard_deck_id' => $expected->id, 'language_level' => LanguageLevel::A1]);
+        $this->createFlashcard(['flashcard_deck_id' => $expected->id, 'language_level' => LanguageLevel::A2]);
+        $this->createFlashcard(['flashcard_deck_id' => $expected->id, 'language_level' => LanguageLevel::A2]);
+        $this->createFlashcard(['flashcard_deck_id' => $expected->id, 'language_level' => LanguageLevel::A2]);
+        $this->createFlashcard(['flashcard_deck_id' => $expected->id, 'language_level' => LanguageLevel::B1]);
+        $this->createFlashcard(['flashcard_deck_id' => $expected->id, 'language_level' => LanguageLevel::B1]);
+
+        // WHEN
+        $results = $this->repository->getByOwner($user->toOwner(), 'LAn', 1, 15);
+
+        // THEN
+        $this->assertCount(1, $results);
+        $this->assertInstanceOf(OwnerCategoryRead::class, $results[0]);
+        $this->assertSame(LanguageLevel::A2, $results[0]->getLanguageLevel());
     }
 }

@@ -7,6 +7,7 @@ namespace Tests\Integration\Flashcards\Application\Command;
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\FlashcardDeck;
+use Shared\Enum\LanguageLevel;
 use Illuminate\Support\Facades\Http;
 use Integrations\Gemini\GeminiApiClient;
 use Flashcard\Application\Command\GenerateFlashcards;
@@ -79,7 +80,8 @@ class GenerateFlashcardsHandlerTest extends TestCase
         $user = User::factory()->create();
         $command = new GenerateFlashcards(
             $user->toOwner(),
-            $deck_name
+            $deck_name,
+            LanguageLevel::A1
         );
 
         // WHEN
@@ -107,7 +109,8 @@ class GenerateFlashcardsHandlerTest extends TestCase
         FlashcardDeck::factory()->create(['name' => $deck_name, 'user_id' => $user->id]);
         $command = new GenerateFlashcards(
             $user->toOwner(),
-            $deck_name
+            $deck_name,
+            LanguageLevel::A1
         );
 
         // WHEN
@@ -131,7 +134,8 @@ class GenerateFlashcardsHandlerTest extends TestCase
         $deck = FlashcardDeck::factory()->create(['name' => $deck_name, 'user_id' => $user->id]);
         $command = new GenerateFlashcards(
             $user->toOwner(),
-            $deck_name
+            $deck_name,
+            LanguageLevel::A1
         );
 
         $this->expectException(AiResponseFailedException::class);
@@ -155,7 +159,8 @@ class GenerateFlashcardsHandlerTest extends TestCase
         $user = User::factory()->create();
         $command = new GenerateFlashcards(
             $user->toOwner(),
-            $deck_name
+            $deck_name,
+            LanguageLevel::A1
         );
 
         $this->expectException(AiResponseFailedException::class);

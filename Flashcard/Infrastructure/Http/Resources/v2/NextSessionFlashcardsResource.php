@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Http\Resources\v2;
 
+use Shared\Enum\Language;
 use OpenApi\Attributes as OAT;
-use Shared\Utils\ValueObjects\Language;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Flashcard\Application\ReadModels\SessionFlashcardRead;
 use Flashcard\Application\ReadModels\SessionFlashcardsRead;
@@ -89,6 +89,10 @@ use Flashcard\Application\ReadModels\SessionFlashcardsRead;
                                 type: 'string',
                                 example: 'Kraj w centrum Europy'
                             ),
+                            new OAT\Property(
+                                property: 'language_level',
+                                ref: '#/components/schemas/LanguageLevel'
+                            ),
                         ],
                         type: 'object'
                     )
@@ -120,6 +124,7 @@ class NextSessionFlashcardsResource extends JsonResource
                         'back_lang' => $flashcard->getBackLang()->getValue(),
                         'front_context' => $flashcard->getFrontContext(),
                         'back_context' => $flashcard->getBackContext(),
+                        'language_level' => $flashcard->getLanguageLevel()->value,
                     ];
                 }, $this->resource->getSessionFlashcards()),
             ],

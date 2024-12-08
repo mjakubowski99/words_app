@@ -7,14 +7,18 @@ namespace Tests\Unit\Flashcard\Infrastructure\Repositories\Postgres\FlashcardDec
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\FlashcardDeck;
+use Shared\Enum\LanguageLevel;
 use Flashcard\Domain\Models\Deck;
 use Flashcard\Domain\Models\Owner;
 use Shared\Enum\FlashcardOwnerType;
 use Flashcard\Domain\ValueObjects\OwnerId;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Flashcard\Infrastructure\Repositories\Postgres\FlashcardDeckRepository;
 
 class FlashcardDeckRepositoryTest extends TestCase
 {
+    use DatabaseTransactions;
+
     private FlashcardDeckRepository $repository;
 
     protected function setUp(): void
@@ -49,6 +53,7 @@ class FlashcardDeckRepositoryTest extends TestCase
             'getName' => 'Cat name',
             'hasOwner' => true,
             'getOwner' => $user->toOwner(),
+            'getDefaultLanguageLevel' => LanguageLevel::A1,
         ]);
 
         // WHEN

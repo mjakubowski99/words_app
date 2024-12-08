@@ -31,7 +31,8 @@ class UpdateFlashcardHandler
             $command->getFrontContext(),
             $command->getBackContext(),
             $command->getOwner(),
-            $flashcard->getDeck()
+            $flashcard->getDeck(),
+            $command->getLanguageLevel()
         );
 
         $this->repository->update($flashcard);

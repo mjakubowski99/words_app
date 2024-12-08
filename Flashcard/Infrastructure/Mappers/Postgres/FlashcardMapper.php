@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Mappers\Postgres;
 
+use Shared\Enum\LanguageLevel;
 use Flashcard\Domain\Models\Deck;
 use Flashcard\Domain\Models\Owner;
 use Illuminate\Support\Facades\DB;
@@ -29,6 +30,7 @@ class FlashcardMapper
                 'flashcard_decks.user_id as deck_user_id',
                 'flashcard_decks.tag as deck_tag',
                 'flashcard_decks.name as deck_name',
+                'flashcard_decks.default_language_level as deck_default_language_level',
             )
             ->get()
             ->map(function (object $data) {
@@ -49,6 +51,7 @@ class FlashcardMapper
                 'flashcard_decks.user_id as deck_user_id',
                 'flashcard_decks.tag as deck_tag',
                 'flashcard_decks.name as deck_name',
+                'flashcard_decks.default_language_level as deck_default_language_level',
             )
             ->get()
             ->map(function (object $data) {
@@ -69,6 +72,7 @@ class FlashcardMapper
                 'flashcard_decks.user_id as deck_user_id',
                 'flashcard_decks.tag as deck_tag',
                 'flashcard_decks.name as deck_name',
+                'flashcard_decks.default_language_level as deck_default_language_level',
             )
             ->get()
             ->map(function (object $data) {
@@ -92,6 +96,7 @@ class FlashcardMapper
                 'back_lang' => $flashcard->getBackLang()->getValue(),
                 'front_context' => $flashcard->getFrontContext(),
                 'back_context' => $flashcard->getBackContext(),
+                'language_level' => $flashcard->getLanguageLevel()->value,
                 'created_at' => $now,
                 'updated_at' => $now,
             ];
@@ -109,6 +114,7 @@ class FlashcardMapper
                 'flashcard_decks.user_id as deck_user_id',
                 'flashcard_decks.tag as deck_tag',
                 'flashcard_decks.name as deck_name',
+                'flashcard_decks.default_language_level as deck_default_language_level',
             )
             ->first();
 
@@ -141,6 +147,7 @@ class FlashcardMapper
                 'back_lang' => $flashcard->getBackLang()->getValue(),
                 'front_context' => $flashcard->getFrontContext(),
                 'back_context' => $flashcard->getBackContext(),
+                'language_level' => $flashcard->getLanguageLevel()->value,
                 'updated_at' => $now,
             ]);
     }
@@ -175,6 +182,7 @@ class FlashcardMapper
             new Owner(new OwnerId($data->deck_user_id), FlashcardOwnerType::USER),
             $data->deck_tag,
             $data->deck_name,
+            LanguageLevel::from($data->deck_default_language_level)
         ))->init(new FlashcardDeckId($data->flashcard_deck_id)) : null;
 
         return new Flashcard(
@@ -186,7 +194,8 @@ class FlashcardMapper
             $data->front_context,
             $data->back_context,
             new Owner(new OwnerId($data->user_id), FlashcardOwnerType::USER),
-            $deck
+            $deck,
+            LanguageLevel::from($data->language_level),
         );
     }
 }
