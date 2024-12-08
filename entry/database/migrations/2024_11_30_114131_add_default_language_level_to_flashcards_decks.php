@@ -11,7 +11,7 @@ return new class() extends Migration {
     public function up(): void
     {
         Schema::table('flashcard_decks', function (Blueprint $table) {
-            $table->string('default_language_level')->default(LanguageLevel::A1);
+            $table->string('default_language_level')->default(LanguageLevel::DEFAULT);
         });
     }
 
