@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Flashcard\Infrastructure\Repositories\Postgres\FlashcardDeckRepository;
 
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\FlashcardDeck;
@@ -16,6 +17,8 @@ use Flashcard\Infrastructure\Repositories\Postgres\FlashcardDeckRepository;
 
 class FlashcardDeckRepositoryTest extends TestCase
 {
+    use DatabaseTransactions;
+
     private FlashcardDeckRepository $repository;
 
     protected function setUp(): void

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Integration\Flashcards\Infrastructure\Http\Controller\v2;
+namespace Tests\Integration\Flashcards\Infrastructure\Http\Controller\v2;
 
 use Tests\TestCase;
 use App\Models\User;
