@@ -6,11 +6,11 @@ namespace Flashcard\Infrastructure\Http\Resources\v2;
 
 use Shared\Enum\Language;
 use OpenApi\Attributes as OAT;
+use Shared\Enum\LanguageLevel;
 use Shared\Enum\GeneralRatingType;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Flashcard\Application\ReadModels\FlashcardRead;
 use Flashcard\Application\ReadModels\DeckDetailsRead;
-use Shared\Enum\LanguageLevel;
 
 #[OAT\Schema(
     schema: 'Resources\Flashcard\v2\DeckDetailsResource',

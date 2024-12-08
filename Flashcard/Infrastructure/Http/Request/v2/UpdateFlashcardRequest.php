@@ -48,18 +48,7 @@ use Flashcard\Domain\ValueObjects\FlashcardDeckId;
         ),
         new OAT\Property(
             property: 'language_level',
-            description: 'Language level. Default value is: ' . LanguageLevel::DEFAULT,
-            type: 'string',
-            enum: [
-                LanguageLevel::A1,
-                LanguageLevel::A2,
-                LanguageLevel::B1,
-                LanguageLevel::B1,
-                LanguageLevel::C1,
-                LanguageLevel::C2,
-            ],
-            example: LanguageLevel::C1,
-            nullable: true
+            ref: '#/components/schemas/LanguageLevel'
         ),
     ]
 )]

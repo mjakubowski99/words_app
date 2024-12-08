@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\ReadModels;
 
-use Flashcard\Domain\ValueObjects\FlashcardDeckId;
 use Shared\Enum\LanguageLevel;
+use Flashcard\Domain\ValueObjects\FlashcardDeckId;
 
 class OwnerCategoryRead
 {

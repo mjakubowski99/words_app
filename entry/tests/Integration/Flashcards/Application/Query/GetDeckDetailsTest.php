@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Tests\Integration\Flashcards\Application\Query;
 
-use Shared\Enum\LanguageLevel;
 use Tests\TestCase;
 use App\Models\Flashcard;
 use App\Models\FlashcardDeck;
+use Shared\Enum\LanguageLevel;
 use Flashcard\Application\Query\GetDeckDetails;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 

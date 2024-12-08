@@ -8,12 +8,12 @@ use Flashcard\Domain\Models\Owner;
 use Flashcard\Domain\ValueObjects\FlashcardDeckId;
 use Flashcard\Application\ReadModels\DeckDetailsRead;
 use Flashcard\Application\Repository\IFlashcardDeckReadRepository;
-use Flashcard\Infrastructure\Mappers\Postgres\FlashcardCategoryReadMapper;
+use Flashcard\Infrastructure\Mappers\Postgres\FlashcardDeckReadMapper;
 
 class FlashcardDeckReadRepository implements IFlashcardDeckReadRepository
 {
     public function __construct(
-        private readonly FlashcardCategoryReadMapper $mapper
+        private readonly FlashcardDeckReadMapper $mapper
     ) {}
 
     public function findDetails(FlashcardDeckId $id, ?string $search, int $page, int $per_page): DeckDetailsRead

@@ -44,6 +44,7 @@ return [
                 */
                 'annotations' => [
                     base_path('app'),
+                    base_path('../Shared'),
                     base_path('../User/Infrastructure/Http/'),
                     base_path('../Flashcard/Infrastructure/Http/'),
                 ],

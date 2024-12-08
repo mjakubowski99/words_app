@@ -4,6 +4,22 @@ declare(strict_types=1);
 
 namespace Shared\Enum;
 
+use OpenApi\Attributes as OAT;
+
+#[OAT\Schema(
+    schema: 'LanguageLevel',
+    description: 'Language level. Default value is: ' . LanguageLevel::DEFAULT,
+    enum: [
+        LanguageLevel::A1,
+        LanguageLevel::A2,
+        LanguageLevel::B1,
+        LanguageLevel::B1,
+        LanguageLevel::C1,
+        LanguageLevel::C2,
+    ],
+    example: LanguageLevel::C1,
+    nullable: true
+)]
 enum LanguageLevel: string
 {
     public const DEFAULT = 'B2';

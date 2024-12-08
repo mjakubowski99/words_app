@@ -122,7 +122,7 @@ class FlashcardDeckControllerTest extends FlashcardTestCase
                         'back_lang',
                         'front_context',
                         'back_context',
-                        'language_level'
+                        'language_level',
                     ],
                 ],
             ],

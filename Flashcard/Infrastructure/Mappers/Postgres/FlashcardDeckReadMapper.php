@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Mappers\Postgres;
 
+use Shared\Enum\LanguageLevel;
 use Flashcard\Domain\Models\Owner;
 use Illuminate\Support\Facades\DB;
-use Shared\Enum\LanguageLevel;
 use Shared\Utils\ValueObjects\Language;
 use Flashcard\Domain\ValueObjects\FlashcardId;
 use Flashcard\Domain\ValueObjects\FlashcardDeckId;
@@ -16,7 +16,7 @@ use Flashcard\Application\ReadModels\DeckDetailsRead;
 use Flashcard\Application\ReadModels\OwnerCategoryRead;
 use Flashcard\Domain\Exceptions\ModelNotFoundException;
 
-class FlashcardCategoryReadMapper
+class FlashcardDeckReadMapper
 {
     public function __construct(
         private readonly DB $db,
@@ -98,7 +98,7 @@ class FlashcardCategoryReadMapper
                 return new OwnerCategoryRead(
                     new FlashcardDeckId($data->id),
                     $data->name,
-                    LanguageLevel::from($data->most_frequent_language_level)
+                    LanguageLevel::from($data->most_frequent_language_level ?? $data->default_language_level)
                 );
             })->toArray();
     }

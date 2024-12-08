@@ -9,7 +9,6 @@ use OpenApi\Attributes as OAT;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Flashcard\Application\ReadModels\SessionFlashcardRead;
 use Flashcard\Application\ReadModels\SessionFlashcardsRead;
-use Shared\Enum\LanguageLevel;
 
 #[OAT\Schema(
     schema: 'Resources\Flashcard\v2\NextSessionFlashcardsResource',
@@ -92,18 +91,7 @@ use Shared\Enum\LanguageLevel;
                             ),
                             new OAT\Property(
                                 property: 'language_level',
-                                description: 'Language level. Default value is: ' . LanguageLevel::DEFAULT,
-                                type: 'string',
-                                enum: [
-                                    LanguageLevel::A1,
-                                    LanguageLevel::A2,
-                                    LanguageLevel::B1,
-                                    LanguageLevel::B1,
-                                    LanguageLevel::C1,
-                                    LanguageLevel::C2,
-                                ],
-                                example: LanguageLevel::C1,
-                                nullable: true
+                                ref: '#/components/schemas/LanguageLevel'
                             ),
                         ],
                         type: 'object'
