@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Flashcard\Infrastructure\Repositories\Postgres\FlashcardRepository\Delete;
 
-use Flashcard\Infrastructure\Repositories\Postgres\FlashcardRepository;
 use Tests\Base\FlashcardTestCase;
+use Flashcard\Infrastructure\Repositories\Postgres\FlashcardRepository;
 
 class FlashcardRepositoryTest extends FlashcardTestCase
 {
