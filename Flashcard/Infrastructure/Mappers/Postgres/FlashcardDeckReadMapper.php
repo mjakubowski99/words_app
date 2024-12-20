@@ -66,7 +66,6 @@ class FlashcardDeckReadMapper
             })
             ->take($per_page)
             ->skip(($page - 1) * $per_page)
-            ->latest()
             ->leftJoinLateral($flashcard_stats, 'flashcard_stats')
             ->select(
                 'flashcard_decks.*',
@@ -84,7 +83,7 @@ class FlashcardDeckReadMapper
                 'flashcard_stats.last_learnt_at',
                 'flashcard_stats.avg_rating'
             )
-            ->orderByDesc('flashcard_decks.created_at')
+            ->orderByRaw('flashcard_decks.updated_at DESC NULLS LAST')
             ->get()
             ->map(function (object $data) {
                 return new OwnerCategoryRead(
