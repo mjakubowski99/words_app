@@ -10,26 +10,14 @@ use Shared\Enum\LanguageLevel;
 use Shared\Enum\GeneralRatingType;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Flashcard\Application\ReadModels\FlashcardRead;
-use Flashcard\Application\ReadModels\DeckDetailsRead;
+use Flashcard\Application\ReadModels\UserFlashcardsRead;
 
 #[OAT\Schema(
-    schema: 'Resources\Flashcard\v2\DeckDetailsResource',
+    schema: 'Resources\Flashcard\v2\UserFlashcardsResource',
     properties: [
         new OAT\Property(
-            property: 'id',
-            description: 'ID of the session',
-            type: 'integer',
-            example: 10,
-        ),
-        new OAT\Property(
-            property: 'name',
-            description: 'Category name',
-            type: 'string',
-            example: 'Two people talk',
-        ),
-        new OAT\Property(
             property: 'flashcards',
-            description: 'List of flashcards in the session',
+            description: 'List of flashcards',
             type: 'array',
             items: new OAT\Items(
                 properties: [
@@ -126,22 +114,20 @@ use Flashcard\Application\ReadModels\DeckDetailsRead;
         ),
         new OAT\Property(
             property: 'flashcards_count',
-            description: 'Count of flashcards in deck',
+            description: 'Count of user flashcards',
             type: 'integer',
             example: 15,
         ),
     ]
 )]
 /**
- * @property DeckDetailsRead $resource
+ * @property UserFlashcardsRead $resource
  */
-class DeckDetailsResource extends JsonResource
+class UserFlashcardsResource extends JsonResource
 {
     public function toArray($request): array
     {
         return [
-            'id' => $this->resource->getId()->getValue(),
-            'name' => $this->resource->getName(),
             'flashcards' => array_map(function (FlashcardRead $flashcard) {
                 return [
                     'id' => $flashcard->getId()->getValue(),
@@ -158,7 +144,7 @@ class DeckDetailsResource extends JsonResource
             }, $this->resource->getFlashcards()),
             'page' => $this->resource->getPage(),
             'per_page' => $this->resource->getPerPage(),
-            'flashcards_count' => $this->resource->getFlashcardsCount(),
+            'flashcards_count' => $this->resource->getCount(),
         ];
     }
 }

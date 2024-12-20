@@ -130,4 +130,43 @@ class FlashcardControllerTest extends TestCase
         // THEN
         $response->assertStatus(403);
     }
+
+    public function test__getByUser_WhenUserAuthorized_success(): void
+    {
+        // GIVEN
+        $user = User::factory()->create();
+        $flashcard = Flashcard::factory()->create([
+            'user_id' => $user->id,
+        ]);
+
+        // WHEN
+        $response = $this->actingAs($user)
+            ->json('GET', route('v2.flashcards.get.by-user'));
+
+        // THEN
+        $response->assertStatus(200);
+        $response->assertJsonStructure([
+            'data' => [
+                'flashcards' => [
+                    '*' => [
+                        'id',
+                        'front_word',
+                        'front_lang',
+                        'back_word',
+                        'back_lang',
+                        'front_context',
+                        'back_context',
+                        'rating',
+                        'language_level',
+                        'rating_percentage',
+                    ],
+                ],
+                'page',
+                'per_page',
+                'flashcards_count',
+            ],
+        ]);
+        $this->assertSame($flashcard['id'], $response->json('data.flashcards.*.id')[0]);
+        $this->assertSame(0, $response->json('data.flashcards.*.rating_percentage')[0]);
+    }
 }

@@ -9,10 +9,7 @@ use Shared\Enum\LanguageLevel;
 use Flashcard\Domain\Models\Owner;
 use Illuminate\Support\Facades\DB;
 use Flashcard\Domain\Models\Rating;
-use Shared\Utils\ValueObjects\Language;
-use Flashcard\Domain\ValueObjects\FlashcardId;
 use Flashcard\Domain\ValueObjects\FlashcardDeckId;
-use Flashcard\Application\ReadModels\FlashcardRead;
 use Flashcard\Application\ReadModels\GeneralRating;
 use Flashcard\Application\ReadModels\DeckDetailsRead;
 use Flashcard\Application\ReadModels\RatingStatsRead;
@@ -24,6 +21,7 @@ class FlashcardDeckReadMapper
 {
     public function __construct(
         private readonly DB $db,
+        private readonly FlashcardReadMapper $flashcard_mapper,
     ) {}
 
     public function findDeckStats(FlashcardDeckId $id): RatingStatsReadCollection
@@ -61,55 +59,13 @@ class FlashcardDeckReadMapper
 
     public function findDetails(FlashcardDeckId $id, ?string $search, int $page, int $per_page): DeckDetailsRead
     {
-        $rating = Rating::maxRating();
-
         $deck = $this->db::table('flashcard_decks')->find($id->getValue());
 
         if (!$deck) {
             throw new ModelNotFoundException('Category not found');
         }
 
-        $results = $this->db::table('flashcards')
-            ->latest()
-            ->when(!is_null($search), function ($query) use ($search) {
-                return $query->where(function ($q) use ($search) {
-                    $search = mb_strtolower($search);
-
-                    return $q->where(DB::raw('LOWER(flashcards.front_word)'), 'LIKE', '%' . $search . '%')
-                        ->orWhere(DB::raw('LOWER(flashcards.back_word)'), 'LIKE', '%' . $search . '%');
-                });
-            })
-            ->where('flashcards.flashcard_deck_id', $id->getValue())
-            ->take($per_page)
-            ->skip(($page - 1) * $per_page)
-            ->selectRaw("
-                flashcards.*,
-                (SELECT learning_session_flashcards.rating
-                 FROM learning_session_flashcards 
-                 WHERE flashcards.id = learning_session_flashcards.flashcard_id
-                 ORDER BY learning_session_flashcards.updated_at DESC
-                 LIMIT 1
-                ) as last_rating,
-                (SELECT AVG(COALESCE(rating,0)/{$rating}::float)
-                 FROM learning_session_flashcards 
-                 WHERE flashcards.id = learning_session_flashcards.flashcard_id
-                ) as rating_ratio
-            ")
-            ->get()
-            ->map(function (object $data) {
-                return new FlashcardRead(
-                    new FlashcardId($data->id),
-                    $data->front_word,
-                    Language::from($data->front_lang),
-                    $data->back_word,
-                    Language::from($data->back_lang),
-                    $data->front_context,
-                    $data->back_context,
-                    new GeneralRating($data->last_rating),
-                    LanguageLevel::from($data->language_level),
-                    (float) $data->rating_ratio
-                );
-            })->toArray();
+        $flashcards = $this->flashcard_mapper->search($id, null, $search, $page, $per_page);
 
         $flashcards_count = $this->db::table('flashcards')
             ->where('flashcards.flashcard_deck_id', $id->getValue())
@@ -118,7 +74,7 @@ class FlashcardDeckReadMapper
         return new DeckDetailsRead(
             new FlashcardDeckId($deck->id),
             $deck->name,
-            $results,
+            $flashcards,
             $page,
             $per_page,
             $flashcards_count

@@ -7,10 +7,13 @@ namespace Flashcard\Infrastructure\Http\Controllers\v2;
 use App\Http\OpenApi\Tags;
 use OpenApi\Attributes as OAT;
 use Illuminate\Http\JsonResponse;
+use Flashcard\Application\Query\GetUserFlashcards;
 use Flashcard\Application\Command\CreateFlashcardHandler;
 use Flashcard\Application\Command\UpdateFlashcardHandler;
 use Flashcard\Infrastructure\Http\Request\v2\StoreFlashcardRequest;
 use Flashcard\Infrastructure\Http\Request\v2\UpdateFlashcardRequest;
+use Flashcard\Infrastructure\Http\Resources\v2\UserFlashcardsResource;
+use Flashcard\Infrastructure\Http\Request\v2\GetFlashcardByUserRequest;
 
 class FlashcardController
 {
@@ -64,5 +67,63 @@ class FlashcardController
         $update_flashcard_handler->handle($request->toCommand());
 
         return new JsonResponse([], 204);
+    }
+
+    #[OAT\Put(
+        path: '/api/v2/flashcards/by-user',
+        operationId: 'v2.flashcards.get.by-user',
+        description: 'Get user flashcards',
+        summary: 'Get user flashcards',
+        security: [['sanctum' => []]],
+        tags: [Tags::V2, Tags::FLASHCARD],
+        parameters: [
+            new OAT\Parameter(
+                name: 'search',
+                description: 'Search flashcards parameter',
+                in: 'query',
+                example: 'Apple',
+            ),
+            new OAT\Parameter(
+                name: 'page',
+                description: 'Flashcards page number',
+                in: 'query',
+                example: 1,
+            ),
+            new OAT\Parameter(
+                name: 'per_page',
+                description: 'Flashcards per page',
+                in: 'query',
+                example: 15,
+            ),
+        ],
+        responses: [
+            new OAT\Response(
+                response: 200,
+                description: 'success',
+                content: new OAT\JsonContent(properties: [
+                    new OAT\Property(
+                        property: 'data',
+                        type: 'array',
+                        items: new OAT\Items(ref: '#/components/schemas/Resources\Flashcard\v2\UserFlashcardsResource'),
+                    ),
+                ]),
+            ),
+            new OAT\Response(ref: '#/components/responses/bad_request', response: 400),
+            new OAT\Response(ref: '#/components/responses/unauthenticated', response: 401),
+            new OAT\Response(ref: '#/components/responses/validation_error', response: 422),
+        ],
+    )]
+    public function getByUser(
+        GetFlashcardByUserRequest $request,
+        GetUserFlashcards $query,
+    ): UserFlashcardsResource {
+        $flashcards = $query->get(
+            $request->toOwner(),
+            $request->getSearch(),
+            $request->getPage(),
+            $request->getPerPage()
+        );
+
+        return new UserFlashcardsResource($flashcards);
     }
 }

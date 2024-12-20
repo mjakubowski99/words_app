@@ -243,13 +243,13 @@ class FlashcardDeckController
             ),
             new OAT\Parameter(
                 name: 'page',
-                description: 'Decks page number',
+                description: 'Flashcards page number',
                 in: 'query',
                 example: 1,
             ),
             new OAT\Parameter(
                 name: 'per_page',
-                description: 'Decks per page',
+                description: 'Flashcards page number',
                 in: 'query',
                 example: 15,
             ),
