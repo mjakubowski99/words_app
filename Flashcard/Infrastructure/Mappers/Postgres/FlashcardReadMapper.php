@@ -13,13 +13,49 @@ use Flashcard\Domain\ValueObjects\FlashcardId;
 use Flashcard\Domain\ValueObjects\FlashcardDeckId;
 use Flashcard\Application\ReadModels\FlashcardRead;
 use Flashcard\Application\ReadModels\GeneralRating;
+use Flashcard\Application\ReadModels\RatingStatsRead;
 use Flashcard\Application\ReadModels\UserFlashcardsRead;
+use Flashcard\Application\ReadModels\RatingStatsReadCollection;
 
 class FlashcardReadMapper
 {
     public function __construct(
         private readonly DB $db,
     ) {}
+
+    public function findFlashcardStats(?FlashcardDeckId $deck_id, ?Owner $owner): RatingStatsReadCollection
+    {
+        $results = $this->db::table('flashcards')
+            ->when($deck_id !== null, fn ($q) => $q->where('flashcard_deck_id', '=', $deck_id->getValue()))
+            ->when($owner !== null, fn ($q) => $q->where('user_id', '=', $owner->getId()->getValue()))
+            ->leftJoin(
+                'learning_session_flashcards',
+                'learning_session_flashcards.flashcard_id',
+                '=',
+                'flashcards.id'
+            )
+            ->whereNotNull('rating')
+            ->groupBy('rating')
+            ->select('rating', DB::raw('COUNT(rating) as rating_count'))
+            ->get()
+            ->all();
+
+        $ratings_count = array_sum(array_map(fn (object $result) => $result->rating_count, $results));
+
+        $data = [];
+
+        foreach (Rating::cases() as $rating) {
+            $result = array_values(array_filter($results, fn ($result) => $result->rating === $rating->value));
+            $result = isset($result[0]) ? $result[0]->rating_count : 0.0;
+
+            $data[] = new RatingStatsRead(
+                new GeneralRating($rating->value),
+                $ratings_count === 0 ? 0.0 : (float) $result / $ratings_count * 100
+            );
+        }
+
+        return new RatingStatsReadCollection($data);
+    }
 
     public function getByUser(Owner $owner, ?string $search, int $page, int $per_page): UserFlashcardsRead
     {

@@ -6,11 +6,17 @@ namespace Flashcard\Infrastructure\Http\Controllers\v2;
 
 use App\Http\OpenApi\Tags;
 use OpenApi\Attributes as OAT;
+use Shared\Http\Request\Request;
 use Illuminate\Http\JsonResponse;
+use Flashcard\Domain\Models\Owner;
+use Shared\Enum\FlashcardOwnerType;
+use Flashcard\Domain\ValueObjects\OwnerId;
 use Flashcard\Application\Query\GetUserFlashcards;
+use Flashcard\Application\Query\GetUserRatingStats;
 use Flashcard\Application\Command\CreateFlashcardHandler;
 use Flashcard\Application\Command\UpdateFlashcardHandler;
 use Flashcard\Infrastructure\Http\Request\v2\StoreFlashcardRequest;
+use Flashcard\Infrastructure\Http\Resources\v2\RatingStatsResource;
 use Flashcard\Infrastructure\Http\Request\v2\UpdateFlashcardRequest;
 use Flashcard\Infrastructure\Http\Resources\v2\UserFlashcardsResource;
 use Flashcard\Infrastructure\Http\Request\v2\GetFlashcardByUserRequest;
@@ -125,5 +131,38 @@ class FlashcardController
         );
 
         return new UserFlashcardsResource($flashcards);
+    }
+
+    #[OAT\Get(
+        path: '/api/v2/flashcards/by-user/rating-stats',
+        operationId: 'v2.flashcards.by-user.rating-stats.get',
+        description: 'Get rating stats for user flashcards',
+        summary: 'Get rating stats for user flashcards',
+        security: [['sanctum' => []]],
+        tags: [Tags::V2, Tags::FLASHCARD],
+        responses: [
+            new OAT\Response(
+                response: 200,
+                description: 'success',
+                content: new OAT\JsonContent(properties: [
+                    new OAT\Property(
+                        property: 'data',
+                        type: 'array',
+                        items: new OAT\Items(ref: '#/components/schemas/Resources\Flashcard\v2\DeckRatingStatsResource'),
+                    ),
+                ]),
+            ),
+            new OAT\Response(ref: '#/components/responses/bad_request', response: 400),
+            new OAT\Response(ref: '#/components/responses/unauthenticated', response: 401),
+            new OAT\Response(ref: '#/components/responses/validation_error', response: 422),
+        ],
+    )]
+    public function userRatingStats(
+        Request $request,
+        GetUserRatingStats $query,
+    ): RatingStatsResource {
+        $owner = new Owner(new OwnerId($request->currentId()->getValue()), FlashcardOwnerType::USER);
+
+        return new RatingStatsResource($query->get($owner));
     }
 }

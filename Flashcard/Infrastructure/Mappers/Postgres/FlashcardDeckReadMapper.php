@@ -10,12 +10,9 @@ use Flashcard\Domain\Models\Owner;
 use Illuminate\Support\Facades\DB;
 use Flashcard\Domain\Models\Rating;
 use Flashcard\Domain\ValueObjects\FlashcardDeckId;
-use Flashcard\Application\ReadModels\GeneralRating;
 use Flashcard\Application\ReadModels\DeckDetailsRead;
-use Flashcard\Application\ReadModels\RatingStatsRead;
 use Flashcard\Application\ReadModels\OwnerCategoryRead;
 use Flashcard\Domain\Exceptions\ModelNotFoundException;
-use Flashcard\Application\ReadModels\RatingStatsReadCollection;
 
 class FlashcardDeckReadMapper
 {
@@ -23,39 +20,6 @@ class FlashcardDeckReadMapper
         private readonly DB $db,
         private readonly FlashcardReadMapper $flashcard_mapper,
     ) {}
-
-    public function findDeckStats(FlashcardDeckId $id): RatingStatsReadCollection
-    {
-        $results = $this->db::table('flashcards')
-            ->where('flashcard_deck_id', '=', $id->getValue())
-            ->leftJoin(
-                'learning_session_flashcards',
-                'learning_session_flashcards.flashcard_id',
-                '=',
-                'flashcards.id'
-            )
-            ->whereNotNull('rating')
-            ->groupBy('rating')
-            ->select('rating', DB::raw('COUNT(rating) as rating_count'))
-            ->get()
-            ->all();
-
-        $ratings_count = array_sum(array_map(fn (object $result) => $result->rating_count, $results));
-
-        $data = [];
-
-        foreach (Rating::cases() as $rating) {
-            $result = array_values(array_filter($results, fn ($result) => $result->rating === $rating->value));
-            $result = isset($result[0]) ? $result[0]->rating_count : 0.0;
-
-            $data[] = new RatingStatsRead(
-                new GeneralRating($rating->value),
-                $ratings_count === 0 ? 0.0 : (float) $result / $ratings_count * 100
-            );
-        }
-
-        return new RatingStatsReadCollection($data);
-    }
 
     public function findDetails(FlashcardDeckId $id, ?string $search, int $page, int $per_page): DeckDetailsRead
     {

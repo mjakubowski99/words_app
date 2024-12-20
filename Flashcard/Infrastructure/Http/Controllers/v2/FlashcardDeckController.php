@@ -17,12 +17,12 @@ use Flashcard\Application\Command\GenerateFlashcardsHandler;
 use Flashcard\Application\Command\MergeFlashcardDecksHandler;
 use Flashcard\Infrastructure\Http\Request\v2\GetDeckDetailsRequest;
 use Flashcard\Infrastructure\Http\Resources\v2\DeckDetailsResource;
+use Flashcard\Infrastructure\Http\Resources\v2\RatingStatsResource;
 use Flashcard\Infrastructure\Http\Request\v2\MergeFlashcardsRequest;
 use Flashcard\Infrastructure\Http\Resources\v2\FlashcardDecksResource;
 use Flashcard\Infrastructure\Http\Request\v2\GenerateFlashcardsRequest;
 use Flashcard\Infrastructure\Http\Request\v2\GetDeckRatingStatsRequest;
 use Flashcard\Infrastructure\Http\Request\v2\IndexFlashcardDeckRequest;
-use Flashcard\Infrastructure\Http\Resources\v2\DeckRatingStatsResource;
 use Flashcard\Application\Command\RegenerateAdditionalFlashcardsHandler;
 use Flashcard\Infrastructure\Http\Request\v2\RegenerateFlashcardsRequest;
 
@@ -320,7 +320,7 @@ class FlashcardDeckController
     public function deckRatingStats(
         GetDeckRatingStatsRequest $request,
         GetDeckRatingStats $get_deck_rating_stats,
-    ): DeckRatingStatsResource {
-        return new DeckRatingStatsResource($get_deck_rating_stats->get($request->getDeckId()));
+    ): RatingStatsResource {
+        return new RatingStatsResource($get_deck_rating_stats->get($request->getDeckId()));
     }
 }
