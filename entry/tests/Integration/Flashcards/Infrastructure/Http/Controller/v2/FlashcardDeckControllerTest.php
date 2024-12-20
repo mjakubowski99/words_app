@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Integration\Flashcards\Infrastructure\Http\Controller\v2;
 
 use Tests\Base\FlashcardTestCase;
+use Flashcard\Domain\Models\Rating;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class FlashcardDeckControllerTest extends FlashcardTestCase
@@ -27,5 +28,36 @@ class FlashcardDeckControllerTest extends FlashcardTestCase
 
         // THEN
         $response->assertStatus(200);
+    }
+
+    public function test__ratingStatsRead_WhenUserAuthorized_success(): void
+    {
+        // GIVEN
+        $user = $this->createUser();
+        $deck = $this->createFlashcardDeck();
+        $flashcard = $this->createFlashcard([
+            'flashcard_deck_id' => $deck->id,
+        ]);
+        $this->createLearningSessionFlashcard([
+            'flashcard_id' => $flashcard->id,
+            'rating' => Rating::WEAK->value,
+        ]);
+
+        // WHEN
+        $response = $this->actingAs($user)
+            ->json('GET', route('v2.flashcards.decks.rating-stats', [
+                'flashcard_deck_id' => $deck->id,
+            ]));
+
+        // THEN
+        $response->assertStatus(200);
+        $response->assertJsonStructure([
+            'data' => [
+                '*' => [
+                    'rating',
+                    'rating_percentage',
+                ],
+            ],
+        ]);
     }
 }

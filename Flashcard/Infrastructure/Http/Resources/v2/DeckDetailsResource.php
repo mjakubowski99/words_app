@@ -127,18 +127,9 @@ class DeckDetailsResource extends JsonResource
 {
     public function toArray($request): array
     {
-        /** @var DeckDetailsRead $category */
-        $category = $this->resource['details'];
-
-        /** @var int $page */
-        $page = $this->resource['page'];
-
-        /** @var int $page */
-        $per_page = $this->resource['per_page'];
-
         return [
-            'id' => $category->getId()->getValue(),
-            'name' => $category->getName(),
+            'id' => $this->resource->getId()->getValue(),
+            'name' => $this->resource->getName(),
             'flashcards' => array_map(function (FlashcardRead $flashcard) {
                 return [
                     'id' => $flashcard->getId()->getValue(),
@@ -151,9 +142,10 @@ class DeckDetailsResource extends JsonResource
                     'rating' => $flashcard->getGeneralRating()->getValue()->value,
                     'language_level' => $flashcard->getLanguageLevel()->value,
                 ];
-            }, $category->getFlashcards()),
-            'page' => $page,
-            'per_page' => $per_page,
+            }, $this->resource->getFlashcards()),
+            'page' => $this->resource->getPage(),
+            'per_page' => $this->resource->getPerPage(),
+            'flashcards_count' => $this->resource->getFlashcardsCount(),
         ];
     }
 }

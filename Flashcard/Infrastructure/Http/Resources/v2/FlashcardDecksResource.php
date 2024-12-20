@@ -64,6 +64,9 @@ class FlashcardDecksResource extends JsonResource
                     'id' => $resource->getId()->getValue(),
                     'name' => $resource->getName(),
                     'language_level' => $resource->getLanguageLevel()->value,
+                    'flashcards_count' => $resource->getFlashcardsCount(),
+                    'last_learn_at' => $resource->getLastLearntAt() ? $resource->getLastLearntAt()->toDateTimeString() : null,
+                    'rating_ratio' => $resource->getRatingRatio(),
                 ];
             }, $user_decks),
             'page' => $page,

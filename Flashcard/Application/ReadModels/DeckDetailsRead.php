@@ -8,7 +8,14 @@ use Flashcard\Domain\ValueObjects\FlashcardDeckId;
 
 class DeckDetailsRead
 {
-    public function __construct(private FlashcardDeckId $id, private string $name, private array $flashcards) {}
+    public function __construct(
+        private FlashcardDeckId $id,
+        private string $name,
+        private array $flashcards,
+        private int $page,
+        private int $per_page,
+        private int $count,
+    ) {}
 
     public function getId(): FlashcardDeckId
     {
@@ -24,5 +31,20 @@ class DeckDetailsRead
     public function getFlashcards(): array
     {
         return $this->flashcards;
+    }
+
+    public function getPage(): int
+    {
+        return $this->page;
+    }
+
+    public function getPerPage(): int
+    {
+        return $this->per_page;
+    }
+
+    public function getFlashcardsCount(): int
+    {
+        return $this->count;
     }
 }
