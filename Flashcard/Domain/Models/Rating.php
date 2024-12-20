@@ -10,4 +10,9 @@ enum Rating: int
     case WEAK = 1;
     case GOOD = 2;
     case VERY_GOOD = 3;
+
+    public static function maxRating(): int
+    {
+        return max(array_map(fn (Rating $rating) => $rating->value, self::cases()));
+    }
 }

@@ -20,6 +20,7 @@ class FlashcardRead
         private string $back_context,
         private GeneralRating $general_rating,
         private LanguageLevel $language_level,
+        private float $rating_ratio,
     ) {}
 
     public function getId(): FlashcardId
@@ -65,5 +66,10 @@ class FlashcardRead
     public function getLanguageLevel(): LanguageLevel
     {
         return $this->language_level;
+    }
+
+    public function getRatingRatio(): float
+    {
+        return $this->rating_ratio;
     }
 }

@@ -12,6 +12,7 @@ use Shared\Enum\FlashcardOwnerType;
 use Flashcard\Domain\ValueObjects\OwnerId;
 use Flashcard\Application\Query\GetDeckDetails;
 use Flashcard\Application\Query\GetUserCategories;
+use Flashcard\Application\Query\GetDeckRatingStats;
 use Flashcard\Application\Command\GenerateFlashcardsHandler;
 use Flashcard\Application\Command\MergeFlashcardDecksHandler;
 use Flashcard\Infrastructure\Http\Request\v2\GetDeckDetailsRequest;
@@ -19,7 +20,9 @@ use Flashcard\Infrastructure\Http\Resources\v2\DeckDetailsResource;
 use Flashcard\Infrastructure\Http\Request\v2\MergeFlashcardsRequest;
 use Flashcard\Infrastructure\Http\Resources\v2\FlashcardDecksResource;
 use Flashcard\Infrastructure\Http\Request\v2\GenerateFlashcardsRequest;
+use Flashcard\Infrastructure\Http\Request\v2\GetDeckRatingStatsRequest;
 use Flashcard\Infrastructure\Http\Request\v2\IndexFlashcardDeckRequest;
+use Flashcard\Infrastructure\Http\Resources\v2\DeckRatingStatsResource;
 use Flashcard\Application\Command\RegenerateAdditionalFlashcardsHandler;
 use Flashcard\Infrastructure\Http\Request\v2\RegenerateFlashcardsRequest;
 
@@ -125,11 +128,9 @@ class FlashcardDeckController
     ): DeckDetailsResource {
         $result = $generate_flashcards->handle($request->toCommand());
 
-        return (new DeckDetailsResource([
-            'details' => $get_deck_details->get($result->getDeckId(), null, $request->getPage(), $request->getPerPage()),
-            'page' => $request->getPage(),
-            'per_page' => $request->getPerPage(),
-        ]))->additional([
+        return (new DeckDetailsResource(
+            $get_deck_details->get($result->getDeckId(), null, $request->getPage(), $request->getPerPage())
+        ))->additional([
             'merged_to_existing_deck' => $result->getMergedToExistingDeck(),
         ]);
     }
@@ -173,11 +174,9 @@ class FlashcardDeckController
     ): DeckDetailsResource {
         $regenerate_flashcards->handle($request->getOwner(), $request->getDeckId());
 
-        return new DeckDetailsResource([
-            'details' => $get_deck_details->get($request->getDeckId(), null, $request->getPage(), $request->getPerPage()),
-            'page' => $request->getPage(),
-            'per_page' => $request->getPerPage(),
-        ]);
+        return new DeckDetailsResource(
+            $get_deck_details->get($request->getDeckId(), null, $request->getPage(), $request->getPerPage())
+        );
     }
 
     #[OAT\Post(
@@ -276,15 +275,52 @@ class FlashcardDeckController
         GetDeckDetailsRequest $request,
         GetDeckDetails $get_deck_details,
     ): DeckDetailsResource {
-        return new DeckDetailsResource([
-            'details' => $get_deck_details->get(
-                $request->getDeckId(),
-                $request->getSearch(),
-                $request->getPage(),
-                $request->getPerPage()
+        $details = $get_deck_details->get(
+            $request->getDeckId(),
+            $request->getSearch(),
+            $request->getPage(),
+            $request->getPerPage()
+        );
+
+        return new DeckDetailsResource($details);
+    }
+
+    #[OAT\Get(
+        path: '/api/v2/flashcards/decks/{flashcard_deck_id}/rating-stats',
+        operationId: 'v2.flashcards.decks.rating-stats.get',
+        description: 'Get rating stats for flashcard deck',
+        summary: 'Get rating stats for flashcard deck',
+        security: [['sanctum' => []]],
+        tags: [Tags::V2, Tags::FLASHCARD],
+        parameters: [
+            new OAT\Parameter(
+                name: 'flashcard_deck_id',
+                description: 'Flashcard deck id',
+                in: 'path',
+                example: 1,
             ),
-            'page' => $request->getPage(),
-            'per_page' => $request->getPerPage(),
-        ]);
+        ],
+        responses: [
+            new OAT\Response(
+                response: 200,
+                description: 'success',
+                content: new OAT\JsonContent(properties: [
+                    new OAT\Property(
+                        property: 'data',
+                        type: 'array',
+                        items: new OAT\Items(ref: '#/components/schemas/Resources\Flashcard\v2\DeckRatingStatsResource'),
+                    ),
+                ]),
+            ),
+            new OAT\Response(ref: '#/components/responses/bad_request', response: 400),
+            new OAT\Response(ref: '#/components/responses/unauthenticated', response: 401),
+            new OAT\Response(ref: '#/components/responses/validation_error', response: 422),
+        ],
+    )]
+    public function deckRatingStats(
+        GetDeckRatingStatsRequest $request,
+        GetDeckRatingStats $get_deck_rating_stats,
+    ): DeckRatingStatsResource {
+        return new DeckRatingStatsResource($get_deck_rating_stats->get($request->getDeckId()));
     }
 }

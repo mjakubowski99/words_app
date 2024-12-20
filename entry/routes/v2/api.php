@@ -15,6 +15,8 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         ->name('v2.flashcards.decks.index');
     Route::get('/flashcards/decks/{flashcard_deck_id}', [FlashcardDeckController::class, 'get'])
         ->name('v2.flashcards.decks.get');
+    Route::get('/flashcards/decks/{flashcard_deck_id}/rating-stats', [FlashcardDeckController::class, 'deckRatingStats'])
+        ->name('v2.flashcards.decks.rating-stats');
     Route::post('/flashcards/decks/generate-flashcards', [FlashcardDeckController::class, 'generateFlashcards'])
         ->name('v2.flashcards.decks.generate-flashcards');
     Route::post('/flashcards/decks/{from_deck_id}/merge-flashcards/{to_deck_id}', [FlashcardDeckController::class, 'merge'])
