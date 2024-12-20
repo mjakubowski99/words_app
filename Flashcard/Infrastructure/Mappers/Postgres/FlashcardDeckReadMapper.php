@@ -171,7 +171,7 @@ class FlashcardDeckReadMapper
                     $data->name,
                     LanguageLevel::from($data->most_frequent_language_level ?? $data->default_language_level),
                     $data->flashcards_count,
-                    (float) $data->avg_rating,
+                    (float) $data->avg_rating * 100.0,
                     $data->last_learnt_at ? Carbon::parse($data->last_learnt_at) : null,
                 );
             })->toArray();

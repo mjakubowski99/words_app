@@ -28,6 +28,22 @@ class FlashcardDeckControllerTest extends FlashcardTestCase
 
         // THEN
         $response->assertStatus(200);
+        $response->assertJsonStructure([
+            'data' => [
+                'decks' => [
+                    '*' => [
+                        'id',
+                        'name',
+                        'language_level',
+                        'flashcards_count',
+                        'last_learnt_at',
+                        'rating_percentage',
+                    ],
+                ],
+                'page',
+                'per_page',
+            ],
+        ]);
     }
 
     public function test__ratingStatsRead_WhenUserAuthorized_success(): void

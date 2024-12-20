@@ -15,7 +15,7 @@ class OwnerCategoryRead
         private string $name,
         private LanguageLevel $language_level,
         private int $flashcards_count,
-        private float $rating_ratio,
+        private float $rating_percentage,
         private ?Carbon $last_learnt_at,
     ) {}
 
@@ -39,9 +39,9 @@ class OwnerCategoryRead
         return $this->flashcards_count;
     }
 
-    public function getRatingRatio(): float
+    public function getRatingPercentage(): float
     {
-        return $this->rating_ratio;
+        return $this->rating_percentage;
     }
 
     public function getLastLearntAt(): ?Carbon

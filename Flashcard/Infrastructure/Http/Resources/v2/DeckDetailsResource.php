@@ -118,6 +118,12 @@ use Flashcard\Application\ReadModels\DeckDetailsRead;
             type: 'integer',
             example: 15,
         ),
+        new OAT\Property(
+            property: 'flashcards_count',
+            description: 'Count of flashcards in deck',
+            type: 'integer',
+            example: 15,
+        ),
     ]
 )]
 /**

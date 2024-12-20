@@ -198,7 +198,7 @@ class FlashcardDeckReadRepositoryTest extends FlashcardTestCase
         $this->assertSame(6, $results[0]->getFlashcardsCount());
     }
 
-    public function test__getByOwner_ratingRatioIsCorrect(): void
+    public function test__getByOwner_ratingPercentageIsCorrect(): void
     {
         // GIVEN
         $user = $this->createUser();
@@ -218,13 +218,13 @@ class FlashcardDeckReadRepositoryTest extends FlashcardTestCase
             (Rating::UNKNOWN->value / Rating::VERY_GOOD->value)
             + (Rating::VERY_GOOD->value / Rating::VERY_GOOD->value)
             + (Rating::GOOD->value / Rating::VERY_GOOD->value)
-        ) / 3;
+        ) / 3 * 100;
 
         // WHEN
         $results = $this->repository->getByOwner($user->toOwner(), 'LAn', 1, 15);
 
         // THEN
-        $this->assertSame(round($expected_ratio, 2), round($results[0]->getRatingRatio(), 2));
+        $this->assertSame(round($expected_ratio, 2), round($results[0]->getRatingPercentage(), 2));
     }
 
     public function test__getByOwner_lastLearntAtIsCorrect(): void

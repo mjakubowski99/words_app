@@ -33,6 +33,23 @@ use Flashcard\Application\ReadModels\OwnerCategoryRead;
                         property: 'language_level',
                         ref: '#/components/schemas/LanguageLevel'
                     ),
+                    new OAT\Property(
+                        property: 'flashcards_count',
+                        description: 'Count of flashcards in deck',
+                        type: 'integer',
+                        example: 1,
+                    ),
+                    new OAT\Property(
+                        property: 'last_learnt_at',
+                        ref: '#/components/schemas/DateTime',
+                        description: 'Timestamp of last learning of this deck'
+                    ),
+                    new OAT\Property(
+                        property: 'rating_percentage',
+                        description: 'Rating percentage which tells how good user knows this deck',
+                        type: 'float',
+                        example: 66.66,
+                    ),
                 ],
                 type: 'object'
             )
@@ -65,8 +82,8 @@ class FlashcardDecksResource extends JsonResource
                     'name' => $resource->getName(),
                     'language_level' => $resource->getLanguageLevel()->value,
                     'flashcards_count' => $resource->getFlashcardsCount(),
-                    'last_learn_at' => $resource->getLastLearntAt() ? $resource->getLastLearntAt()->toDateTimeString() : null,
-                    'rating_ratio' => $resource->getRatingRatio(),
+                    'last_learnt_at' => $resource->getLastLearntAt() ? $resource->getLastLearntAt()->toDateTimeString() : null,
+                    'rating_percentage' => $resource->getRatingPercentage(),
                 ];
             }, $user_decks),
             'page' => $page,
