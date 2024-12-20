@@ -97,6 +97,7 @@ class FlashcardReadMapper
                 (SELECT learning_session_flashcards.rating
                  FROM learning_session_flashcards 
                  WHERE flashcards.id = learning_session_flashcards.flashcard_id
+                 AND rating is not null
                  ORDER BY learning_session_flashcards.updated_at DESC
                  LIMIT 1
                 ) as last_rating,
