@@ -11,7 +11,7 @@ use Flashcard\Application\ReadModels\RatingStatsRead;
 use Flashcard\Application\ReadModels\RatingStatsReadCollection;
 
 #[OAT\Schema(
-    schema: 'Resources\Flashcard\v2\DeckRatingStatsResource',
+    schema: 'Resources\Flashcard\v2\RatingStatsResource',
     properties: [
         new OAT\Property(
             property: 'rating',

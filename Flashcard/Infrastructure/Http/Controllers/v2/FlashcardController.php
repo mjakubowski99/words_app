@@ -148,7 +148,7 @@ class FlashcardController
                     new OAT\Property(
                         property: 'data',
                         type: 'array',
-                        items: new OAT\Items(ref: '#/components/schemas/Resources\Flashcard\v2\DeckRatingStatsResource'),
+                        items: new OAT\Items(ref: '#/components/schemas/Resources\Flashcard\v2\RatingStatsResource'),
                     ),
                 ]),
             ),
