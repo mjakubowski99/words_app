@@ -84,6 +84,7 @@ class FlashcardDeckReadMapper
                 'flashcard_stats.last_learnt_at',
                 'flashcard_stats.avg_rating'
             )
+            ->orderByDesc('flashcard_decks.created_at')
             ->get()
             ->map(function (object $data) {
                 return new OwnerCategoryRead(
