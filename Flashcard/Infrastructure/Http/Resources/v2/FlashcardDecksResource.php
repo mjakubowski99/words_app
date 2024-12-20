@@ -41,7 +41,7 @@ use Flashcard\Application\ReadModels\OwnerCategoryRead;
                     ),
                     new OAT\Property(
                         property: 'last_learnt_at',
-                        ref: '#/components/schemas/DateTime',
+                        ref: '#/components/schemas/date_time',
                         description: 'Timestamp of last learning of this deck'
                     ),
                     new OAT\Property(
