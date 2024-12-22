@@ -17,10 +17,7 @@ use Flashcard\Domain\Exceptions\InvalidSmTwoFlashcardSetException;
 
 class SmTwoFlashcardsTest extends TestCase
 {
-    /**
-     * @test
-     */
-    public function construct_WhenNotEveryUserInSetHasSameId_ShouldThrowException(): void
+    public function test__construct_WhenNotEveryUserInSetHasSameId_ShouldThrowException(): void
     {
         // GIVEN
         $user_id = UserId::fromString(Uuid::make()->getValue());

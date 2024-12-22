@@ -19,6 +19,8 @@ use Flashcard\Domain\Models\NextSessionFlashcards;
 
 class NextSessionFlashcardsTest extends TestCase
 {
+    use NextSessionFlashcardsTrait;
+
     private NextSessionFlashcards $model;
 
     public function test__construct_WhenFlashcardsCountGreaterThanMax_fail(): void
@@ -81,31 +83,5 @@ class NextSessionFlashcardsTest extends TestCase
 
         // WHEN
         $model->addNext($flashcard);
-    }
-
-    private function makeCategory(Owner $owner): Deck
-    {
-        return new Deck($owner, 'tag', 'name', LanguageLevel::A2);
-    }
-
-    private function makeOwner(): Owner
-    {
-        return new Owner(new OwnerId(Uuid::make()->getValue()), FlashcardOwnerType::USER);
-    }
-
-    private function makeFlashcard(Owner $owner): Flashcard
-    {
-        return new Flashcard(
-            new FlashcardId(1),
-            'word',
-            Language::pl(),
-            'trans',
-            Language::en(),
-            'context',
-            'context_translation',
-            $owner,
-            null,
-            LanguageLevel::A1,
-        );
     }
 }

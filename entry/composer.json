@@ -35,6 +35,7 @@
             "Integrations\\": "../Integrations",
             "Flashcard\\": "../Flashcard",
             "Shared\\": "../Shared",
+            "OutboxPattern\\": "../OutboxPattern",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
         }
