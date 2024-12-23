@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Flashcard\Infrastructure\Mappers\Postgres;
 
 use Shared\Enum\LanguageLevel;
-use Flashcard\Domain\Models\Owner;
 use Illuminate\Support\Facades\DB;
 use Flashcard\Domain\Models\Rating;
+use Shared\Utils\ValueObjects\UserId;
 use Shared\Utils\ValueObjects\Language;
 use Flashcard\Domain\ValueObjects\FlashcardId;
 use Flashcard\Domain\ValueObjects\FlashcardDeckId;
@@ -23,11 +23,11 @@ class FlashcardReadMapper
         private readonly DB $db,
     ) {}
 
-    public function findFlashcardStats(?FlashcardDeckId $deck_id, ?Owner $owner): RatingStatsReadCollection
+    public function findFlashcardStats(?FlashcardDeckId $deck_id, ?UserId $user_id): RatingStatsReadCollection
     {
         $results = $this->db::table('flashcards')
             ->when($deck_id !== null, fn ($q) => $q->where('flashcard_deck_id', '=', $deck_id->getValue()))
-            ->when($owner !== null, fn ($q) => $q->where('user_id', '=', $owner->getId()->getValue()))
+            ->when($user_id !== null, fn ($q) => $q->where('user_id', '=', $user_id->getValue()))
             ->leftJoin(
                 'learning_session_flashcards',
                 'learning_session_flashcards.flashcard_id',
@@ -57,16 +57,16 @@ class FlashcardReadMapper
         return new RatingStatsReadCollection($data);
     }
 
-    public function getByUser(Owner $owner, ?string $search, int $page, int $per_page): UserFlashcardsRead
+    public function getByUser(UserId $user_id, ?string $search, int $page, int $per_page): UserFlashcardsRead
     {
-        $user_flashcards = $this->search(null, $owner, $search, $page, $per_page);
+        $user_flashcards = $this->search(null, $user_id, $search, $page, $per_page);
 
         $count = $this->db::table('flashcards')
-            ->where('user_id', $owner->getId())
+            ->where('user_id', $user_id->getValue())
             ->count();
 
         return new UserFlashcardsRead(
-            $owner,
+            $user_id,
             $user_flashcards,
             $page,
             $per_page,
@@ -74,7 +74,7 @@ class FlashcardReadMapper
         );
     }
 
-    public function search(?FlashcardDeckId $deck_id, ?Owner $owner, ?string $search, int $page, int $per_page): array
+    public function search(?FlashcardDeckId $deck_id, ?UserId $user_id, ?string $search, int $page, int $per_page): array
     {
         $rating = Rating::maxRating();
 
@@ -89,7 +89,7 @@ class FlashcardReadMapper
                 });
             })
             ->when($deck_id !== null, fn ($q) => $q->where('flashcards.flashcard_deck_id', $deck_id->getValue()))
-            ->when($owner !== null, fn ($q) => $q->where('flashcards.user_id', $owner->getId()))
+            ->when($user_id !== null, fn ($q) => $q->where('flashcards.user_id', $user_id->getValue()))
             ->take($per_page)
             ->skip(($page - 1) * $per_page)
             ->selectRaw("

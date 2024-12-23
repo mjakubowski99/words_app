@@ -8,9 +8,6 @@ use App\Http\OpenApi\Tags;
 use OpenApi\Attributes as OAT;
 use Shared\Http\Request\Request;
 use Illuminate\Http\JsonResponse;
-use Flashcard\Domain\Models\Owner;
-use Shared\Enum\FlashcardOwnerType;
-use Flashcard\Domain\ValueObjects\OwnerId;
 use Flashcard\Application\Query\GetUserFlashcards;
 use Flashcard\Application\Query\GetUserRatingStats;
 use Flashcard\Application\Command\CreateFlashcardHandler;
@@ -124,7 +121,7 @@ class FlashcardController
         GetUserFlashcards $query,
     ): UserFlashcardsResource {
         $flashcards = $query->get(
-            $request->toOwner(),
+            $request->currentId(),
             $request->getSearch(),
             $request->getPage(),
             $request->getPerPage()
@@ -161,8 +158,6 @@ class FlashcardController
         Request $request,
         GetUserRatingStats $query,
     ): RatingStatsResource {
-        $owner = new Owner(new OwnerId($request->currentId()->getValue()), FlashcardOwnerType::USER);
-
-        return new RatingStatsResource($query->get($owner));
+        return new RatingStatsResource($query->get($request->currentId()));
     }
 }

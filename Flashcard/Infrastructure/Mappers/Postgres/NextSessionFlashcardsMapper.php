@@ -9,6 +9,7 @@ use Flashcard\Domain\Models\Deck;
 use Flashcard\Domain\Models\Owner;
 use Illuminate\Support\Facades\DB;
 use Shared\Enum\FlashcardOwnerType;
+use Shared\Utils\ValueObjects\UserId;
 use Shared\Exceptions\NotFoundException;
 use Flashcard\Domain\ValueObjects\OwnerId;
 use Flashcard\Domain\ValueObjects\SessionId;
@@ -90,7 +91,7 @@ class NextSessionFlashcardsMapper
 
         return new NextSessionFlashcards(
             $id,
-            $owner,
+            new UserId($result->user_id),
             $deck,
             $result->all_count ?? 0,
             $result->unrated_count ?? 0,

@@ -41,7 +41,7 @@ class SmTwoFlashcardRepositoryTest extends FlashcardTestCase
         $flashcard_ids = array_map(fn (SmTwoFlashcard $flashcard) => $flashcard->getFlashcardId(), $expected_flashcards);
 
         // WHEN
-        $results = $this->repository->findMany($user->toOwner(), $flashcard_ids);
+        $results = $this->repository->findMany($user->getId(), $flashcard_ids);
 
         // THEN
         $this->assertSame(2, count($results));

@@ -42,7 +42,7 @@ class FlashcardReadRepositoryTest extends FlashcardTestCase
         ];
 
         // WHEN
-        $results = $this->repository->findStatsByUser($user->toOwner());
+        $results = $this->repository->findStatsByUser($user->getId());
 
         // THEN
         $i = 0;
@@ -70,7 +70,7 @@ class FlashcardReadRepositoryTest extends FlashcardTestCase
         }
 
         // WHEN
-        $results = $this->repository->findStatsByUser($user->toOwner());
+        $results = $this->repository->findStatsByUser($user->getId());
 
         // THEN
         $i = 0;

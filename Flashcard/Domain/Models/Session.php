@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Flashcard\Domain\Models;
 
 use Shared\Enum\SessionStatus;
+use Shared\Utils\ValueObjects\UserId;
 use Shared\Exceptions\ForbiddenException;
 use Flashcard\Domain\ValueObjects\SessionId;
 
@@ -14,7 +15,7 @@ class Session
 
     public function __construct(
         private SessionStatus $status,
-        private readonly Owner $owner,
+        private readonly UserId $user_id,
         private readonly int $cards_per_session,
         private readonly string $device,
         private readonly ?Deck $deck,
@@ -23,14 +24,14 @@ class Session
     }
 
     public static function newSession(
-        Owner $owner,
+        UserId $user_id,
         int $cards_per_session,
         string $device,
         ?Deck $deck
     ): self {
         return new Session(
             SessionStatus::STARTED,
-            $owner,
+            $user_id,
             $cards_per_session,
             $device,
             $deck
@@ -69,9 +70,9 @@ class Session
         $this->status = $status;
     }
 
-    public function getOwner(): Owner
+    public function getUserId(): UserId
     {
-        return $this->owner;
+        return $this->user_id;
     }
 
     public function getCardsPerSession(): int
@@ -90,7 +91,7 @@ class Session
             return;
         }
 
-        $is_owner = $this->deck->getOwner()->equals($this->owner);
+        $is_owner = $this->deck->getOwner()->equals(Owner::fromUser($this->user_id));
 
         if (!$is_owner) {
             throw new ForbiddenException('User is not authorized to create this deck');

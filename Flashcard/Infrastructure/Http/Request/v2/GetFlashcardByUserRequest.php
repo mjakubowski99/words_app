@@ -5,9 +5,6 @@ declare(strict_types=1);
 namespace Flashcard\Infrastructure\Http\Request\v2;
 
 use Shared\Http\Request\Request;
-use Flashcard\Domain\Models\Owner;
-use Shared\Enum\FlashcardOwnerType;
-use Flashcard\Domain\ValueObjects\OwnerId;
 
 class GetFlashcardByUserRequest extends Request
 {
@@ -18,14 +15,6 @@ class GetFlashcardByUserRequest extends Request
             'page' => ['integer', 'gte:0'],
             'per_page' => ['integer', 'gte:0', 'lte:30'],
         ];
-    }
-
-    public function toOwner(): Owner
-    {
-        return new Owner(
-            new OwnerId($this->currentId()->getValue()),
-            FlashcardOwnerType::USER
-        );
     }
 
     public function getSearch(): ?string

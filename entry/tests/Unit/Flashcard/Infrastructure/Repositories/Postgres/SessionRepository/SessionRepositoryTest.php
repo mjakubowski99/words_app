@@ -39,7 +39,7 @@ class SessionRepositoryTest extends FlashcardTestCase
         $domain_deck = $this->domainDeck($deck);
         $session = new Session(
             SessionStatus::STARTED,
-            $user->toOwner(),
+            $user->getId(),
             10,
             'Mozilla/Firefox',
             $domain_deck,
@@ -67,7 +67,7 @@ class SessionRepositoryTest extends FlashcardTestCase
         $result = $this->repository->find(new SessionId($session->id));
 
         $this->assertSame($session->id, $result->getId()->getValue());
-        $this->assertSame($session->user_id, $result->getOwner()->getId()->getValue());
+        $this->assertSame($session->user_id, $result->getUserId()->getValue());
         $this->assertSame($session->cards_per_session, $result->getCardsPerSession());
     }
 
@@ -88,7 +88,7 @@ class SessionRepositoryTest extends FlashcardTestCase
         $expected_status = SessionStatus::FINISHED;
 
         // WHEN
-        $this->repository->setAllOwnerSessionsStatus($user->toOwner(), $expected_status);
+        $this->repository->setAllOwnerSessionsStatus($user->getId(), $expected_status);
 
         // THEN
         $this->assertDatabaseHas('learning_sessions', [

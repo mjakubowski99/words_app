@@ -53,7 +53,7 @@ class LearningSession extends Model
     {
         return (new Session(
             SessionStatus::from($this->status),
-            $this->user->toOwner(),
+            $this->user->getId(),
             $this->cards_per_session,
             $this->device,
             $this->deck()->first()->toDomainModel(),

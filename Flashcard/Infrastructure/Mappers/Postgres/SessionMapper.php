@@ -11,6 +11,7 @@ use Flashcard\Domain\Models\Owner;
 use Illuminate\Support\Facades\DB;
 use Shared\Enum\FlashcardOwnerType;
 use Flashcard\Domain\Models\Session;
+use Shared\Utils\ValueObjects\UserId;
 use Flashcard\Domain\ValueObjects\OwnerId;
 use Flashcard\Domain\ValueObjects\SessionId;
 use Flashcard\Domain\ValueObjects\FlashcardDeckId;
@@ -22,10 +23,10 @@ class SessionMapper
         private readonly DB $db,
     ) {}
 
-    public function updateStatus(Owner $owner, SessionStatus $status): void
+    public function updateStatus(UserId $user_id, SessionStatus $status): void
     {
         $this->db::table('learning_sessions')
-            ->where('user_id', $owner->getId())
+            ->where('user_id', $user_id->getValue())
             ->update([
                 'status' => $status->value,
                 'updated_at' => now(),
@@ -38,7 +39,7 @@ class SessionMapper
 
         $result = $this->db::table('learning_sessions')
             ->insertGetId([
-                'user_id' => $session->getOwner()->getId()->getValue(),
+                'user_id' => $session->getUserId()->getValue(),
                 'status' => $session->getStatus()->value,
                 'flashcard_deck_id' => $session->hasFlashcardDeck() ? $session->getDeck()->getId() : null,
                 'cards_per_session' => $session->getCardsPerSession(),
@@ -64,7 +65,7 @@ class SessionMapper
         $this->db::table('learning_sessions')
             ->where('id', $session->getId()->getValue())
             ->update([
-                'user_id' => $session->getOwner()->getId()->getValue(),
+                'user_id' => $session->getUserId()->getValue(),
                 'status' => $session->getStatus()->value,
                 'flashcard_deck_id' => $session->hasFlashcardDeck() ? $session->getDeck()->getId() : null,
                 'cards_per_session' => $session->getCardsPerSession(),
@@ -110,7 +111,7 @@ class SessionMapper
 
         return (new Session(
             SessionStatus::from($data->status),
-            new Owner(new OwnerId($data->user_id), FlashcardOwnerType::USER),
+            new UserId($data->user_id),
             $data->cards_per_session,
             $data->device,
             $deck,

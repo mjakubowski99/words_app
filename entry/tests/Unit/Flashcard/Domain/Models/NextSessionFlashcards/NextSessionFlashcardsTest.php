@@ -10,6 +10,7 @@ use Flashcard\Domain\Models\Deck;
 use Flashcard\Domain\Models\Owner;
 use Shared\Enum\FlashcardOwnerType;
 use Shared\Utils\ValueObjects\Uuid;
+use Shared\Utils\ValueObjects\UserId;
 use Flashcard\Domain\Models\Flashcard;
 use Shared\Utils\ValueObjects\Language;
 use Flashcard\Domain\ValueObjects\OwnerId;
@@ -32,7 +33,7 @@ class NextSessionFlashcardsTest extends TestCase
         // WHEN
         new NextSessionFlashcards(
             new SessionId(1),
-            $owner,
+            UserId::fromString($owner->getId()->getValue()),
             $this->makeCategory($owner),
             12,
             10,
@@ -46,7 +47,7 @@ class NextSessionFlashcardsTest extends TestCase
         $owner = $this->makeOwner();
         $model = new NextSessionFlashcards(
             new SessionId(1),
-            $owner,
+            UserId::fromString($owner->getId()->getValue()),
             $this->makeCategory($owner),
             10,
             3,
@@ -68,7 +69,7 @@ class NextSessionFlashcardsTest extends TestCase
         $owner = $this->makeOwner();
         $model = new NextSessionFlashcards(
             new SessionId(1),
-            $owner,
+            UserId::fromString($owner->getId()->getValue()),
             $this->makeCategory($owner),
             11,
             3,

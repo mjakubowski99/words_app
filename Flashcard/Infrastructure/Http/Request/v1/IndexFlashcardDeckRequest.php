@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Flashcard\Infrastructure\Http\Request\v1;
 
 use Shared\Http\Request\Request;
-use Shared\Utils\ValueObjects\UserId;
 
 class IndexFlashcardDeckRequest extends Request
 {
@@ -16,11 +15,6 @@ class IndexFlashcardDeckRequest extends Request
             'page' => ['integer', 'gte:0'],
             'per_page' => ['integer', 'gte:0', 'lte:30'],
         ];
-    }
-
-    public function getUserId(): UserId
-    {
-        return $this->current()->getId();
     }
 
     public function getSearch(): ?string

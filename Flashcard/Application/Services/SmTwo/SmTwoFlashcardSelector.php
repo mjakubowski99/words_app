@@ -50,10 +50,10 @@ class SmTwoFlashcardSelector implements IFlashcardSelector
             FlashcardSortCriteria::OLDEST_UPDATE_FLASHCARDS_FIRST,
         ];
 
-        $results = $this->repository->getNextFlashcards($next_session_flashcards->getOwner(), $limit, $latest_ids, $criteria);
+        $results = $this->repository->getNextFlashcardsByUser($next_session_flashcards->getUserId(), $limit, $latest_ids, $criteria);
 
         if (count($results) < $limit) {
-            return $this->repository->getNextFlashcards($next_session_flashcards->getOwner(), $limit, [], $criteria);
+            return $this->repository->getNextFlashcardsByUser($next_session_flashcards->getUserId(), $limit, [], $criteria);
         }
 
         return $results;

@@ -4,33 +4,23 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\Command;
 
-use Shared\User\IUser;
-use Flashcard\Domain\Models\Owner;
-use Shared\Enum\FlashcardOwnerType;
 use Shared\Enum\LearningSessionType;
-use Flashcard\Domain\ValueObjects\OwnerId;
+use Shared\Utils\ValueObjects\UserId;
 use Flashcard\Domain\ValueObjects\FlashcardDeckId;
 
 final readonly class CreateSession
 {
-    private Owner $owner;
-
     public function __construct(
-        IUser $user,
+        private UserId $user_id,
         private int $cards_per_session,
         private string $device,
         private ?FlashcardDeckId $deck_id,
         private LearningSessionType $learning_session_type,
-    ) {
-        $this->owner = new Owner(
-            new OwnerId($user->getId()->getValue()),
-            FlashcardOwnerType::USER
-        );
-    }
+    ) {}
 
-    public function getOwner(): Owner
+    public function getUserId(): UserId
     {
-        return $this->owner;
+        return $this->user_id;
     }
 
     public function getCardsPerSession(): int

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Flashcard\Domain\Models;
 
+use Shared\Utils\ValueObjects\UserId;
 use Flashcard\Domain\ValueObjects\FlashcardId;
 
 class SmTwoFlashcard
@@ -16,7 +17,7 @@ class SmTwoFlashcard
     private int $repetition_count;
 
     public function __construct(
-        private Owner $owner,
+        private UserId $user_id,
         private FlashcardId $flashcard_id,
         ?float $repetition_ratio = null,
         ?float $repetition_interval = null,
@@ -27,9 +28,9 @@ class SmTwoFlashcard
         $this->repetition_count = $repetition_count ?? 0;
     }
 
-    public function getOwner(): Owner
+    public function getUserId(): UserId
     {
-        return $this->owner;
+        return $this->user_id;
     }
 
     public function getFlashcardId(): FlashcardId

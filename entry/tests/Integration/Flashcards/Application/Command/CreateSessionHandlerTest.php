@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Tests\Integration\Flashcards\Application\Command;
 
 use App\Models\User;
-use Shared\User\IUser;
 use App\Models\FlashcardDeck;
 use Tests\Base\FlashcardTestCase;
 use Shared\Enum\LearningSessionType;
@@ -38,10 +37,8 @@ class CreateSessionHandlerTest extends FlashcardTestCase
         ]));
         $cards_per_session = 5;
         $device = 'Mozilla/Firefox';
-        $user = $this->mockery(IUser::class);
-        $user->shouldReceive('getId')->andReturn($user_id);
         $command = new CreateSession(
-            $user,
+            $user_id,
             $cards_per_session,
             $device,
             $deck_id,
@@ -65,10 +62,8 @@ class CreateSessionHandlerTest extends FlashcardTestCase
         $deck_id = $this->createDeckId(FlashcardDeck::factory()->create());
         $cards_per_session = 5;
         $device = 'Mozilla/Firefox';
-        $user = $this->mockery(IUser::class);
-        $user->shouldReceive('getId')->andReturn($user_id);
         $command = new CreateSession(
-            $user,
+            $user_id,
             $cards_per_session,
             $device,
             $deck_id,

@@ -88,7 +88,7 @@ class NextSessionFlashcardsRepositoryTest extends TestCase
 
         // THEN
         $this->assertSame($session->id, $result->getSessionId()->getValue());
-        $this->assertSame($session->user_id, $result->getOwner()->getId()->getValue());
+        $this->assertSame($session->user_id, $result->getUserId()->getValue());
         $this->assertFalse($result->hasDeck());
     }
 
@@ -121,7 +121,7 @@ class NextSessionFlashcardsRepositoryTest extends TestCase
         $flashcard = Flashcard::factory()->create();
         $object = new NextSessionFlashcards(
             $session->getId(),
-            $session->user->toOwner(),
+            $session->user->getId(),
             $session->deck->toDomainModel(),
             8,
             2,
