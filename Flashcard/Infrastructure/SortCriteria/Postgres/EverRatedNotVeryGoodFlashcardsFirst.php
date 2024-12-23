@@ -10,6 +10,6 @@ class EverRatedNotVeryGoodFlashcardsFirst extends PostgresSortCriteria
 {
     public function apply(): string
     {
-        return 'sm_two_flashcards.min_rating < ' . Rating::VERY_GOOD->value . ' DESC';
+        return 'COALESCE(sm_two_flashcards.min_rating,0) < ' . Rating::VERY_GOOD->value . ' DESC';
     }
 }
