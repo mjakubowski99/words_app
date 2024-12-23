@@ -23,10 +23,14 @@ class FlashcardDeckReadMapper
 
     public function findDetails(FlashcardDeckId $id, ?string $search, int $page, int $per_page): DeckDetailsRead
     {
-        $deck = $this->db::table('flashcard_decks')->find($id->getValue());
+        $deck = $this->db::table('flashcard_decks')
+            ->find($id->getValue());
 
         if (!$deck) {
             throw new ModelNotFoundException('Category not found');
+        }
+        if (!is_object($deck)) {
+            throw new \Exception('Unexpected value');
         }
 
         $flashcards = $this->flashcard_mapper->search($id, null, $search, $page, $per_page);
