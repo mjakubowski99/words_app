@@ -30,6 +30,7 @@ class SmTwoFlashcardMapper
                 'sm_two_flashcards.repetition_interval',
                 'sm_two_flashcards.repetition_ratio',
                 'sm_two_flashcards.repetition_count',
+                'sm_two_flashcards.min_rating',
             )
             ->get()
             ->map(function (object $sm_two_flashcard) {
@@ -69,6 +70,7 @@ class SmTwoFlashcardMapper
                     'repetition_ratio' => $flashcard->getRepetitionRatio(),
                     'repetition_interval' => $flashcard->getRepetitionInterval(),
                     'repetition_count' => $flashcard->getRepetitionCount(),
+                    'min_rating' => $flashcard->getMinRating(),
                     'created_at' => $now,
                     'updated_at' => $now,
                 ];
@@ -81,6 +83,7 @@ class SmTwoFlashcardMapper
                         'repetition_ratio' => $flashcard->getRepetitionRatio(),
                         'repetition_interval' => $flashcard->getRepetitionInterval(),
                         'repetition_count' => $flashcard->getRepetitionCount(),
+                        'min_rating' => $flashcard->getMinRating(),
                         'updated_at' => $now,
                     ]);
             }
@@ -99,6 +102,7 @@ class SmTwoFlashcardMapper
             (float) $data->repetition_ratio,
             (float) $data->repetition_interval,
             $data->repetition_count,
+            $data->min_rating
         );
     }
 }

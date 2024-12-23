@@ -63,6 +63,7 @@ class SmTwoFlashcard extends Model
             (float) $this->repetition_ratio,
             (float) $this->repetition_interval,
             $this->repetition_count,
+            $this->min_rating,
         );
     }
 }
