@@ -21,6 +21,7 @@ class OAuthLoginStrategyFactory
 
     public function make(UserProvider $provider, Platform $platform): IOAuthLoginStrategy
     {
+        /* @phpstan-ignore-next-line */
         if ($provider === UserProvider::GOOGLE && $platform === Platform::ANDROID) {
             return new GoogleClientStrategy(
                 $this->app->make(AndroidGoogleClient::class)

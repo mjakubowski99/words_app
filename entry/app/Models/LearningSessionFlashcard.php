@@ -29,6 +29,7 @@ use Database\Factories\LearningSessionFlashcardFactory;
  * @method   static Builder|LearningSessionFlashcard whereLearningSessionId($value)
  * @method   static Builder|LearningSessionFlashcard whereRating($value)
  * @method   static Builder|LearningSessionFlashcard whereUpdatedAt($value)
+ * @property        Flashcard                        $flashcard
  * @mixin \Eloquent
  */
 class LearningSessionFlashcard extends Model
