@@ -10,10 +10,6 @@ trait HasCsvParser
     {
         $lines = explode($line_separator, $csv_string);
 
-        if (count($lines) === 0) {
-            return [];
-        }
-
         $keys = str_getcsv($lines[0], $column_separator);
 
         $results = [];
