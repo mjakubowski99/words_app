@@ -10,9 +10,11 @@ use Flashcard\Infrastructure\Http\Controllers\v1\FlashcardDeckController;
 
 Route::post('/user/oauth/login', [UserController::class, 'loginWithProvider'])
     ->name('user.oauth.login');
+Route::post('/tickets', [UserController::class, 'storeTicket'])->name('tickets.store');
 
 Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('/user/me', [UserController::class, 'me'])->name('user.me');
+    Route::delete('/user/me', [UserController::class, 'delete'])->name('user.me.delete');
 
     Route::post('/flashcards', [FlashcardController::class, 'store'])->name('flashcards.store');
     Route::put('/flashcards/{flashcard_id}', [FlashcardController::class, 'update'])->name('flashcards.update');

@@ -12,6 +12,7 @@ use Flashcard\Domain\ValueObjects\FlashcardDeckId;
 use Flashcard\Application\Repository\IFlashcardRepository;
 use Flashcard\Infrastructure\Mappers\Postgres\FlashcardMapper;
 use Flashcard\Infrastructure\Mappers\Postgres\SessionFlashcardMapper;
+use Shared\Utils\ValueObjects\UserId;
 
 class FlashcardRepository implements IFlashcardRepository
 {
@@ -49,6 +50,11 @@ class FlashcardRepository implements IFlashcardRepository
     public function delete(FlashcardId $id): void
     {
         $this->mapper->delete($id);
+    }
+
+    public function deleteAllForUser(UserId $user_id): void
+    {
+        $this->mapper->deleteAllForUser($user_id);
     }
 
     public function getByDeck(FlashcardDeckId $deck_id): array

@@ -7,6 +7,7 @@ namespace Flashcard\Application\Repository;
 use Flashcard\Domain\Models\Deck;
 use Flashcard\Domain\Models\Owner;
 use Flashcard\Domain\ValueObjects\FlashcardDeckId;
+use Shared\Utils\ValueObjects\UserId;
 
 interface IFlashcardDeckRepository
 {
@@ -22,4 +23,5 @@ interface IFlashcardDeckRepository
     public function update(Deck $deck): void;
 
     public function remove(Deck $deck): void;
+    public function deleteAllForUser(UserId $user_id): void;
 }

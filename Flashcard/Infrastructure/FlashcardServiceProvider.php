@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure;
 
+use Flashcard\Application\Facades\FlashcardFacade;
 use Illuminate\Support\ServiceProvider;
 use Flashcard\Application\Services\IFlashcardSelector;
 use Flashcard\Application\Repository\ISessionRepository;
@@ -31,11 +32,13 @@ use Flashcard\Infrastructure\Repositories\Postgres\FlashcardDeckReadRepository;
 use Flashcard\Infrastructure\Repositories\Postgres\SessionFlashcardReadRepository;
 use Flashcard\Infrastructure\Repositories\Postgres\NextSessionFlashcardsRepository;
 use Flashcard\Infrastructure\Repositories\Postgres\RateableSessionFlashcardsRepository;
+use Shared\Flashcard\IFlashcardFacade;
 
 class FlashcardServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
+        $this->app->bind(IFlashcardFacade::class, FlashcardFacade::class);
         $this->app->bind(ISessionRepository::class, SessionRepository::class);
         $this->app->bind(ISessionReadRepository::class, SessionReadRepository::class);
         $this->app->bind(IRateableSessionFlashcardsRepository::class, RateableSessionFlashcardsRepository::class);

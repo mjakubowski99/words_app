@@ -8,6 +8,7 @@ use Shared\Enum\SessionStatus;
 use Flashcard\Domain\Models\Owner;
 use Flashcard\Domain\Models\Session;
 use Flashcard\Domain\ValueObjects\SessionId;
+use Shared\Utils\ValueObjects\UserId;
 
 interface ISessionRepository
 {
@@ -18,4 +19,5 @@ interface ISessionRepository
     public function update(Session $session): void;
 
     public function find(SessionId $id): Session;
+    public function deleteAllForUser(UserId $user_id): void;
 }

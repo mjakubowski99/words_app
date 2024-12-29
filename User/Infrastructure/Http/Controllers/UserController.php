@@ -8,11 +8,15 @@ use App\Http\OpenApi\Tags;
 use OpenApi\Attributes as OAT;
 use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
+use User\Application\Command\CreateTicketHandler;
+use User\Application\Command\DeleteUserHandler;
 use User\Application\Query\GetOAuthUser;
 use User\Application\Command\CreateExternalUser;
 use User\Application\Command\CreateTokenHandler;
 use User\Application\Query\FindExternalUserHandler;
+use User\Infrastructure\Http\Request\DeleteUserRequest;
 use User\Infrastructure\Http\Request\GetUserRequest;
+use User\Infrastructure\Http\Request\StoreTicketRequest;
 use User\Infrastructure\Http\Resources\UserResource;
 use User\Application\Command\CreateExternalUserHandler;
 use User\Infrastructure\Http\Request\OAuthLoginRequest;
@@ -132,5 +136,64 @@ class UserController extends Controller
     public function me(GetUserRequest $request): UserResource
     {
         return new UserResource($request->current());
+    }
+
+    #[OAT\Delete(
+        path: '/api/user/me',
+        operationId: 'user.me.delete',
+        description: 'Delete user account',
+        summary: 'Delete user account',
+        security: [['sanctum' => []]],
+        requestBody: new OAT\RequestBody(
+            content: new OAT\JsonContent(ref: '#/components/schemas/Requests\User\DeleteUserRequest')
+        ),
+        tags: [Tags::USER],
+        responses: [
+            new OAT\Response(ref: '#/components/responses/no_content', response: 204),
+            new OAT\Response(ref: '#/components/responses/bad_request', response: 400),
+            new OAT\Response(ref: '#/components/responses/unauthenticated', response: 401),
+            new OAT\Response(ref: '#/components/responses/validation_error', response: 422),
+            new OAT\Response(ref: '#/components/responses/server_error', response: 500),
+        ],
+    )]
+    public function delete(DeleteUserRequest $request, DeleteUserHandler $handler): JsonResponse
+    {
+        if ($request->current()->getEmail() !== $request->getEmail()) {
+            return new JsonResponse([
+                'message' => 'Invalid email provided'
+            ], 400);
+        }
+
+        $result = $handler->delete($request->currentId());
+        
+        if (!$result) {
+            return new JsonResponse([
+                'message' => 'Something went wrong',
+            ], 500);
+        }
+
+        return new JsonResponse([], 204);
+    }
+
+    #[OAT\Post(
+        path: '/api/tickets',
+        operationId: 'tickets.store',
+        description: 'You can use this endpoint to report something to administration. For example you can report flashcard or intent of account deletion',
+        summary: 'Store new ticket',
+        requestBody: new OAT\RequestBody(
+            content: new OAT\JsonContent(ref: '#/components/schemas/Requests\User\StoreTicketRequest')
+        ),
+        tags: [Tags::USER],
+        responses: [
+            new OAT\Response(ref: '#/components/responses/no_content', response: 204),
+            new OAT\Response(ref: '#/components/responses/bad_request', response: 400),
+            new OAT\Response(ref: '#/components/responses/validation_error', response: 422),
+        ],
+    )]
+    public function storeTicket(StoreTicketRequest $request, CreateTicketHandler $handler): JsonResponse
+    {
+        $handler->handle($request->toCommand());
+
+        return new JsonResponse([], 204);
     }
 }

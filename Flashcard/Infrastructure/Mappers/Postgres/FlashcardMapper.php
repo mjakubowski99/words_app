@@ -15,6 +15,7 @@ use Flashcard\Domain\ValueObjects\OwnerId;
 use Flashcard\Domain\ValueObjects\FlashcardId;
 use Flashcard\Domain\ValueObjects\FlashcardDeckId;
 use Flashcard\Domain\Exceptions\ModelNotFoundException;
+use Shared\Utils\ValueObjects\UserId;
 
 class FlashcardMapper
 {
@@ -129,6 +130,13 @@ class FlashcardMapper
     {
         $this->db::table('flashcards')
             ->where('id', $id)
+            ->delete();
+    }
+
+    public function deleteAllForUser(UserId $user_id): void
+    {
+        $this->db::table('flashcards')
+            ->where('user_id', $user_id)
             ->delete();
     }
 

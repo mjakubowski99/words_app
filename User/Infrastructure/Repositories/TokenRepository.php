@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace User\Infrastructure\Repositories;
 
 use Shared\Utils\ValueObjects\UserId;
+use User\Application\Repositories\ITokenRepository;
 use User\Infrastructure\Entities\User;
-use User\Domain\Repositories\ITokenRepository;
 
 class TokenRepository implements ITokenRepository
 {

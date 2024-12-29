@@ -10,6 +10,7 @@ use Flashcard\Domain\Models\Session;
 use Flashcard\Domain\ValueObjects\SessionId;
 use Flashcard\Application\Repository\ISessionRepository;
 use Flashcard\Infrastructure\Mappers\Postgres\SessionMapper;
+use Shared\Utils\ValueObjects\UserId;
 
 class SessionRepository implements ISessionRepository
 {
@@ -35,5 +36,10 @@ class SessionRepository implements ISessionRepository
     public function find(SessionId $id): Session
     {
         return $this->session_mapper->find($id);
+    }
+
+    public function deleteAllForUser(UserId $user_id): void
+    {
+        $this->session_mapper->deleteAllForUser($user_id);
     }
 }

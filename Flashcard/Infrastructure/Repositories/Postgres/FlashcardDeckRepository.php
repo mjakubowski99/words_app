@@ -9,6 +9,7 @@ use Flashcard\Domain\Models\Owner;
 use Flashcard\Domain\ValueObjects\FlashcardDeckId;
 use Flashcard\Application\Repository\IFlashcardDeckRepository;
 use Flashcard\Infrastructure\Mappers\Postgres\FlashcardDeckMapper;
+use Shared\Utils\ValueObjects\UserId;
 
 class FlashcardDeckRepository implements IFlashcardDeckRepository
 {
@@ -47,5 +48,10 @@ class FlashcardDeckRepository implements IFlashcardDeckRepository
     public function remove(Deck $deck): void
     {
         $this->mapper->remove($deck->getId());
+    }
+
+    public function deleteAllForUser(UserId $user_id): void
+    {
+        $this->mapper->deleteAllForUser($user_id);
     }
 }

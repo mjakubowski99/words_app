@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace User\Application\Command;
 
-use Shared\Utils\Str\IStr;
 use Shared\Utils\Hash\IHash;
-use User\Domain\Repositories\IUserRepository;
+use Shared\Utils\Str\IStr;
+use User\Application\Repositories\IUserRepository;
 
 class CreateExternalUserHandler
 {

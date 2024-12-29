@@ -15,6 +15,7 @@ use Flashcard\Domain\ValueObjects\OwnerId;
 use Flashcard\Domain\ValueObjects\SessionId;
 use Flashcard\Domain\ValueObjects\FlashcardDeckId;
 use Flashcard\Domain\Exceptions\ModelNotFoundException;
+use Shared\Utils\ValueObjects\UserId;
 
 class SessionMapper
 {
@@ -97,6 +98,13 @@ class SessionMapper
         }
 
         return $this->map($result);
+    }
+
+    public function deleteAllForUser(UserId $user_id): void
+    {
+        $this->db::table('learning_sessions')
+            ->where('user_id', $user_id)
+            ->delete();
     }
 
     public function map(object $data): Session
