@@ -10,21 +10,14 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::table('sm_two_flashcards', function (Blueprint $table) {
-            $table->dropForeign(['flashcard_id']);
-            $table->foreign('flashcard_id')
-                ->references('id')
-                ->on('flashcards')
-                ->onDelete('cascade');
+            $table->integer('min_rating')->default(0);
         });
     }
 
     public function down(): void
     {
         Schema::table('sm_two_flashcards', function (Blueprint $table) {
-            $table->dropForeign(['flashcard_id']);
-            $table->foreign('flashcard_id')
-                ->references('id')
-                ->on('flashcards');
+            $table->dropColumn('min_rating');
         });
     }
 };

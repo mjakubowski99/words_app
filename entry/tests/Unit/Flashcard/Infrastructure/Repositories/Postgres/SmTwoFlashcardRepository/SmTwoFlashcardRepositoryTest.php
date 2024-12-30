@@ -34,7 +34,7 @@ class SmTwoFlashcardRepositoryTest extends FlashcardTestCase
         // GIVEN
         $user = User::factory()->create();
         $expected_flashcards = [
-            SmTwoFlashcard::factory()->create(['user_id' => $user->id]),
+            SmTwoFlashcard::factory()->create(['user_id' => $user->id, 'min_rating' => 3]),
             SmTwoFlashcard::factory()->create(['user_id' => $user->id]),
         ];
         $other_flashcards = SmTwoFlashcard::factory()->create(['user_id' => $user->id]);
@@ -45,6 +45,7 @@ class SmTwoFlashcardRepositoryTest extends FlashcardTestCase
 
         // THEN
         $this->assertSame(2, count($results));
+        $this->assertSame(3, $results->all()[0]->getMinRating());
     }
 
     /**
@@ -59,6 +60,7 @@ class SmTwoFlashcardRepositoryTest extends FlashcardTestCase
             'repetition_interval' => 1,
             'repetition_count' => 2,
             'repetition_ratio' => 3,
+            'min_rating' => 2,
         ]);
         $domain_model = new SmTwoFlashcards([
             $flashcard->toDomainModel(),
@@ -74,6 +76,7 @@ class SmTwoFlashcardRepositoryTest extends FlashcardTestCase
             'repetition_ratio' => $flashcard->repetition_ratio,
             'repetition_interval' => $flashcard->repetition_interval,
             'repetition_count' => $flashcard->repetition_count,
+            'min_rating' => $flashcard->min_rating,
         ]);
     }
 

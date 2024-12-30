@@ -1,4 +1,4 @@
-FROM php:8.2-fpm
+FROM php:8.3-fpm
 
 #Args defined in docker-compose.yml
 ARG USER
@@ -59,7 +59,7 @@ RUN docker-php-ext-install \
     zip
 
 # Install XDebug
-RUN pecl install xdebug-3.2.0  && docker-php-ext-enable xdebug
+RUN pecl install xdebug-3.3.0  && docker-php-ext-enable xdebug
 
 COPY xdebug.ini /usr/local/etc/php/conf.d/xdebug-dev.ini
 

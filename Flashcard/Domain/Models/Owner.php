@@ -35,6 +35,7 @@ class Owner
     public function equals(Owner $owner): bool
     {
         return $this->id->equals($owner->getId())
+            /* @phpstan-ignore-next-line */
             && $this->flashcard_owner_type === $owner->getOwnerType();
     }
 }

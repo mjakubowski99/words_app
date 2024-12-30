@@ -15,5 +15,3 @@ parameters:
 
     excludePaths:
         - tests/*
-
-    checkMissingIterableValueType: false

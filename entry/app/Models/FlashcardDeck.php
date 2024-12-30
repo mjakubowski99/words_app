@@ -15,16 +15,25 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
- * @property        int                   $id
- * @property        string                $tag
- * @property        string                $name
- * @property        string                $user_id
- * @property        null|Carbon           $created_at
- * @property        null|Carbon           $updated_at
- * @method   static FlashcardDeckFactory  factory($count = null, $state = [])
- * @method   static Builder|FlashcardDeck newModelQuery()
- * @method   static Builder|FlashcardDeck newQuery()
- * @method   static Builder|FlashcardDeck query()
+ * @property        int                           $id
+ * @property        string                        $tag
+ * @property        string                        $name
+ * @property        string                        $user_id
+ * @property        null|Carbon                   $created_at
+ * @property        null|Carbon                   $updated_at
+ * @method   static FlashcardDeckFactory          factory($count = null, $state = [])
+ * @method   static Builder|FlashcardDeck         newModelQuery()
+ * @method   static Builder|FlashcardDeck         newQuery()
+ * @method   static Builder|FlashcardDeck         query()
+ * @property        string                        $default_language_level
+ * @property        null|User                     $user
+ * @method   static Builder<static>|FlashcardDeck whereCreatedAt($value)
+ * @method   static Builder<static>|FlashcardDeck whereDefaultLanguageLevel($value)
+ * @method   static Builder<static>|FlashcardDeck whereId($value)
+ * @method   static Builder<static>|FlashcardDeck whereName($value)
+ * @method   static Builder<static>|FlashcardDeck whereTag($value)
+ * @method   static Builder<static>|FlashcardDeck whereUpdatedAt($value)
+ * @method   static Builder<static>|FlashcardDeck whereUserId($value)
  * @mixin \Eloquent
  */
 class FlashcardDeck extends Model

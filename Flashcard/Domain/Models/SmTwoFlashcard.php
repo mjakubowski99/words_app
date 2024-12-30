@@ -22,6 +22,7 @@ class SmTwoFlashcard
         ?float $repetition_ratio = null,
         ?float $repetition_interval = null,
         ?int $repetition_count = null,
+        private int $min_rating = 0
     ) {
         $this->repetition_ratio = $repetition_ratio ?? self::INITIAL_REPETITION_RATIO;
         $this->repetition_interval = $repetition_interval ?? self::INITIAL_REPETITION_INTERVAL;
@@ -55,9 +56,18 @@ class SmTwoFlashcard
 
     public function updateByRating(Rating $rating): void
     {
+        if ($rating->value < $this->min_rating) {
+            $this->min_rating = $rating->value;
+        }
+
         $this->calculateRepetitionInterval($rating);
 
         $this->calculateRepetitionRatio($rating);
+    }
+
+    public function getMinRating(): int
+    {
+        return $this->min_rating;
     }
 
     private function calculateRepetitionInterval(Rating $rating): void
@@ -73,7 +83,7 @@ class SmTwoFlashcard
             ++$this->repetition_count;
         } else {
             $this->repetition_interval = 1;
-            $this->repetition_count = 0;  // Zresetuj licznik powtórzeń po złej odpowiedzi
+            $this->repetition_count = 0;
         }
     }
 

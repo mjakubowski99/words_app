@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Mappers\Postgres;
 
+use Illuminate\Database\Query\Builder;
 use Shared\Enum\LanguageLevel;
 use Flashcard\Domain\Models\Deck;
 use Flashcard\Domain\Models\Owner;
@@ -29,7 +30,10 @@ class FlashcardFromSmTwoMapper
 
         return $this->db::table('flashcards')
             ->whereNotIn('flashcards.id', array_map(fn (FlashcardId $id) => $id->getValue(), $exclude_flashcard_ids))
-            ->where('flashcards.user_id', $user_id)
+            ->where(function (Builder $builder) use ($user_id){
+                return $builder->where('flashcards.user_id', $user_id->getValue())
+                    ->orWhere('sm_two_flashcards.user_id', $user_id->getValue());
+            })
             ->leftJoin('flashcard_decks', 'flashcard_decks.id', '=', 'flashcards.flashcard_deck_id')
             ->leftJoin('sm_two_flashcards', 'sm_two_flashcards.flashcard_id', '=', 'flashcards.id')
             ->take($limit)
