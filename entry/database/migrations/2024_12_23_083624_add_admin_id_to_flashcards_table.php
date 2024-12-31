@@ -30,13 +30,13 @@ return new class extends Migration {
 
     public function down(): void
     {
+        DB::statement('
+            ALTER TABLE flashcards DROP CONSTRAINT check_flashcards_user_id_admin_id_both_not_null
+        ');
+
         Schema::table('flashcards', function (Blueprint $table) {
             $table->dropForeign(['admin_id']);
             $table->dropColumn('admin_id');
         });
-
-        DB::statement('
-            ALTER TABLE flashcards DROP CONSTRAINT check_flashcards_user_id_admin_id_both_not_null
-        ');
     }
 };
