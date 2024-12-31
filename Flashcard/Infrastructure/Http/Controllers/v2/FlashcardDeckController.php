@@ -7,7 +7,6 @@ namespace Flashcard\Infrastructure\Http\Controllers\v2;
 use App\Http\OpenApi\Tags;
 use OpenApi\Attributes as OAT;
 use Illuminate\Http\JsonResponse;
-use Flashcard\Domain\Models\Owner;
 use Flashcard\Application\Query\GetDeckDetails;
 use Flashcard\Application\Query\GetUserCategories;
 use Flashcard\Application\Query\GetDeckRatingStats;
@@ -76,7 +75,7 @@ class FlashcardDeckController
     ): FlashcardDecksResource {
         return new FlashcardDecksResource([
             'decks' => $get_user_decks->handle(
-                Owner::fromUser($request->currentId()),
+                $request->currentId(),
                 $request->getSearch(),
                 $request->getPage(),
                 $request->getPerPage(),

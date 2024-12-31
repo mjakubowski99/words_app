@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Smoke\Flashcard\Infrastructure\Http\v2;
+namespace Tests\Smoke\Flashcard\Infrastructure\Http\v2;
 
 use Tests\TestCase;
 use App\Models\User;

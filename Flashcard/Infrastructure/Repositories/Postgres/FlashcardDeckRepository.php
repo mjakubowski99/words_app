@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Flashcard\Infrastructure\Repositories\Postgres;
 
 use Flashcard\Domain\Models\Deck;
-use Flashcard\Domain\Models\Owner;
+use Shared\Utils\ValueObjects\UserId;
 use Flashcard\Domain\ValueObjects\FlashcardDeckId;
 use Flashcard\Application\Repository\IFlashcardDeckRepository;
 use Flashcard\Infrastructure\Mappers\Postgres\FlashcardDeckMapper;
@@ -21,9 +21,9 @@ class FlashcardDeckRepository implements IFlashcardDeckRepository
         return $this->mapper->findById($id);
     }
 
-    public function searchByName(Owner $owner, string $name): ?Deck
+    public function searchByName(UserId $user_id, string $name): ?Deck
     {
-        return $this->mapper->searchByName($owner, $name);
+        return $this->mapper->searchByName($user_id, $name);
     }
 
     public function create(Deck $deck): Deck
@@ -39,9 +39,9 @@ class FlashcardDeckRepository implements IFlashcardDeckRepository
     }
 
     /** @return Deck[] */
-    public function getByOwner(Owner $owner, int $page, int $per_page): array
+    public function getByUser(UserId $user_id, int $page, int $per_page): array
     {
-        return $this->mapper->getByOwner($owner, $page, $per_page);
+        return $this->mapper->getByUser($user_id, $page, $per_page);
     }
 
     public function remove(Deck $deck): void

@@ -90,6 +90,9 @@ class Session
         if (!$this->hasFlashcardDeck() || !$this->deck->hasOwner()) {
             return;
         }
+        if ($this->deck->getOwner()->isAdmin()) {
+            return;
+        }
 
         $is_owner = $this->deck->getOwner()->equals(Owner::fromUser($this->user_id));
 

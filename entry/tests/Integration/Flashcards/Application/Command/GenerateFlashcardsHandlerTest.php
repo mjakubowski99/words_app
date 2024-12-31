@@ -79,7 +79,7 @@ class GenerateFlashcardsHandlerTest extends TestCase
         $deck_name = 'Category';
         $user = User::factory()->create();
         $command = new GenerateFlashcards(
-            $user->toOwner(),
+            $user->getId(),
             $deck_name,
             LanguageLevel::A1
         );
@@ -90,7 +90,7 @@ class GenerateFlashcardsHandlerTest extends TestCase
         // THEN
         $this->assertDatabaseHas('flashcard_decks', [
             'name' => $deck_name,
-            'user_id' => $command->getOwner()->getId(),
+            'user_id' => $user->getId(),
         ]);
         $this->assertDatabaseHas('flashcards', [
             'flashcard_deck_id' => $result->getDeckId(),
@@ -108,7 +108,7 @@ class GenerateFlashcardsHandlerTest extends TestCase
         $user = User::factory()->create();
         FlashcardDeck::factory()->create(['name' => $deck_name, 'user_id' => $user->id]);
         $command = new GenerateFlashcards(
-            $user->toOwner(),
+            $user->getId(),
             $deck_name,
             LanguageLevel::A1
         );
@@ -133,7 +133,7 @@ class GenerateFlashcardsHandlerTest extends TestCase
         $user = User::factory()->create();
         $deck = FlashcardDeck::factory()->create(['name' => $deck_name, 'user_id' => $user->id]);
         $command = new GenerateFlashcards(
-            $user->toOwner(),
+            $user->getId(),
             $deck_name,
             LanguageLevel::A1
         );
@@ -158,7 +158,7 @@ class GenerateFlashcardsHandlerTest extends TestCase
         $deck_name = 'Category';
         $user = User::factory()->create();
         $command = new GenerateFlashcards(
-            $user->toOwner(),
+            $user->getId(),
             $deck_name,
             LanguageLevel::A1
         );

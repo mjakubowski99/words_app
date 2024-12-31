@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Repositories\Postgres;
 
-use Flashcard\Domain\Models\Owner;
+use Shared\Utils\ValueObjects\UserId;
 use Flashcard\Domain\ValueObjects\FlashcardDeckId;
 use Flashcard\Application\ReadModels\DeckDetailsRead;
 use Flashcard\Application\ReadModels\RatingStatsReadCollection;
@@ -29,8 +29,8 @@ class FlashcardDeckReadRepository implements IFlashcardDeckReadRepository
         return $this->mapper->findDetails($id, $search, $page, $per_page);
     }
 
-    public function getByOwner(Owner $owner, ?string $search, int $page, int $per_page): array
+    public function getByUser(UserId $user_id, ?string $search, int $page, int $per_page): array
     {
-        return $this->mapper->getByOwner($owner, $search, $page, $per_page);
+        return $this->mapper->getByUser($user_id, $search, $page, $per_page);
     }
 }

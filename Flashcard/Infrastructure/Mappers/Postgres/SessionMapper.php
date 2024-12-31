@@ -7,18 +7,18 @@ namespace Flashcard\Infrastructure\Mappers\Postgres;
 use Shared\Enum\LanguageLevel;
 use Shared\Enum\SessionStatus;
 use Flashcard\Domain\Models\Deck;
-use Flashcard\Domain\Models\Owner;
 use Illuminate\Support\Facades\DB;
-use Shared\Enum\FlashcardOwnerType;
 use Flashcard\Domain\Models\Session;
 use Shared\Utils\ValueObjects\UserId;
-use Flashcard\Domain\ValueObjects\OwnerId;
 use Flashcard\Domain\ValueObjects\SessionId;
 use Flashcard\Domain\ValueObjects\FlashcardDeckId;
 use Flashcard\Domain\Exceptions\ModelNotFoundException;
+use Flashcard\Infrastructure\Mappers\Traits\HasOwnerBuilder;
 
 class SessionMapper
 {
+    use HasOwnerBuilder;
+
     public function __construct(
         private readonly DB $db,
     ) {}
@@ -87,6 +87,7 @@ class SessionMapper
                 'learning_sessions.device',
                 'flashcard_decks.id as deck_id',
                 'flashcard_decks.user_id as deck_user_id',
+                'flashcard_decks.admin_id as deck_admin_id',
                 'flashcard_decks.tag as deck_tag',
                 'flashcard_decks.name as deck_name',
                 'flashcard_decks.default_language_level as deck_default_language_level',
@@ -103,7 +104,7 @@ class SessionMapper
     public function map(object $data): Session
     {
         $deck = $data->deck_id === null ? null : (new Deck(
-            new Owner(new OwnerId($data->deck_user_id), FlashcardOwnerType::USER),
+            $this->buildOwner((string) $data->deck_user_id, (string) $data->deck_admin_id),
             $data->deck_tag,
             $data->deck_name,
             LanguageLevel::from($data->deck_default_language_level)
