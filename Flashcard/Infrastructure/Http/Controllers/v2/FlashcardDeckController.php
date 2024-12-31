@@ -126,7 +126,7 @@ class FlashcardDeckController
         $result = $generate_flashcards->handle($request->toCommand());
 
         return (new DeckDetailsResource(
-            $get_deck_details->get($result->getDeckId(), null, $request->getPage(), $request->getPerPage())
+            $get_deck_details->get($request->currentId(), $result->getDeckId(), null, $request->getPage(), $request->getPerPage())
         ))->additional([
             'merged_to_existing_deck' => $result->getMergedToExistingDeck(),
         ]);
@@ -172,7 +172,7 @@ class FlashcardDeckController
         $regenerate_flashcards->handle($request->getOwner(), $request->getDeckId());
 
         return new DeckDetailsResource(
-            $get_deck_details->get($request->getDeckId(), null, $request->getPage(), $request->getPerPage())
+            $get_deck_details->get($request->currentId(), $request->getDeckId(), null, $request->getPage(), $request->getPerPage())
         );
     }
 
@@ -273,6 +273,7 @@ class FlashcardDeckController
         GetDeckDetails $get_deck_details,
     ): DeckDetailsResource {
         $details = $get_deck_details->get(
+            $request->currentId(),
             $request->getDeckId(),
             $request->getSearch(),
             $request->getPage(),

@@ -36,7 +36,7 @@ class FlashcardDeckReadRepositoryTest extends FlashcardTestCase
         ]);
 
         // WHEN
-        $result = $this->repository->findDetails($deck->getId(), null, 1, 15);
+        $result = $this->repository->findDetails($deck->getUserId(), $deck->getId(), null, 1, 15);
 
         // THEN
         $this->assertInstanceOf(DeckDetailsRead::class, $result);
@@ -65,19 +65,24 @@ class FlashcardDeckReadRepositoryTest extends FlashcardTestCase
         $flashcard = $this->createFlashcard([
             'flashcard_deck_id' => $deck->id,
         ]);
+        $learning_session = $this->createLearningSession([
+            'user_id' => $deck->getUserId(),
+        ]);
         $this->createLearningSessionFlashcard([
+            'learning_session_id' => $learning_session->id,
             'flashcard_id' => $flashcard->id,
             'rating' => Rating::WEAK,
             'updated_at' => (clone $now)->subMinute(),
         ]);
         $this->createLearningSessionFlashcard([
+            'learning_session_id' => $learning_session->id,
             'flashcard_id' => $flashcard->id,
             'rating' => Rating::GOOD,
             'updated_at' => $now,
         ]);
 
         // WHEN
-        $result = $this->repository->findDetails($deck->getId(), null, 1, 15);
+        $result = $this->repository->findDetails($deck->getUserId(), $deck->getId(), null, 1, 15);
 
         // THEN
         $this->assertInstanceOf(DeckDetailsRead::class, $result);
@@ -101,7 +106,7 @@ class FlashcardDeckReadRepositoryTest extends FlashcardTestCase
         ]);
 
         // WHEN
-        $result = $this->repository->findDetails($deck->getId(), 'pple', 1, 15);
+        $result = $this->repository->findDetails($deck->getUserId(), $deck->getId(), 'pple', 1, 15);
 
         // THEN
         $this->assertInstanceOf(DeckDetailsRead::class, $result);

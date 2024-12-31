@@ -26,9 +26,13 @@ class FlashcardReadRepositoryTest extends FlashcardTestCase
     {
         // GIVEN
         $user = $this->createUser();
+        $learning_session = $this->createLearningSession([
+            'user_id' => $user->id,
+        ]);
         $this->createLearningSessionFlashcard([
+            'learning_session_id' => $learning_session->id,
             'rating' => Rating::GOOD,
-            'flashcard_id' => $this->createFlashcard(['user_id' => $user->id])->id,
+            'flashcard_id' => $this->createFlashcard()->id,
         ]);
         $this->createLearningSessionFlashcard([
             'rating' => Rating::WEAK,
@@ -62,8 +66,12 @@ class FlashcardReadRepositoryTest extends FlashcardTestCase
     ): void {
         // GIVEN
         $user = $this->createUser();
+        $learning_session = $this->createLearningSession([
+            'user_id' => $user->id,
+        ]);
         foreach ($flashcards as $flashcard) {
             $this->createLearningSessionFlashcard([
+                'learning_session_id' => $learning_session->id,
                 'rating' => $flashcard['rating'],
                 'flashcard_id' => $this->createFlashcard(['user_id' => $user->id])->id,
             ]);

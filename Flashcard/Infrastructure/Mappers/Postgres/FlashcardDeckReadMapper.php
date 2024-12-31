@@ -21,7 +21,7 @@ class FlashcardDeckReadMapper
         private readonly FlashcardReadMapper $flashcard_mapper,
     ) {}
 
-    public function findDetails(FlashcardDeckId $id, ?string $search, int $page, int $per_page): DeckDetailsRead
+    public function findDetails(UserId $user_id, FlashcardDeckId $id, ?string $search, int $page, int $per_page): DeckDetailsRead
     {
         $deck = $this->findDeck($id);
 
@@ -29,7 +29,7 @@ class FlashcardDeckReadMapper
             throw new ModelNotFoundException('Category not found');
         }
 
-        $flashcards = $this->flashcard_mapper->search($id, null, $search, $page, $per_page);
+        $flashcards = $this->flashcard_mapper->search($user_id, $id, null, $search, $page, $per_page);
 
         $flashcards_count = $this->db::table('flashcards')
             ->where('flashcards.flashcard_deck_id', $id->getValue())

@@ -13,7 +13,7 @@ interface IFlashcardDeckReadRepository
 {
     public function findRatingStats(FlashcardDeckId $id): RatingStatsReadCollection;
 
-    public function findDetails(FlashcardDeckId $id, ?string $search, int $page, int $per_page): DeckDetailsRead;
+    public function findDetails(UserId $user_id, FlashcardDeckId $id, ?string $search, int $page, int $per_page): DeckDetailsRead;
 
     public function getByUser(UserId $user_id, ?string $search, int $page, int $per_page): array;
 }

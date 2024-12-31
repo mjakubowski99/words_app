@@ -24,9 +24,9 @@ class FlashcardDeckReadRepository implements IFlashcardDeckReadRepository
         return $this->flashcard_mapper->findFlashcardStats($id, null);
     }
 
-    public function findDetails(FlashcardDeckId $id, ?string $search, int $page, int $per_page): DeckDetailsRead
+    public function findDetails(UserId $user_id, FlashcardDeckId $id, ?string $search, int $page, int $per_page): DeckDetailsRead
     {
-        return $this->mapper->findDetails($id, $search, $page, $per_page);
+        return $this->mapper->findDetails($user_id, $id, $search, $page, $per_page);
     }
 
     public function getByUser(UserId $user_id, ?string $search, int $page, int $per_page): array
