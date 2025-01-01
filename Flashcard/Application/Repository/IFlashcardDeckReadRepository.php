@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\Repository;
 
-use Flashcard\Domain\Models\Owner;
+use Shared\Utils\ValueObjects\UserId;
 use Flashcard\Domain\ValueObjects\FlashcardDeckId;
 use Flashcard\Application\ReadModels\DeckDetailsRead;
 use Flashcard\Application\ReadModels\OwnerCategoryRead;
@@ -14,8 +14,8 @@ interface IFlashcardDeckReadRepository
 {
     public function findRatingStats(FlashcardDeckId $id): RatingStatsReadCollection;
 
-    public function findDetails(FlashcardDeckId $id, ?string $search, int $page, int $per_page): DeckDetailsRead;
+    public function findDetails(UserId $user_id, FlashcardDeckId $id, ?string $search, int $page, int $per_page): DeckDetailsRead;
 
     /** @return OwnerCategoryRead[] */
-    public function getByOwner(Owner $owner, ?string $search, int $page, int $per_page): array;
+    public function getByUser(UserId $user_id, ?string $search, int $page, int $per_page): array;
 }

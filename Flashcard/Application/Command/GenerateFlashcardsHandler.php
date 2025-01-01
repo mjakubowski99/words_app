@@ -18,7 +18,7 @@ final readonly class GenerateFlashcardsHandler
     public function handle(GenerateFlashcards $command): GenerateFlashcardsResult
     {
         $resolved_deck = $this->deck_resolver->resolveByName(
-            $command->getOwner(),
+            $command->getUserId(),
             $command->getDeckName(),
             $command->getLanguageLevel(),
         );

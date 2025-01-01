@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Unit\Flashcard\Infrastructure\Repositories\Postgres\FlashcardDeckReadRepository;
 
 use App\Models\User;
+use App\Models\Admin;
 use App\Models\FlashcardDeck;
 use Shared\Enum\LanguageLevel;
 use Tests\Base\FlashcardTestCase;
@@ -36,7 +37,7 @@ class FlashcardDeckReadRepositoryTest extends FlashcardTestCase
         ]);
 
         // WHEN
-        $result = $this->repository->findDetails($deck->getId(), null, 1, 15);
+        $result = $this->repository->findDetails($deck->getUserId(), $deck->getId(), null, 1, 15);
 
         // THEN
         $this->assertInstanceOf(DeckDetailsRead::class, $result);
@@ -57,6 +58,28 @@ class FlashcardDeckReadRepositoryTest extends FlashcardTestCase
         $this->assertSame(1, $result->getFlashcardsCount());
     }
 
+    public function test__findDetails_WhenAdminIsDeckOwner_success(): void
+    {
+        // GIVEN
+        $user = $this->createUser();
+        $deck = $this->createFlashcardDeck([
+            'user_id' => null,
+            'admin_id' => Admin::factory()->create()->id,
+        ]);
+        $flashcard = $this->createFlashcard([
+            'flashcard_deck_id' => $deck->id,
+            'user_id' => null,
+            'admin_id' => Admin::factory()->create()->id,
+        ]);
+
+        // WHEN
+        $result = $this->repository->findDetails($user->getId(), $deck->getId(), null, 1, 15);
+
+        // THEN
+        $this->assertInstanceOf(DeckDetailsRead::class, $result);
+        $this->assertSame($flashcard->id, $result->getFlashcards()[0]->getId()->getValue());
+    }
+
     public function test__findDetails_generalRatingIsLastRating(): void
     {
         // GIVEN
@@ -65,19 +88,24 @@ class FlashcardDeckReadRepositoryTest extends FlashcardTestCase
         $flashcard = $this->createFlashcard([
             'flashcard_deck_id' => $deck->id,
         ]);
+        $learning_session = $this->createLearningSession([
+            'user_id' => $deck->getUserId(),
+        ]);
         $this->createLearningSessionFlashcard([
+            'learning_session_id' => $learning_session->id,
             'flashcard_id' => $flashcard->id,
             'rating' => Rating::WEAK,
             'updated_at' => (clone $now)->subMinute(),
         ]);
         $this->createLearningSessionFlashcard([
+            'learning_session_id' => $learning_session->id,
             'flashcard_id' => $flashcard->id,
             'rating' => Rating::GOOD,
             'updated_at' => $now,
         ]);
 
         // WHEN
-        $result = $this->repository->findDetails($deck->getId(), null, 1, 15);
+        $result = $this->repository->findDetails($deck->getUserId(), $deck->getId(), null, 1, 15);
 
         // THEN
         $this->assertInstanceOf(DeckDetailsRead::class, $result);
@@ -101,7 +129,7 @@ class FlashcardDeckReadRepositoryTest extends FlashcardTestCase
         ]);
 
         // WHEN
-        $result = $this->repository->findDetails($deck->getId(), 'pple', 1, 15);
+        $result = $this->repository->findDetails($deck->getUserId(), $deck->getId(), 'pple', 1, 15);
 
         // THEN
         $this->assertInstanceOf(DeckDetailsRead::class, $result);
@@ -110,7 +138,7 @@ class FlashcardDeckReadRepositoryTest extends FlashcardTestCase
         $this->assertSame($expected->id, $result->getFlashcards()[0]->getId()->getValue());
     }
 
-    public function test__getByOwner_ReturnOnlyUserCategories(): void
+    public function test__getByUser_ReturnOnlyUserCategories(): void
     {
         // GIVEN
         $user = $this->createUser();
@@ -121,7 +149,7 @@ class FlashcardDeckReadRepositoryTest extends FlashcardTestCase
         ]);
 
         // WHEN
-        $results = $this->repository->getByOwner($user->toOwner(), null, 1, 15);
+        $results = $this->repository->getByUser($user->getId(), null, 1, 15);
 
         // THEN
         $this->assertCount(1, $results);
@@ -131,7 +159,7 @@ class FlashcardDeckReadRepositoryTest extends FlashcardTestCase
         $this->assertSame($user_deck->default_language_level->value, $results[0]->getLanguageLevel()->value);
     }
 
-    public function test__getByOwner_paginationWorks(): void
+    public function test__getByUser_paginationWorks(): void
     {
         // GIVEN
         $user = $this->createUser();
@@ -143,7 +171,7 @@ class FlashcardDeckReadRepositoryTest extends FlashcardTestCase
         ]);
 
         // WHEN
-        $results = $this->repository->getByOwner($user->toOwner(), null, 2, 1);
+        $results = $this->repository->getByUser($user->getId(), null, 2, 1);
 
         // THEN
         $this->assertCount(1, $results);
@@ -151,7 +179,7 @@ class FlashcardDeckReadRepositoryTest extends FlashcardTestCase
         $this->assertSame($user_deck->id, $results[0]->getId()->getValue());
     }
 
-    public function test__getByOwner_searchingWorks(): void
+    public function test__getByUser_searchingWorks(): void
     {
         // GIVEN
         $user = $this->createUser();
@@ -165,7 +193,7 @@ class FlashcardDeckReadRepositoryTest extends FlashcardTestCase
         ]);
 
         // WHEN
-        $results = $this->repository->getByOwner($user->toOwner(), 'LAn', 1, 15);
+        $results = $this->repository->getByUser($user->getId(), 'LAn', 1, 15);
 
         // THEN
         $this->assertCount(1, $results);
@@ -173,7 +201,7 @@ class FlashcardDeckReadRepositoryTest extends FlashcardTestCase
         $this->assertSame($expected->id, $results[0]->getId()->getValue());
     }
 
-    public function test__getByOwner_levelIsMostFrequentFlashcardLanguageLevel(): void
+    public function test__getByUser_levelIsMostFrequentFlashcardLanguageLevel(): void
     {
         // GIVEN
         $user = $this->createUser();
@@ -189,7 +217,7 @@ class FlashcardDeckReadRepositoryTest extends FlashcardTestCase
         $this->createFlashcard(['flashcard_deck_id' => $expected->id, 'language_level' => LanguageLevel::B1]);
 
         // WHEN
-        $results = $this->repository->getByOwner($user->toOwner(), 'LAn', 1, 15);
+        $results = $this->repository->getByUser($user->getId(), 'LAn', 1, 15);
 
         // THEN
         $this->assertCount(1, $results);
@@ -198,7 +226,7 @@ class FlashcardDeckReadRepositoryTest extends FlashcardTestCase
         $this->assertSame(6, $results[0]->getFlashcardsCount());
     }
 
-    public function test__getByOwner_ratingPercentageIsCorrect(): void
+    public function test__getByUser_ratingPercentageIsCorrect(): void
     {
         // GIVEN
         $user = $this->createUser();
@@ -221,13 +249,13 @@ class FlashcardDeckReadRepositoryTest extends FlashcardTestCase
         ) / 3 * 100;
 
         // WHEN
-        $results = $this->repository->getByOwner($user->toOwner(), 'LAn', 1, 15);
+        $results = $this->repository->getByUser($user->getId(), 'LAn', 1, 15);
 
         // THEN
         $this->assertSame(round($expected_ratio, 2), round($results[0]->getRatingPercentage(), 2));
     }
 
-    public function test__getByOwner_lastLearntAtIsCorrect(): void
+    public function test__getByUser_lastLearntAtIsCorrect(): void
     {
         // GIVEN
         $now = now();
@@ -244,7 +272,7 @@ class FlashcardDeckReadRepositoryTest extends FlashcardTestCase
         $this->createLearningSessionFlashcard(['flashcard_id' => $flashcards[0]->id, 'updated_at' => $now]);
 
         // WHEN
-        $results = $this->repository->getByOwner($user->toOwner(), 'LAn', 1, 15);
+        $results = $this->repository->getByUser($user->getId(), 'LAn', 1, 15);
 
         // THEN
         $this->assertSame($now->toDateTimeString(), $results[0]->getLastLearntAt()->toDateTimeString());

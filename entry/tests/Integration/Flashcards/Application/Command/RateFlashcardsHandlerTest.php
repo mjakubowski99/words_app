@@ -47,7 +47,7 @@ class RateFlashcardsHandlerTest extends TestCase
             'repetition_interval' => 1,
         ]);
         $command = new RateFlashcards(
-            $user->toOwner(),
+            $user->getId(),
             $session->getId(),
             [
                 new FlashcardRating($session_flashcards[0]->getId(), Rating::GOOD),

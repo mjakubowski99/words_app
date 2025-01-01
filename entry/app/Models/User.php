@@ -8,12 +8,10 @@ use Illuminate\Support\Carbon;
 use Laravel\Sanctum\HasApiTokens;
 use Flashcard\Domain\Models\Owner;
 use Database\Factories\UserFactory;
-use Shared\Enum\FlashcardOwnerType;
 use Shared\Utils\ValueObjects\UserId;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\PersonalAccessToken;
 use Illuminate\Database\Eloquent\Builder;
-use Flashcard\Domain\ValueObjects\OwnerId;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
@@ -97,6 +95,6 @@ class User extends Authenticatable
 
     public function toOwner(): Owner
     {
-        return new Owner(new OwnerId($this->id), FlashcardOwnerType::USER);
+        return Owner::fromUser($this->getId());
     }
 }

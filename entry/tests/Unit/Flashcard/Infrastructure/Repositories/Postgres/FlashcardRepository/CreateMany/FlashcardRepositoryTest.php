@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Unit\Flashcard\Infrastructure\Repositories\Postgres\FlashcardRepository\CreateMany;
 
 use App\Models\User;
+use App\Models\Admin;
 use App\Models\FlashcardDeck;
 use Shared\Enum\LanguageLevel;
 use Tests\Base\FlashcardTestCase;
@@ -29,7 +30,8 @@ class FlashcardRepositoryTest extends FlashcardTestCase
     public function test__createMany_ShouldCreateFlashcards(): void
     {
         // GIVEN
-        $users = User::factory(2)->create();
+        $user = User::factory()->create();
+        $admin = Admin::factory()->create();
         $decks = FlashcardDeck::factory(2)->create();
 
         $flashcards = [
@@ -41,7 +43,7 @@ class FlashcardRepositoryTest extends FlashcardTestCase
                 Language::from('pl'),
                 'context',
                 'context_translation',
-                $users[0]->toOwner(),
+                $user->toOwner(),
                 $decks[0]->toDomainModel(),
                 LanguageLevel::A1
             ),
@@ -53,7 +55,7 @@ class FlashcardRepositoryTest extends FlashcardTestCase
                 Language::from('en'),
                 'context 1',
                 'context_translation 1',
-                $users[1]->toOwner(),
+                $admin->toOwner(),
                 $decks[1]->toDomainModel(),
                 LanguageLevel::A1
             ),
@@ -71,7 +73,8 @@ class FlashcardRepositoryTest extends FlashcardTestCase
             'front_context' => 'context',
             'back_context' => 'context_translation',
             'flashcard_deck_id' => $decks[0]->id,
-            'user_id' => $users[0]->id,
+            'user_id' => $user->id,
+            'admin_id' => null,
         ]);
         $this->assertDatabaseHas('flashcards', [
             'front_word' => 'word 1',
@@ -81,7 +84,8 @@ class FlashcardRepositoryTest extends FlashcardTestCase
             'front_context' => 'context 1',
             'back_context' => 'context_translation 1',
             'flashcard_deck_id' => $decks[1]->id,
-            'user_id' => $users[1]->id,
+            'user_id' => null,
+            'admin_id' => $admin->id,
         ]);
     }
 }

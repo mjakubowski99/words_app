@@ -6,9 +6,9 @@ namespace Flashcard\Infrastructure\Mappers\Postgres;
 
 use Carbon\Carbon;
 use Shared\Enum\LanguageLevel;
-use Flashcard\Domain\Models\Owner;
 use Illuminate\Support\Facades\DB;
 use Flashcard\Domain\Models\Rating;
+use Shared\Utils\ValueObjects\UserId;
 use Flashcard\Domain\ValueObjects\FlashcardDeckId;
 use Flashcard\Application\ReadModels\DeckDetailsRead;
 use Flashcard\Application\ReadModels\OwnerCategoryRead;
@@ -21,7 +21,7 @@ class FlashcardDeckReadMapper
         private readonly FlashcardReadMapper $flashcard_mapper,
     ) {}
 
-    public function findDetails(FlashcardDeckId $id, ?string $search, int $page, int $per_page): DeckDetailsRead
+    public function findDetails(UserId $user_id, FlashcardDeckId $id, ?string $search, int $page, int $per_page): DeckDetailsRead
     {
         $deck = $this->findDeck($id);
 
@@ -29,7 +29,7 @@ class FlashcardDeckReadMapper
             throw new ModelNotFoundException('Category not found');
         }
 
-        $flashcards = $this->flashcard_mapper->search($id, null, $search, $page, $per_page);
+        $flashcards = $this->flashcard_mapper->search($user_id, $id, null, $search, $page, $per_page);
 
         $flashcards_count = $this->db::table('flashcards')
             ->where('flashcards.flashcard_deck_id', $id->getValue())
@@ -45,7 +45,8 @@ class FlashcardDeckReadMapper
         );
     }
 
-    public function getByOwner(Owner $owner, ?string $search, int $page, int $per_page): array
+    /** @return OwnerCategoryRead[] */
+    public function getByUser(UserId $user_id, ?string $search, int $page, int $per_page): array
     {
         $rating = Rating::maxRating();
 
@@ -60,7 +61,7 @@ class FlashcardDeckReadMapper
             ");
 
         return $this->db::table('flashcard_decks')
-            ->where('flashcard_decks.user_id', $owner->getId())
+            ->where('flashcard_decks.user_id', $user_id->getValue())
             ->when(!is_null($search), function ($query) use ($search) {
                 return $query->where(DB::raw('LOWER(flashcard_decks.name)'), 'LIKE', '%' . mb_strtolower($search) . '%');
             })

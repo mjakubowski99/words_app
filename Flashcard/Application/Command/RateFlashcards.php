@@ -4,20 +4,20 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\Command;
 
-use Flashcard\Domain\Models\Owner;
+use Shared\Utils\ValueObjects\UserId;
 use Flashcard\Domain\ValueObjects\SessionId;
 
 class RateFlashcards
 {
     public function __construct(
-        private Owner $owner,
+        private UserId $user_id,
         private SessionId $session_id,
         private array $ratings
     ) {}
 
-    public function getOwner(): Owner
+    public function getUserId(): UserId
     {
-        return $this->owner;
+        return $this->user_id;
     }
 
     public function getSessionId(): SessionId

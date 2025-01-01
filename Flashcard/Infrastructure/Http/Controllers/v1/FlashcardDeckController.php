@@ -7,9 +7,6 @@ namespace Flashcard\Infrastructure\Http\Controllers\v1;
 use App\Http\OpenApi\Tags;
 use OpenApi\Attributes as OAT;
 use Illuminate\Http\JsonResponse;
-use Flashcard\Domain\Models\Owner;
-use Shared\Enum\FlashcardOwnerType;
-use Flashcard\Domain\ValueObjects\OwnerId;
 use Flashcard\Application\Query\GetDeckDetails;
 use Flashcard\Application\Query\GetUserCategories;
 use Flashcard\Application\Command\GenerateFlashcardsHandler;
@@ -75,7 +72,7 @@ class FlashcardDeckController
     ): FlashcardDecksResource {
         return new FlashcardDecksResource([
             'decks' => $get_user_decks->handle(
-                new Owner(new OwnerId($request->getUserId()->getValue()), FlashcardOwnerType::USER),
+                $request->currentId(),
                 $request->getSearch(),
                 $request->getPage(),
                 $request->getPerPage(),
@@ -126,7 +123,7 @@ class FlashcardDeckController
         $result = $generate_flashcards->handle($request->toCommand());
 
         return (new DeckDetailsResource([
-            'details' => $get_deck_details->get($result->getDeckId(), null, $request->getPage(), $request->getPerPage()),
+            'details' => $get_deck_details->get($request->currentId(), $result->getDeckId(), null, $request->getPage(), $request->getPerPage()),
             'page' => $request->getPage(),
             'per_page' => $request->getPerPage(),
         ]))->additional([
@@ -166,7 +163,7 @@ class FlashcardDeckController
         $regenerate_flashcards->handle($request->getOwner(), $request->getDeckId());
 
         return new DeckDetailsResource([
-            'details' => $get_deck_details->get($request->getDeckId(), null, $request->getPage(), $request->getPerPage()),
+            'details' => $get_deck_details->get($request->currentId(), $request->getDeckId(), null, $request->getPage(), $request->getPerPage()),
             'page' => $request->getPage(),
             'per_page' => $request->getPerPage(),
         ]);
@@ -264,6 +261,7 @@ class FlashcardDeckController
     ): DeckDetailsResource {
         return new DeckDetailsResource([
             'details' => $get_deck_details->get(
+                $request->currentId(),
                 $request->getDeckId(),
                 $request->getSearch(),
                 $request->getPage(),

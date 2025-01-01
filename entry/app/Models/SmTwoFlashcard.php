@@ -61,7 +61,7 @@ class SmTwoFlashcard extends Model
     public function toDomainModel(): \Flashcard\Domain\Models\SmTwoFlashcard
     {
         return new \Flashcard\Domain\Models\SmTwoFlashcard(
-            $this->user->toOwner(),
+            $this->user->getId(),
             $this->getFlashcardId(),
             (float) $this->repetition_ratio,
             (float) $this->repetition_interval,

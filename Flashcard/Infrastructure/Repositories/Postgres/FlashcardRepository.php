@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Repositories\Postgres;
 
-use Flashcard\Domain\Models\Owner;
+use Shared\Utils\ValueObjects\UserId;
 use Flashcard\Domain\Models\Flashcard;
 use Flashcard\Domain\ValueObjects\SessionId;
 use Flashcard\Domain\ValueObjects\FlashcardId;
@@ -21,11 +21,12 @@ class FlashcardRepository implements IFlashcardRepository
     ) {}
 
     /** @return Flashcard[] */
-    public function getRandomFlashcards(Owner $owner, int $limit, array $exclude_flashcard_ids): array
+    public function getRandomFlashcards(UserId $user_id, int $limit, array $exclude_flashcard_ids): array
     {
-        return $this->mapper->getRandomFlashcards($owner, $limit, $exclude_flashcard_ids);
+        return $this->mapper->getRandomFlashcards($user_id, $limit, $exclude_flashcard_ids);
     }
 
+    /** @return Flashcard[] */
     public function getRandomFlashcardsByCategory(FlashcardDeckId $id, int $limit, array $exclude_flashcard_ids): array
     {
         return $this->mapper->getRandomFlashcardsByCategory($id, $limit, $exclude_flashcard_ids);
@@ -51,11 +52,13 @@ class FlashcardRepository implements IFlashcardRepository
         $this->mapper->delete($id);
     }
 
+    /** @return Flashcard[] */
     public function getByDeck(FlashcardDeckId $deck_id): array
     {
         return $this->mapper->getByCategory($deck_id);
     }
 
+    /** @return FlashcardId[] */
     public function getLatestSessionFlashcardIds(SessionId $session_id, int $limit): array
     {
         return $this->session_flashcard_mapper->getLatestSessionFlashcardIds($session_id, $limit);

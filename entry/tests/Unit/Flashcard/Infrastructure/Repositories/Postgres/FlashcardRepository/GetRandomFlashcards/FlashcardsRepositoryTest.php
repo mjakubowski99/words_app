@@ -29,7 +29,7 @@ class FlashcardsRepositoryTest extends FlashcardTestCase
         $flashcard = $this->createFlashcard(['user_id' => $owner->id]);
 
         // WHEN
-        $flashcards = $this->repository->getRandomFlashcards($owner->toOwner(), 5, []);
+        $flashcards = $this->repository->getRandomFlashcards($owner->getId(), 5, []);
 
         // THEN
         $this->assertCount(1, $flashcards);
@@ -46,7 +46,7 @@ class FlashcardsRepositoryTest extends FlashcardTestCase
         $this->createFlashcard(['user_id' => $owner->id]);
 
         // WHEN
-        $flashcards = $this->repository->getRandomFlashcards($owner->toOwner(), 1, []);
+        $flashcards = $this->repository->getRandomFlashcards($owner->getId(), 1, []);
 
         // THEN
         $this->assertCount(1, $flashcards);
@@ -66,7 +66,7 @@ class FlashcardsRepositoryTest extends FlashcardTestCase
         $flashcards_to_exclude = [$flashcards[0]->id, $flashcards[2]->id];
 
         // WHEN
-        $flashcards = $this->repository->getRandomFlashcards($owner->toOwner(), 100, $flashcards_to_exclude);
+        $flashcards = $this->repository->getRandomFlashcards($owner->getId(), 100, $flashcards_to_exclude);
 
         // THEN
         $this->assertCount(1, $flashcards);

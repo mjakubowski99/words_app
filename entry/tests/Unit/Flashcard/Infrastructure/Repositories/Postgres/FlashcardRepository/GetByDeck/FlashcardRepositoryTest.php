@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Flashcard\Infrastructure\Repositories\Postgres\FlashcardRepository\GetByDeck;
 
+use App\Models\Admin;
 use Tests\Base\FlashcardTestCase;
 use Flashcard\Domain\Models\Flashcard;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -44,6 +45,31 @@ class FlashcardRepositoryTest extends FlashcardTestCase
         $this->assertSame($expected_flashcard->front_lang, $flashcard->getFrontLang()->getValue());
         $this->assertSame($expected_flashcard->back_context, $flashcard->getBackContext());
         $this->assertSame($expected_flashcard->front_context, $flashcard->getFrontContext());
+    }
+
+    /**
+     * @test
+     */
+    public function getByDeck_adminIsOwner(): void
+    {
+        // GIVEN
+        $deck = $this->createFlashcardDeck();
+        $admin = Admin::factory()->create();
+        $expected_flashcard = $this->createFlashcard([
+            'flashcard_deck_id' => $deck->id,
+            'admin_id' => $admin->id,
+            'user_id' => null,
+        ]);
+
+        // WHEN
+        $flashcards = $this->repository->getByDeck($deck->getId());
+
+        // THEN
+        $this->assertCount(1, $flashcards);
+        $this->assertInstanceOf(Flashcard::class, $flashcards[0]);
+        $flashcard = $flashcards[0];
+        $this->assertTrue($flashcard->getOwner()->isAdmin());
+        $this->assertSame($expected_flashcard->admin_id, $flashcard->getOwner()->getId()->getValue());
     }
 
     /**

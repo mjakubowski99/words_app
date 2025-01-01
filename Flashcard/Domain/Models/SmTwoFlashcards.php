@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Flashcard\Domain\Models;
 
+use Shared\Utils\ValueObjects\UserId;
 use Flashcard\Domain\ValueObjects\FlashcardId;
 use Flashcard\Domain\Exceptions\InvalidSmTwoFlashcardSetException;
 
@@ -15,10 +16,10 @@ class SmTwoFlashcards implements \Countable
         $this->validate();
     }
 
-    public function fillIfMissing(Owner $owner, FlashcardId $flashcard_id): void
+    public function fillIfMissing(UserId $user_id, FlashcardId $flashcard_id): void
     {
         if (is_null($this->searchKeyByUserFlashcard($flashcard_id))) {
-            $this->sm_two_flashcards[] = new SmTwoFlashcard($owner, $flashcard_id);
+            $this->sm_two_flashcards[] = new SmTwoFlashcard($user_id, $flashcard_id);
         }
     }
 
@@ -36,7 +37,7 @@ class SmTwoFlashcards implements \Countable
         $to_compare = $this->sm_two_flashcards[0];
 
         foreach ($this->sm_two_flashcards as $sm_two_flashcard) {
-            if (!$sm_two_flashcard->getOwner()->getId()->equals($to_compare->getOwner()->getId())) {
+            if (!$sm_two_flashcard->getUserId()->equals($to_compare->getUserId())) {
                 throw new InvalidSmTwoFlashcardSetException('Not every flashcard in set has same user id');
             }
         }

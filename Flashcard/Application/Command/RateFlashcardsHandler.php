@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\Command;
 
+use Shared\Exceptions\UnauthorizedException;
 use Flashcard\Application\Services\IRepetitionAlgorithm;
 use Flashcard\Application\Repository\IRateableSessionFlashcardsRepository;
 
@@ -17,6 +18,10 @@ class RateFlashcardsHandler
     public function handle(RateFlashcards $command): void
     {
         $session_flashcards = $this->repository->find($command->getSessionId());
+
+        if (!$session_flashcards->getUserId()->equals($command->getUserId())) {
+            throw new UnauthorizedException('User is not session owner');
+        }
 
         foreach ($command->getRatings() as $rating) {
             $session_flashcards->rate($rating->getSessionFlashcardId(), $rating->getRating());

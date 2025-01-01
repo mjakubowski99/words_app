@@ -30,12 +30,12 @@ class SmTwoRepetitionAlgorithm implements IRepetitionAlgorithm
             }
         }
 
-        $sm_two_flashcards = $this->repository->findMany($session_flashcards->getOwner(), $flashcard_ids);
+        $sm_two_flashcards = $this->repository->findMany($session_flashcards->getUserId(), $flashcard_ids);
 
         /** @var RateableSessionFlashcard $session_flashcard */
         foreach ($session_flashcards->all() as $session_flashcard) {
             if ($session_flashcard->rated()) {
-                $sm_two_flashcards->fillIfMissing($session_flashcards->getOwner(), $session_flashcard->getFlashcardId());
+                $sm_two_flashcards->fillIfMissing($session_flashcards->getUserId(), $session_flashcard->getFlashcardId());
 
                 $sm_two_flashcards->updateByRating(
                     $session_flashcard->getFlashcardId(),

@@ -7,6 +7,7 @@ namespace App\Models;
 use Illuminate\Support\Carbon;
 use Shared\Enum\LanguageLevel;
 use Flashcard\Domain\Models\Deck;
+use Shared\Utils\ValueObjects\UserId;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Database\Factories\FlashcardDeckFactory;
@@ -45,6 +46,11 @@ class FlashcardDeck extends Model
     public function getId(): FlashcardDeckId
     {
         return new FlashcardDeckId($this->id);
+    }
+
+    public function getUserId(): UserId
+    {
+        return new UserId($this->user_id);
     }
 
     public function user(): BelongsTo

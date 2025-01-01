@@ -5,10 +5,8 @@ declare(strict_types=1);
 namespace Flashcard\Infrastructure\Mappers\Postgres;
 
 use Shared\Enum\SessionStatus;
-use Flashcard\Domain\Models\Owner;
 use Illuminate\Support\Facades\DB;
-use Shared\Enum\FlashcardOwnerType;
-use Flashcard\Domain\ValueObjects\OwnerId;
+use Shared\Utils\ValueObjects\UserId;
 use Flashcard\Domain\ValueObjects\SessionId;
 use Flashcard\Domain\ValueObjects\FlashcardId;
 use Flashcard\Domain\Models\RateableSessionFlashcard;
@@ -70,7 +68,7 @@ class RateableSessionFlashcardsMapper
 
         return new RateableSessionFlashcards(
             $id,
-            new Owner(new OwnerId($results[0]->user_id), FlashcardOwnerType::USER),
+            new UserId($results[0]->user_id),
             SessionStatus::from($results[0]->status),
             $results[0]->rated_flashcard_count,
             $results[0]->cards_per_session,

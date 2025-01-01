@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Flashcard\Domain\Models;
 
+use Shared\Utils\ValueObjects\UserId;
 use Flashcard\Domain\ValueObjects\SessionId;
 use Flashcard\Domain\Exceptions\InvalidNextSessionFlashcards;
 use Flashcard\Domain\Exceptions\TooManySessionFlashcardsException;
@@ -16,7 +17,7 @@ class NextSessionFlashcards
 
     public function __construct(
         private SessionId $session_id,
-        private Owner $owner,
+        private UserId $user_id,
         private ?Deck $deck,
         private int $current_session_flashcards_count,
         private int $unrated_count,
@@ -34,9 +35,9 @@ class NextSessionFlashcards
         return $this->session_id;
     }
 
-    public function getOwner(): Owner
+    public function getUserId(): UserId
     {
-        return $this->owner;
+        return $this->user_id;
     }
 
     public function getUnratedCount(): int

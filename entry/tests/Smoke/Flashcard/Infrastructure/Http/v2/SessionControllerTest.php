@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Smoke\Flashcard\Infrastructure\Http\v2;
+namespace Tests\Smoke\Flashcard\Infrastructure\Http\v2;
 
 use Tests\TestCase;
 use App\Models\User;
@@ -107,6 +107,7 @@ class SessionControllerTest extends TestCase
         // GIVEN
         $user = User::factory()->create();
         $learning_session = LearningSession::factory()->create([
+            'user_id' => $user->id,
             'flashcard_deck_id' => null,
         ]);
         $session_flashcard = LearningSessionFlashcard::factory()->create([
@@ -167,6 +168,7 @@ class SessionControllerTest extends TestCase
         // GIVEN
         $user = User::factory()->create();
         $learning_session = LearningSession::factory()->create([
+            'user_id' => $user->id,
             'flashcard_deck_id' => null,
         ]);
         $session_flashcard = LearningSessionFlashcard::factory()->create([

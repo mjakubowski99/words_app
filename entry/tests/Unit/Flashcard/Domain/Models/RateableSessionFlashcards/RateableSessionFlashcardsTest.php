@@ -6,11 +6,9 @@ namespace Tests\Unit\Flashcard\Domain\Models\RateableSessionFlashcards;
 
 use Tests\TestCase;
 use Shared\Enum\SessionStatus;
-use Flashcard\Domain\Models\Owner;
 use Flashcard\Domain\Models\Rating;
-use Shared\Enum\FlashcardOwnerType;
 use Shared\Utils\ValueObjects\Uuid;
-use Flashcard\Domain\ValueObjects\OwnerId;
+use Shared\Utils\ValueObjects\UserId;
 use Flashcard\Domain\ValueObjects\SessionId;
 use Flashcard\Domain\ValueObjects\FlashcardId;
 use Flashcard\Domain\Models\RateableSessionFlashcard;
@@ -34,7 +32,7 @@ class RateableSessionFlashcardsTest extends TestCase
         // WHEN
         $this->model = new RateableSessionFlashcards(
             new SessionId(1),
-            new Owner(new OwnerId(Uuid::make()->getValue()), FlashcardOwnerType::USER),
+            UserId::fromString(Uuid::make()->getValue()),
             SessionStatus::FINISHED,
             9,
             10,
@@ -49,7 +47,7 @@ class RateableSessionFlashcardsTest extends TestCase
 
         $this->model = new RateableSessionFlashcards(
             new SessionId(1),
-            new Owner(new OwnerId(Uuid::make()->getValue()), FlashcardOwnerType::USER),
+            UserId::fromString(Uuid::make()->getValue()),
             SessionStatus::STARTED,
             9,
             10,
@@ -79,7 +77,7 @@ class RateableSessionFlashcardsTest extends TestCase
 
         $this->model = new RateableSessionFlashcards(
             new SessionId(1),
-            new Owner(new OwnerId(Uuid::make()->getValue()), FlashcardOwnerType::USER),
+            UserId::fromString(Uuid::make()->getValue()),
             SessionStatus::STARTED,
             9,
             10,
@@ -109,7 +107,7 @@ class RateableSessionFlashcardsTest extends TestCase
 
         $this->model = new RateableSessionFlashcards(
             new SessionId(1),
-            new Owner(new OwnerId(Uuid::make()->getValue()), FlashcardOwnerType::USER),
+            UserId::fromString(Uuid::make()->getValue()),
             SessionStatus::STARTED,
             9,
             10,

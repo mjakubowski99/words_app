@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Unit\Flashcard\Infrastructure\Repositories\Postgres\SmTwoFlashcardRepository;
 
 use App\Models\User;
+use App\Models\Admin;
 use App\Models\Flashcard;
 use App\Models\FlashcardDeck;
 use App\Models\SmTwoFlashcard;
@@ -41,7 +42,7 @@ class SmTwoFlashcardRepositoryTest extends FlashcardTestCase
         $flashcard_ids = array_map(fn (SmTwoFlashcard $flashcard) => $flashcard->getFlashcardId(), $expected_flashcards);
 
         // WHEN
-        $results = $this->repository->findMany($user->toOwner(), $flashcard_ids);
+        $results = $this->repository->findMany($user->getId(), $flashcard_ids);
 
         // THEN
         $this->assertSame(2, count($results));
@@ -51,7 +52,7 @@ class SmTwoFlashcardRepositoryTest extends FlashcardTestCase
     /**
      * @test
      */
-    public function create_ShouldCreateModel(): void
+    public function saveMany_ShouldSave(): void
     {
         // GIVEN
         $user = User::factory()->create();
@@ -92,13 +93,21 @@ class SmTwoFlashcardRepositoryTest extends FlashcardTestCase
         $flashcard = Flashcard::factory()->create(['flashcard_deck_id' => $deck->id]);
         $sm_two_flashcards = [
             SmTwoFlashcard::factory()->create([
-                'flashcard_id' => Flashcard::factory()->create(['flashcard_deck_id' => $deck->id]),
+                'flashcard_id' => Flashcard::factory()->create([
+                    'flashcard_deck_id' => $deck->id,
+                    'user_id' => null,
+                    'admin_id' => Admin::factory()->create()->id,
+                ]),
                 'user_id' => $user->id,
                 'repetition_interval' => 2,
                 'updated_at' => now()->subDays(3),
             ]),
             SmTwoFlashcard::factory()->create([
-                'flashcard_id' => Flashcard::factory()->create(['flashcard_deck_id' => $deck->id]),
+                'flashcard_id' => Flashcard::factory()->create([
+                    'flashcard_deck_id' => $deck->id,
+                    'user_id' => $user->id,
+                    'admin_id' => null,
+                ]),
                 'user_id' => $user->id,
                 'repetition_interval' => 3,
                 'updated_at' => now()->subDays(3),
