@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\Repository;
 
-use Flashcard\Application\ReadModels\OwnerCategoryRead;
 use Shared\Utils\ValueObjects\UserId;
 use Flashcard\Domain\ValueObjects\FlashcardDeckId;
 use Flashcard\Application\ReadModels\DeckDetailsRead;
+use Flashcard\Application\ReadModels\OwnerCategoryRead;
 use Flashcard\Application\ReadModels\RatingStatsReadCollection;
 
 interface IFlashcardDeckReadRepository

@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\Command;
 
+use Shared\Exceptions\UnauthorizedException;
 use Flashcard\Application\Services\IRepetitionAlgorithm;
 use Flashcard\Application\Repository\IRateableSessionFlashcardsRepository;
-use Shared\Exceptions\UnauthorizedException;
 
 class RateFlashcardsHandler
 {
