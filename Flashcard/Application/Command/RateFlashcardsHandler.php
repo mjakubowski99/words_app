@@ -19,7 +19,7 @@ class RateFlashcardsHandler
     {
         $session_flashcards = $this->repository->find($command->getSessionId());
 
-        if ($session_flashcards->getUserId()->equals($command->getUserId())) {
+        if (!$session_flashcards->getUserId()->equals($command->getUserId())) {
             throw new UnauthorizedException('User is not session owner');
         }
 

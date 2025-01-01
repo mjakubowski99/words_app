@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Unit\Flashcard\Infrastructure\Repositories\Postgres\FlashcardDeckReadRepository;
 
 use App\Models\User;
+use App\Models\Admin;
 use App\Models\FlashcardDeck;
 use Shared\Enum\LanguageLevel;
 use Tests\Base\FlashcardTestCase;
@@ -55,6 +56,28 @@ class FlashcardDeckReadRepositoryTest extends FlashcardTestCase
         $this->assertSame(1, $result->getPage());
         $this->assertSame(15, $result->getPerPage());
         $this->assertSame(1, $result->getFlashcardsCount());
+    }
+
+    public function test__findDetails_WhenAdminIsDeckOwner_success(): void
+    {
+        // GIVEN
+        $user = $this->createUser();
+        $deck = $this->createFlashcardDeck([
+            'user_id' => null,
+            'admin_id' => Admin::factory()->create()->id,
+        ]);
+        $flashcard = $this->createFlashcard([
+            'flashcard_deck_id' => $deck->id,
+            'user_id' => null,
+            'admin_id' => Admin::factory()->create()->id,
+        ]);
+
+        // WHEN
+        $result = $this->repository->findDetails($user->getId(), $deck->getId(), null, 1, 15);
+
+        // THEN
+        $this->assertInstanceOf(DeckDetailsRead::class, $result);
+        $this->assertSame($flashcard->id, $result->getFlashcards()[0]->getId()->getValue());
     }
 
     public function test__findDetails_generalRatingIsLastRating(): void
