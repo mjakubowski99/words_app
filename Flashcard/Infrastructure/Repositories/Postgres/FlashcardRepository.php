@@ -26,6 +26,7 @@ class FlashcardRepository implements IFlashcardRepository
         return $this->mapper->getRandomFlashcards($user_id, $limit, $exclude_flashcard_ids);
     }
 
+    /** @return Flashcard[] */
     public function getRandomFlashcardsByCategory(FlashcardDeckId $id, int $limit, array $exclude_flashcard_ids): array
     {
         return $this->mapper->getRandomFlashcardsByCategory($id, $limit, $exclude_flashcard_ids);
@@ -51,11 +52,13 @@ class FlashcardRepository implements IFlashcardRepository
         $this->mapper->delete($id);
     }
 
+    /** @return Flashcard[] */
     public function getByDeck(FlashcardDeckId $deck_id): array
     {
         return $this->mapper->getByCategory($deck_id);
     }
 
+    /** @return FlashcardId[] */
     public function getLatestSessionFlashcardIds(SessionId $session_id, int $limit): array
     {
         return $this->session_flashcard_mapper->getLatestSessionFlashcardIds($session_id, $limit);

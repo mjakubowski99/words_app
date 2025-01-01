@@ -24,6 +24,7 @@ interface IFlashcardRepository
     /** @return Flashcard[] */
     public function getRandomFlashcards(UserId $user_id, int $limit, array $exclude_flashcard_ids): array;
 
+    /** @return Flashcard[] */
     public function getRandomFlashcardsByCategory(FlashcardDeckId $id, int $limit, array $exclude_flashcard_ids): array;
 
     /** @return Flashcard[] */

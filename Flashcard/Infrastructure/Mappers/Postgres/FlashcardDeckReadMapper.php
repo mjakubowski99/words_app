@@ -45,6 +45,7 @@ class FlashcardDeckReadMapper
         );
     }
 
+    /** @return OwnerCategoryRead[] */
     public function getByUser(UserId $user_id, ?string $search, int $page, int $per_page): array
     {
         $rating = Rating::maxRating();
