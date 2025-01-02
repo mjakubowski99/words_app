@@ -35,4 +35,10 @@ class FlashcardDeckReadRepository implements IFlashcardDeckReadRepository
     {
         return $this->mapper->getByUser($user_id, $search, $page, $per_page);
     }
+
+    /** @return OwnerCategoryRead[] */
+    public function getAdminDecks(UserId $user_id, ?string $search, int $page, int $per_page): array
+    {
+        return $this->mapper->getAdminDecks($user_id, $search, $page, $per_page);
+    }
 }

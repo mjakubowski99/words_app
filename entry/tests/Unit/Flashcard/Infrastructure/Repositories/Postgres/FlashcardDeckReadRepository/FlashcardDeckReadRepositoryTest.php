@@ -201,6 +201,65 @@ class FlashcardDeckReadRepositoryTest extends FlashcardTestCase
         $this->assertSame($expected->id, $results[0]->getId()->getValue());
     }
 
+    public function test__getAdminDecks_searchingWorks(): void
+    {
+        // GIVEN
+        $user = $this->createUser();
+        $other = $this->createFlashcardDeck([
+            'user_id' => null,
+            'admin_id' => Admin::factory()->create(),
+            'name' => 'Nal',
+        ]);
+        $expected = $this->createFlashcardDeck([
+            'user_id' => null,
+            'admin_id' => Admin::factory()->create(),
+            'name' => 'Alan',
+        ]);
+
+        // WHEN
+        $results = $this->repository->getAdminDecks($user->getId(), 'LAn', 1, 15);
+
+        // THEN
+        $this->assertCount(1, $results);
+        $this->assertInstanceOf(OwnerCategoryRead::class, $results[0]);
+        $this->assertSame($expected->id, $results[0]->getId()->getValue());
+    }
+
+    public function test__getAdminDecks_lastLearntAtIsCorrect(): void
+    {
+        // GIVEN
+        $now = now();
+        $user = $this->createUser();
+        $expected = $this->createFlashcardDeck([
+            'user_id' => null,
+            'admin_id' => Admin::factory()->create()->id,
+            'name' => 'Alan',
+        ]);
+        $flashcards = [
+            $this->createFlashcard(['flashcard_deck_id' => $expected->id]),
+            $this->createFlashcard(['flashcard_deck_id' => $expected->id]),
+        ];
+        $learning_session = $this->createLearningSession([
+            'user_id' => $user->id,
+        ]);
+        $this->createLearningSessionFlashcard([
+            'flashcard_id' => $flashcards[0]->id,
+            'updated_at' => (clone $now)->subMinute(),
+            'learning_session_id' => $learning_session->id,
+        ]);
+        $this->createLearningSessionFlashcard([
+            'flashcard_id' => $flashcards[0]->id,
+            'updated_at' => $now,
+            'learning_session_id' => $learning_session->id,
+        ]);
+
+        // WHEN
+        $results = $this->repository->getAdminDecks($user->getId(), 'LAn', 1, 15);
+
+        // THEN
+        $this->assertSame($now->toDateTimeString(), $results[0]->getLastLearntAt()->toDateTimeString());
+    }
+
     public function test__getByUser_levelIsMostFrequentFlashcardLanguageLevel(): void
     {
         // GIVEN

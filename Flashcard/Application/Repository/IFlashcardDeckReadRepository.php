@@ -17,5 +17,8 @@ interface IFlashcardDeckReadRepository
     public function findDetails(UserId $user_id, FlashcardDeckId $id, ?string $search, int $page, int $per_page): DeckDetailsRead;
 
     /** @return OwnerCategoryRead[] */
+    public function getAdminDecks(UserId $user_id, ?string $search, int $page, int $per_page): array;
+
+    /** @return OwnerCategoryRead[] */
     public function getByUser(UserId $user_id, ?string $search, int $page, int $per_page): array;
 }

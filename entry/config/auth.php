@@ -47,6 +47,10 @@ return [
             'driver' => 'firebase',
             'provider' => 'firebase',
         ],
+        'admin' => [
+            'driver' => 'session',
+            'provider' => 'admins',
+        ],
     ],
 
     /*
@@ -71,6 +75,12 @@ return [
             'driver' => 'eloquent',
             'model' => User::class,
         ],
+
+        'admins' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Admin::class,
+        ],
+
 
         // 'users' => [
         //     'driver' => 'database',

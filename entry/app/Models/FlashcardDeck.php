@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 use Shared\Enum\LanguageLevel;
 use Flashcard\Domain\Models\Deck;
@@ -56,6 +57,11 @@ class FlashcardDeck extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function flashcards(): HasMany
+    {
+        return $this->hasMany(Flashcard::class);
     }
 
     public function toDomainModel(): Deck
