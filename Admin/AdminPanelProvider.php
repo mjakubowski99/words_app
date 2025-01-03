@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Admin;
 
+use App\Http\Middleware\TrustProxies;
 use Filament\Pages;
 use Filament\Panel;
 use Filament\Widgets;
@@ -57,6 +58,7 @@ class AdminPanelProvider extends PanelProvider
                 SubstituteBindings::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
+                TrustProxies::class,
             ])
             ->authMiddleware([
                 Authenticate::class,
