@@ -18,7 +18,7 @@ class TelescopeServiceProvider extends TelescopeApplicationServiceProvider
 
         Telescope::auth(function ($request) {
             return app()->environment('local') ||
-                Gate::check('viewTelescope', [$request->user('admin')]);
+                $request->user('admin');
         });
     }
 
@@ -54,12 +54,5 @@ class TelescopeServiceProvider extends TelescopeApplicationServiceProvider
             'x-csrf-token',
             'x-xsrf-token',
         ]);
-    }
-
-    protected function gate(): void
-    {
-        Gate::define('viewTelescope', function (Admin $admin) {
-            return true;
-        });
     }
 }
