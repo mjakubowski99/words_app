@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 use Flashcard\Domain\Models\Owner;
 use Shared\Enum\FlashcardOwnerType;
 use Database\Factories\AdminFactory;
@@ -20,7 +22,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  * @method static Builder<static>|Admin query()
  * @mixin \Eloquent
  */
-class Admin extends Authenticatable
+class Admin extends Authenticatable implements FilamentUser
 {
     use HasFactory;
     use HasUuids;
@@ -30,5 +32,10 @@ class Admin extends Authenticatable
     public function toOwner(): Owner
     {
         return new Owner(new OwnerId((string) $this->id), FlashcardOwnerType::ADMIN);
+    }
+
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return true;
     }
 }
