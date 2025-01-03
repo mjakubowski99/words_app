@@ -73,4 +73,9 @@ class FlashcardRepository implements IFlashcardRepository
     {
         return $this->mapper->replaceInSessions($actual_deck, $new_deck);
     }
+
+    public function hasAnySessions(FlashcardId $id): bool
+    {
+        return $this->mapper->hasAnySessions($id);
+    }
 }

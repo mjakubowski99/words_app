@@ -14,6 +14,8 @@ interface IFlashcardDeckRepository
 
     public function searchByName(UserId $user_id, string $name): ?Deck;
 
+    public function searchByNameAdmin(string $name): ?Deck;
+
     /** @return Deck[] */
     public function getByUser(UserId $user_id, int $page, int $per_page): array;
 

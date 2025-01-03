@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Flashcard\Infrastructure\Http\Controllers\v2;
 
 use App\Http\OpenApi\Tags;
-use Flashcard\Application\Query\GetAdminDecks;
 use OpenApi\Attributes as OAT;
 use Illuminate\Http\JsonResponse;
+use Flashcard\Application\Query\GetAdminDecks;
 use Flashcard\Application\Query\GetDeckDetails;
 use Flashcard\Application\Query\GetUserCategories;
 use Flashcard\Application\Query\GetDeckRatingStats;

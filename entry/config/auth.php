@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Models\User;
+use App\Models\Admin;
 
 return [
     /*
@@ -78,9 +79,8 @@ return [
 
         'admins' => [
             'driver' => 'eloquent',
-            'model' => App\Models\Admin::class,
+            'model' => Admin::class,
         ],
-
 
         // 'users' => [
         //     'driver' => 'database',

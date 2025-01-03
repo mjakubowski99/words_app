@@ -98,4 +98,24 @@ final class Flashcard
     {
         return $this->level;
     }
+
+    public function setFrontWord(string $front_word): void
+    {
+        $this->front_word = $front_word;
+    }
+
+    public function setFrontContext(string $front_context): void
+    {
+        $this->front_context = $front_context;
+    }
+
+    public function setBackWord(string $back_word): void
+    {
+        $this->back_word = $back_word;
+    }
+
+    public function setBackContext(string $back_context): void
+    {
+        $this->back_context = $back_context;
+    }
 }

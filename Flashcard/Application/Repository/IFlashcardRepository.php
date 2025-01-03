@@ -36,4 +36,6 @@ interface IFlashcardRepository
     public function replaceDeck(FlashcardDeckId $actual_deck, FlashcardDeckId $new_deck): bool;
 
     public function replaceInSessions(FlashcardDeckId $actual_deck, FlashcardDeckId $new_deck): bool;
+
+    public function hasAnySessions(FlashcardId $id): bool;
 }

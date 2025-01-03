@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Filament\Resources\FlashcardResource\Pages;
+declare(strict_types=1);
 
-use App\Filament\Resources\FlashcardResource;
-use Filament\Actions;
+namespace Admin\Resources\FlashcardResource\Pages;
+
+use Admin\Resources\FlashcardResource;
 use Filament\Resources\Pages\ListRecords;
 
 class ListFlashcards extends ListRecords
@@ -12,8 +13,6 @@ class ListFlashcards extends ListRecords
 
     protected function getHeaderActions(): array
     {
-        return [
-            Actions\CreateAction::make(),
-        ];
+        return [];
     }
 }

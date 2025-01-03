@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Filament\Resources\FlashcardDeckResource\Pages;
+declare(strict_types=1);
 
-use App\Filament\Resources\FlashcardDeckResource;
-use Filament\Actions;
+namespace Admin\Resources\FlashcardDeckResource\Pages;
+
 use Filament\Resources\Pages\ListRecords;
+use Admin\Resources\FlashcardDeckResource;
 
 class ListFlashcardDecks extends ListRecords
 {
@@ -12,8 +13,6 @@ class ListFlashcardDecks extends ListRecords
 
     protected function getHeaderActions(): array
     {
-        return [
-            Actions\CreateAction::make(),
-        ];
+        return [];
     }
 }

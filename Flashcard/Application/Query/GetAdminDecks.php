@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Flashcard\Application\Query;
 
+use Shared\Utils\ValueObjects\UserId;
 use Flashcard\Application\ReadModels\OwnerCategoryRead;
 use Flashcard\Application\Repository\IFlashcardDeckReadRepository;
-use Shared\Utils\ValueObjects\UserId;
 
 class GetAdminDecks
 {

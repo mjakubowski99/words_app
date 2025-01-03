@@ -1,19 +1,21 @@
 <?php
 
-namespace App\Filament\Resources\FlashcardDeckResource\Pages;
+declare(strict_types=1);
 
-use App\Filament\Resources\FlashcardDeckResource;
-use Filament\Actions;
+namespace Admin\Resources\FlashcardDeckResource\Pages;
+
 use Filament\Resources\Pages\EditRecord;
+use Admin\Resources\FlashcardDeckResource;
+use Admin\Traits\HasFlashcardConfigurator;
 
 class EditFlashcardDeck extends EditRecord
 {
+    use HasFlashcardConfigurator;
+
     protected static string $resource = FlashcardDeckResource::class;
 
     protected function getHeaderActions(): array
     {
-        return [
-            Actions\DeleteAction::make(),
-        ];
+        return [];
     }
 }
