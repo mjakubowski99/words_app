@@ -5,6 +5,7 @@ declare(strict_types=1);
 use Admin\AdminPanelProvider;
 use App\Providers\AppServiceProvider;
 use App\Providers\AuthServiceProvider;
+use App\Providers\TelescopeServiceProvider;
 use Illuminate\Support\Facades\Facade;
 use App\Providers\EventServiceProvider;
 use App\Providers\RouteServiceProvider;
@@ -184,6 +185,7 @@ return [
         FlashcardServiceProvider::class,
         IntegrationsServiceProvider::class,
         AdminPanelProvider::class,
+        TelescopeServiceProvider::class,
     ])->toArray(),
 
     /*
