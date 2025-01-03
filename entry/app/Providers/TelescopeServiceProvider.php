@@ -12,21 +12,32 @@ use Laravel\Telescope\TelescopeApplicationServiceProvider;
 
 class TelescopeServiceProvider extends TelescopeApplicationServiceProvider
 {
+    protected function authorization(): void
+    {
+        $this->gate();
+
+        Telescope::auth(function ($request) {
+            return app()->environment('local') ||
+                Gate::check('viewTelescope', [$request->user('admin')]);
+        });
+    }
+
     public function register(): void
     {
         Telescope::night();
 
         $this->hideSensitiveRequestDetails();
 
-        $isLocal = $this->app->environment('local');
+        Telescope::filter(function (IncomingEntry $entry) {
+            if (config('app.debug')) {
+                return true;
+            }
 
-        Telescope::filter(function (IncomingEntry $entry) use ($isLocal) {
-            return $isLocal
-                   || $entry->isReportableException()
-                   || $entry->isFailedRequest()
-                   || $entry->isFailedJob()
-                   || $entry->isScheduledTask()
-                   || $entry->hasMonitoredTag();
+            return $entry->isReportableException()
+               || $entry->isFailedRequest()
+               || $entry->isFailedJob()
+               || $entry->isScheduledTask()
+               || $entry->hasMonitoredTag();
         });
     }
 
