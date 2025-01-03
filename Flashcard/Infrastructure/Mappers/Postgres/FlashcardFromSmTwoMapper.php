@@ -52,7 +52,7 @@ class FlashcardFromSmTwoMapper
             })->toArray();
     }
 
-    public function getNextFlashcardsByDeck(FlashcardDeckId $deck_id, int $limit, array $exclude_flashcard_ids, array $sort_criteria): array
+    public function getNextFlashcardsByDeck(UserId $user_id, FlashcardDeckId $deck_id, int $limit, array $exclude_flashcard_ids, array $sort_criteria): array
     {
         $sort_sql = array_map(fn (PostgresSortCriteria $criteria) => $criteria->apply(), $sort_criteria);
 
@@ -60,6 +60,10 @@ class FlashcardFromSmTwoMapper
             ->whereNotIn('flashcards.id', array_map(fn (FlashcardId $id) => $id->getValue(), $exclude_flashcard_ids))
             ->leftJoin('flashcard_decks', 'flashcard_decks.id', '=', 'flashcards.flashcard_deck_id')
             ->where('flashcards.flashcard_deck_id', $deck_id->getValue())
+            ->where(function ($query) use ($user_id) {
+                return $query->where('sm_two_flashcards.user_id', $user_id->getValue())
+                    ->orWhereNull('sm_two_flashcards.user_id');
+            })
             ->leftJoin('sm_two_flashcards', 'sm_two_flashcards.flashcard_id', '=', 'flashcards.id')
             ->take($limit)
             ->orderByRaw(implode(',', $sort_sql))

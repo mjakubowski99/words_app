@@ -115,7 +115,7 @@ class SmTwoFlashcardRepositoryTest extends FlashcardTestCase
         ];
 
         // WHEN
-        $results = $this->repository->getNextFlashcardsByDeck($deck->getId(), 5, [], [
+        $results = $this->repository->getNextFlashcardsByDeck($user->getId(), $deck->getId(), 5, [], [
             FlashcardSortCriteria::HARD_FLASHCARDS_FIRST,
             FlashcardSortCriteria::OLDEST_UPDATE_FLASHCARDS_FIRST,
             FlashcardSortCriteria::OLDEST_UPDATE_FLASHCARDS_FIRST,

@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Admin;
 
-use App\Http\Middleware\ForceHttps;
-use App\Http\Middleware\TrustProxies;
 use Filament\Pages;
 use Filament\Panel;
 use Filament\Widgets;
@@ -14,14 +12,15 @@ use Filament\PanelProvider;
 use Admin\Models\FlashcardDeck;
 use Filament\Support\Colors\Color;
 use Admin\Policies\FlashcardPolicy;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Gate;
+use App\Http\Middleware\TrustProxies;
 use Admin\Policies\FlashcardDeckPolicy;
 use Filament\Http\Middleware\Authenticate;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Filament\Http\Middleware\AuthenticateSession;
 use Illuminate\Routing\Middleware\SubstituteBindings;
-use Illuminate\Support\Facades\URL;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;

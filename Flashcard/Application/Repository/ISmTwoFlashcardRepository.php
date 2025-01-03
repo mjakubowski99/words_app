@@ -19,7 +19,7 @@ interface ISmTwoFlashcardRepository
      * @param  FlashcardSortCriteria[] $sort_criteria
      * @return Flashcard[]
      */
-    public function getNextFlashcardsByDeck(FlashcardDeckId $deck_id, int $limit, array $exclude_flashcard_ids, array $sort_criteria): array;
+    public function getNextFlashcardsByDeck(UserId $user_id, FlashcardDeckId $deck_id, int $limit, array $exclude_flashcard_ids, array $sort_criteria): array;
 
     /**
      * @param  FlashcardSortCriteria[] $sort_criteria

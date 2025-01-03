@@ -37,9 +37,9 @@ class SmTwoFlashcardRepository implements ISmTwoFlashcardRepository
         return $this->flashcard_mapper->getNextFlashcards($user_id, $limit, $exclude_flashcard_ids, $this->buildCriteria($sort_criteria));
     }
 
-    public function getNextFlashcardsByDeck(FlashcardDeckId $deck_id, int $limit, array $exclude_flashcard_ids, array $sort_criteria): array
+    public function getNextFlashcardsByDeck(UserId $user_id, FlashcardDeckId $deck_id, int $limit, array $exclude_flashcard_ids, array $sort_criteria): array
     {
-        return $this->flashcard_mapper->getNextFlashcardsByDeck($deck_id, $limit, $exclude_flashcard_ids, $this->buildCriteria($sort_criteria));
+        return $this->flashcard_mapper->getNextFlashcardsByDeck($user_id, $deck_id, $limit, $exclude_flashcard_ids, $this->buildCriteria($sort_criteria));
     }
 
     /**

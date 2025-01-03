@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
-use App\Models\Admin;
 use Laravel\Telescope\Telescope;
-use Illuminate\Support\Facades\Gate;
 use Laravel\Telescope\IncomingEntry;
 use Laravel\Telescope\TelescopeApplicationServiceProvider;
 
@@ -17,8 +15,8 @@ class TelescopeServiceProvider extends TelescopeApplicationServiceProvider
         $this->gate();
 
         Telescope::auth(function ($request) {
-            return app()->environment('local') ||
-                $request->user('admin');
+            return app()->environment('local')
+                || $request->user('admin');
         });
     }
 
