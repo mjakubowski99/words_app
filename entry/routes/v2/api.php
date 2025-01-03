@@ -11,11 +11,11 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('/flashcards', [FlashcardController::class, 'store'])->name('v2.flashcards.store');
     Route::put('/flashcards/{flashcard_id}', [FlashcardController::class, 'update'])->name('v2.flashcards.update');
 
-    Route::get('/flashcards/decks/by-user', [FlashcardDeckController::class, 'index'])
+    Route::get('/flashcards/decks/by-user', [FlashcardDeckController::class, 'indexAdmin'])
         ->name('v2.flashcards.decks.index');
     Route::get('/flashcards/decks/by-admins', [FlashcardDeckController::class, 'indexAdmin'])
         ->name('v2.flashcards.decks.by-admins.index');
-    Route::get('/flashcards/by-user', [FlashcardController::class, 'indexAdmin'])
+    Route::get('/flashcards/by-user', [FlashcardController::class, 'getByUser'])
         ->name('v2.flashcards.get.by-user');
     Route::get('/flashcards/by-user/rating-stats', [FlashcardController::class, 'userRatingStats'])
         ->name('v2.flashcards.get.by-user.rating-stats');
