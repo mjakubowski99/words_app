@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Flashcard\Infrastructure;
 
 use Illuminate\Support\ServiceProvider;
+use Shared\Flashcard\IFlashcardAdminFacade;
 use Flashcard\Application\Services\IFlashcardSelector;
+use Flashcard\Application\Facades\FlashcardAdminFacade;
 use Flashcard\Application\Repository\ISessionRepository;
 use Flashcard\Application\Services\IRepetitionAlgorithm;
 use Flashcard\Application\Repository\IFlashcardRepository;
@@ -50,5 +52,6 @@ class FlashcardServiceProvider extends ServiceProvider
         $this->app->bind(IFlashcardGenerator::class, GeminiGenerator::class);
         $this->app->bind(IFlashcardDeckReadRepository::class, FlashcardDeckReadRepository::class);
         $this->app->bind(IFlashcardReadRepository::class, FlashcardReadRepository::class);
+        $this->app->bind(IFlashcardAdminFacade::class, FlashcardAdminFacade::class);
     }
 }

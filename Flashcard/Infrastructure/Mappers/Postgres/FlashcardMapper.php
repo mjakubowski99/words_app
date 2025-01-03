@@ -182,6 +182,13 @@ class FlashcardMapper
         return true;
     }
 
+    public function hasAnySessions(FlashcardId $id): bool
+    {
+        return $this->db::table('learning_session_flashcards')
+            ->where('flashcard_id', $id->getValue())
+            ->exists();
+    }
+
     public function map(object $data): Flashcard
     {
         $deck = $data->flashcard_deck_id ? (new Deck(

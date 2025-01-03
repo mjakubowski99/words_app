@@ -85,6 +85,7 @@ $finder = Finder::create()
         $domains_path . '/User',
         $domains_path . '/Flashcard',
         $domains_path . '/Shared',
+        $domains_path . '/Admin',
     ])
     ->name('*.php')
     ->notName('*.blade.php')

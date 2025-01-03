@@ -7,14 +7,16 @@
     "require": {
         "php": "^8.3",
         "darkaonline/l5-swagger": "^8.6",
+        "filament/filament": "^3.2",
         "google/apiclient": "^2.17",
         "guzzlehttp/guzzle": "^7.2",
         "laravel/framework": "^11.0",
         "laravel/pulse": "^1.3",
         "laravel/sanctum": "^4.0",
         "laravel/socialite": "^5.16",
+        "laravel/telescope": "^5.0",
         "laravel/tinker": "^2.8",
-        "laravel/telescope": "^5.0"
+        "spatie/simple-excel": "^3.7"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^3.0",
@@ -31,6 +33,7 @@
     "autoload": {
         "psr-4": {
             "App\\": "app/",
+            "Admin\\": "../Admin",
             "User\\": "../User",
             "Integrations\\": "../Integrations",
             "Flashcard\\": "../Flashcard",
@@ -47,7 +50,8 @@
     "scripts": {
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
-            "@php artisan package:discover --ansi"
+            "@php artisan package:discover --ansi",
+            "@php artisan filament:upgrade"
         ],
         "post-update-cmd": [
             "@php artisan vendor:publish --tag=laravel-assets --ansi --force"
@@ -90,6 +94,5 @@
     },
     "minimum-stability": "stable",
     "prefer-stable": true,
-    "repositories": [
-    ]
+    "repositories": []
 }

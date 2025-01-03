@@ -38,4 +38,14 @@ enum LanguageLevel: string
     {
         return self::from(self::DEFAULT);
     }
+
+    public static function getForSelectOptions(): array
+    {
+        $data = [];
+        foreach (self::cases() as $case) {
+            $data[$case->value] = $case->value;
+        }
+
+        return $data;
+    }
 }

@@ -26,6 +26,11 @@ class FlashcardDeckRepository implements IFlashcardDeckRepository
         return $this->mapper->searchByName($user_id, $name);
     }
 
+    public function searchByNameAdmin(string $name): ?Deck
+    {
+        return $this->mapper->searchByNameAdmin($name);
+    }
+
     public function create(Deck $deck): Deck
     {
         $deck_id = $this->mapper->create($deck);

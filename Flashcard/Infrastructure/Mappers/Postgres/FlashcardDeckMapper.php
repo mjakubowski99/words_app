@@ -77,6 +77,17 @@ class FlashcardDeckMapper
         return $result ? $this->map($result) : null;
     }
 
+    public function searchByNameAdmin(string $name): ?Deck
+    {
+        $result = $this->db::table('flashcard_decks')
+            ->whereNotNull('admin_id')
+            ->whereNull('user_id')
+            ->whereRaw('LOWER(name) = ?', [mb_strtolower($name)])
+            ->first();
+
+        return $result ? $this->map($result) : null;
+    }
+
     public function getByUser(UserId $user_id, int $page, int $per_page): array
     {
         $results = $this->db::table('flashcard_decks')

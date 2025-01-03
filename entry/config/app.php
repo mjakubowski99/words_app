@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Admin\AdminPanelProvider;
 use App\Providers\AppServiceProvider;
 use App\Providers\AuthServiceProvider;
 use Illuminate\Support\Facades\Facade;
@@ -182,6 +183,7 @@ return [
         UserServiceProvider::class,
         FlashcardServiceProvider::class,
         IntegrationsServiceProvider::class,
+        AdminPanelProvider::class,
     ])->toArray(),
 
     /*

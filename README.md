@@ -1,7 +1,7 @@
 ## VocaSmart / VocaSmart api
 
 ## Overview
-Flashcards API 
+Flashcards Learning API 
 
 ## Installation
 
@@ -24,6 +24,15 @@ Flashcards API
 3. Run `docker exec words_php composer phpstan;` to run phpstan.
 4. Run `docker exec words_php composer open-api` to generate fresh api docs.
 This will generate two files in folder `entry/public/openapi` called `api-docs.json` and `api-docs.yaml`.
-Visit: localhost:8001/api/documentation
+Visit: http://localhost/api/documentation
+
+## Admin panel
+This project apart from Flashcards API also provides simple admin panel powered by [Laravel Filament](https://filamentphp.com/)
+
+To create new admin user just run command below and enter your details:
+```
+php artisan make:filament-user 
+```
+and visit http://localhost/admin
 
 

@@ -12,6 +12,7 @@ parameters:
         - ../User
         - ../Flashcard
         - ../Shared
+        - ../Admin
 
     excludePaths:
         - tests/*
