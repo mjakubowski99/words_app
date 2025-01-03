@@ -60,11 +60,10 @@ class FlashcardFromSmTwoMapper
             ->whereNotIn('flashcards.id', array_map(fn (FlashcardId $id) => $id->getValue(), $exclude_flashcard_ids))
             ->leftJoin('flashcard_decks', 'flashcard_decks.id', '=', 'flashcards.flashcard_deck_id')
             ->where('flashcards.flashcard_deck_id', $deck_id->getValue())
-            ->where(function ($query) use ($user_id) {
-                return $query->where('sm_two_flashcards.user_id', $user_id->getValue())
-                    ->orWhereNull('sm_two_flashcards.user_id');
+            ->leftJoin('sm_two_flashcards', function ($join) use ($user_id) {
+                $join->on('sm_two_flashcards.flashcard_id', '=', 'flashcards.id')
+                    ->on('sm_two_flashcards.user_id', '=', DB::raw("'{$user_id}'"));
             })
-            ->leftJoin('sm_two_flashcards', 'sm_two_flashcards.flashcard_id', '=', 'flashcards.id')
             ->take($limit)
             ->orderByRaw(implode(',', $sort_sql))
             ->select(
