@@ -15,7 +15,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         ->name('v2.flashcards.decks.index');
     Route::get('/flashcards/decks/by-admins', [FlashcardDeckController::class, 'indexAdmin'])
         ->name('v2.flashcards.decks.by-admins.index');
-    Route::get('/flashcards/by-user', [FlashcardController::class, 'getByUser'])
+    Route::get('/flashcards/by-user', [FlashcardController::class, 'indexAdmin'])
         ->name('v2.flashcards.get.by-user');
     Route::get('/flashcards/by-user/rating-stats', [FlashcardController::class, 'userRatingStats'])
         ->name('v2.flashcards.get.by-user.rating-stats');
