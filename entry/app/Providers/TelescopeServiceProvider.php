@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Models\Admin;
 use Laravel\Telescope\Telescope;
 use Illuminate\Support\Facades\Gate;
 use Laravel\Telescope\IncomingEntry;
@@ -11,15 +12,6 @@ use Laravel\Telescope\TelescopeApplicationServiceProvider;
 
 class TelescopeServiceProvider extends TelescopeApplicationServiceProvider
 {
-    protected function authorization()
-    {
-        $this->gate();
-
-        Telescope::auth(function ($request) {
-            return (bool) $request->user('admin');
-        });
-    }
-
     public function register(): void
     {
         Telescope::night();
@@ -55,7 +47,7 @@ class TelescopeServiceProvider extends TelescopeApplicationServiceProvider
 
     protected function gate(): void
     {
-        Gate::define('viewTelescope', function ($user) {
+        Gate::define('viewTelescope', function (Admin $admin) {
             return true;
         });
     }
