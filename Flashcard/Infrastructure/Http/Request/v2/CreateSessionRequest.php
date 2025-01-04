@@ -38,7 +38,7 @@ class CreateSessionRequest extends Request
     public function toCommand(): CreateSession
     {
         return new CreateSession(
-            $this->current(),
+            $this->current()->getId(),
             (int) $this->input('cards_per_session'),
             $this->userAgent(),
             $this->input('flashcard_deck_id') !== null ? new FlashcardDeckId((int) $this->input('flashcard_deck_id')) : null,

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\Repository;
 
-use Flashcard\Domain\Models\Owner;
+use Shared\Utils\ValueObjects\UserId;
 use Flashcard\Domain\Models\Flashcard;
 use Flashcard\Domain\ValueObjects\SessionId;
 use Flashcard\Domain\ValueObjects\FlashcardId;
@@ -24,8 +24,9 @@ interface IFlashcardRepository
     public function deleteAllForUser(UserId $user_id): void;
 
     /** @return Flashcard[] */
-    public function getRandomFlashcards(Owner $owner, int $limit, array $exclude_flashcard_ids): array;
+    public function getRandomFlashcards(UserId $user_id, int $limit, array $exclude_flashcard_ids): array;
 
+    /** @return Flashcard[] */
     public function getRandomFlashcardsByCategory(FlashcardDeckId $id, int $limit, array $exclude_flashcard_ids): array;
 
     /** @return Flashcard[] */
@@ -37,4 +38,6 @@ interface IFlashcardRepository
     public function replaceDeck(FlashcardDeckId $actual_deck, FlashcardDeckId $new_deck): bool;
 
     public function replaceInSessions(FlashcardDeckId $actual_deck, FlashcardDeckId $new_deck): bool;
+
+    public function hasAnySessions(FlashcardId $id): bool;
 }

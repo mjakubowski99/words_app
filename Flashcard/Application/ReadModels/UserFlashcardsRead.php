@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\ReadModels;
 
-use Flashcard\Domain\Models\Owner;
+use Shared\Utils\ValueObjects\UserId;
 
 class UserFlashcardsRead
 {
     public function __construct(
-        private Owner $owner,
+        private UserId $user_id,
         private array $flashcards,
         private int $page,
         private int $per_page,
@@ -37,8 +37,8 @@ class UserFlashcardsRead
         return $this->count;
     }
 
-    public function getOwner(): Owner
+    public function getUserId(): UserId
     {
-        return $this->owner;
+        return $this->user_id;
     }
 }

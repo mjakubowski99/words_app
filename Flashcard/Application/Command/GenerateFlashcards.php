@@ -5,19 +5,19 @@ declare(strict_types=1);
 namespace Flashcard\Application\Command;
 
 use Shared\Enum\LanguageLevel;
-use Flashcard\Domain\Models\Owner;
+use Shared\Utils\ValueObjects\UserId;
 
 class GenerateFlashcards
 {
     public function __construct(
-        private readonly Owner $owner,
+        private readonly UserId $user_id,
         private readonly string $deck_name,
         private readonly LanguageLevel $language_level,
     ) {}
 
-    public function getOwner(): Owner
+    public function getUserId(): UserId
     {
-        return $this->owner;
+        return $this->user_id;
     }
 
     public function getDeckName(): string

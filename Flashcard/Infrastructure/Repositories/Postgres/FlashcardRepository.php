@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Repositories\Postgres;
 
-use Flashcard\Domain\Models\Owner;
+use Shared\Utils\ValueObjects\UserId;
 use Flashcard\Domain\Models\Flashcard;
 use Flashcard\Domain\ValueObjects\SessionId;
 use Flashcard\Domain\ValueObjects\FlashcardId;
@@ -12,7 +12,6 @@ use Flashcard\Domain\ValueObjects\FlashcardDeckId;
 use Flashcard\Application\Repository\IFlashcardRepository;
 use Flashcard\Infrastructure\Mappers\Postgres\FlashcardMapper;
 use Flashcard\Infrastructure\Mappers\Postgres\SessionFlashcardMapper;
-use Shared\Utils\ValueObjects\UserId;
 
 class FlashcardRepository implements IFlashcardRepository
 {
@@ -22,11 +21,12 @@ class FlashcardRepository implements IFlashcardRepository
     ) {}
 
     /** @return Flashcard[] */
-    public function getRandomFlashcards(Owner $owner, int $limit, array $exclude_flashcard_ids): array
+    public function getRandomFlashcards(UserId $user_id, int $limit, array $exclude_flashcard_ids): array
     {
-        return $this->mapper->getRandomFlashcards($owner, $limit, $exclude_flashcard_ids);
+        return $this->mapper->getRandomFlashcards($user_id, $limit, $exclude_flashcard_ids);
     }
 
+    /** @return Flashcard[] */
     public function getRandomFlashcardsByCategory(FlashcardDeckId $id, int $limit, array $exclude_flashcard_ids): array
     {
         return $this->mapper->getRandomFlashcardsByCategory($id, $limit, $exclude_flashcard_ids);
@@ -52,6 +52,7 @@ class FlashcardRepository implements IFlashcardRepository
         $this->mapper->delete($id);
     }
 
+    /** @return Flashcard[] */
     public function deleteAllForUser(UserId $user_id): void
     {
         $this->mapper->deleteAllForUser($user_id);
@@ -62,6 +63,7 @@ class FlashcardRepository implements IFlashcardRepository
         return $this->mapper->getByCategory($deck_id);
     }
 
+    /** @return FlashcardId[] */
     public function getLatestSessionFlashcardIds(SessionId $session_id, int $limit): array
     {
         return $this->session_flashcard_mapper->getLatestSessionFlashcardIds($session_id, $limit);
@@ -75,5 +77,10 @@ class FlashcardRepository implements IFlashcardRepository
     public function replaceInSessions(FlashcardDeckId $actual_deck, FlashcardDeckId $new_deck): bool
     {
         return $this->mapper->replaceInSessions($actual_deck, $new_deck);
+    }
+
+    public function hasAnySessions(FlashcardId $id): bool
+    {
+        return $this->mapper->hasAnySessions($id);
     }
 }

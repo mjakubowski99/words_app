@@ -6,16 +6,16 @@ namespace Flashcard\Infrastructure\Mappers\Postgres;
 
 use Shared\Enum\LanguageLevel;
 use Flashcard\Domain\Models\Deck;
-use Flashcard\Domain\Models\Owner;
 use Illuminate\Support\Facades\DB;
-use Shared\Enum\FlashcardOwnerType;
-use Flashcard\Domain\ValueObjects\OwnerId;
+use Shared\Utils\ValueObjects\UserId;
 use Flashcard\Domain\ValueObjects\FlashcardDeckId;
 use Flashcard\Domain\Exceptions\ModelNotFoundException;
-use Shared\Utils\ValueObjects\UserId;
+use Flashcard\Infrastructure\Mappers\Traits\HasOwnerBuilder;
 
 class FlashcardDeckMapper
 {
+    use HasOwnerBuilder;
+
     public function __construct(
         private readonly DB $db,
     ) {}
@@ -26,7 +26,8 @@ class FlashcardDeckMapper
 
         $result = $this->db::table('flashcard_decks')
             ->insertGetId([
-                'user_id' => $deck->getOwner()->getId(),
+                'user_id' => $deck->getOwner()->isUser() ? $deck->getOwner()->getId() : null,
+                'admin_id' => $deck->getOwner()->isAdmin() ? $deck->getOwner()->getId() : null,
                 'tag' => $deck->getName(),
                 'name' => $deck->getName(),
                 'default_language_level' => $deck->getDefaultLanguageLevel(),
@@ -44,7 +45,8 @@ class FlashcardDeckMapper
         $this->db::table('flashcard_decks')
             ->where('id', $deck->getId()->getValue())
             ->update([
-                'user_id' => $deck->getOwner()->getId(),
+                'user_id' => $deck->getOwner()->isUser() ? $deck->getOwner()->getId() : null,
+                'admin_id' => $deck->getOwner()->isAdmin() ? $deck->getOwner()->getId() : null,
                 'tag' => $deck->getName(),
                 'name' => $deck->getName(),
                 'default_language_level' => $deck->getDefaultLanguageLevel(),
@@ -65,25 +67,31 @@ class FlashcardDeckMapper
         return $this->map($result);
     }
 
-    public function searchByName(Owner $owner, string $name): ?Deck
+    public function searchByName(UserId $user_id, string $name): ?Deck
     {
-        /* @phpstan-ignore-next-line */
-        if ($owner->getOwnerType() !== FlashcardOwnerType::USER) {
-            throw new ModelNotFoundException('This owner does not have decks');
-        }
-
         $result = $this->db::table('flashcard_decks')
-            ->where('user_id', $owner->getId())
+            ->where('user_id', $user_id->getValue())
             ->whereRaw('LOWER(name) = ?', [mb_strtolower($name)])
             ->first();
 
         return $result ? $this->map($result) : null;
     }
 
-    public function getByOwner(Owner $owner, int $page, int $per_page): array
+    public function searchByNameAdmin(string $name): ?Deck
+    {
+        $result = $this->db::table('flashcard_decks')
+            ->whereNotNull('admin_id')
+            ->whereNull('user_id')
+            ->whereRaw('LOWER(name) = ?', [mb_strtolower($name)])
+            ->first();
+
+        return $result ? $this->map($result) : null;
+    }
+
+    public function getByUser(UserId $user_id, int $page, int $per_page): array
     {
         $results = $this->db::table('flashcard_decks')
-            ->where('user_id', $owner->getId()->getValue())
+            ->where('user_id', $user_id->getValue())
             ->take($per_page)
             ->skip(($page - 1) * $per_page)
             ->get()
@@ -109,7 +117,7 @@ class FlashcardDeckMapper
     private function map(object $data): Deck
     {
         return (new Deck(
-            new Owner(new OwnerId($data->user_id), FlashcardOwnerType::USER),
+            $this->buildOwner((string) $data->user_id, (string) $data->admin_id),
             $data->tag,
             $data->name,
             LanguageLevel::from($data->default_language_level),

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Unit\Flashcard\Infrastructure\Repositories\Postgres\NextSessionFlashcardsRepository;
 
 use Tests\TestCase;
+use App\Models\Admin;
 use App\Models\Flashcard;
 use App\Models\FlashcardDeck;
 use App\Models\LearningSession;
@@ -88,7 +89,7 @@ class NextSessionFlashcardsRepositoryTest extends TestCase
 
         // THEN
         $this->assertSame($session->id, $result->getSessionId()->getValue());
-        $this->assertSame($session->user_id, $result->getOwner()->getId()->getValue());
+        $this->assertSame($session->user_id, $result->getUserId()->getValue());
         $this->assertFalse($result->hasDeck());
     }
 
@@ -114,6 +115,27 @@ class NextSessionFlashcardsRepositoryTest extends TestCase
         $this->assertSame($decks[1]->tag, $result->getDeck()->getTag());
     }
 
+    public function test__find_AdminFlashcard_ShouldFindCorrectObject(): void
+    {
+        // GIVEN
+        $user = $this->createUser();
+        $deck = FlashcardDeck::factory()->create([
+            'user_id' => null,
+            'admin_id' => Admin::factory()->create()->id,
+        ]);
+        $session = LearningSession::factory()->create([
+            'user_id' => $user->id,
+            'flashcard_deck_id' => $deck->id,
+        ]);
+
+        // WHEN
+        $result = $this->repository->find($session->getId());
+
+        // THEN
+        $this->assertTrue($result->getDeck()->getOwner()->isAdmin());
+        $this->assertSame($deck->admin_id, $result->getDeck()->getOwner()->getId()->getValue());
+    }
+
     public function test__save_ShouldSaveObject(): void
     {
         // GIVEN
@@ -121,7 +143,7 @@ class NextSessionFlashcardsRepositoryTest extends TestCase
         $flashcard = Flashcard::factory()->create();
         $object = new NextSessionFlashcards(
             $session->getId(),
-            $session->user->toOwner(),
+            $session->user->getId(),
             $session->deck->toDomainModel(),
             8,
             2,

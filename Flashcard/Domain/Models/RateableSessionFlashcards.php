@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Flashcard\Domain\Models;
 
 use Shared\Enum\SessionStatus;
+use Shared\Utils\ValueObjects\UserId;
 use Flashcard\Domain\ValueObjects\SessionId;
 use Flashcard\Domain\ValueObjects\SessionFlashcardId;
 use Flashcard\Domain\Exceptions\SessionFinishedException;
@@ -14,7 +15,7 @@ class RateableSessionFlashcards
 {
     public function __construct(
         private SessionId $session_id,
-        private Owner $owner,
+        private UserId $user_id,
         private SessionStatus $status,
         private int $rated_count,
         private int $total_count,
@@ -41,9 +42,9 @@ class RateableSessionFlashcards
         return $this->session_id;
     }
 
-    public function getOwner(): Owner
+    public function getUserId(): UserId
     {
-        return $this->owner;
+        return $this->user_id;
     }
 
     public function getStatus(): SessionStatus
@@ -54,11 +55,6 @@ class RateableSessionFlashcards
     public function isEmpty(): bool
     {
         return count($this->rateable_session_flashcards) === 0;
-    }
-
-    public function pluckSessionFlashcardIds(): array
-    {
-        return array_map(fn (RateableSessionFlashcard $flashcard) => $flashcard->getFlashcardId(), $this->rateable_session_flashcards);
     }
 
     public function rate(SessionFlashcardId $id, Rating $rating): void

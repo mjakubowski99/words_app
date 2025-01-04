@@ -5,36 +5,37 @@ declare(strict_types=1);
 namespace App\Providers;
 
 use Laravel\Telescope\Telescope;
-use Illuminate\Support\Facades\Gate;
 use Laravel\Telescope\IncomingEntry;
 use Laravel\Telescope\TelescopeApplicationServiceProvider;
 
 class TelescopeServiceProvider extends TelescopeApplicationServiceProvider
 {
-    protected function authorization()
+    protected function authorization(): void
     {
         $this->gate();
 
         Telescope::auth(function ($request) {
-            return true;
+            return app()->environment('local')
+                || $request->user('admin');
         });
     }
 
     public function register(): void
     {
-        // Telescope::night();
+        Telescope::night();
 
         $this->hideSensitiveRequestDetails();
 
-        $isLocal = $this->app->environment('local');
+        Telescope::filter(function (IncomingEntry $entry) {
+            if (config('app.debug')) {
+                return true;
+            }
 
-        Telescope::filter(function (IncomingEntry $entry) use ($isLocal) {
-            return $isLocal
-                   || $entry->isReportableException()
-                   || $entry->isFailedRequest()
-                   || $entry->isFailedJob()
-                   || $entry->isScheduledTask()
-                   || $entry->hasMonitoredTag();
+            return $entry->isReportableException()
+               || $entry->isFailedRequest()
+               || $entry->isFailedJob()
+               || $entry->isScheduledTask()
+               || $entry->hasMonitoredTag();
         });
     }
 
@@ -51,12 +52,5 @@ class TelescopeServiceProvider extends TelescopeApplicationServiceProvider
             'x-csrf-token',
             'x-xsrf-token',
         ]);
-    }
-
-    protected function gate(): void
-    {
-        Gate::define('viewTelescope', function ($user) {
-            return true;
-        });
     }
 }

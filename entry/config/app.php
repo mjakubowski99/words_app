@@ -2,12 +2,14 @@
 
 declare(strict_types=1);
 
+use Admin\AdminPanelProvider;
 use App\Providers\AppServiceProvider;
 use App\Providers\AuthServiceProvider;
 use Illuminate\Support\Facades\Facade;
 use App\Providers\EventServiceProvider;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Support\ServiceProvider;
+use App\Providers\TelescopeServiceProvider;
 use Shared\Providers\SharedServiceProvider;
 use Integrations\IntegrationsServiceProvider;
 use Flashcard\Infrastructure\FlashcardServiceProvider;
@@ -182,6 +184,8 @@ return [
         UserServiceProvider::class,
         FlashcardServiceProvider::class,
         IntegrationsServiceProvider::class,
+        AdminPanelProvider::class,
+        TelescopeServiceProvider::class,
     ])->toArray(),
 
     /*

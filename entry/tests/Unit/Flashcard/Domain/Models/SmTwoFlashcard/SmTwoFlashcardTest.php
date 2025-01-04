@@ -5,11 +5,9 @@ declare(strict_types=1);
 namespace Tests\Unit\Flashcard\Domain\Models\SmTwoFlashcard;
 
 use Tests\TestCase;
-use Flashcard\Domain\Models\Owner;
 use Flashcard\Domain\Models\Rating;
-use Shared\Enum\FlashcardOwnerType;
 use Shared\Utils\ValueObjects\Uuid;
-use Flashcard\Domain\ValueObjects\OwnerId;
+use Shared\Utils\ValueObjects\UserId;
 use Flashcard\Domain\Models\SmTwoFlashcard;
 use Flashcard\Domain\ValueObjects\FlashcardId;
 
@@ -116,8 +114,12 @@ class SmTwoFlashcardTest extends TestCase
 
     private function makeSmTwoFlashcard(float $repetition_ratio, float $repetition_interval, int $repetition_count): SmTwoFlashcard
     {
-        $owner = new Owner(new OwnerId(Uuid::make()->getValue()), FlashcardOwnerType::USER);
-
-        return new SmTwoFlashcard($owner, new FlashcardId(1), $repetition_ratio, $repetition_interval, $repetition_count);
+        return new SmTwoFlashcard(
+            UserId::fromString(Uuid::make()->getValue()),
+            new FlashcardId(1),
+            $repetition_ratio,
+            $repetition_interval,
+            $repetition_count
+        );
     }
 }

@@ -8,7 +8,6 @@ use App\Http\OpenApi\Tags;
 use OpenApi\Attributes as OAT;
 use Shared\Http\Request\Request;
 use Illuminate\Http\JsonResponse;
-use Flashcard\Domain\Models\Owner;
 use Flashcard\Domain\ValueObjects\FlashcardId;
 use Flashcard\Application\Command\CreateFlashcardHandler;
 use Flashcard\Application\Command\DeleteFlashcardHandler;
@@ -89,7 +88,7 @@ class FlashcardController
         DeleteFlashcardHandler $delete_flashcard_handler,
     ): JsonResponse {
         $delete_flashcard_handler->handle(
-            Owner::fromUser($request->current()->getId()),
+            $request->currentId(),
             new FlashcardId((int) $request->route('flashcard_id'))
         );
 

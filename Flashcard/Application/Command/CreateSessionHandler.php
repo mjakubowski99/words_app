@@ -23,10 +23,10 @@ class CreateSessionHandler
             ? $this->deck_repository->findById($command->getDeckId()) :
             null;
 
-        $this->repository->setAllOwnerSessionsStatus($command->getOwner(), SessionStatus::FINISHED);
+        $this->repository->setAllOwnerSessionsStatus($command->getUserId(), SessionStatus::FINISHED);
 
         $session = Session::newSession(
-            $command->getOwner(),
+            $command->getUserId(),
             $command->getCardsPerSession(),
             $command->getDevice(),
             $deck,

@@ -52,10 +52,10 @@ class SmTwoFlashcardSelector implements IFlashcardSelector
             FlashcardSortCriteria::OLDEST_UPDATE_FLASHCARDS_FIRST,
         ];
 
-        $results = $this->repository->getNextFlashcards($next_session_flashcards->getOwner(), $limit, $latest_ids, $criteria);
+        $results = $this->repository->getNextFlashcardsByUser($next_session_flashcards->getUserId(), $limit, $latest_ids, $criteria);
 
         if (count($results) < $limit) {
-            return $this->repository->getNextFlashcards($next_session_flashcards->getOwner(), $limit, [], $criteria);
+            return $this->repository->getNextFlashcardsByUser($next_session_flashcards->getUserId(), $limit, [], $criteria);
         }
 
         return $results;
@@ -72,12 +72,14 @@ class SmTwoFlashcardSelector implements IFlashcardSelector
         $criteria = $prioritize_not_hard_flashcards ? [
             FlashcardSortCriteria::NOT_RATED_FLASHCARDS_FIRST,
             FlashcardSortCriteria::EVER_NOT_VERY_GOOD_FIRST,
+            FlashcardSortCriteria::OLDER_THAN_THIRTY_SECONDS_AGO_FIRST,
             FlashcardSortCriteria::PLANNED_FLASHCARDS_FOR_CURRENT_DATE_FIRST,
             FlashcardSortCriteria::NOT_HARD_FLASHCARDS_FIRST,
             FlashcardSortCriteria::OLDEST_UPDATE_FLASHCARDS_FIRST,
         ] : [
             FlashcardSortCriteria::NOT_RATED_FLASHCARDS_FIRST,
             FlashcardSortCriteria::EVER_NOT_VERY_GOOD_FIRST,
+            FlashcardSortCriteria::OLDER_THAN_THIRTY_SECONDS_AGO_FIRST,
             FlashcardSortCriteria::HARD_FLASHCARDS_FIRST,
             FlashcardSortCriteria::OLDEST_UPDATE_FLASHCARDS_FIRST,
             FlashcardSortCriteria::PLANNED_FLASHCARDS_FOR_CURRENT_DATE_FIRST,
@@ -85,10 +87,10 @@ class SmTwoFlashcardSelector implements IFlashcardSelector
             FlashcardSortCriteria::OLDEST_UPDATE_FLASHCARDS_FIRST,
         ];
 
-        $results = $this->repository->getNextFlashcardsByDeck($deck->getId(), $limit, $latest_ids, $criteria);
+        $results = $this->repository->getNextFlashcardsByDeck($next_session_flashcards->getUserId(), $deck->getId(), $limit, $latest_ids, $criteria);
 
         if (count($results) < $limit) {
-            return $this->repository->getNextFlashcardsByDeck($deck->getId(), $limit, [], $criteria);
+            return $this->repository->getNextFlashcardsByDeck($next_session_flashcards->getUserId(), $deck->getId(), $limit, [], $criteria);
         }
 
         return $results;

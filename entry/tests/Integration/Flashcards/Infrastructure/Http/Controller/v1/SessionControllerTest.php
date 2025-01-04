@@ -52,6 +52,7 @@ class SessionControllerTest extends TestCase
         // GIVEN
         $user = User::factory()->create();
         $session = LearningSession::factory()->create([
+            'user_id' => $user->id,
             'flashcard_deck_id' => null,
         ]);
         $flashcards = LearningSessionFlashcard::factory(4)->create([
@@ -80,7 +81,7 @@ class SessionControllerTest extends TestCase
     {
         // GIVEN
         $user = User::factory()->create();
-        $session = LearningSession::factory()->create();
+        $session = LearningSession::factory()->create(['user_id' => $user->id]);
         $flashcards = LearningSessionFlashcard::factory(1)->create([
             'learning_session_id' => $session->id,
             'rating' => Rating::GOOD,

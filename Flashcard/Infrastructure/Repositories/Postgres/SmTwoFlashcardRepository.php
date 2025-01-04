@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Repositories\Postgres;
 
-use Flashcard\Domain\Models\Owner;
+use Shared\Utils\ValueObjects\UserId;
 use Flashcard\Domain\Models\SmTwoFlashcards;
 use Flashcard\Domain\ValueObjects\FlashcardDeckId;
 use Flashcard\Application\Repository\FlashcardSortCriteria;
@@ -22,9 +22,9 @@ class SmTwoFlashcardRepository implements ISmTwoFlashcardRepository
         private FlashcardSortCriteriaFactory $sort_criteria_factory,
     ) {}
 
-    public function findMany(Owner $owner, array $flashcard_ids): SmTwoFlashcards
+    public function findMany(UserId $user_id, array $flashcard_ids): SmTwoFlashcards
     {
-        return $this->mapper->findMany($owner, $flashcard_ids);
+        return $this->mapper->findMany($user_id, $flashcard_ids);
     }
 
     public function saveMany(SmTwoFlashcards $sm_two_flashcards): void
@@ -32,14 +32,14 @@ class SmTwoFlashcardRepository implements ISmTwoFlashcardRepository
         $this->mapper->saveMany($sm_two_flashcards);
     }
 
-    public function getNextFlashcards(Owner $owner, int $limit, array $exclude_flashcard_ids, array $sort_criteria): array
+    public function getNextFlashcardsByUser(UserId $user_id, int $limit, array $exclude_flashcard_ids, array $sort_criteria): array
     {
-        return $this->flashcard_mapper->getNextFlashcards($owner, $limit, $exclude_flashcard_ids, $this->buildCriteria($sort_criteria));
+        return $this->flashcard_mapper->getNextFlashcards($user_id, $limit, $exclude_flashcard_ids, $this->buildCriteria($sort_criteria));
     }
 
-    public function getNextFlashcardsByDeck(FlashcardDeckId $deck_id, int $limit, array $exclude_flashcard_ids, array $sort_criteria): array
+    public function getNextFlashcardsByDeck(UserId $user_id, FlashcardDeckId $deck_id, int $limit, array $exclude_flashcard_ids, array $sort_criteria): array
     {
-        return $this->flashcard_mapper->getNextFlashcardsByDeck($deck_id, $limit, $exclude_flashcard_ids, $this->buildCriteria($sort_criteria));
+        return $this->flashcard_mapper->getNextFlashcardsByDeck($user_id, $deck_id, $limit, $exclude_flashcard_ids, $this->buildCriteria($sort_criteria));
     }
 
     /**

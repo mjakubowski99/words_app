@@ -35,7 +35,16 @@ class Owner
     public function equals(Owner $owner): bool
     {
         return $this->id->equals($owner->getId())
-            /* @phpstan-ignore-next-line */
             && $this->flashcard_owner_type === $owner->getOwnerType();
+    }
+
+    public function isUser(): bool
+    {
+        return $this->flashcard_owner_type === FlashcardOwnerType::USER;
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->flashcard_owner_type === FlashcardOwnerType::ADMIN;
     }
 }

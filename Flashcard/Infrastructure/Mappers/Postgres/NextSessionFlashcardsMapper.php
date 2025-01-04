@@ -8,15 +8,17 @@ use Shared\Enum\LanguageLevel;
 use Flashcard\Domain\Models\Deck;
 use Flashcard\Domain\Models\Owner;
 use Illuminate\Support\Facades\DB;
-use Shared\Enum\FlashcardOwnerType;
+use Shared\Utils\ValueObjects\UserId;
 use Shared\Exceptions\NotFoundException;
-use Flashcard\Domain\ValueObjects\OwnerId;
 use Flashcard\Domain\ValueObjects\SessionId;
 use Flashcard\Domain\Models\NextSessionFlashcards;
 use Flashcard\Domain\ValueObjects\FlashcardDeckId;
+use Flashcard\Infrastructure\Mappers\Traits\HasOwnerBuilder;
 
 class NextSessionFlashcardsMapper
 {
+    use HasOwnerBuilder;
+
     public function __construct(
         private readonly DB $db,
         private readonly SessionMapper $session_mapper,
@@ -34,6 +36,8 @@ class NextSessionFlashcardsMapper
                         ls.cards_per_session,
                         ls.status AS session_status,
                         fd.id AS deck_id,
+                        fd.user_id AS deck_user_id,
+                        fd.admin_id as deck_admin_id,
                         fd.name AS deck_name,
                         fd.tag AS deck_tag,
                         fd.default_language_level AS deck_default_language_level 
@@ -62,6 +66,8 @@ class NextSessionFlashcardsMapper
                     sd.cards_per_session,
                     sd.session_status,
                     sd.deck_id,
+                    sd.deck_user_id,
+                    sd.deck_admin_id,
                     sd.deck_name,
                     sd.deck_tag,
                     sd.deck_default_language_level,
@@ -84,13 +90,16 @@ class NextSessionFlashcardsMapper
 
         $result = $results[0];
 
-        $owner = $this->mapOwner($result);
-
-        $deck = $this->mapDeck($owner, $result);
+        if ($result->deck_id) {
+            $owner = $this->buildOwner((string) $result->deck_user_id, (string) $result->deck_admin_id);
+            $deck = $this->mapDeck($owner, $result);
+        } else {
+            $deck = null;
+        }
 
         return new NextSessionFlashcards(
             $id,
-            $owner,
+            new UserId($result->user_id),
             $deck,
             $result->all_count ?? 0,
             $result->unrated_count ?? 0,
@@ -114,11 +123,6 @@ class NextSessionFlashcardsMapper
         }
 
         $this->db::table('learning_session_flashcards')->insert($insert_data);
-    }
-
-    private function mapOwner(object $result): Owner
-    {
-        return new Owner(new OwnerId($result->user_id), FlashcardOwnerType::USER);
     }
 
     private function mapDeck(Owner $owner, object $result): ?Deck

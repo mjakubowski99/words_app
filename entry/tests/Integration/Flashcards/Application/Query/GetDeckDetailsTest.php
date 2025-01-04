@@ -33,7 +33,7 @@ class GetDeckDetailsTest extends TestCase
         ]);
 
         // WHEN
-        $result = $this->query->get($deck->getId(), null, 1, 15);
+        $result = $this->query->get($deck->getUserId(), $deck->getId(), null, 1, 15);
 
         // THEN
         $this->assertSame($deck->id, $result->getId()->getValue());
