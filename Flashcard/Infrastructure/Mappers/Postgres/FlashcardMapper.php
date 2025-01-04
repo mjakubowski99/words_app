@@ -145,7 +145,8 @@ class FlashcardMapper
         $this->db::table('flashcards')
             ->where('id', $flashcard->getId())
             ->update([
-                'user_id' => $flashcard->getOwner()->getId(),
+                'user_id' => $flashcard->getOwner()->isUser() ? $flashcard->getOwner()->getId() : null,
+                'admin_id' => $flashcard->getOwner()->isAdmin() ? $flashcard->getOwner()->getId() : null,
                 'flashcard_deck_id' => $flashcard->getDeck()->getId(),
                 'front_word' => $flashcard->getFrontWord(),
                 'front_lang' => $flashcard->getFrontLang()->getValue(),
