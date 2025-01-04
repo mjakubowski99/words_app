@@ -14,12 +14,16 @@ return new class extends Migration
             $table->string('email')->nullable();
             $table->string('type');
             $table->string('description');
-            $table->json('context')->nullable();
+            $table->string('reportable_id')->nullable();
+            $table->string('reportable_type')->nullable();
             $table->timestamps();
 
             $table->foreign('user_id')
                 ->references('id')
                 ->on('users');
+
+            $table->index(['reportable_id', 'reportable_type']);
+
         });
     }
 

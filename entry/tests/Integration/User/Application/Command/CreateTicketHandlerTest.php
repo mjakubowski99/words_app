@@ -78,12 +78,7 @@ class CreateTicketHandlerTest extends TestCase
             ])->first();
 
         $this->assertNotNull($ticket);
-        $this->assertSame(
-            json_encode([
-                'reportable_id' => (string) $flashcard->id,
-                'reportable_type' => ReportableType::FLASHCARD,
-            ]),
-            json_encode($ticket->context)
-        );
+        $this->assertSame($ticket->reportable_id, (string) $flashcard->id);
+        $this->assertSame($ticket->reportable_type, ReportableType::FLASHCARD->value);
     }
 }

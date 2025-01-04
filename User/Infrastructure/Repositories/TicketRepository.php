@@ -20,10 +20,8 @@ class TicketRepository implements ITicketRepository
             'user_id' => $ticket->getUserId()?->getValue(),
             'type' => $ticket->getTicketType()->value,
             'description' => $ticket->getDescription(),
-            'context' => $ticket->getReportableId() ? [
-                'reportable_id' => $ticket->getReportableId(),
-                'reportable_type' => $ticket->getReportableType()->value,
-            ] : null,
+            'reportable_id' => $ticket->getReportableId() ? $ticket->getReportableId() : null,
+            'reportable_type' => $ticket->getReportableType()?->value,
         ]);
     }
 
