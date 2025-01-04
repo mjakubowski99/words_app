@@ -7,6 +7,7 @@ namespace Flashcard\Infrastructure\Factories\Postgres;
 use Flashcard\Application\Repository\FlashcardSortCriteria;
 use Flashcard\Infrastructure\SortCriteria\Postgres\HardFlashcardsFirst;
 use Flashcard\Infrastructure\SortCriteria\Postgres\PostgresSortCriteria;
+use Flashcard\Infrastructure\SortCriteria\Postgres\OlderThanOneMinuteAgo;
 use Flashcard\Infrastructure\SortCriteria\Postgres\NotHardFlashcardsFirst;
 use Flashcard\Infrastructure\SortCriteria\Postgres\NotRatedFlashcardsFirst;
 use Flashcard\Infrastructure\SortCriteria\Postgres\OlderThanFiveMinutesAgo;
@@ -29,6 +30,7 @@ class FlashcardSortCriteriaFactory
             FlashcardSortCriteria::NOT_HARD_FLASHCARDS_FIRST => new NotHardFlashcardsFirst(),
             FlashcardSortCriteria::HARD_FLASHCARDS_FIRST => new HardFlashcardsFirst(),
             FlashcardSortCriteria::OLDER_THAN_FIVE_MINUTES_AGO_FIRST => new OlderThanFiveMinutesAgo(),
+            FlashcardSortCriteria::OLDER_THAN_ONE_MINUTE_AGO_FIRST => new OlderThanOneMinuteAgo(),
             FlashcardSortCriteria::EVER_NOT_VERY_GOOD_FIRST => new EverRatedNotVeryGoodFlashcardsFirst(),
         };
     }
