@@ -44,14 +44,14 @@ class SmTwoFlashcardSelector implements IFlashcardSelector
         $criteria = $prioritize_not_hard_flashcards ? [
             FlashcardSortCriteria::EVER_NOT_VERY_GOOD_FIRST,
             FlashcardSortCriteria::PLANNED_FLASHCARDS_FOR_CURRENT_DATE_FIRST,
-            FlashcardSortCriteria::OLDER_THAN_THIRTY_SECONDS_AGO_FIRST,
+            FlashcardSortCriteria::OLDER_THAN_FIFTEEN_SECONDS_AGO,
             FlashcardSortCriteria::NOT_HARD_FLASHCARDS_FIRST,
             FlashcardSortCriteria::RANDOMIZE_LATEST_FLASHCARDS_ORDER,
             FlashcardSortCriteria::OLDEST_UPDATE_FLASHCARDS_FIRST,
         ] : [
             FlashcardSortCriteria::EVER_NOT_VERY_GOOD_FIRST,
             FlashcardSortCriteria::PLANNED_FLASHCARDS_FOR_CURRENT_DATE_FIRST,
-            FlashcardSortCriteria::OLDER_THAN_THIRTY_SECONDS_AGO_FIRST,
+            FlashcardSortCriteria::OLDER_THAN_FIFTEEN_SECONDS_AGO,
             FlashcardSortCriteria::HARD_FLASHCARDS_FIRST,
             FlashcardSortCriteria::OLDEST_UPDATE_FLASHCARDS_FIRST,
             FlashcardSortCriteria::HARD_FLASHCARDS_FIRST,
@@ -81,14 +81,14 @@ class SmTwoFlashcardSelector implements IFlashcardSelector
         $criteria = $prioritize_not_hard_flashcards ? [
             FlashcardSortCriteria::NOT_RATED_FLASHCARDS_FIRST,
             FlashcardSortCriteria::EVER_NOT_VERY_GOOD_FIRST,
-            FlashcardSortCriteria::OLDER_THAN_THIRTY_SECONDS_AGO_FIRST,
+            FlashcardSortCriteria::OLDER_THAN_FIFTEEN_SECONDS_AGO,
             FlashcardSortCriteria::PLANNED_FLASHCARDS_FOR_CURRENT_DATE_FIRST,
             FlashcardSortCriteria::NOT_HARD_FLASHCARDS_FIRST,
             FlashcardSortCriteria::OLDEST_UPDATE_FLASHCARDS_FIRST,
         ] : [
             FlashcardSortCriteria::NOT_RATED_FLASHCARDS_FIRST,
             FlashcardSortCriteria::EVER_NOT_VERY_GOOD_FIRST,
-            FlashcardSortCriteria::OLDER_THAN_THIRTY_SECONDS_AGO_FIRST,
+            FlashcardSortCriteria::OLDER_THAN_FIFTEEN_SECONDS_AGO,
             FlashcardSortCriteria::HARD_FLASHCARDS_FIRST,
             FlashcardSortCriteria::OLDEST_UPDATE_FLASHCARDS_FIRST,
             FlashcardSortCriteria::PLANNED_FLASHCARDS_FOR_CURRENT_DATE_FIRST,
