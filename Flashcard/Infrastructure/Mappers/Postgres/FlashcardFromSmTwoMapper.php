@@ -40,7 +40,7 @@ class FlashcardFromSmTwoMapper
             ->leftJoin('sm_two_flashcards', 'sm_two_flashcards.flashcard_id', '=', 'flashcards.id')
             ->take($limit)
             ->orderByRaw("
-                CASE WHEN sm_two_flashcards.repetitions_in_session < {$flashcard_limit} then 1 else 0 end DESC,
+                CASE WHEN COALESCE(sm_two_flashcards.repetitions_in_session, 0) < {$flashcard_limit} then 1 else 0 end DESC,
             " . implode(',', $sort_sql))
             ->select(
                 'flashcards.*',
@@ -72,7 +72,7 @@ class FlashcardFromSmTwoMapper
             })
             ->take($limit)
             ->orderByRaw("
-                CASE WHEN sm_two_flashcards.repetitions_in_session < {$flashcard_limit} then 1 else 0 end DESC,
+                CASE WHEN COALESCE(sm_two_flashcards.repetitions_in_session, 0) < {$flashcard_limit} then 1 else 0 end DESC,
             " . implode(',', $sort_sql))
             ->select(
                 'flashcards.*',
