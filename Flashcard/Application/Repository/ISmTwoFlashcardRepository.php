@@ -11,6 +11,8 @@ use Flashcard\Domain\ValueObjects\FlashcardDeckId;
 
 interface ISmTwoFlashcardRepository
 {
+    public function resetRepetitionsInSession(UserId $user_id): void;
+
     public function findMany(UserId $user_id, array $flashcard_ids): SmTwoFlashcards;
 
     public function saveMany(SmTwoFlashcards $sm_two_flashcards): void;
@@ -19,11 +21,24 @@ interface ISmTwoFlashcardRepository
      * @param  FlashcardSortCriteria[] $sort_criteria
      * @return Flashcard[]
      */
-    public function getNextFlashcardsByDeck(UserId $user_id, FlashcardDeckId $deck_id, int $limit, array $exclude_flashcard_ids, array $sort_criteria): array;
+    public function getNextFlashcardsByDeck(
+        UserId $user_id,
+        FlashcardDeckId $deck_id,
+        int $limit,
+        array $exclude_flashcard_ids,
+        array $sort_criteria,
+        int $cards_per_session
+    ): array;
 
     /**
      * @param  FlashcardSortCriteria[] $sort_criteria
      * @return Flashcard[]
      */
-    public function getNextFlashcardsByUser(UserId $user_id, int $limit, array $exclude_flashcard_ids, array $sort_criteria): array;
+    public function getNextFlashcardsByUser(
+        UserId $user_id,
+        int $limit,
+        array $exclude_flashcard_ids,
+        array $sort_criteria,
+        int $cards_per_session
+    ): array;
 }

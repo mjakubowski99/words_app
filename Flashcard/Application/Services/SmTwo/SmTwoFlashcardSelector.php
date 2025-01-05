@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\Services\SmTwo;
 
+use Shared\Utils\ValueObjects\UserId;
 use Flashcard\Domain\Models\NextSessionFlashcards;
 use Flashcard\Application\Services\IFlashcardSelector;
 use Flashcard\Application\Repository\IFlashcardRepository;
@@ -17,6 +18,11 @@ class SmTwoFlashcardSelector implements IFlashcardSelector
         private IFlashcardRepository $flashcard_repository,
     ) {}
 
+    public function resetRepetitionsInSession(UserId $user_id): void
+    {
+        $this->repository->resetRepetitionsInSession($user_id);
+    }
+
     public function select(NextSessionFlashcards $next_session_flashcards, int $limit): array
     {
         if ($next_session_flashcards->hasDeck()) {
@@ -28,7 +34,8 @@ class SmTwoFlashcardSelector implements IFlashcardSelector
 
     private function selectGeneral(NextSessionFlashcards $next_session_flashcards, int $limit): array
     {
-        $latest_limit = 2;
+        $latest_limit = max(3, (int) ($next_session_flashcards->getMaxFlashcardsCount() * 0.1));
+        $latest_limit = min(6, $latest_limit);
 
         $prioritize_not_hard_flashcards = $next_session_flashcards->getCurrentSessionFlashcardsCount() % 5 === 0;
 
@@ -52,10 +59,10 @@ class SmTwoFlashcardSelector implements IFlashcardSelector
             FlashcardSortCriteria::OLDEST_UPDATE_FLASHCARDS_FIRST,
         ];
 
-        $results = $this->repository->getNextFlashcardsByUser($next_session_flashcards->getUserId(), $limit, $latest_ids, $criteria);
+        $results = $this->repository->getNextFlashcardsByUser($next_session_flashcards->getUserId(), $limit, $latest_ids, $criteria, $next_session_flashcards->getMaxFlashcardsCount());
 
         if (count($results) < $limit) {
-            return $this->repository->getNextFlashcardsByUser($next_session_flashcards->getUserId(), $limit, [], $criteria);
+            return $this->repository->getNextFlashcardsByUser($next_session_flashcards->getUserId(), $limit, [], $criteria, $next_session_flashcards->getMaxFlashcardsCount());
         }
 
         return $results;
@@ -63,7 +70,9 @@ class SmTwoFlashcardSelector implements IFlashcardSelector
 
     private function selectNormal(NextSessionFlashcards $next_session_flashcards, int $limit): array
     {
-        $latest_limit = 2;
+        $latest_limit = max(3, (int) ($next_session_flashcards->getMaxFlashcardsCount() * 0.1));
+        $latest_limit = min(6, $latest_limit);
+
         $latest_ids = $this->flashcard_repository->getLatestSessionFlashcardIds($next_session_flashcards->getSessionId(), $latest_limit);
         $deck = $next_session_flashcards->getDeck();
 
@@ -87,10 +96,10 @@ class SmTwoFlashcardSelector implements IFlashcardSelector
             FlashcardSortCriteria::OLDEST_UPDATE_FLASHCARDS_FIRST,
         ];
 
-        $results = $this->repository->getNextFlashcardsByDeck($next_session_flashcards->getUserId(), $deck->getId(), $limit, $latest_ids, $criteria);
+        $results = $this->repository->getNextFlashcardsByDeck($next_session_flashcards->getUserId(), $deck->getId(), $limit, $latest_ids, $criteria, $next_session_flashcards->getCurrentSessionFlashcardsCount());
 
         if (count($results) < $limit) {
-            return $this->repository->getNextFlashcardsByDeck($next_session_flashcards->getUserId(), $deck->getId(), $limit, [], $criteria);
+            return $this->repository->getNextFlashcardsByDeck($next_session_flashcards->getUserId(), $deck->getId(), $limit, [], $criteria, $next_session_flashcards->getMaxFlashcardsCount());
         }
 
         return $results;

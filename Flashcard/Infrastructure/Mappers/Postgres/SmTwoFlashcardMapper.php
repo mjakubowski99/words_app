@@ -16,6 +16,14 @@ class SmTwoFlashcardMapper
         private readonly DB $db
     ) {}
 
+    public function resetRepetitionsInSession(UserId $user_id): void
+    {
+        $this->db::table('sm_two_flashcards')
+            ->where('user_id', $user_id->getValue())
+            ->where('repetitions_in_session', '>', 0)
+            ->update(['repetitions_in_session' => 0]);
+    }
+
     public function findMany(UserId $user_id, array $flashcard_ids): SmTwoFlashcards
     {
         $results = $this->db::table('sm_two_flashcards')
@@ -29,6 +37,7 @@ class SmTwoFlashcardMapper
                 'sm_two_flashcards.repetition_ratio',
                 'sm_two_flashcards.repetition_count',
                 'sm_two_flashcards.min_rating',
+                'sm_two_flashcards.repetitions_in_session',
             )
             ->get()
             ->map(function (object $sm_two_flashcard) {
@@ -69,6 +78,7 @@ class SmTwoFlashcardMapper
                     'repetition_interval' => $flashcard->getRepetitionInterval(),
                     'repetition_count' => $flashcard->getRepetitionCount(),
                     'min_rating' => $flashcard->getMinRating(),
+                    'repetitions_in_session' => $flashcard->getRepetitionsInSession(),
                     'created_at' => $now,
                     'updated_at' => $now,
                 ];
@@ -82,6 +92,7 @@ class SmTwoFlashcardMapper
                         'repetition_interval' => $flashcard->getRepetitionInterval(),
                         'repetition_count' => $flashcard->getRepetitionCount(),
                         'min_rating' => $flashcard->getMinRating(),
+                        'repetitions_in_session' => $flashcard->getRepetitionsInSession(),
                         'updated_at' => $now,
                     ]);
             }
@@ -100,7 +111,8 @@ class SmTwoFlashcardMapper
             (float) $data->repetition_ratio,
             (float) $data->repetition_interval,
             $data->repetition_count,
-            $data->min_rating
+            $data->min_rating,
+            $data->repetitions_in_session
         );
     }
 }
