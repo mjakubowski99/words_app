@@ -34,7 +34,7 @@ class SmTwoFlashcardSelector implements IFlashcardSelector
 
     private function selectGeneral(NextSessionFlashcards $next_session_flashcards, int $limit): array
     {
-        $latest_limit = max(2, (int) ($next_session_flashcards->getMaxFlashcardsCount() * 0.1));
+        $latest_limit = max(3, (int) ($next_session_flashcards->getMaxFlashcardsCount() * 0.2));
         $latest_limit = min(5, $latest_limit);
 
         $prioritize_not_hard_flashcards = $next_session_flashcards->getCurrentSessionFlashcardsCount() % 5 === 0;
@@ -44,12 +44,14 @@ class SmTwoFlashcardSelector implements IFlashcardSelector
         $criteria = $prioritize_not_hard_flashcards ? [
             FlashcardSortCriteria::EVER_NOT_VERY_GOOD_FIRST,
             FlashcardSortCriteria::PLANNED_FLASHCARDS_FOR_CURRENT_DATE_FIRST,
+            FlashcardSortCriteria::OLDER_THAN_THIRTY_SECONDS_AGO_FIRST,
             FlashcardSortCriteria::NOT_HARD_FLASHCARDS_FIRST,
             FlashcardSortCriteria::RANDOMIZE_LATEST_FLASHCARDS_ORDER,
             FlashcardSortCriteria::OLDEST_UPDATE_FLASHCARDS_FIRST,
         ] : [
             FlashcardSortCriteria::EVER_NOT_VERY_GOOD_FIRST,
             FlashcardSortCriteria::PLANNED_FLASHCARDS_FOR_CURRENT_DATE_FIRST,
+            FlashcardSortCriteria::OLDER_THAN_THIRTY_SECONDS_AGO_FIRST,
             FlashcardSortCriteria::HARD_FLASHCARDS_FIRST,
             FlashcardSortCriteria::OLDEST_UPDATE_FLASHCARDS_FIRST,
             FlashcardSortCriteria::HARD_FLASHCARDS_FIRST,
@@ -68,7 +70,7 @@ class SmTwoFlashcardSelector implements IFlashcardSelector
 
     private function selectNormal(NextSessionFlashcards $next_session_flashcards, int $limit): array
     {
-        $latest_limit = max(2, (int) ($next_session_flashcards->getMaxFlashcardsCount() * 0.1));
+        $latest_limit = max(3, (int) ($next_session_flashcards->getMaxFlashcardsCount() * 0.2));
         $latest_limit = min(5, $latest_limit);
 
         $latest_ids = $this->flashcard_repository->getLatestSessionFlashcardIds($next_session_flashcards->getSessionId(), $latest_limit);
@@ -79,12 +81,14 @@ class SmTwoFlashcardSelector implements IFlashcardSelector
         $criteria = $prioritize_not_hard_flashcards ? [
             FlashcardSortCriteria::NOT_RATED_FLASHCARDS_FIRST,
             FlashcardSortCriteria::EVER_NOT_VERY_GOOD_FIRST,
+            FlashcardSortCriteria::OLDER_THAN_THIRTY_SECONDS_AGO_FIRST,
             FlashcardSortCriteria::PLANNED_FLASHCARDS_FOR_CURRENT_DATE_FIRST,
             FlashcardSortCriteria::NOT_HARD_FLASHCARDS_FIRST,
             FlashcardSortCriteria::OLDEST_UPDATE_FLASHCARDS_FIRST,
         ] : [
             FlashcardSortCriteria::NOT_RATED_FLASHCARDS_FIRST,
             FlashcardSortCriteria::EVER_NOT_VERY_GOOD_FIRST,
+            FlashcardSortCriteria::OLDER_THAN_THIRTY_SECONDS_AGO_FIRST,
             FlashcardSortCriteria::HARD_FLASHCARDS_FIRST,
             FlashcardSortCriteria::OLDEST_UPDATE_FLASHCARDS_FIRST,
             FlashcardSortCriteria::PLANNED_FLASHCARDS_FOR_CURRENT_DATE_FIRST,
