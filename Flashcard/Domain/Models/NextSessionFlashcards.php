@@ -35,6 +35,11 @@ class NextSessionFlashcards
         return $this->session_id;
     }
 
+    public function getMaxFlashcardsCount(): int
+    {
+        return $this->max_flashcards_count;
+    }
+
     public function getUserId(): UserId
     {
         return $this->user_id;

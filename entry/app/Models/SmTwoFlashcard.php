@@ -35,6 +35,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property        int                            $min_rating
  * @property        User                           $user
  * @method   static Builder<static>|SmTwoFlashcard whereMinRating($value)
+ * @property        int                            $repetitions_in_session
+ * @method   static Builder<static>|SmTwoFlashcard whereRepetitionsInSession($value)
  * @mixin \Eloquent
  */
 class SmTwoFlashcard extends Model
@@ -67,6 +69,7 @@ class SmTwoFlashcard extends Model
             (float) $this->repetition_interval,
             $this->repetition_count,
             $this->min_rating,
+            $this->repetitions_in_session,
         );
     }
 }

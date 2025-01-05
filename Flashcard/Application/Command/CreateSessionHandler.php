@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\Command;
 
+use Flashcard\Application\Services\IFlashcardSelector;
 use Shared\Enum\SessionStatus;
 use Flashcard\Domain\Models\Session;
 use Flashcard\Application\DTO\CreateSessionResultDTO;
@@ -15,6 +16,7 @@ class CreateSessionHandler
     public function __construct(
         private readonly ISessionRepository $repository,
         private readonly IFlashcardDeckRepository $deck_repository,
+        private readonly IFlashcardSelector $selector,
     ) {}
 
     public function handle(CreateSession $command): CreateSessionResultDTO
@@ -33,6 +35,8 @@ class CreateSessionHandler
         );
 
         $session_id = $this->repository->create($session);
+
+        $this->selector->resetRepetitionsInSession($command->getUserId());
 
         return new CreateSessionResultDTO(true, null, $session_id);
     }
