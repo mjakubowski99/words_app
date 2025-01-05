@@ -28,7 +28,7 @@ class FlashcardFromSmTwoMapper
     {
         $sort_sql = array_map(fn (PostgresSortCriteria $criteria) => $criteria->apply(), $sort_criteria);
 
-        $flashcard_limit = max(3, (int) (0.2 * $cards_per_session));
+        $flashcard_limit = max(3, (int) (0.1 * $cards_per_session));
 
         return $this->db::table('flashcards')
             ->whereNotIn('flashcards.id', array_map(fn (FlashcardId $id) => $id->getValue(), $exclude_flashcard_ids))
@@ -60,7 +60,7 @@ class FlashcardFromSmTwoMapper
     {
         $sort_sql = array_map(fn (PostgresSortCriteria $criteria) => $criteria->apply(), $sort_criteria);
 
-        $flashcard_limit = max(3, (int) (0.2 * $cards_per_session));
+        $flashcard_limit = max(3, (int) (0.1 * $cards_per_session));
 
         return $this->db::table('flashcards')
             ->whereNotIn('flashcards.id', array_map(fn (FlashcardId $id) => $id->getValue(), $exclude_flashcard_ids))
