@@ -9,7 +9,6 @@ use Shared\Utils\ValueObjects\UserId;
 use Flashcard\Domain\ValueObjects\FlashcardDeckId;
 use Flashcard\Application\Repository\IFlashcardDeckRepository;
 use Flashcard\Infrastructure\Mappers\Postgres\FlashcardDeckMapper;
-use Shared\Utils\ValueObjects\UserId;
 
 class FlashcardDeckRepository implements IFlashcardDeckRepository
 {

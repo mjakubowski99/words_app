@@ -3,25 +3,26 @@
 declare(strict_types=1);
 
 namespace Shared\Enum;
+
 use OpenApi\Attributes as OAT;
 
 #[OAT\Schema(
-    schema: 'TicketType',
-    description: 'Type of ticket',
+    schema: 'ReportType',
+    description: 'Type of report',
     enum: [
-        TicketType::DELETE_ACCOUNT->value,
-        TicketType::INAPPROPRIATE_CONTENT->value,
+        ReportType::DELETE_ACCOUNT->value,
+        ReportType::INAPPROPRIATE_CONTENT->value,
     ],
-    example: TicketType::INAPPROPRIATE_CONTENT->value,
+    example: ReportType::INAPPROPRIATE_CONTENT->value,
     nullable: true
 )]
-enum TicketType: string
+enum ReportType: string
 {
     case DELETE_ACCOUNT = 'delete_account';
     case INAPPROPRIATE_CONTENT = 'inappropriate_content';
 
     public static function all(): array
     {
-        return array_map(fn($d) => $d->value, self::cases());
+        return array_map(fn ($d) => $d->value, self::cases());
     }
 }

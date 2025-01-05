@@ -4,20 +4,20 @@ declare(strict_types=1);
 
 namespace User\Application\Command;
 
+use Shared\Enum\ReportType;
 use Shared\Enum\ReportableType;
-use Shared\Enum\TicketType;
 use Shared\Utils\ValueObjects\UserId;
-use User\Domain\Contracts\INewTicket;
+use User\Domain\Contracts\ICreateReport;
 
-class CreateTicket implements INewTicket
+class CreateReport implements ICreateReport
 {
     public function __construct(
         private ?UserId $user_id,
         private ?string $email,
-        private TicketType $type,
+        private ReportType $type,
         private string $description,
-        private ?string $reportable_id=null,
-        private ?ReportableType $reportable_type=null,
+        private ?string $reportable_id = null,
+        private ?ReportableType $reportable_type = null,
     ) {
         if (!is_null($this->reportable_id) && is_null($this->reportable_type)) {
             throw new \UnexpectedValueException('Reportable id cannot be null when reportable type is null');
@@ -37,7 +37,7 @@ class CreateTicket implements INewTicket
         return $this->email;
     }
 
-    public function getTicketType(): TicketType
+    public function getTicketType(): ReportType
     {
         return $this->type;
     }

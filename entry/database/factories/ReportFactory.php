@@ -1,15 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
+use App\Models\Flashcard;
 use App\Models\User;
+use Shared\Enum\ReportableType;
+use Shared\Enum\ReportType;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Shared\Enum\TicketType;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Model>
  */
-class TicketFactory extends Factory
+class ReportFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -19,11 +23,12 @@ class TicketFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id' => fn() => User::factory()->create(),
+            'user_id' => fn () => User::factory()->create(),
             'description' => $this->faker->text,
-            'context' => null,
-            'type' => TicketType::DELETE_ACCOUNT,
+            'type' => ReportType::DELETE_ACCOUNT,
             'email' => $this->faker->email,
+            'reportable_id' => Flashcard::factory()->create()->id,
+            'reportable_type' => ReportableType::FLASHCARD->value,
         ];
     }
 }

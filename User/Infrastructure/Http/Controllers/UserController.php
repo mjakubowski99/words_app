@@ -8,18 +8,18 @@ use App\Http\OpenApi\Tags;
 use OpenApi\Attributes as OAT;
 use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
-use User\Application\Command\CreateTicketHandler;
-use User\Application\Command\DeleteUserHandler;
 use User\Application\Query\GetOAuthUser;
+use User\Application\Command\DeleteUserHandler;
 use User\Application\Command\CreateExternalUser;
 use User\Application\Command\CreateTokenHandler;
+use User\Application\Command\CreateReportHandler;
 use User\Application\Query\FindExternalUserHandler;
-use User\Infrastructure\Http\Request\DeleteUserRequest;
 use User\Infrastructure\Http\Request\GetUserRequest;
-use User\Infrastructure\Http\Request\StoreTicketRequest;
 use User\Infrastructure\Http\Resources\UserResource;
 use User\Application\Command\CreateExternalUserHandler;
+use User\Infrastructure\Http\Request\DeleteUserRequest;
 use User\Infrastructure\Http\Request\OAuthLoginRequest;
+use User\Infrastructure\Http\Request\StoreReportRequest;
 
 class UserController extends Controller
 {
@@ -160,12 +160,12 @@ class UserController extends Controller
     {
         if ($request->current()->getEmail() !== $request->getEmail()) {
             return new JsonResponse([
-                'message' => 'Invalid email provided'
+                'message' => 'Invalid email provided',
             ], 400);
         }
 
         $result = $handler->delete($request->currentId());
-        
+
         if (!$result) {
             return new JsonResponse([
                 'message' => 'Something went wrong',
@@ -176,12 +176,12 @@ class UserController extends Controller
     }
 
     #[OAT\Post(
-        path: '/api/tickets',
-        operationId: 'tickets.store',
+        path: '/api/reports',
+        operationId: 'reports.store',
         description: 'You can use this endpoint to report something to administration. For example you can report flashcard or intent of account deletion',
-        summary: 'Store new ticket',
+        summary: 'Store new report',
         requestBody: new OAT\RequestBody(
-            content: new OAT\JsonContent(ref: '#/components/schemas/Requests\User\StoreTicketRequest')
+            content: new OAT\JsonContent(ref: '#/components/schemas/Requests\User\StoreReportRequest')
         ),
         tags: [Tags::USER],
         responses: [
@@ -190,7 +190,7 @@ class UserController extends Controller
             new OAT\Response(ref: '#/components/responses/validation_error', response: 422),
         ],
     )]
-    public function storeTicket(StoreTicketRequest $request, CreateTicketHandler $handler): JsonResponse
+    public function storeReport(StoreReportRequest $request, CreateReportHandler $handler): JsonResponse
     {
         $handler->handle($request->toCommand());
 

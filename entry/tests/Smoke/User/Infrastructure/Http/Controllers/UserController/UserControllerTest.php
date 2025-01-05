@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Tests\Smoke\User\Infrastructure\Http\Controllers\UserController;
 
-use App\Models\Flashcard;
-use Shared\Enum\ReportableType;
-use Shared\Enum\TicketType;
 use Tests\TestCase;
 use App\Models\User;
+use App\Models\Flashcard;
 use Shared\Enum\Platform;
+use Shared\Enum\ReportType;
 use Shared\Enum\UserProvider;
+use Shared\Enum\ReportableType;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Auth\Middleware\Authenticate;
 use User\Infrastructure\OAuth\Google\IosGoogleClient;
@@ -226,7 +226,7 @@ class UserControllerTest extends TestCase
         // GIVEN
         $email = 'email@email.com';
         $user = $this->createUser([
-            'email' => $email
+            'email' => $email,
         ]);
 
         // WHEN
@@ -247,7 +247,7 @@ class UserControllerTest extends TestCase
         // GIVEN
         $email = 'email@email.com';
         $user = $this->createUser([
-            'email' => $email
+            'email' => $email,
         ]);
 
         // WHEN
@@ -259,7 +259,6 @@ class UserControllerTest extends TestCase
         // THEN
         $response->assertStatus(400);
     }
-
 
     /**
      * @test
@@ -283,14 +282,14 @@ class UserControllerTest extends TestCase
         // GIVEN
         $email = 'email@email.com';
         $user = $this->createUser([
-            'email' => $email
+            'email' => $email,
         ]);
 
         // WHEN
         $response = $this
-            ->postJson(route('tickets.store'), [
+            ->postJson(route('reports.store'), [
                 'email' => $email,
-                'type' => TicketType::DELETE_ACCOUNT,
+                'type' => ReportType::DELETE_ACCOUNT,
                 'description' => 'Desc 5',
             ]);
 
@@ -301,19 +300,19 @@ class UserControllerTest extends TestCase
     /**
      * @test
      */
-    public function storeTicket_WhenUserAuthenticated_success(): void
+    public function storeReport_WhenUserAuthenticated_success(): void
     {
         // GIVEN
         $email = 'email@email.com';
         $user = $this->createUser([
-            'email' => $email
+            'email' => $email,
         ]);
         $flashcard = Flashcard::factory()->create();
 
         // WHEN
         $response = $this->actingAs($user)
-            ->postJson(route('tickets.store'), [
-                'type' => TicketType::INAPPROPRIATE_CONTENT,
+            ->postJson(route('reports.store'), [
+                'type' => ReportType::INAPPROPRIATE_CONTENT,
                 'description' => 'Inappropriate content',
                 'reportable_id' => $flashcard->id,
                 'reportable_type' => ReportableType::FLASHCARD,
@@ -326,19 +325,19 @@ class UserControllerTest extends TestCase
     /**
      * @test
      */
-    public function storeTicket_WhenDescriptionTooShort_validationError(): void
+    public function storeReport_WhenDescriptionTooShort_validationError(): void
     {
         // GIVEN
         $email = 'email@email.com';
         $user = $this->createUser([
-            'email' => $email
+            'email' => $email,
         ]);
 
         // WHEN
         $response = $this
-            ->postJson(route('tickets.store'), [
+            ->postJson(route('reports.store'), [
                 'email' => $email,
-                'type' => TicketType::DELETE_ACCOUNT,
+                'type' => ReportType::DELETE_ACCOUNT,
                 'description' => 'd',
             ]);
 

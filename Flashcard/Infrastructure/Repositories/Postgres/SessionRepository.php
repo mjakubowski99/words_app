@@ -10,7 +10,6 @@ use Shared\Utils\ValueObjects\UserId;
 use Flashcard\Domain\ValueObjects\SessionId;
 use Flashcard\Application\Repository\ISessionRepository;
 use Flashcard\Infrastructure\Mappers\Postgres\SessionMapper;
-use Shared\Utils\ValueObjects\UserId;
 
 class SessionRepository implements ISessionRepository
 {

@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 namespace Shared\Enum;
+
 use OpenApi\Attributes as OAT;
 
 #[OAT\Schema(
@@ -17,9 +18,10 @@ use OpenApi\Attributes as OAT;
 enum ReportableType: string
 {
     case FLASHCARD = 'flashcard';
+    case UNKNOWN = 'unknown';
 
     public static function all(): array
     {
-        return array_map(fn($d) => $d->value, self::cases());
+        return array_map(fn ($d) => $d->value, self::cases());
     }
 }

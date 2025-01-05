@@ -4,35 +4,36 @@ declare(strict_types=1);
 
 namespace Tests\Integration\User\Application\Command;
 
-use App\Models\Flashcard;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Shared\Enum\ReportableType;
-use Shared\Enum\TicketType;
 use Tests\TestCase;
-use User\Application\Command\CreateTicket;
-use User\Application\Command\CreateTicketHandler;
-use User\Infrastructure\Entities\Ticket;
+use App\Models\Flashcard;
+use Shared\Enum\ReportType;
+use Shared\Enum\ReportableType;
+use User\Infrastructure\Entities\Report;
+use User\Application\Command\CreateReport;
+use User\Application\Command\CreateReportHandler;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 
-class CreateTicketHandlerTest extends TestCase
+class CreateReportHandlerTest extends TestCase
 {
-    use DatabaseTransactions;
+    //use DatabaseTransactions;
 
-    private CreateTicketHandler $handler;
+    private CreateReportHandler $handler;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->handler = $this->app->make(CreateTicketHandler::class);
+        $this->handler = $this->app->make(CreateReportHandler::class);
     }
 
     public function test__handle_WhenDeleteFlashcardReport_success(): void
     {
         // GIVEN
+        \App\Models\Report::factory()->create();
         $user = $this->createUser();
-        $command = new CreateTicket(
+        $command = new CreateReport(
             null,
             'email@email.com',
-            TicketType::DELETE_ACCOUNT,
+            ReportType::DELETE_ACCOUNT,
             'description'
         );
 
@@ -40,11 +41,11 @@ class CreateTicketHandlerTest extends TestCase
         $this->handler->handle($command);
 
         // THEN
-        $ticket = Ticket::query()
+        $ticket = Report::query()
             ->where([
                 'email' => 'email@email.com',
                 'user_id' => null,
-                'type' => TicketType::DELETE_ACCOUNT,
+                'type' => ReportType::DELETE_ACCOUNT,
             ])->first();
 
         $this->assertNotNull($ticket);
@@ -57,10 +58,10 @@ class CreateTicketHandlerTest extends TestCase
         $user = $this->createUser();
         $flashcard = Flashcard::factory()->create();
 
-        $command = new CreateTicket(
+        $command = new CreateReport(
             $user->getId(),
             'email@email.com',
-            TicketType::INAPPROPRIATE_CONTENT,
+            ReportType::INAPPROPRIATE_CONTENT,
             'description',
             (string) $flashcard->id,
             ReportableType::FLASHCARD
@@ -70,11 +71,11 @@ class CreateTicketHandlerTest extends TestCase
         $this->handler->handle($command);
 
         // THEN
-        $ticket = Ticket::query()
+        $ticket = Report::query()
             ->where([
                 'email' => 'email@email.com',
                 'user_id' => $user->id,
-                'type' => TicketType::INAPPROPRIATE_CONTENT,
+                'type' => ReportType::INAPPROPRIATE_CONTENT,
             ])->first();
 
         $this->assertNotNull($ticket);

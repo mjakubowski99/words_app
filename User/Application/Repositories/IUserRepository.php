@@ -19,5 +19,6 @@ interface IUserRepository
     public function existsByProvider(string $provider_id, UserProvider $provider): bool;
 
     public function create(array $attributes): IUser;
+
     public function delete(UserId $user_id): void;
 }

@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure;
 
-use Flashcard\Application\Facades\FlashcardFacade;
+use Shared\Flashcard\IFlashcardFacade;
 use Illuminate\Support\ServiceProvider;
 use Shared\Flashcard\IFlashcardAdminFacade;
+use Flashcard\Application\Facades\FlashcardFacade;
 use Flashcard\Application\Services\IFlashcardSelector;
 use Flashcard\Application\Facades\FlashcardAdminFacade;
 use Flashcard\Application\Repository\ISessionRepository;
@@ -34,7 +35,6 @@ use Flashcard\Infrastructure\Repositories\Postgres\FlashcardDeckReadRepository;
 use Flashcard\Infrastructure\Repositories\Postgres\SessionFlashcardReadRepository;
 use Flashcard\Infrastructure\Repositories\Postgres\NextSessionFlashcardsRepository;
 use Flashcard\Infrastructure\Repositories\Postgres\RateableSessionFlashcardsRepository;
-use Shared\Flashcard\IFlashcardFacade;
 
 class FlashcardServiceProvider extends ServiceProvider
 {

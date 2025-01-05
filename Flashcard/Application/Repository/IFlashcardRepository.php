@@ -9,7 +9,6 @@ use Flashcard\Domain\Models\Flashcard;
 use Flashcard\Domain\ValueObjects\SessionId;
 use Flashcard\Domain\ValueObjects\FlashcardId;
 use Flashcard\Domain\ValueObjects\FlashcardDeckId;
-use Shared\Utils\ValueObjects\UserId;
 
 interface IFlashcardRepository
 {
@@ -21,6 +20,7 @@ interface IFlashcardRepository
     public function update(Flashcard $flashcard): void;
 
     public function delete(FlashcardId $id): void;
+
     public function deleteAllForUser(UserId $user_id): void;
 
     /** @return Flashcard[] */

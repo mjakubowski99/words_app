@@ -10,7 +10,6 @@ use Flashcard\Infrastructure\Http\Controllers\v1\FlashcardDeckController;
 
 Route::post('/user/oauth/login', [UserController::class, 'loginWithProvider'])
     ->name('user.oauth.login');
-Route::post('/tickets', [UserController::class, 'storeTicket'])->name('tickets.store');
 
 Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('/user/me', [UserController::class, 'me'])->name('user.me');

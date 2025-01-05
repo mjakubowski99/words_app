@@ -52,12 +52,12 @@ class FlashcardRepository implements IFlashcardRepository
         $this->mapper->delete($id);
     }
 
-    /** @return Flashcard[] */
     public function deleteAllForUser(UserId $user_id): void
     {
         $this->mapper->deleteAllForUser($user_id);
     }
 
+    /** @return Flashcard[] */
     public function getByDeck(FlashcardDeckId $deck_id): array
     {
         return $this->mapper->getByCategory($deck_id);

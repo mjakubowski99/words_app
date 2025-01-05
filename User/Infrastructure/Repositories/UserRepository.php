@@ -6,9 +6,9 @@ namespace User\Infrastructure\Repositories;
 
 use Shared\Enum\UserProvider;
 use Shared\Utils\ValueObjects\UserId;
-use User\Application\Repositories\IUserRepository;
 use User\Domain\Models\Entities\IUser;
 use User\Infrastructure\Entities\User;
+use User\Application\Repositories\IUserRepository;
 
 readonly class UserRepository implements IUserRepository
 {

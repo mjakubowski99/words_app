@@ -1,21 +1,23 @@
 <?php
 
+declare(strict_types=1);
+
 namespace User\Infrastructure\Repositories;
 
 use Shared\Utils\ValueObjects\UserId;
-use User\Application\Repositories\ITicketRepository;
-use User\Domain\Contracts\INewTicket;
-use User\Infrastructure\Entities\Ticket;
+use User\Domain\Contracts\ICreateReport;
+use User\Infrastructure\Entities\Report;
+use User\Application\Repositories\IReportRepository;
 
-class TicketRepository implements ITicketRepository
+class ReportRepository implements IReportRepository
 {
     public function __construct(
-        private Ticket $ticket
+        private Report $report
     ) {}
 
-    public function store(INewTicket $ticket): void
+    public function store(ICreateReport $ticket): void
     {
-        $this->ticket->newQuery()->create([
+        $this->report->newQuery()->create([
             'email' => $ticket->getEmail(),
             'user_id' => $ticket->getUserId()?->getValue(),
             'type' => $ticket->getTicketType()->value,
@@ -27,7 +29,7 @@ class TicketRepository implements ITicketRepository
 
     public function detachFromUser(UserId $user_id): void
     {
-        $this->ticket->newQuery()
+        $this->report->newQuery()
             ->where('user_id', $user_id->getValue())
             ->update(['user_id' => null]);
     }
