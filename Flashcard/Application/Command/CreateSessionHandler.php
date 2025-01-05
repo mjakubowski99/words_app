@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\Command;
 
-use Flashcard\Application\Services\IFlashcardSelector;
 use Shared\Enum\SessionStatus;
 use Flashcard\Domain\Models\Session;
 use Flashcard\Application\DTO\CreateSessionResultDTO;
+use Flashcard\Application\Services\IFlashcardSelector;
 use Flashcard\Application\Repository\ISessionRepository;
 use Flashcard\Application\Repository\IFlashcardDeckRepository;
 
