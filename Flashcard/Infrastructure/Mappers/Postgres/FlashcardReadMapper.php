@@ -91,6 +91,7 @@ class FlashcardReadMapper
             })
             ->when($deck_id !== null, fn ($q) => $q->where('flashcards.flashcard_deck_id', $deck_id->getValue()))
             ->when($user_filter !== null, fn ($q) => $q->where('flashcards.user_id', $user_filter->getValue()))
+            ->orderBy('flashcards.front_word')
             ->take($per_page)
             ->skip(($page - 1) * $per_page)
             ->selectRaw("
