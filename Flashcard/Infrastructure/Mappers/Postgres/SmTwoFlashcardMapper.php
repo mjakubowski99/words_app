@@ -75,7 +75,7 @@ class SmTwoFlashcardMapper
                     'flashcard_id' => $flashcard->getFlashcardId(),
                     'user_id' => $flashcard->getUserId(),
                     'repetition_ratio' => $flashcard->getRepetitionRatio(),
-                    'repetition_interval' => $flashcard->getRepetitionInterval() > 10000 ? 10000 : $flashcard->getRepetitionInterval(),
+                    'repetition_interval' => $flashcard->getRepetitionInterval() >= 10000 ? 9999 : $flashcard->getRepetitionInterval(),
                     'repetition_count' => $flashcard->getRepetitionCount(),
                     'min_rating' => $flashcard->getMinRating(),
                     'repetitions_in_session' => $flashcard->getRepetitionsInSession(),
@@ -89,7 +89,7 @@ class SmTwoFlashcardMapper
                         'user_id' => $flashcard->getUserId(),
                     ])->update([
                         'repetition_ratio' => $flashcard->getRepetitionRatio(),
-                        'repetition_interval' => $flashcard->getRepetitionInterval() > 10000 ? 10000 : $flashcard->getRepetitionInterval(),
+                        'repetition_interval' => $flashcard->getRepetitionInterval() > 10000 ? 9999 : $flashcard->getRepetitionInterval(),
                         'repetition_count' => $flashcard->getRepetitionCount(),
                         'min_rating' => $flashcard->getMinRating(),
                         'repetitions_in_session' => $flashcard->getRepetitionsInSession(),
