@@ -80,7 +80,6 @@ class FlashcardReadMapper
         $rating = Rating::maxRating();
 
         $results = $this->db::table('flashcards')
-            ->latest()
             ->when(!is_null($search), function ($query) use ($search) {
                 return $query->where(function ($q) use ($search) {
                     $search = mb_strtolower($search);
