@@ -34,8 +34,8 @@ class SmTwoFlashcardSelector implements IFlashcardSelector
 
     private function selectGeneral(NextSessionFlashcards $next_session_flashcards, int $limit): array
     {
-        $latest_limit = max(3, (int) ($next_session_flashcards->getMaxFlashcardsCount() * 0.1));
-        $latest_limit = min(6, $latest_limit);
+        $latest_limit = max(2, (int) ($next_session_flashcards->getMaxFlashcardsCount() * 0.1));
+        $latest_limit = min(5, $latest_limit);
 
         $prioritize_not_hard_flashcards = $next_session_flashcards->getCurrentSessionFlashcardsCount() % 5 === 0;
 
@@ -70,8 +70,8 @@ class SmTwoFlashcardSelector implements IFlashcardSelector
 
     private function selectNormal(NextSessionFlashcards $next_session_flashcards, int $limit): array
     {
-        $latest_limit = max(3, (int) ($next_session_flashcards->getMaxFlashcardsCount() * 0.1));
-        $latest_limit = min(6, $latest_limit);
+        $latest_limit = max(2, (int) ($next_session_flashcards->getMaxFlashcardsCount() * 0.1));
+        $latest_limit = min(5, $latest_limit);
 
         $latest_ids = $this->flashcard_repository->getLatestSessionFlashcardIds($next_session_flashcards->getSessionId(), $latest_limit);
         $deck = $next_session_flashcards->getDeck();
@@ -96,7 +96,7 @@ class SmTwoFlashcardSelector implements IFlashcardSelector
             FlashcardSortCriteria::OLDEST_UPDATE_FLASHCARDS_FIRST,
         ];
 
-        $results = $this->repository->getNextFlashcardsByDeck($next_session_flashcards->getUserId(), $deck->getId(), $limit, $latest_ids, $criteria, $next_session_flashcards->getCurrentSessionFlashcardsCount());
+        $results = $this->repository->getNextFlashcardsByDeck($next_session_flashcards->getUserId(), $deck->getId(), $limit, $latest_ids, $criteria, $next_session_flashcards->getMaxFlashcardsCount());
 
         if (count($results) < $limit) {
             return $this->repository->getNextFlashcardsByDeck($next_session_flashcards->getUserId(), $deck->getId(), $limit, [], $criteria, $next_session_flashcards->getMaxFlashcardsCount());
