@@ -80,7 +80,6 @@ class FlashcardReadMapper
         $rating = Rating::maxRating();
 
         $results = $this->db::table('flashcards')
-            ->latest()
             ->when(!is_null($search), function ($query) use ($search) {
                 return $query->where(function ($q) use ($search) {
                     $search = mb_strtolower($search);
@@ -91,6 +90,7 @@ class FlashcardReadMapper
             })
             ->when($deck_id !== null, fn ($q) => $q->where('flashcards.flashcard_deck_id', $deck_id->getValue()))
             ->when($user_filter !== null, fn ($q) => $q->where('flashcards.user_id', $user_filter->getValue()))
+            ->orderBy('flashcards.front_word')
             ->take($per_page)
             ->skip(($page - 1) * $per_page)
             ->selectRaw("

@@ -24,9 +24,11 @@ class FlashcardFromSmTwoMapper
         private readonly DB $db
     ) {}
 
-    public function getNextFlashcards(UserId $user_id, int $limit, array $exclude_flashcard_ids, array $sort_criteria): array
+    public function getNextFlashcards(UserId $user_id, int $limit, array $exclude_flashcard_ids, array $sort_criteria, int $cards_per_session): array
     {
         $sort_sql = array_map(fn (PostgresSortCriteria $criteria) => $criteria->apply(), $sort_criteria);
+
+        $flashcard_limit = max(3, (int) (0.1 * $cards_per_session));
 
         return $this->db::table('flashcards')
             ->whereNotIn('flashcards.id', array_map(fn (FlashcardId $id) => $id->getValue(), $exclude_flashcard_ids))
@@ -37,7 +39,9 @@ class FlashcardFromSmTwoMapper
             ->leftJoin('flashcard_decks', 'flashcard_decks.id', '=', 'flashcards.flashcard_deck_id')
             ->leftJoin('sm_two_flashcards', 'sm_two_flashcards.flashcard_id', '=', 'flashcards.id')
             ->take($limit)
-            ->orderByRaw(implode(',', $sort_sql))
+            ->orderByRaw("
+                CASE WHEN COALESCE(sm_two_flashcards.repetitions_in_session, 0) < {$flashcard_limit} then 1 else 0 end DESC,
+            " . implode(',', $sort_sql))
             ->select(
                 'flashcards.*',
                 'flashcard_decks.user_id as deck_user_id',
@@ -52,9 +56,11 @@ class FlashcardFromSmTwoMapper
             })->toArray();
     }
 
-    public function getNextFlashcardsByDeck(UserId $user_id, FlashcardDeckId $deck_id, int $limit, array $exclude_flashcard_ids, array $sort_criteria): array
+    public function getNextFlashcardsByDeck(UserId $user_id, FlashcardDeckId $deck_id, int $limit, array $exclude_flashcard_ids, array $sort_criteria, int $cards_per_session): array
     {
         $sort_sql = array_map(fn (PostgresSortCriteria $criteria) => $criteria->apply(), $sort_criteria);
+
+        $flashcard_limit = max(3, (int) (0.1 * $cards_per_session));
 
         return $this->db::table('flashcards')
             ->whereNotIn('flashcards.id', array_map(fn (FlashcardId $id) => $id->getValue(), $exclude_flashcard_ids))
@@ -65,7 +71,9 @@ class FlashcardFromSmTwoMapper
                     ->on('sm_two_flashcards.user_id', '=', DB::raw("'{$user_id}'"));
             })
             ->take($limit)
-            ->orderByRaw(implode(',', $sort_sql))
+            ->orderByRaw("
+                CASE WHEN COALESCE(sm_two_flashcards.repetitions_in_session, 0) < {$flashcard_limit} then 1 else 0 end DESC,
+            " . implode(',', $sort_sql))
             ->select(
                 'flashcards.*',
                 'flashcard_decks.user_id as deck_user_id',

@@ -52,6 +52,35 @@ class SmTwoFlashcardRepositoryTest extends FlashcardTestCase
     /**
      * @test
      */
+    public function resetRepetitionsInSession_success(): void
+    {
+        // GIVEN
+        $user = User::factory()->create();
+        $other_flashcard = SmTwoFlashcard::factory()->create([
+            'repetitions_in_session' => 4,
+        ]);
+        $flashcard = SmTwoFlashcard::factory()->create([
+            'user_id' => $user->getId()->getValue(),
+            'repetitions_in_session' => 3,
+        ]);
+
+        // WHEN
+        $this->repository->resetRepetitionsInSession($user->getId());
+
+        // THEN
+        $this->assertDatabaseHas('sm_two_flashcards', [
+            'flashcard_id' => $flashcard->flashcard_id,
+            'repetitions_in_session' => 0,
+        ]);
+        $this->assertDatabaseHas('sm_two_flashcards', [
+            'flashcard_id' => $other_flashcard->flashcard_id,
+            'repetitions_in_session' => 4,
+        ]);
+    }
+
+    /**
+     * @test
+     */
     public function saveMany_ShouldSave(): void
     {
         // GIVEN
@@ -62,6 +91,7 @@ class SmTwoFlashcardRepositoryTest extends FlashcardTestCase
             'repetition_count' => 2,
             'repetition_ratio' => 3,
             'min_rating' => 2,
+            'repetitions_in_session' => 3,
         ]);
         $domain_model = new SmTwoFlashcards([
             $flashcard->toDomainModel(),
@@ -78,6 +108,7 @@ class SmTwoFlashcardRepositoryTest extends FlashcardTestCase
             'repetition_interval' => $flashcard->repetition_interval,
             'repetition_count' => $flashcard->repetition_count,
             'min_rating' => $flashcard->min_rating,
+            'repetitions_in_session' => $flashcard->repetitions_in_session,
         ]);
     }
 
@@ -124,7 +155,7 @@ class SmTwoFlashcardRepositoryTest extends FlashcardTestCase
             FlashcardSortCriteria::RANDOMIZE_LATEST_FLASHCARDS_ORDER,
             FlashcardSortCriteria::PLANNED_FLASHCARDS_FOR_CURRENT_DATE_FIRST,
             FlashcardSortCriteria::LOWEST_REPETITION_INTERVAL_FIRST,
-        ]);
+        ], 2);
 
         // THEN
         $this->assertCount(3, $results);
