@@ -24,7 +24,7 @@ class UserController extends Controller
         requestBody: new OAT\RequestBody(
             content: new OAT\JsonContent(ref: '#/components/schemas/Requests\User\DeleteUserRequest')
         ),
-        tags: [Tags::USER],
+        tags: [Tags::USER, Tags::V2],
         responses: [
             new OAT\Response(ref: '#/components/responses/no_content', response: 204),
             new OAT\Response(ref: '#/components/responses/bad_request', response: 400),
@@ -60,7 +60,7 @@ class UserController extends Controller
         requestBody: new OAT\RequestBody(
             content: new OAT\JsonContent(ref: '#/components/schemas/Requests\User\StoreReportRequest')
         ),
-        tags: [Tags::USER],
+        tags: [Tags::USER, Tags::V2],
         responses: [
             new OAT\Response(ref: '#/components/responses/no_content', response: 204),
             new OAT\Response(ref: '#/components/responses/bad_request', response: 400),
