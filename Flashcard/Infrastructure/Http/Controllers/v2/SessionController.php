@@ -167,7 +167,7 @@ class SessionController extends Controller
         $next = $get_next_session_flashcards->handle($request->getSessionId(), self::DISPLAY_LIMIT);
 
         if (count($next->getSessionFlashcards()) === 0) {
-            $add_session_flashcards->handle($add_session_flashcards_command);
+            $add_session_flashcards->handle($add_session_flashcards_command, 0);
 
             $next = $get_next_session_flashcards->handle($request->getSessionId(), self::DISPLAY_LIMIT);
         }
