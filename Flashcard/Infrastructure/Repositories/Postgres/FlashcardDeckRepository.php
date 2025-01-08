@@ -53,4 +53,9 @@ class FlashcardDeckRepository implements IFlashcardDeckRepository
     {
         $this->mapper->remove($deck->getId());
     }
+
+    public function deleteAllForUser(UserId $user_id): void
+    {
+        $this->mapper->deleteAllForUser($user_id);
+    }
 }

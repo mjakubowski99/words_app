@@ -101,6 +101,13 @@ class SessionMapper
         return $this->map($result);
     }
 
+    public function deleteAllForUser(UserId $user_id): void
+    {
+        $this->db::table('learning_sessions')
+            ->where('user_id', $user_id)
+            ->delete();
+    }
+
     public function map(object $data): Session
     {
         $deck = $data->deck_id === null ? null : (new Deck(

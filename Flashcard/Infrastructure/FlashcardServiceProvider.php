@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure;
 
+use Shared\Flashcard\IFlashcardFacade;
 use Illuminate\Support\ServiceProvider;
 use Shared\Flashcard\IFlashcardAdminFacade;
+use Flashcard\Application\Facades\FlashcardFacade;
 use Flashcard\Application\Services\IFlashcardSelector;
 use Flashcard\Application\Facades\FlashcardAdminFacade;
 use Flashcard\Application\Repository\ISessionRepository;
@@ -38,6 +40,7 @@ class FlashcardServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
+        $this->app->bind(IFlashcardFacade::class, FlashcardFacade::class);
         $this->app->bind(ISessionRepository::class, SessionRepository::class);
         $this->app->bind(ISessionReadRepository::class, SessionReadRepository::class);
         $this->app->bind(IRateableSessionFlashcardsRepository::class, RateableSessionFlashcardsRepository::class);

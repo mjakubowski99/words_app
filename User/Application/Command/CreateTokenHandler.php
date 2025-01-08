@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace User\Application\Command;
 
 use Shared\Utils\ValueObjects\UserId;
-use User\Domain\Repositories\ITokenRepository;
+use User\Application\Repositories\ITokenRepository;
 
 class CreateTokenHandler
 {

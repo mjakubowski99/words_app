@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace User\Infrastructure\Http\Controllers;
+namespace User\Infrastructure\Http\Controllers\v1;
 
 use App\Http\OpenApi\Tags;
 use OpenApi\Attributes as OAT;

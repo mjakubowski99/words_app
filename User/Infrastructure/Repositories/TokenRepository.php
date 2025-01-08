@@ -6,7 +6,7 @@ namespace User\Infrastructure\Repositories;
 
 use Shared\Utils\ValueObjects\UserId;
 use User\Infrastructure\Entities\User;
-use User\Domain\Repositories\ITokenRepository;
+use User\Application\Repositories\ITokenRepository;
 
 class TokenRepository implements ITokenRepository
 {

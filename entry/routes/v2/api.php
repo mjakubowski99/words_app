@@ -3,11 +3,16 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
+use User\Infrastructure\Http\Controllers\v2\UserController;
 use Flashcard\Infrastructure\Http\Controllers\v2\SessionController;
 use Flashcard\Infrastructure\Http\Controllers\v2\FlashcardController;
 use Flashcard\Infrastructure\Http\Controllers\v2\FlashcardDeckController;
 
+Route::post('/reports', [UserController::class, 'storeReport'])->name('reports.store');
+
 Route::group(['middleware' => 'auth:sanctum'], function () {
+    Route::delete('/user/me', [UserController::class, 'delete'])->name('user.me.delete');
+
     Route::post('/flashcards', [FlashcardController::class, 'store'])->name('v2.flashcards.store');
     Route::put('/flashcards/{flashcard_id}', [FlashcardController::class, 'update'])->name('v2.flashcards.update');
 

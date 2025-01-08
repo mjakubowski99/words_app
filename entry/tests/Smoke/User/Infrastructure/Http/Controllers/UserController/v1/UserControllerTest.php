@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Smoke\User\Infrastructure\Http\Controllers\UserController;
+namespace Tests\Smoke\User\Infrastructure\Http\Controllers\UserController\v1;
 
 use Tests\TestCase;
 use App\Models\User;

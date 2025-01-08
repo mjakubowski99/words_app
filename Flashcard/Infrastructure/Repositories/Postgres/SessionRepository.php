@@ -36,4 +36,9 @@ class SessionRepository implements ISessionRepository
     {
         return $this->session_mapper->find($id);
     }
+
+    public function deleteAllForUser(UserId $user_id): void
+    {
+        $this->session_mapper->deleteAllForUser($user_id);
+    }
 }

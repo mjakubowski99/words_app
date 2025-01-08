@@ -8,7 +8,7 @@ use Shared\Enum\UserProvider;
 use Shared\Utils\ValueObjects\UserId;
 use User\Domain\Models\Entities\IUser;
 use User\Infrastructure\Entities\User;
-use User\Domain\Repositories\IUserRepository;
+use User\Application\Repositories\IUserRepository;
 
 readonly class UserRepository implements IUserRepository
 {
@@ -34,6 +34,14 @@ readonly class UserRepository implements IUserRepository
         return $this->user
             ->newQuery()
             ->create($attributes);
+    }
+
+    public function delete(UserId $user_id): void
+    {
+        $this->user
+            ->newQuery()
+            ->where('id', $user_id->getValue())
+            ->delete();
     }
 
     public function existsByProvider(string $provider_id, UserProvider $provider): bool

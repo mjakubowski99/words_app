@@ -6,7 +6,7 @@ namespace User\Application\Query;
 
 use User\Application\DTO\UserDTO;
 use Shared\Utils\ValueObjects\UserId;
-use User\Domain\Repositories\IUserRepository;
+use User\Application\Repositories\IUserRepository;
 
 class FindUserHandler
 {

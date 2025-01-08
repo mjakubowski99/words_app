@@ -18,4 +18,6 @@ interface ISessionRepository
     public function update(Session $session): void;
 
     public function find(SessionId $id): Session;
+
+    public function deleteAllForUser(UserId $user_id): void;
 }

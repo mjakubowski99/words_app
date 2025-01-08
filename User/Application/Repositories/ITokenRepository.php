@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace User\Domain\Repositories;
+namespace User\Application\Repositories;
 
 use Shared\Utils\ValueObjects\UserId;
 

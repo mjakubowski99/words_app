@@ -21,6 +21,8 @@ interface IFlashcardRepository
 
     public function delete(FlashcardId $id): void;
 
+    public function deleteAllForUser(UserId $user_id): void;
+
     /** @return Flashcard[] */
     public function getRandomFlashcards(UserId $user_id, int $limit, array $exclude_flashcard_ids): array;
 

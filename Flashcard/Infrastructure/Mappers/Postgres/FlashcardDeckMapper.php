@@ -107,6 +107,13 @@ class FlashcardDeckMapper
             ->delete();
     }
 
+    public function deleteAllForUser(UserId $user_id): void
+    {
+        $this->db::table('flashcard_decks')
+            ->where('user_id', $user_id->getValue())
+            ->delete();
+    }
+
     private function map(object $data): Deck
     {
         return (new Deck(

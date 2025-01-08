@@ -138,6 +138,13 @@ class FlashcardMapper
             ->delete();
     }
 
+    public function deleteAllForUser(UserId $user_id): void
+    {
+        $this->db::table('flashcards')
+            ->where('user_id', $user_id)
+            ->delete();
+    }
+
     public function update(Flashcard $flashcard): void
     {
         $now = now();

@@ -6,7 +6,7 @@ namespace User\Application\Query;
 
 use Shared\Enum\UserProvider;
 use User\Application\DTO\UserDTO;
-use User\Domain\Repositories\IUserRepository;
+use User\Application\Repositories\IUserRepository;
 
 class FindExternalUserHandler
 {
