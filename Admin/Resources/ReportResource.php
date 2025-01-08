@@ -43,7 +43,7 @@ class ReportResource extends Resource
                         }
 
                         $link = match ($report->getReportableType()) {
-                            /** @phpstan-ignore-next-line */
+                            /* @phpstan-ignore-next-line */
                             ReportableType::FLASHCARD => FlashcardResource::getUrl('edit', [$report->getReportableId()]),
                             default => '#',
                         };
