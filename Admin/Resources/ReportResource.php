@@ -1,15 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Admin\Resources;
 
-use Admin\Resources\ReportResource\Pages;
+use Filament\Tables;
 use Admin\Models\Report;
 use Filament\Forms\Form;
-use Filament\Resources\Resource;
-use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Support\Str;
 use Shared\Enum\ReportableType;
+use Filament\Resources\Resource;
+use Admin\Resources\ReportResource\Pages;
 
 class ReportResource extends Resource
 {
@@ -41,6 +43,7 @@ class ReportResource extends Resource
                         }
 
                         $link = match ($report->getReportableType()) {
+                            /** @phpstan-ignore-next-line */
                             ReportableType::FLASHCARD => FlashcardResource::getUrl('edit', [$report->getReportableId()]),
                             default => '#',
                         };
@@ -51,7 +54,6 @@ class ReportResource extends Resource
                 Tables\Columns\TextColumn::make('created_at'),
             ])
             ->filters([
-                //
             ])
             ->actions([
             ])
@@ -61,9 +63,7 @@ class ReportResource extends Resource
 
     public static function getRelations(): array
     {
-        return [
-            //
-        ];
+        return [];
     }
 
     public static function getPages(): array

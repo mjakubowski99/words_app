@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Admin\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Shared\Enum\ReportableType;
+use Illuminate\Database\Eloquent\Model;
 
 class Report extends Model
 {

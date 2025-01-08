@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Models\Flashcard;
 use App\Models\User;
-use Shared\Enum\ReportableType;
+use App\Models\Flashcard;
 use Shared\Enum\ReportType;
+use Shared\Enum\ReportableType;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**

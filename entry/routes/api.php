@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
-use User\Infrastructure\Http\Controllers\UserController;
+use User\Infrastructure\Http\Controllers\v1\UserController;
 use Flashcard\Infrastructure\Http\Controllers\v1\SessionController;
 use Flashcard\Infrastructure\Http\Controllers\v1\FlashcardController;
 use Flashcard\Infrastructure\Http\Controllers\v1\FlashcardDeckController;
@@ -13,7 +13,6 @@ Route::post('/user/oauth/login', [UserController::class, 'loginWithProvider'])
 
 Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('/user/me', [UserController::class, 'me'])->name('user.me');
-    Route::delete('/user/me', [UserController::class, 'delete'])->name('user.me.delete');
 
     Route::post('/flashcards', [FlashcardController::class, 'store'])->name('flashcards.store');
     Route::put('/flashcards/{flashcard_id}', [FlashcardController::class, 'update'])->name('flashcards.update');

@@ -15,7 +15,7 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class CreateReportHandlerTest extends TestCase
 {
-    //use DatabaseTransactions;
+    // use DatabaseTransactions;
 
     private CreateReportHandler $handler;
 
