@@ -38,7 +38,8 @@ use User\Application\Command\CreateReport;
         ),
         new OAT\Property(
             property: 'reportable_type',
-            ref: '#/components/schemas/ReportableType'
+            ref: '#/components/schemas/ReportableType',
+            nullable: true
         ),
     ]
 )]
