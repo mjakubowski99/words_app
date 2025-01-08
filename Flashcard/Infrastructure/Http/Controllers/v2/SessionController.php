@@ -8,6 +8,9 @@ use App\Http\OpenApi\Tags;
 use OpenApi\Attributes as OAT;
 use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
+
+use function Illuminate\Support\defer;
+
 use Flashcard\Application\Command\RateFlashcards;
 use Flashcard\Application\Command\AddSessionFlashcards;
 use Flashcard\Application\Command\CreateSessionHandler;
@@ -21,7 +24,7 @@ use Flashcard\Infrastructure\Http\Resources\v2\NextSessionFlashcardsResource;
 
 class SessionController extends Controller
 {
-    public const FLASHCARDS_LIMIT = 1;
+    public const FLASHCARDS_LIMIT = 3;
 
     public function get(
         GetSessionRequest $request,
@@ -33,7 +36,7 @@ class SessionController extends Controller
         );
 
         return new NextSessionFlashcardsResource(
-            $get_next_session_flashcards->handle($request->getSessionId(), self::FLASHCARDS_LIMIT)
+            $get_next_session_flashcards->handle($request->getSessionId(), 1)
         );
     }
 
@@ -89,7 +92,7 @@ class SessionController extends Controller
         );
 
         return new NextSessionFlashcardsResource(
-            $get_next_session_flashcards->handle($result->getId(), self::FLASHCARDS_LIMIT)
+            $get_next_session_flashcards->handle($result->getId(), 1)
         );
     }
 
@@ -151,10 +154,21 @@ class SessionController extends Controller
 
         $rate->handle($rate_command);
 
-        $add_session_flashcards->handle($add_session_flashcards_command);
+        defer(function () use ($add_session_flashcards_command) {
+            /** @var AddSessionFlashcardsHandler $handler */
+            $handler = app()->make(AddSessionFlashcardsHandler::class);
+
+            $handler->handle($add_session_flashcards_command);
+        });
+
+        $next = $get_next_session_flashcards->handle($request->getSessionId(), 1);
+
+        if (count($next->getSessionFlashcards()) === 0) {
+            $add_session_flashcards->handle($add_session_flashcards_command);
+        }
 
         return new NextSessionFlashcardsResource(
-            $get_next_session_flashcards->handle($request->getSessionId(), self::FLASHCARDS_LIMIT)
+            $get_next_session_flashcards->handle($request->getSessionId(), 1)
         );
     }
 }
