@@ -16,9 +16,13 @@ class AddSessionFlashcardsHandler
         private readonly SessionFlashcardsService $service,
     ) {}
 
-    public function handle(AddSessionFlashcards $command): void
+    public function handle(AddSessionFlashcards $command, int $display_limit = 1): void
     {
         $next_session_flashcards = $this->next_session_flashcards_repository->find($command->getSessionId());
+
+        if ($next_session_flashcards->getUnratedCount() >= $display_limit) {
+            return;
+        }
 
         $flashcards = $this->selector->select($next_session_flashcards, $command->getLimit());
 

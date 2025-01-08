@@ -25,6 +25,7 @@ use Flashcard\Infrastructure\Http\Resources\v2\NextSessionFlashcardsResource;
 class SessionController extends Controller
 {
     public const FLASHCARDS_LIMIT = 3;
+    public const DISPLAY_LIMIT = 1;
 
     public function get(
         GetSessionRequest $request,
@@ -36,7 +37,7 @@ class SessionController extends Controller
         );
 
         return new NextSessionFlashcardsResource(
-            $get_next_session_flashcards->handle($request->getSessionId(), 1)
+            $get_next_session_flashcards->handle($request->getSessionId(), self::DISPLAY_LIMIT)
         );
     }
 
@@ -92,7 +93,7 @@ class SessionController extends Controller
         );
 
         return new NextSessionFlashcardsResource(
-            $get_next_session_flashcards->handle($result->getId(), 1)
+            $get_next_session_flashcards->handle($result->getId(), self::DISPLAY_LIMIT)
         );
     }
 
@@ -154,21 +155,23 @@ class SessionController extends Controller
 
         $rate->handle($rate_command);
 
-        defer(function () use ($add_session_flashcards_command) {
+        $display_limit = self::DISPLAY_LIMIT;
+
+        defer(function () use ($add_session_flashcards_command, $display_limit) {
             /** @var AddSessionFlashcardsHandler $handler */
             $handler = app()->make(AddSessionFlashcardsHandler::class);
 
-            $handler->handle($add_session_flashcards_command);
+            $handler->handle($add_session_flashcards_command, $display_limit);
         });
 
-        $next = $get_next_session_flashcards->handle($request->getSessionId(), 1);
+        $next = $get_next_session_flashcards->handle($request->getSessionId(), self::DISPLAY_LIMIT);
 
         if (count($next->getSessionFlashcards()) === 0) {
             $add_session_flashcards->handle($add_session_flashcards_command);
+
+            $next = $get_next_session_flashcards->handle($request->getSessionId(), self::DISPLAY_LIMIT);
         }
 
-        return new NextSessionFlashcardsResource(
-            $get_next_session_flashcards->handle($request->getSessionId(), 1)
-        );
+        return new NextSessionFlashcardsResource($next);
     }
 }
