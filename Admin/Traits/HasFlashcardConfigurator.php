@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Admin\Traits;
 
 use Filament\Tables;
-use Admin\Models\Flashcard;
-use Filament\Forms\Components\TextInput;
-use Illuminate\Database\Eloquent\Model;
-use Shared\Flashcard\IFlashcardAdminFacade;
 use Shared\Models\Emoji;
+use Admin\Models\Flashcard;
+use Illuminate\Database\Eloquent\Model;
+use Filament\Forms\Components\TextInput;
+use Shared\Flashcard\IFlashcardAdminFacade;
 
 trait HasFlashcardConfigurator
 {
