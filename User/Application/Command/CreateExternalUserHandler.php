@@ -20,11 +20,11 @@ class CreateExternalUserHandler
     {
         if (!$this->repository->existsByProvider($command->getProviderId(), $command->getProviderType())) {
             $this->repository->create([
-                'name' => $command->getName(),
+                'name' => $command->getEmail(),
                 'email' => $command->getEmail(),
                 'email_verified_at' => now(),
                 'password' => $this->hash->make($this->str->random(16)),
-                'picture' => $command->getPicture(),
+                'picture' => null,
                 'provider_id' => $command->getProviderId(),
                 'provider_type' => $command->getProviderType(),
             ]);
