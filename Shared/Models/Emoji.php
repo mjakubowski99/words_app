@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Shared\Models;
 
-class Emoji implements \Stringable
+class Emoji implements \Stringable, \JsonSerializable
 {
     public function __construct(
         private string $emoji
@@ -21,6 +21,11 @@ class Emoji implements \Stringable
     }
 
     public function __toString(): string
+    {
+        return $this->emoji;
+    }
+
+    public function jsonSerialize(): mixed
     {
         return $this->emoji;
     }
