@@ -20,4 +20,6 @@ interface ISessionRepository
     public function find(SessionId $id): Session;
 
     public function deleteAllForUser(UserId $user_id): void;
+
+    public function hasAnySession(UserId $user_id): bool;
 }

@@ -108,6 +108,13 @@ class SessionMapper
             ->delete();
     }
 
+    public function hasAnySessions(UserId $user_id): bool
+    {
+        return $this->db::table('learning_sessions')
+            ->where('user_id', $user_id)
+            ->exists();
+    }
+
     public function map(object $data): Session
     {
         $deck = $data->deck_id === null ? null : (new Deck(

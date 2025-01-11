@@ -100,4 +100,40 @@ class SessionRepositoryTest extends FlashcardTestCase
             'status' => $other_user_session->status,
         ]);
     }
+
+    /**
+     * @test
+     */
+    public function hasAnySession_WhenUserHasSession_true(): void
+    {
+        // GIVEN
+        $user = $this->createUser();
+        LearningSession::factory()->create([
+            'user_id' => $user->id,
+        ]);
+
+        // WHEN
+        $result = $this->repository->hasAnySession($user->getId());
+
+        // THEN
+        $this->assertTrue($result);
+    }
+
+    /**
+     * @test
+     */
+    public function hasAnySession_WhenUserDoesNotHaveSession_false(): void
+    {
+        // GIVEN
+        $user = $this->createUser();
+        LearningSession::factory()->create([
+            'user_id' => $this->createUser()->id,
+        ]);
+
+        // WHEN
+        $result = $this->repository->hasAnySession($user->getId());
+
+        // THEN
+        $this->assertFalse($result);
+    }
 }
