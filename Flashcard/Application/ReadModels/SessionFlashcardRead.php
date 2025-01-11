@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\ReadModels;
 
+use Shared\Models\Emoji;
 use Shared\Enum\LanguageLevel;
 use Shared\Utils\ValueObjects\Language;
 use Flashcard\Domain\ValueObjects\SessionFlashcardId;
@@ -19,6 +20,7 @@ class SessionFlashcardRead
         private readonly string $front_context,
         private readonly string $back_context,
         private readonly LanguageLevel $language_level,
+        private readonly ?Emoji $emoji,
     ) {}
 
     public function getId(): SessionFlashcardId
@@ -59,5 +61,10 @@ class SessionFlashcardRead
     public function getLanguageLevel(): LanguageLevel
     {
         return $this->language_level;
+    }
+
+    public function getEmoji(): ?Emoji
+    {
+        return $this->emoji;
     }
 }

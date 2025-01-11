@@ -45,6 +45,7 @@ class FlashcardRepositoryTest extends FlashcardTestCase
         $this->assertSame($expected_flashcard->front_lang, $flashcard->getFrontLang()->getValue());
         $this->assertSame($expected_flashcard->back_context, $flashcard->getBackContext());
         $this->assertSame($expected_flashcard->front_context, $flashcard->getFrontContext());
+        $this->assertSame($expected_flashcard->emoji, $flashcard->getEmoji()->toUnicode());
     }
 
     /**

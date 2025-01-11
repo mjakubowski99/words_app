@@ -50,5 +50,6 @@ class SessionFlashcardReadRepositoryTest extends TestCase
         $this->assertSame($expected->flashcard->front_context, $session_flashcards[0]->getFrontContext());
         $this->assertSame($expected->flashcard->back_context, $session_flashcards[0]->getBackContext());
         $this->assertSame($expected->flashcard->language_level, $session_flashcards[0]->getLanguageLevel()->value);
+        $this->assertSame($expected->flashcard->emoji, $session_flashcards[0]->getEmoji()->toUnicode());
     }
 }

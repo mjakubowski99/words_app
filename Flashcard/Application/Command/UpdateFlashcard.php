@@ -23,6 +23,7 @@ class UpdateFlashcard extends CreateFlashcard
         string $back_word,
         string $back_context,
         LanguageLevel $level,
+        ?string $emoji,
     ) {
         parent::__construct(
             $owner,
@@ -33,7 +34,8 @@ class UpdateFlashcard extends CreateFlashcard
             $back_lang,
             $back_word,
             $back_context,
-            $level
+            $level,
+            $emoji,
         );
     }
 

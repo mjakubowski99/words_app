@@ -7,7 +7,9 @@ namespace Admin\Traits;
 use Filament\Tables;
 use Admin\Models\Flashcard;
 use Filament\Forms\Components\TextInput;
+use Illuminate\Database\Eloquent\Model;
 use Shared\Flashcard\IFlashcardAdminFacade;
+use Shared\Models\Emoji;
 
 trait HasFlashcardConfigurator
 {
@@ -15,6 +17,9 @@ trait HasFlashcardConfigurator
     {
         return [
             Tables\Columns\TextColumn::make('id')->sortable(),
+            Tables\Columns\TextColumn::make('emoji')->formatStateUsing(function (Model $model) {
+                return $model->emoji ? (string) Emoji::fromUnicode($model->emoji) : null;
+            }),
             Tables\Columns\TextColumn::make('front_context')->sortable(),
             Tables\Columns\TextColumn::make('front_word')->sortable(),
             Tables\Columns\TextColumn::make('back_context')->sortable(),
@@ -47,7 +52,7 @@ trait HasFlashcardConfigurator
                     $data['front_word'],
                     $data['front_context'],
                     $data['back_word'],
-                    $data['back_context']
+                    $data['back_context'],
                 );
 
                 return $flashcard;

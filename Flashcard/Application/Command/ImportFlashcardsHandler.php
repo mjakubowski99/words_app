@@ -80,7 +80,8 @@ class ImportFlashcardsHandler
             $row['back_context'],
             $owner,
             $deck,
-            $deck->getDefaultLanguageLevel()
+            $deck->getDefaultLanguageLevel(),
+            array_key_exists('emoji', $row) ? $row['emoji'] : null,
         );
     }
 }
