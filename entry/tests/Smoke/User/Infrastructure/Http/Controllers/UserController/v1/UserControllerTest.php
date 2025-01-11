@@ -45,6 +45,7 @@ class UserControllerTest extends TestCase
                     'id',
                     'name',
                     'email',
+                    'has_any_session',
                 ],
             ],
         ]);
@@ -84,6 +85,7 @@ class UserControllerTest extends TestCase
                     'id',
                     'name',
                     'email',
+                    'has_any_session',
                 ],
             ],
         ]);
@@ -121,6 +123,7 @@ class UserControllerTest extends TestCase
                     'id',
                     'name',
                     'email',
+                    'has_any_session',
                 ],
             ],
         ]);
@@ -156,6 +159,7 @@ class UserControllerTest extends TestCase
                     'id',
                     'name',
                     'email',
+                    'has_any_session',
                 ],
             ],
         ]);
@@ -181,6 +185,7 @@ class UserControllerTest extends TestCase
                 'id',
                 'name',
                 'email',
+                'has_any_session',
             ],
         ]);
     }

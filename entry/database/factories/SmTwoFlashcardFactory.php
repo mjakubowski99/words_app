@@ -21,8 +21,8 @@ class SmTwoFlashcardFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id' => User::factory()->create()->id,
-            'flashcard_id' => Flashcard::factory()->create()->id,
+            'user_id' => fn () => User::factory()->create(),
+            'flashcard_id' => fn () => Flashcard::factory()->create(),
             'repetition_count' => random_int(0, 10),
             'repetition_interval' => (float) (random_int(5, 100) / random_int(4, 60)),
             'repetition_ratio' => (float) (random_int(5, 100) / random_int(4, 60)),

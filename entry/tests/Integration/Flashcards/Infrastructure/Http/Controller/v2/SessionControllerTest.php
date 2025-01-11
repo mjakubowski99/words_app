@@ -116,12 +116,13 @@ class SessionControllerTest extends TestCase
     public function rate_WhenAdminFlashcardSuccess(): void
     {
         // GIVEN
+        Flashcard::query()->forceDelete();
         $expected_flashcard_front_word = 'adssdaasd';
         $user = User::factory()->create();
         $session = LearningSession::factory()->create([
             'user_id' => $user->id,
             'flashcard_deck_id' => null,
-            'cards_per_session' => 2,
+            'cards_per_session' => 20,
         ]);
         $flashcard = LearningSessionFlashcard::factory()->create([
             'learning_session_id' => $session->id,
@@ -134,6 +135,7 @@ class SessionControllerTest extends TestCase
                 'admin_id' => Admin::factory()->create()->id,
                 'front_word' => $expected_flashcard_front_word,
             ]),
+            'repetitions_in_session' => 0,
         ]);
 
         // WHEN

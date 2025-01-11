@@ -8,6 +8,7 @@ use App\Http\OpenApi\Tags;
 use OpenApi\Attributes as OAT;
 use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
+use Shared\Flashcard\IFlashcardFacade;
 use User\Application\Query\GetOAuthUser;
 use User\Application\Command\CreateExternalUser;
 use User\Application\Command\CreateTokenHandler;
@@ -70,6 +71,7 @@ class UserController extends Controller
         CreateExternalUserHandler $create,
         FindExternalUserHandler $find,
         CreateTokenHandler $create_token,
+        IFlashcardFacade $flashcard_facade,
     ): JsonResponse {
         $oauth_user = $get_oauth_user->get(
             $request->getUserProvider(),
@@ -92,7 +94,10 @@ class UserController extends Controller
         return new JsonResponse([
             'data' => [
                 'token' => $create_token->handle($user->getId()),
-                'user' => new UserResource($user),
+                'user' => new UserResource([
+                    'user' => $user,
+                    'has_any_session' => $flashcard_facade->hasAnySession($user->getId()),
+                ]),
             ],
         ]);
     }
@@ -129,8 +134,11 @@ class UserController extends Controller
             ),
         ],
     )]
-    public function me(GetUserRequest $request): UserResource
+    public function me(GetUserRequest $request, IFlashcardFacade $flashcard_facade): UserResource
     {
-        return new UserResource($request->current());
+        return new UserResource([
+            'user' => $request->current(),
+            'has_any_session' => $flashcard_facade->hasAnySession($request->currentId()),
+        ]);
     }
 }

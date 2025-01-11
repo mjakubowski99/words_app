@@ -24,19 +24,27 @@ use Illuminate\Http\Resources\Json\JsonResource;
             property: 'name',
             type: 'string'
         ),
+        new OAT\Property(
+            property: 'has_any_session',
+            type: 'boolean'
+        ),
     ]
 )]
-/**
- * @property IUser $resource
- */
 class UserResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
+        /** @var IUser $user */
+        $user = $this->resource['user'];
+
+        /** @var bool $has_any_session */
+        $has_any_session = $this->resource['has_any_session'];
+
         return [
-            'id' => $this->resource->getId()->getValue(),
-            'name' => $this->resource->getName(),
-            'email' => $this->resource->getEmail(),
+            'id' => $user->getId()->getValue(),
+            'name' => $user->getName(),
+            'email' => $user->getEmail(),
+            'has_any_session' => $has_any_session,
         ];
     }
 }
