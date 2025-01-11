@@ -42,7 +42,7 @@ class SessionRepository implements ISessionRepository
         $this->session_mapper->deleteAllForUser($user_id);
     }
 
-    public function hasAnySession($user_id): bool
+    public function hasAnySession(UserId $user_id): bool
     {
         return $this->session_mapper->hasAnySessions($user_id);
     }

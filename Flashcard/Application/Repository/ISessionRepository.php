@@ -21,5 +21,5 @@ interface ISessionRepository
 
     public function deleteAllForUser(UserId $user_id): void;
 
-    public function hasAnySession($user_id): bool;
+    public function hasAnySession(UserId $user_id): bool;
 }
