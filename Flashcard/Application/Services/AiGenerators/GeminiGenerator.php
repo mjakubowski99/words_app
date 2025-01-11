@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\Services\AiGenerators;
 
+use Shared\Models\Emoji;
 use Flashcard\Domain\Models\Deck;
 use Flashcard\Domain\Models\Owner;
 use Illuminate\Support\Facades\Log;
@@ -52,6 +53,7 @@ class GeminiGenerator implements IFlashcardGenerator
                 $owner,
                 $deck,
                 $deck->getDefaultLanguageLevel(),
+                array_key_exists('emoji', $row) ? new Emoji($row['emoji']) : null,
             );
         }
 

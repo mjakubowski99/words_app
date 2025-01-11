@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\Command;
 
+use Shared\Models\Emoji;
 use Flashcard\Domain\Models\Flashcard;
 use Shared\Exceptions\ForbiddenException;
 use Flashcard\Domain\ValueObjects\FlashcardId;
@@ -35,7 +36,8 @@ class CreateFlashcardHandler
             $command->getBackContext(),
             $command->getOwner(),
             $deck,
-            $command->getLanguageLevel()
+            $command->getLanguageLevel(),
+            $command->getEmoji() ? new Emoji($command->getEmoji()) : null,
         );
 
         $this->repository->createMany([$flashcard]);

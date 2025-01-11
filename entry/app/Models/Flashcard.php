@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Shared\Models\Emoji;
 use Illuminate\Support\Carbon;
 use Shared\Enum\LanguageLevel;
 use Illuminate\Database\Eloquent\Model;
@@ -46,6 +47,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @method   static Builder<static>|Flashcard whereLanguageLevel($value)
  * @method   static Builder<static>|Flashcard whereUpdatedAt($value)
  * @method   static Builder<static>|Flashcard whereUserId($value)
+ * @property        null|string               $admin_id
+ * @property        null|string               $emoji
+ * @method   static Builder<static>|Flashcard whereAdminId($value)
+ * @method   static Builder<static>|Flashcard whereEmoji($value)
  * @mixin \Eloquent
  */
 class Flashcard extends Model
@@ -80,6 +85,7 @@ class Flashcard extends Model
             $this->user->toOwner(),
             $this->deck->toDomainModel(),
             LanguageLevel::from($this->deck->default_language_level),
+            $this->emoji ? Emoji::fromUnicode($this->emoji) : null,
         );
     }
 }

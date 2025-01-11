@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Mappers\Postgres;
 
+use Shared\Models\Emoji;
 use Shared\Enum\LanguageLevel;
 use Illuminate\Support\Facades\DB;
 use Flashcard\Domain\Models\Rating;
@@ -123,7 +124,8 @@ class FlashcardReadMapper
                     $data->back_context,
                     new GeneralRating($data->last_rating),
                     LanguageLevel::from($data->language_level),
-                    (float) $data->rating_ratio * 100
+                    (float) $data->rating_ratio * 100,
+                    $data->emoji ? Emoji::fromUnicode($data->emoji) : null,
                 );
             })->toArray();
 

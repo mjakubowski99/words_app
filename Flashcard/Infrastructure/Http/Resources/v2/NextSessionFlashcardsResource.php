@@ -93,6 +93,13 @@ use Flashcard\Application\ReadModels\SessionFlashcardsRead;
                                 property: 'language_level',
                                 ref: '#/components/schemas/LanguageLevel'
                             ),
+                            new OAT\Property(
+                                property: 'emoji',
+                                description: 'Flashcard context emoji',
+                                type: 'string',
+                                example: '❤️',
+                                nullable: true
+                            ),
                         ],
                         type: 'object'
                     )
@@ -125,6 +132,7 @@ class NextSessionFlashcardsResource extends JsonResource
                         'front_context' => $flashcard->getFrontContext(),
                         'back_context' => $flashcard->getBackContext(),
                         'language_level' => $flashcard->getLanguageLevel()->value,
+                        'emoji' => $flashcard->getEmoji(),
                     ];
                 }, $this->resource->getSessionFlashcards()),
             ],

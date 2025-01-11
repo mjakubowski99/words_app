@@ -92,6 +92,7 @@ class FlashcardControllerTest extends TestCase
                 'back_word' => 'Translation',
                 'back_context' => 'Context translation',
                 'language_level' => LanguageLevel::C2,
+                'emoji' => '😀',
             ]);
 
         // THEN
@@ -107,6 +108,7 @@ class FlashcardControllerTest extends TestCase
             'front_lang' => Language::pl()->getValue(),
             'back_lang' => Language::en()->getValue(),
             'language_level' => LanguageLevel::C2,
+            'emoji' => json_encode('😀'),
         ]);
     }
 

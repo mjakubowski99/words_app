@@ -17,13 +17,15 @@ class FlashcardPrompt
         Jesteś algorytmem ai generującym słowa do nauki angielskiego.
         Wygeneruj 10 słów.
         Słowa muszą bezpośrednio nawiązywać do tematu narzuconego przez użytkownika. Przedstaw słowa po polsku jak i po angielsku.
+        Dodaj takze emoji kontekstowe do slowka.
         Zapisz je w formie prostego kodu.
         Wzór:
         [{
         "word": "kasjer",
         "trans": "cashier",
         "sentence":"Kasjer przywitał mnie z uśmiechem.",
-        "sentence_trans":"Cashier greeted me with a smile"
+        "sentence_trans":"Cashier greeted me with a smile",
+        "emoji":"😀"
         },...]
         Wygeneruj odpowiedź w formacie JSON zawierającą 10 rekordów.
         Ton odpowiedzi: Jasne i zrozumiałe zdania, przydatne do praktycznej komunikacji w danej sytuacji.

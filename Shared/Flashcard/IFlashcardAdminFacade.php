@@ -22,6 +22,6 @@ interface IFlashcardAdminFacade
         string $front_word,
         string $front_context,
         string $back_word,
-        string $back_context
+        string $back_context,
     ): void;
 }

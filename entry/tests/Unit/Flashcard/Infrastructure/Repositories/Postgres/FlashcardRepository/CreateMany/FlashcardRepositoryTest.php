@@ -6,6 +6,7 @@ namespace Tests\Unit\Flashcard\Infrastructure\Repositories\Postgres\FlashcardRep
 
 use App\Models\User;
 use App\Models\Admin;
+use Shared\Models\Emoji;
 use App\Models\FlashcardDeck;
 use Shared\Enum\LanguageLevel;
 use Tests\Base\FlashcardTestCase;
@@ -45,7 +46,8 @@ class FlashcardRepositoryTest extends FlashcardTestCase
                 'context_translation',
                 $user->toOwner(),
                 $decks[0]->toDomainModel(),
-                LanguageLevel::A1
+                LanguageLevel::A1,
+                new Emoji('😀')
             ),
             new Flashcard(
                 new FlashcardId(0),
@@ -75,6 +77,7 @@ class FlashcardRepositoryTest extends FlashcardTestCase
             'flashcard_deck_id' => $decks[0]->id,
             'user_id' => $user->id,
             'admin_id' => null,
+            'emoji' => json_encode('😀'),
         ]);
         $this->assertDatabaseHas('flashcards', [
             'front_word' => 'word 1',
@@ -86,6 +89,7 @@ class FlashcardRepositoryTest extends FlashcardTestCase
             'flashcard_deck_id' => $decks[1]->id,
             'user_id' => null,
             'admin_id' => $admin->id,
+            'emoji' => null,
         ]);
     }
 }
