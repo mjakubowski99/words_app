@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\Command;
 
+use Shared\Models\Emoji;
 use Shared\Enum\LanguageLevel;
 use Flashcard\Domain\Models\Deck;
 use Flashcard\Domain\Models\Owner;
@@ -80,7 +81,8 @@ class ImportFlashcardsHandler
             $row['back_context'],
             $owner,
             $deck,
-            $deck->getDefaultLanguageLevel()
+            $deck->getDefaultLanguageLevel(),
+            array_key_exists('emoji', $row) ? new Emoji($row['emoji']) : null,
         );
     }
 }

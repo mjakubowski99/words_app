@@ -110,6 +110,13 @@ use Flashcard\Application\ReadModels\DeckDetailsRead;
                         type: 'float',
                         example: 66.66,
                     ),
+                    new OAT\Property(
+                        property: 'emoji',
+                        description: 'Flashcard context emoji',
+                        type: 'string',
+                        example: '❤️',
+                        nullable: true
+                    ),
                 ],
                 type: 'object'
             ),
@@ -154,6 +161,7 @@ class DeckDetailsResource extends JsonResource
                     'rating' => $flashcard->getGeneralRating()->getValue()->value,
                     'language_level' => $flashcard->getLanguageLevel()->value,
                     'rating_percentage' => $flashcard->getRatingPercentage(),
+                    'emoji' => $flashcard->getEmoji(),
                 ];
             }, $this->resource->getFlashcards()),
             'page' => $this->resource->getPage(),

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Mappers\Postgres;
 
+use Shared\Models\Emoji;
 use Shared\Enum\LanguageLevel;
 use Flashcard\Domain\Models\Deck;
 use Illuminate\Support\Facades\DB;
@@ -107,7 +108,8 @@ class FlashcardFromSmTwoMapper
             $data->back_context,
             $this->buildOwner((string) $data->user_id, (string) $data->admin_id),
             $deck,
-            LanguageLevel::from($data->language_level)
+            LanguageLevel::from($data->language_level),
+            $data->emoji ? Emoji::fromUnicode($data->emoji) : null,
         );
     }
 }

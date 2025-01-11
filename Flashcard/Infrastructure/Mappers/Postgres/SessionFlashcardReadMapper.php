@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Mappers\Postgres;
 
+use Shared\Models\Emoji;
 use Shared\Enum\LanguageLevel;
 use Shared\Enum\SessionStatus;
 use Illuminate\Support\Facades\DB;
@@ -43,7 +44,8 @@ class SessionFlashcardReadMapper
                     flashcards.back_lang,
                     flashcards.front_context,
                     flashcards.back_context,
-                    flashcards.language_level
+                    flashcards.language_level,
+                    flashcards.emoji
                 FROM 
                     learning_session_flashcards
                 LEFT JOIN
@@ -72,6 +74,7 @@ class SessionFlashcardReadMapper
                 flashcards_data.front_context,
                 flashcards_data.back_context,
                 flashcards_data.language_level,
+                flashcards_data.emoji,
                 session_data.id AS session_id,
                 session_data.status as status,
                 session_data.cards_per_session,
@@ -117,7 +120,8 @@ class SessionFlashcardReadMapper
             Language::from($data->back_lang),
             $data->front_context,
             $data->back_context,
-            LanguageLevel::from($data->language_level)
+            LanguageLevel::from($data->language_level),
+            $data->emoji ? Emoji::fromUnicode($data->emoji) : null,
         );
     }
 }

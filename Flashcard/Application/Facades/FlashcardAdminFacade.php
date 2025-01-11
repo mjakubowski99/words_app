@@ -33,7 +33,7 @@ class FlashcardAdminFacade implements IFlashcardAdminFacade
         string $front_word,
         string $front_context,
         string $back_word,
-        string $back_context
+        string $back_context,
     ): void {
         $flashcard_id = new FlashcardId($flashcard_id);
 

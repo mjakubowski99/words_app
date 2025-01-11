@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Database\Factories;
 
 use App\Models\User;
+use Shared\Models\Emoji;
 use App\Models\FlashcardDeck;
 use Shared\Enum\LanguageLevel;
 use Shared\Utils\ValueObjects\Language;
@@ -27,6 +28,7 @@ class FlashcardFactory extends Factory
             'front_context' => 'Context',
             'back_context' => 'Context translation',
             'language_level' => LanguageLevel::A1->value,
+            'emoji' => (new Emoji('❤️'))->toUnicode(),
         ];
     }
 }

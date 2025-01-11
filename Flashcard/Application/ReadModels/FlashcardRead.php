@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\ReadModels;
 
+use Shared\Models\Emoji;
 use Shared\Enum\LanguageLevel;
 use Shared\Utils\ValueObjects\Language;
 use Flashcard\Domain\ValueObjects\FlashcardId;
@@ -21,6 +22,7 @@ class FlashcardRead
         private GeneralRating $general_rating,
         private LanguageLevel $language_level,
         private float $rating_percentage,
+        private ?Emoji $emoji,
     ) {}
 
     public function getId(): FlashcardId
@@ -71,5 +73,10 @@ class FlashcardRead
     public function getRatingPercentage(): float
     {
         return $this->rating_percentage;
+    }
+
+    public function getEmoji(): ?Emoji
+    {
+        return $this->emoji;
     }
 }

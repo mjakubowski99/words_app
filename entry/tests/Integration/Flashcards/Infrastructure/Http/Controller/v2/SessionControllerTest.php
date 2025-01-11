@@ -122,19 +122,21 @@ class SessionControllerTest extends TestCase
         $session = LearningSession::factory()->create([
             'user_id' => $user->id,
             'flashcard_deck_id' => null,
-            'cards_per_session' => 20,
+            'cards_per_session' => 10,
         ]);
-        $flashcard = LearningSessionFlashcard::factory()->create([
+        $flashcard = Flashcard::factory()->create([
+            'user_id' => null,
+            'admin_id' => Admin::factory()->create()->id,
+            'front_word' => $expected_flashcard_front_word,
+        ]);
+        $session_flashcard = LearningSessionFlashcard::factory()->create([
             'learning_session_id' => $session->id,
             'rating' => null,
+            'flashcard_id' => $flashcard->id,
         ]);
         $sm_two_flashcard = SmTwoFlashcard::factory()->create([
             'user_id' => $user->id,
-            'flashcard_id' => Flashcard::factory()->create([
-                'user_id' => null,
-                'admin_id' => Admin::factory()->create()->id,
-                'front_word' => $expected_flashcard_front_word,
-            ]),
+            'flashcard_id' => $flashcard->id,
             'repetitions_in_session' => 0,
         ]);
 
@@ -143,7 +145,7 @@ class SessionControllerTest extends TestCase
             ->actingAs($user, 'sanctum')
             ->putJson(route('v2.flashcards.session.rate', ['session_id' => $session->id]), [
                 'ratings' => [
-                    ['id' => $flashcard->id, 'rating' => Rating::GOOD],
+                    ['id' => $session_flashcard->id, 'rating' => Rating::GOOD],
                 ],
             ]);
 

@@ -123,6 +123,7 @@ class FlashcardDeckControllerTest extends FlashcardTestCase
                         'front_context',
                         'back_context',
                         'language_level',
+                        'emoji',
                     ],
                 ],
             ],

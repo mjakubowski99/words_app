@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Flashcard\Domain\Models;
 
+use Shared\Models\Emoji;
 use Shared\Enum\LanguageLevel;
 use Shared\Utils\ValueObjects\Language;
 use Flashcard\Domain\ValueObjects\FlashcardId;
@@ -26,6 +27,7 @@ final class Flashcard
         private ?Owner $owner,
         private ?Deck $deck,
         private LanguageLevel $level,
+        private ?Emoji $emoji = null,
     ) {
         $this->learned_language = Language::from($this->back_lang->getValue());
 
@@ -117,5 +119,10 @@ final class Flashcard
     public function setBackContext(string $back_context): void
     {
         $this->back_context = $back_context;
+    }
+
+    public function getEmoji(): ?Emoji
+    {
+        return $this->emoji;
     }
 }

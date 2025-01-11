@@ -21,6 +21,7 @@ class CreateFlashcard
         private string $back_word,
         private string $back_context,
         private LanguageLevel $language_level,
+        private ?string $emoji,
     ) {}
 
     public function getOwner(): Owner
@@ -66,5 +67,10 @@ class CreateFlashcard
     public function getLanguageLevel(): LanguageLevel
     {
         return $this->language_level;
+    }
+
+    public function getEmoji(): ?string
+    {
+        return $this->emoji;
     }
 }

@@ -49,6 +49,13 @@ use Flashcard\Domain\ValueObjects\FlashcardDeckId;
             property: 'language_level',
             ref: '#/components/schemas/LanguageLevel'
         ),
+        new OAT\Property(
+            property: 'emoji',
+            description: 'Flashcard context emoji',
+            type: 'string',
+            example: '❤️',
+            nullable: true
+        ),
     ]
 )]
 class StoreFlashcardRequest extends Request
@@ -62,6 +69,7 @@ class StoreFlashcardRequest extends Request
             'front_context' => ['required', 'string', 'max:255'],
             'back_context' => ['required', 'string', 'max:255'],
             'language_level' => ['nullable', 'string'],
+            'emoji' => ['nullable'],
         ];
     }
 
@@ -78,7 +86,8 @@ class StoreFlashcardRequest extends Request
             Language::en(),
             $this->input('back_word'),
             $this->input('back_context'),
-            $this->input('language_level') ? LanguageLevel::from($this->input('language_level')) : LanguageLevel::default()
+            $this->input('language_level') ? LanguageLevel::from($this->input('language_level')) : LanguageLevel::default(),
+            $this->input('emoji'),
         );
     }
 }
