@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Flashcard\Infrastructure\Repositories\Postgres\FlashcardRepository\Delete;
 
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\Base\FlashcardTestCase;
 use Flashcard\Infrastructure\Repositories\Postgres\FlashcardRepository;
 
 class FlashcardRepositoryTest extends FlashcardTestCase
 {
+    use DatabaseTransactions;
+
     private FlashcardRepository $repository;
 
     protected function setUp(): void
