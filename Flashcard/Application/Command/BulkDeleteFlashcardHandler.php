@@ -7,7 +7,7 @@ namespace Flashcard\Application\Command;
 use Shared\Utils\ValueObjects\UserId;
 use Flashcard\Application\Repository\IFlashcardRepository;
 
-class BulkFlashcardDeleteHandler
+class BulkDeleteFlashcardHandler
 {
     public function __construct(
         private IFlashcardRepository $repository

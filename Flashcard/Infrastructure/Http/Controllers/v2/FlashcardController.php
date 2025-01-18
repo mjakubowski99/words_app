@@ -12,7 +12,7 @@ use Flashcard\Application\Query\GetUserFlashcards;
 use Flashcard\Application\Query\GetUserRatingStats;
 use Flashcard\Application\Command\CreateFlashcardHandler;
 use Flashcard\Application\Command\UpdateFlashcardHandler;
-use Flashcard\Application\Command\BulkFlashcardDeleteHandler;
+use Flashcard\Application\Command\BulkDeleteFlashcardHandler;
 use Flashcard\Infrastructure\Http\Request\v2\StoreFlashcardRequest;
 use Flashcard\Infrastructure\Http\Resources\v2\RatingStatsResource;
 use Flashcard\Infrastructure\Http\Request\v2\UpdateFlashcardRequest;
@@ -91,7 +91,7 @@ class FlashcardController
             new OAT\Response(ref: '#/components/responses/validation_error', response: 422),
         ],
     )]
-    public function bulkDelete(BulkDeleteFlashcardRequest $request, BulkFlashcardDeleteHandler $handler): JsonResponse
+    public function bulkDelete(BulkDeleteFlashcardRequest $request, BulkDeleteFlashcardHandler $handler): JsonResponse
     {
         $handler->handle($request->currentId(), $request->getFlashcardIds());
 

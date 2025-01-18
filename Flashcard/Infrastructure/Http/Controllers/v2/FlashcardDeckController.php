@@ -14,7 +14,7 @@ use Flashcard\Application\Query\GetUserCategories;
 use Flashcard\Application\Query\GetDeckRatingStats;
 use Flashcard\Application\Command\CreateDeckHandler;
 use Flashcard\Application\Command\UpdateDeckHandler;
-use Flashcard\Application\Command\BulkDeckDeleteHandler;
+use Flashcard\Application\Command\BulkDeleteDeckHandler;
 use Flashcard\Application\Command\GenerateFlashcardsHandler;
 use Flashcard\Application\Command\MergeFlashcardDecksHandler;
 use Flashcard\Infrastructure\Http\Request\v2\BulkDeleteDeckRequest;
@@ -501,7 +501,7 @@ class FlashcardDeckController
             new OAT\Response(ref: '#/components/responses/validation_error', response: 422),
         ],
     )]
-    public function bulkDelete(BulkDeleteDeckRequest $request, BulkDeckDeleteHandler $handler): JsonResponse
+    public function bulkDelete(BulkDeleteDeckRequest $request, BulkDeleteDeckHandler $handler): JsonResponse
     {
         $handler->handle($request->currentId(), $request->getDeckIds());
 
