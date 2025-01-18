@@ -77,8 +77,8 @@ class FlashcardController
     #[OAT\Delete(
         path: '/api/v2/flashcards/bulk-delete',
         operationId: 'v2.flashcards.bulk-delete',
-        description: 'Delete flashcards',
-        summary: 'Delete flashcards',
+        description: 'Bulk delete flashcards',
+        summary: 'Bulk delete flashcards',
         security: [['sanctum' => []]],
         requestBody: new OAT\RequestBody(
             content: new OAT\JsonContent(ref: '#/components/schemas/Requests\Flashcard\v2\BulkDeleteFlashcardRequest')
