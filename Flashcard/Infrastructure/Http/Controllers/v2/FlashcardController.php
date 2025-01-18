@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Flashcard\Infrastructure\Http\Controllers\v2;
 
 use App\Http\OpenApi\Tags;
+use Flashcard\Application\Command\BulkFlashcardDeleteHandler;
+use Flashcard\Infrastructure\Http\Request\v2\BulkDeleteFlashcardRequest;
 use OpenApi\Attributes as OAT;
 use Shared\Http\Request\Request;
 use Illuminate\Http\JsonResponse;
@@ -68,6 +70,30 @@ class FlashcardController
         UpdateFlashcardHandler $update_flashcard_handler
     ): JsonResponse {
         $update_flashcard_handler->handle($request->toCommand());
+
+        return new JsonResponse([], 204);
+    }
+
+    #[OAT\Delete(
+        path: '/api/v2/flashcards/bulk-delete',
+        operationId: 'v2.flashcards.bulk-delete',
+        description: 'Delete flashcards',
+        summary: 'Delete flashcards',
+        security: [['sanctum' => []]],
+        requestBody: new OAT\RequestBody(
+            content: new OAT\JsonContent(ref: '#/components/schemas/Requests\Flashcard\v2\BulkDeleteFlashcardRequest')
+        ),
+        tags: [Tags::V2, Tags::FLASHCARD],
+        responses: [
+            new OAT\Response(ref: '#/components/responses/no_content', response: 204),
+            new OAT\Response(ref: '#/components/responses/bad_request', response: 400),
+            new OAT\Response(ref: '#/components/responses/unauthenticated', response: 401),
+            new OAT\Response(ref: '#/components/responses/validation_error', response: 422),
+        ],
+    )]
+    public function bulkDelete(BulkDeleteFlashcardRequest $request, BulkFlashcardDeleteHandler $handler): JsonResponse
+    {
+        $handler->handle($request->currentId(), $request->getFlashcardIds());
 
         return new JsonResponse([], 204);
     }

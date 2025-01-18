@@ -21,6 +21,11 @@ use Flashcard\Domain\ValueObjects\SessionFlashcardId;
 
 abstract class FlashcardTestCase extends TestCase
 {
+    public function createUserFlashcard(User $user, array $attributes = []): Flashcard
+    {
+        return Flashcard::factory()->byUser($user)->create($attributes);
+    }
+
     public function createFlashcard(array $attributes = []): Flashcard
     {
         return Flashcard::factory()->create($attributes);
@@ -29,6 +34,11 @@ abstract class FlashcardTestCase extends TestCase
     public function createSmTwoFlashcard(array $attributes = []): SmTwoFlashcard
     {
         return SmTwoFlashcard::factory()->create($attributes);
+    }
+
+    public function createUserDeck(User $user, array $attributes = []): FlashcardDeck
+    {
+        return FlashcardDeck::factory()->byUser($user)->create($attributes);
     }
 
     public function createFlashcardDeck(array $attributes = []): FlashcardDeck

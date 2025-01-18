@@ -201,4 +201,47 @@ class FlashcardControllerTest extends TestCase
             ],
         ]);
     }
+
+    public function test__bulkDelete_WhenUserAuthorized_success(): void
+    {
+        // GIVEN
+        $user = User::factory()->create();
+        $flashcard_ids = [
+            Flashcard::factory()->byUser($user)->create()->id,
+            Flashcard::factory()->byUser($user)->create()->id,
+        ];
+
+        // WHEN
+        $response = $this->actingAs($user)
+            ->json('DELETE', route('v2.flashcards.bulk-delete'), [
+                'flashcard_ids' => $flashcard_ids,
+            ]);
+
+        // THEN
+        $response->assertStatus(204);
+        foreach ($flashcard_ids as $flashcard_id) {
+            $this->assertDatabaseMissing('flashcards', [
+                'id' => $flashcard_id,
+            ]);
+        }
+    }
+
+    public function test__bulkDelete_WhenUserNotAuthorized_unauthorized(): void
+    {
+        // GIVEN
+        $user = User::factory()->create();
+        $flashcard_ids = [
+            Flashcard::factory()->byUser($user)->create()->id,
+            Flashcard::factory()->byUser($user)->create()->id,
+        ];
+
+        // WHEN
+        $response = $this
+            ->json('DELETE', route('v2.flashcards.bulk-delete'), [
+                'flashcard_ids' => $flashcard_ids,
+            ]);
+
+        // THEN
+        $response->assertStatus(401);
+    }
 }

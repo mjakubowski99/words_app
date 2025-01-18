@@ -26,4 +26,6 @@ interface IFlashcardDeckRepository
     public function remove(Deck $deck): void;
 
     public function deleteAllForUser(UserId $user_id): void;
+
+    public function bulkDelete(UserId $user_id, array $deck_ids): void;
 }

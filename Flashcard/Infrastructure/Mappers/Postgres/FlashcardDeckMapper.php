@@ -114,6 +114,14 @@ class FlashcardDeckMapper
             ->delete();
     }
 
+    public function bulkDelete(UserId $user_id, array $deck_ids): void
+    {
+        $this->db::table('flashcard_decks')
+            ->where('user_id', $user_id->getValue())
+            ->whereIn('id', $deck_ids)
+            ->delete();
+    }
+
     private function map(object $data): Deck
     {
         return (new Deck(
