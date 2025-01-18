@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace Flashcard\Infrastructure\Http\Controllers\v2;
 
 use App\Http\OpenApi\Tags;
-use Flashcard\Application\Command\BulkFlashcardDeleteHandler;
-use Flashcard\Infrastructure\Http\Request\v2\BulkDeleteFlashcardRequest;
 use OpenApi\Attributes as OAT;
 use Shared\Http\Request\Request;
 use Illuminate\Http\JsonResponse;
@@ -14,11 +12,13 @@ use Flashcard\Application\Query\GetUserFlashcards;
 use Flashcard\Application\Query\GetUserRatingStats;
 use Flashcard\Application\Command\CreateFlashcardHandler;
 use Flashcard\Application\Command\UpdateFlashcardHandler;
+use Flashcard\Application\Command\BulkFlashcardDeleteHandler;
 use Flashcard\Infrastructure\Http\Request\v2\StoreFlashcardRequest;
 use Flashcard\Infrastructure\Http\Resources\v2\RatingStatsResource;
 use Flashcard\Infrastructure\Http\Request\v2\UpdateFlashcardRequest;
 use Flashcard\Infrastructure\Http\Resources\v2\UserFlashcardsResource;
 use Flashcard\Infrastructure\Http\Request\v2\GetFlashcardByUserRequest;
+use Flashcard\Infrastructure\Http\Request\v2\BulkDeleteFlashcardRequest;
 
 class FlashcardController
 {

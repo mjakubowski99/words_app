@@ -5,21 +5,19 @@ declare(strict_types=1);
 namespace Flashcard\Infrastructure\Http\Controllers\v2;
 
 use App\Http\OpenApi\Tags;
-use Flashcard\Application\Command\BulkDeckDeleteHandler;
-use Flashcard\Application\Command\CreateDeckHandler;
-use Flashcard\Application\Command\UpdateDeckHandler;
-use Flashcard\Domain\Models\Owner;
-use Flashcard\Infrastructure\Http\Request\v2\BulkDeleteDeckRequest;
-use Flashcard\Infrastructure\Http\Request\v2\StoreFlashcardDeckRequest;
-use Flashcard\Infrastructure\Http\Request\v2\UpdateFlashcardDeckRequest;
 use OpenApi\Attributes as OAT;
 use Illuminate\Http\JsonResponse;
+use Flashcard\Domain\Models\Owner;
 use Flashcard\Application\Query\GetAdminDecks;
 use Flashcard\Application\Query\GetDeckDetails;
 use Flashcard\Application\Query\GetUserCategories;
 use Flashcard\Application\Query\GetDeckRatingStats;
+use Flashcard\Application\Command\CreateDeckHandler;
+use Flashcard\Application\Command\UpdateDeckHandler;
+use Flashcard\Application\Command\BulkDeckDeleteHandler;
 use Flashcard\Application\Command\GenerateFlashcardsHandler;
 use Flashcard\Application\Command\MergeFlashcardDecksHandler;
+use Flashcard\Infrastructure\Http\Request\v2\BulkDeleteDeckRequest;
 use Flashcard\Infrastructure\Http\Request\v2\GetDeckDetailsRequest;
 use Flashcard\Infrastructure\Http\Resources\v2\DeckDetailsResource;
 use Flashcard\Infrastructure\Http\Resources\v2\RatingStatsResource;
@@ -28,7 +26,9 @@ use Flashcard\Infrastructure\Http\Resources\v2\FlashcardDecksResource;
 use Flashcard\Infrastructure\Http\Request\v2\GenerateFlashcardsRequest;
 use Flashcard\Infrastructure\Http\Request\v2\GetDeckRatingStatsRequest;
 use Flashcard\Infrastructure\Http\Request\v2\IndexFlashcardDeckRequest;
+use Flashcard\Infrastructure\Http\Request\v2\StoreFlashcardDeckRequest;
 use Flashcard\Application\Command\RegenerateAdditionalFlashcardsHandler;
+use Flashcard\Infrastructure\Http\Request\v2\UpdateFlashcardDeckRequest;
 use Flashcard\Infrastructure\Http\Request\v2\RegenerateFlashcardsRequest;
 
 class FlashcardDeckController
@@ -421,8 +421,7 @@ class FlashcardDeckController
         StoreFlashcardDeckRequest $request,
         CreateDeckHandler $handler,
         GetDeckDetails $get_deck_details
-    ): DeckDetailsResource
-    {
+    ): DeckDetailsResource {
         $deck_id = $handler->handle($request->toCommand());
 
         $details = $get_deck_details->get(
@@ -467,8 +466,7 @@ class FlashcardDeckController
         UpdateFlashcardDeckRequest $request,
         UpdateDeckHandler $handler,
         GetDeckDetails $get_deck_details
-    ): DeckDetailsResource
-    {
+    ): DeckDetailsResource {
         $handler->handle(
             Owner::fromUser($request->currentId()),
             $request->getDeckId(),

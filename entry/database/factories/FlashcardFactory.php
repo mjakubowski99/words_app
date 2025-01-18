@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Models\Admin;
 use App\Models\User;
+use App\Models\Admin;
 use Shared\Models\Emoji;
 use App\Models\FlashcardDeck;
 use Shared\Enum\LanguageLevel;

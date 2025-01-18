@@ -1,11 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Flashcard\Infrastructure\Http\Request\v2;
 
-use Flashcard\Domain\ValueObjects\FlashcardDeckId;
-use Shared\Http\Request\Request;
-
 use OpenApi\Attributes as OAT;
+use Shared\Http\Request\Request;
+use Flashcard\Domain\ValueObjects\FlashcardDeckId;
 
 #[OAT\Schema(
     schema: 'Requests\Flashcard\v2\UpdateFlashcardDeckRequest',

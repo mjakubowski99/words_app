@@ -140,6 +140,7 @@ class FlashcardMapper
             ->delete();
     }
 
+    /** @param FlashcardId[] $flashcard_ids */
     public function bulkDelete(UserId $user_id, array $flashcard_ids): void
     {
         $this->db::table('flashcards')

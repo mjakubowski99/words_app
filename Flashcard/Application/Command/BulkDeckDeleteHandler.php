@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Flashcard\Application\Command;
 
-use Flashcard\Application\Repository\IFlashcardDeckRepository;
 use Shared\Utils\ValueObjects\UserId;
+use Flashcard\Application\Repository\IFlashcardDeckRepository;
 
 class BulkDeckDeleteHandler
 {

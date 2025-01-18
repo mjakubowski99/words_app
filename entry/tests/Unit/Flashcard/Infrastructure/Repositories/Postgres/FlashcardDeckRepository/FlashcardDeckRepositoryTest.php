@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Flashcard\Infrastructure\Repositories\Postgres\FlashcardDeckRepository;
 
-use App\Models\Flashcard;
-use App\Models\LearningSession;
-use App\Models\LearningSessionFlashcard;
-use App\Models\SmTwoFlashcard;
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\Admin;
+use App\Models\Flashcard;
 use App\Models\FlashcardDeck;
+use App\Models\SmTwoFlashcard;
 use Shared\Enum\LanguageLevel;
+use App\Models\LearningSession;
 use Flashcard\Domain\Models\Deck;
 use Shared\Enum\FlashcardOwnerType;
+use App\Models\LearningSessionFlashcard;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Flashcard\Infrastructure\Repositories\Postgres\FlashcardDeckRepository;
 
@@ -241,7 +241,7 @@ class FlashcardDeckRepositoryTest extends TestCase
         $user = User::factory()->create();
         $decks_to_delete = FlashcardDeck::factory(2)->byUser($user)->create();
         $decks_to_not_delete = FlashcardDeck::factory()->byUser($user)->create();
-        $deck_ids = $decks_to_delete->map(fn(FlashcardDeck $deck) => $deck->getId())->toArray();
+        $deck_ids = $decks_to_delete->map(fn (FlashcardDeck $deck) => $deck->getId())->toArray();
 
         // WHEN
         $this->repository->bulkDelete($user->getId(), $deck_ids);

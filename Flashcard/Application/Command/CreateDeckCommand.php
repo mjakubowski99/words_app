@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Flashcard\Application\Command;
 
-use Flashcard\Domain\Models\Owner;
 use Shared\Enum\LanguageLevel;
+use Flashcard\Domain\Models\Owner;
 
 class CreateDeckCommand
 {

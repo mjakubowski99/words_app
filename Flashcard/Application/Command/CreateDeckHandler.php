@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Flashcard\Application\Command;
 
-use Flashcard\Application\Repository\IFlashcardDeckRepository;
 use Flashcard\Domain\Models\Deck;
 use Flashcard\Domain\ValueObjects\FlashcardDeckId;
+use Flashcard\Application\Repository\IFlashcardDeckRepository;
 
 class CreateDeckHandler
 {

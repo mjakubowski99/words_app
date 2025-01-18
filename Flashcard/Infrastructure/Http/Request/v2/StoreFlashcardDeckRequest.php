@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Flashcard\Infrastructure\Http\Request\v2;
 
-use Flashcard\Application\Command\CreateDeckCommand;
-use Flashcard\Domain\Models\Owner;
+use OpenApi\Attributes as OAT;
 use Shared\Enum\LanguageLevel;
 use Shared\Http\Request\Request;
-use OpenApi\Attributes as OAT;
+use Flashcard\Domain\Models\Owner;
+use Flashcard\Application\Command\CreateDeckCommand;
 
 #[OAT\Schema(
     schema: 'Requests\Flashcard\v2\StoreFlashcardDeckRequest',
@@ -29,7 +31,7 @@ class StoreFlashcardDeckRequest extends Request
     {
         return [
             'name' => ['required', 'string'],
-            'default_language_level' => ['required', 'string']
+            'default_language_level' => ['required', 'string'],
         ];
     }
 

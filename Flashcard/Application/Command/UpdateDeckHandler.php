@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\Command;
 
-use Flashcard\Application\Repository\IFlashcardDeckRepository;
 use Flashcard\Domain\Models\Owner;
-use Flashcard\Domain\ValueObjects\FlashcardDeckId;
 use Shared\Exceptions\ForbiddenException;
+use Flashcard\Domain\ValueObjects\FlashcardDeckId;
+use Flashcard\Application\Repository\IFlashcardDeckRepository;
 
 class UpdateDeckHandler
 {
