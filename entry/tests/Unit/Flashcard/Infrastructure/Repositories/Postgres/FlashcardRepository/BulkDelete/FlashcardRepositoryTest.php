@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Flashcard\Infrastructure\Repositories\Postgres\FlashcardRepository\BulkDelete;
 
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\Base\FlashcardTestCase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Flashcard\Infrastructure\Repositories\Postgres\FlashcardRepository;
 
 class FlashcardRepositoryTest extends FlashcardTestCase
