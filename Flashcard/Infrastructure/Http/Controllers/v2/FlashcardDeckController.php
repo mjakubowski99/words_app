@@ -435,7 +435,7 @@ class FlashcardDeckController
         return new DeckDetailsResource($details);
     }
 
-    #[OAT\Post(
+    #[OAT\Put(
         path: '/api/v2/flashcards/decks/{flashcard_deck_id}',
         operationId: 'v2.flashcards.decks.update',
         description: 'Update flashcard deck',
