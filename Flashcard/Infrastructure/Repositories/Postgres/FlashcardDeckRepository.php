@@ -58,4 +58,10 @@ class FlashcardDeckRepository implements IFlashcardDeckRepository
     {
         $this->mapper->deleteAllForUser($user_id);
     }
+
+    /** @param FlashcardDeckId[] $flashcard_deck_ids */
+    public function bulkDelete(UserId $user_id, array $flashcard_deck_ids): void
+    {
+        $this->mapper->bulkDelete($user_id, $flashcard_deck_ids);
+    }
 }

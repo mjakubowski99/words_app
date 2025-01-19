@@ -7,10 +7,14 @@ namespace Tests\Unit\Flashcard\Infrastructure\Repositories\Postgres\FlashcardDec
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\Admin;
+use App\Models\Flashcard;
 use App\Models\FlashcardDeck;
+use App\Models\SmTwoFlashcard;
 use Shared\Enum\LanguageLevel;
+use App\Models\LearningSession;
 use Flashcard\Domain\Models\Deck;
 use Shared\Enum\FlashcardOwnerType;
+use App\Models\LearningSessionFlashcard;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Flashcard\Infrastructure\Repositories\Postgres\FlashcardDeckRepository;
 
@@ -229,5 +233,87 @@ class FlashcardDeckRepositoryTest extends TestCase
         // THEN
         $this->assertSame($expected_deck->id, $deck->getId()->getValue());
         $this->assertSame($expected_deck->name, $deck->getName());
+    }
+
+    public function test__bulkDelete_ShouldDeleteOnlyDecksWithGivenIds(): void
+    {
+        // GIVEN
+        $user = User::factory()->create();
+        $decks_to_delete = FlashcardDeck::factory(2)->byUser($user)->create();
+        $decks_to_not_delete = FlashcardDeck::factory()->byUser($user)->create();
+        $deck_ids = $decks_to_delete->map(fn (FlashcardDeck $deck) => $deck->getId())->toArray();
+
+        // WHEN
+        $this->repository->bulkDelete($user->getId(), $deck_ids);
+
+        // THEN
+        $this->assertDatabaseHas('flashcard_decks', [
+            'id' => $decks_to_not_delete->id,
+        ]);
+        foreach ($decks_to_delete as $deck) {
+            $this->assertDatabaseMissing('flashcard_decks', [
+                'id' => $deck->id,
+            ]);
+        }
+    }
+
+    public function test__bulkDelete_ShouldDeleteOnlyUserDecks(): void
+    {
+        // GIVEN
+        $user = User::factory()->create();
+        $user_deck = FlashcardDeck::factory()->byUser($user)->create();
+        $other_deck = FlashcardDeck::factory()->create();
+
+        // WHEN
+        $this->repository->bulkDelete($user->getId(), [$user_deck->getId(), $other_deck->getId()]);
+
+        // THEN
+        $this->assertDatabaseHas('flashcard_decks', [
+            'id' => $other_deck->id,
+        ]);
+        $this->assertDatabaseMissing('flashcard_decks', [
+            'id' => $user_deck->id,
+        ]);
+    }
+
+    public function test__bulkDelete_ShouldDeleteDeckWithAllData(): void
+    {
+        // GIVEN
+        $user = User::factory()->create();
+        $user_deck = FlashcardDeck::factory()->byUser($user)->create();
+        $flashcard = Flashcard::factory()->create(['flashcard_deck_id' => $user_deck->id]);
+        $sm_two_flashcard = SmTwoFlashcard::factory()->create([
+            'flashcard_id' => $flashcard->id,
+        ]);
+        $learning_session = LearningSession::factory()->create(['flashcard_deck_id' => $user_deck->id]);
+        $learning_session_flashcard_from_session = LearningSessionFlashcard::factory()->create([
+            'learning_session_id' => $learning_session->id,
+        ]);
+        $learning_session_flashcard = LearningSessionFlashcard::factory()->create([
+            'flashcard_id' => $flashcard->id,
+        ]);
+
+        // WHEN
+        $this->repository->bulkDelete($user->getId(), [$user_deck->getId()]);
+
+        // THEN
+        $this->assertDatabaseMissing('flashcard_decks', [
+            'id' => $user_deck->id,
+        ]);
+        $this->assertDatabaseMissing('sm_two_flashcards', [
+            'flashcard_id' => $flashcard->id,
+        ]);
+        $this->assertDatabaseMissing('flashcards', [
+            'id' => $flashcard->id,
+        ]);
+        $this->assertDatabaseMissing('learning_sessions', [
+            'id' => $learning_session->id,
+        ]);
+        $this->assertDatabaseMissing('learning_session_flashcards', [
+            'id' => $learning_session_flashcard->id,
+        ]);
+        $this->assertDatabaseMissing('learning_session_flashcards', [
+            'id' => $learning_session_flashcard_from_session->id,
+        ]);
     }
 }

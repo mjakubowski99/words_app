@@ -7,12 +7,17 @@ namespace Flashcard\Infrastructure\Http\Controllers\v2;
 use App\Http\OpenApi\Tags;
 use OpenApi\Attributes as OAT;
 use Illuminate\Http\JsonResponse;
+use Flashcard\Domain\Models\Owner;
 use Flashcard\Application\Query\GetAdminDecks;
 use Flashcard\Application\Query\GetDeckDetails;
 use Flashcard\Application\Query\GetUserCategories;
 use Flashcard\Application\Query\GetDeckRatingStats;
+use Flashcard\Application\Command\CreateDeckHandler;
+use Flashcard\Application\Command\UpdateDeckHandler;
+use Flashcard\Application\Command\BulkDeleteDeckHandler;
 use Flashcard\Application\Command\GenerateFlashcardsHandler;
 use Flashcard\Application\Command\MergeFlashcardDecksHandler;
+use Flashcard\Infrastructure\Http\Request\v2\BulkDeleteDeckRequest;
 use Flashcard\Infrastructure\Http\Request\v2\GetDeckDetailsRequest;
 use Flashcard\Infrastructure\Http\Resources\v2\DeckDetailsResource;
 use Flashcard\Infrastructure\Http\Resources\v2\RatingStatsResource;
@@ -21,7 +26,9 @@ use Flashcard\Infrastructure\Http\Resources\v2\FlashcardDecksResource;
 use Flashcard\Infrastructure\Http\Request\v2\GenerateFlashcardsRequest;
 use Flashcard\Infrastructure\Http\Request\v2\GetDeckRatingStatsRequest;
 use Flashcard\Infrastructure\Http\Request\v2\IndexFlashcardDeckRequest;
+use Flashcard\Infrastructure\Http\Request\v2\StoreFlashcardDeckRequest;
 use Flashcard\Application\Command\RegenerateAdditionalFlashcardsHandler;
+use Flashcard\Infrastructure\Http\Request\v2\UpdateFlashcardDeckRequest;
 use Flashcard\Infrastructure\Http\Request\v2\RegenerateFlashcardsRequest;
 
 class FlashcardDeckController
@@ -381,5 +388,123 @@ class FlashcardDeckController
         GetDeckRatingStats $get_deck_rating_stats,
     ): RatingStatsResource {
         return new RatingStatsResource($get_deck_rating_stats->get($request->getDeckId()));
+    }
+
+    #[OAT\Post(
+        path: '/api/v2/flashcards/decks',
+        operationId: 'v2.flashcards.decks.store',
+        description: 'Store flashcard deck',
+        summary: 'Store flashcard deck',
+        security: [['sanctum' => []]],
+        requestBody: new OAT\RequestBody(
+            content: new OAT\JsonContent(ref: '#/components/schemas/Requests\Flashcard\v2\StoreFlashcardDeckRequest')
+        ),
+        tags: [Tags::V2, Tags::FLASHCARD],
+        responses: [
+            new OAT\Response(
+                response: 200,
+                description: 'success',
+                content: new OAT\JsonContent(properties: [
+                    new OAT\Property(
+                        property: 'data',
+                        type: 'array',
+                        items: new OAT\Items(ref: '#/components/schemas/Resources\Flashcard\v2\DeckDetailsResource'),
+                    ),
+                ]),
+            ),
+            new OAT\Response(ref: '#/components/responses/bad_request', response: 400),
+            new OAT\Response(ref: '#/components/responses/unauthenticated', response: 401),
+            new OAT\Response(ref: '#/components/responses/validation_error', response: 422),
+        ],
+    )]
+    public function store(
+        StoreFlashcardDeckRequest $request,
+        CreateDeckHandler $handler,
+        GetDeckDetails $get_deck_details
+    ): DeckDetailsResource {
+        $deck_id = $handler->handle($request->toCommand());
+
+        $details = $get_deck_details->get(
+            $request->currentId(),
+            $deck_id,
+            null,
+            1,
+            15
+        );
+
+        return new DeckDetailsResource($details);
+    }
+
+    #[OAT\Put(
+        path: '/api/v2/flashcards/decks/{flashcard_deck_id}',
+        operationId: 'v2.flashcards.decks.update',
+        description: 'Update flashcard deck',
+        summary: 'Update flashcard deck',
+        security: [['sanctum' => []]],
+        requestBody: new OAT\RequestBody(
+            content: new OAT\JsonContent(ref: '#/components/schemas/Requests\Flashcard\v2\UpdateFlashcardDeckRequest')
+        ),
+        tags: [Tags::V2, Tags::FLASHCARD],
+        responses: [
+            new OAT\Response(
+                response: 200,
+                description: 'success',
+                content: new OAT\JsonContent(properties: [
+                    new OAT\Property(
+                        property: 'data',
+                        type: 'array',
+                        items: new OAT\Items(ref: '#/components/schemas/Resources\Flashcard\v2\DeckDetailsResource'),
+                    ),
+                ]),
+            ),
+            new OAT\Response(ref: '#/components/responses/bad_request', response: 400),
+            new OAT\Response(ref: '#/components/responses/unauthenticated', response: 401),
+            new OAT\Response(ref: '#/components/responses/validation_error', response: 422),
+        ],
+    )]
+    public function update(
+        UpdateFlashcardDeckRequest $request,
+        UpdateDeckHandler $handler,
+        GetDeckDetails $get_deck_details
+    ): DeckDetailsResource {
+        $handler->handle(
+            Owner::fromUser($request->currentId()),
+            $request->getDeckId(),
+            $request->getName()
+        );
+
+        $details = $get_deck_details->get(
+            $request->currentId(),
+            $request->getDeckId(),
+            null,
+            1,
+            15
+        );
+
+        return new DeckDetailsResource($details);
+    }
+
+    #[OAT\Delete(
+        path: '/api/v2/flashcards/decks/bulk-delete',
+        operationId: 'v2.flashcards.decks.bulk-delete',
+        description: 'Bulk delete flashcard decks',
+        summary: 'Bulk delete flashcard decks',
+        security: [['sanctum' => []]],
+        requestBody: new OAT\RequestBody(
+            content: new OAT\JsonContent(ref: '#/components/schemas/Requests\Flashcard\v2\BulkDeleteDeckRequest')
+        ),
+        tags: [Tags::V2, Tags::FLASHCARD],
+        responses: [
+            new OAT\Response(ref: '#/components/responses/no_content', response: 204),
+            new OAT\Response(ref: '#/components/responses/bad_request', response: 400),
+            new OAT\Response(ref: '#/components/responses/unauthenticated', response: 401),
+            new OAT\Response(ref: '#/components/responses/validation_error', response: 422),
+        ],
+    )]
+    public function bulkDelete(BulkDeleteDeckRequest $request, BulkDeleteDeckHandler $handler): JsonResponse
+    {
+        $handler->handle($request->currentId(), $request->getDeckIds());
+
+        return new JsonResponse([], 204);
     }
 }

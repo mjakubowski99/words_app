@@ -12,11 +12,13 @@ use Flashcard\Application\Query\GetUserFlashcards;
 use Flashcard\Application\Query\GetUserRatingStats;
 use Flashcard\Application\Command\CreateFlashcardHandler;
 use Flashcard\Application\Command\UpdateFlashcardHandler;
+use Flashcard\Application\Command\BulkDeleteFlashcardHandler;
 use Flashcard\Infrastructure\Http\Request\v2\StoreFlashcardRequest;
 use Flashcard\Infrastructure\Http\Resources\v2\RatingStatsResource;
 use Flashcard\Infrastructure\Http\Request\v2\UpdateFlashcardRequest;
 use Flashcard\Infrastructure\Http\Resources\v2\UserFlashcardsResource;
 use Flashcard\Infrastructure\Http\Request\v2\GetFlashcardByUserRequest;
+use Flashcard\Infrastructure\Http\Request\v2\BulkDeleteFlashcardRequest;
 
 class FlashcardController
 {
@@ -68,6 +70,30 @@ class FlashcardController
         UpdateFlashcardHandler $update_flashcard_handler
     ): JsonResponse {
         $update_flashcard_handler->handle($request->toCommand());
+
+        return new JsonResponse([], 204);
+    }
+
+    #[OAT\Delete(
+        path: '/api/v2/flashcards/bulk-delete',
+        operationId: 'v2.flashcards.bulk-delete',
+        description: 'Bulk delete flashcards',
+        summary: 'Bulk delete flashcards',
+        security: [['sanctum' => []]],
+        requestBody: new OAT\RequestBody(
+            content: new OAT\JsonContent(ref: '#/components/schemas/Requests\Flashcard\v2\BulkDeleteFlashcardRequest')
+        ),
+        tags: [Tags::V2, Tags::FLASHCARD],
+        responses: [
+            new OAT\Response(ref: '#/components/responses/no_content', response: 204),
+            new OAT\Response(ref: '#/components/responses/bad_request', response: 400),
+            new OAT\Response(ref: '#/components/responses/unauthenticated', response: 401),
+            new OAT\Response(ref: '#/components/responses/validation_error', response: 422),
+        ],
+    )]
+    public function bulkDelete(BulkDeleteFlashcardRequest $request, BulkDeleteFlashcardHandler $handler): JsonResponse
+    {
+        $handler->handle($request->currentId(), $request->getFlashcardIds());
 
         return new JsonResponse([], 204);
     }

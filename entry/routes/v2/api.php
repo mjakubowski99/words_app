@@ -15,6 +15,8 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     Route::post('/flashcards', [FlashcardController::class, 'store'])->name('v2.flashcards.store');
     Route::put('/flashcards/{flashcard_id}', [FlashcardController::class, 'update'])->name('v2.flashcards.update');
+    Route::delete('/flashcards/bulk-delete', [FlashcardController::class, 'bulkDelete'])
+        ->name('v2.flashcards.bulk-delete');
 
     Route::get('/flashcards/decks/by-user', [FlashcardDeckController::class, 'index'])
         ->name('v2.flashcards.decks.index');
@@ -34,6 +36,12 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         ->name('v2.flashcards.decks.merge-flashcards');
     Route::put('/flashcards/decks/{flashcard_deck_id}/generate-flashcards', [FlashcardDeckController::class, 'regenerateFlashcards'])
         ->name('v2.flashcards.decks.regenerate-flashcards');
+    Route::post('/flashcards/decks', [FlashcardDeckController::class, 'store'])
+        ->name('v2.flashcards.decks.store');
+    Route::put('/flashcards/decks/{flashcard_deck_id}', [FlashcardDeckController::class, 'update'])
+        ->name('v2.flashcards.decks.update');
+    Route::delete('/flashcards/decks/bulk-delete', [FlashcardDeckController::class, 'bulkDelete'])
+        ->name('v2.flashcards.decks.bulk-delete');
 
     Route::get('/flashcards/session/{session_id}', [SessionController::class, 'get'])
         ->name('v2.flashcards.session.get');
