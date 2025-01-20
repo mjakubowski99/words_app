@@ -11,6 +11,7 @@ use User\Infrastructure\OAuth\Google\IosGoogleClient;
 use User\Infrastructure\OAuth\Google\AndroidGoogleClient;
 use User\Infrastructure\OAuth\Strategies\IOAuthLoginStrategy;
 use User\Infrastructure\OAuth\Strategies\GoogleClientStrategy;
+use User\Infrastructure\OAuth\Strategies\AppleSocialiteStrategy;
 use User\Infrastructure\OAuth\Strategies\LaravelSocialiteStrategy;
 
 class OAuthLoginStrategyFactory
@@ -21,7 +22,6 @@ class OAuthLoginStrategyFactory
 
     public function make(UserProvider $provider, Platform $platform): IOAuthLoginStrategy
     {
-        /* @phpstan-ignore-next-line */
         if ($provider === UserProvider::GOOGLE && $platform === Platform::ANDROID) {
             return new GoogleClientStrategy(
                 $this->app->make(AndroidGoogleClient::class)
@@ -34,6 +34,9 @@ class OAuthLoginStrategyFactory
         }
         if ($provider === UserProvider::GOOGLE && $platform === Platform::WEB) {
             return new LaravelSocialiteStrategy(UserProvider::GOOGLE);
+        }
+        if ($provider === UserProvider::APPLE) {
+            return new AppleSocialiteStrategy($platform);
         }
 
         throw new \UnexpectedValueException("OAuth login for  provider {$provider->value} for {$platform->value} is not supported");

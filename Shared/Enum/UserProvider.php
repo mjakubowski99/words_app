@@ -7,4 +7,5 @@ namespace Shared\Enum;
 enum UserProvider: string
 {
     case GOOGLE = 'google';
+    case APPLE = 'apple';
 }

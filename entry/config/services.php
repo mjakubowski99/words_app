@@ -42,4 +42,14 @@ return [
         'android_client_id' => env('ANDROID_GOOGLE_CLIENT_ID', 'android'),
         'ios_client_id' => env('IOS_GOOGLE_CLIENT_ID', 'ios'),
     ],
+
+    UserProvider::APPLE->value => [
+        'client_id' => env('APPLE_CLIENT_ID'),
+        'client_secret' => env('APPLE_CLIENT_SECRET'),
+        'redirect' => env('APPLE_REDIRECT_URL'),
+        'android_client_id' => env('ANDROID_APPLE_CLIENT_ID'),
+        'android_client_secret' => env('ANDROID_APPLE_CLIENT_SECRET'),
+        'ios_client_id' => env('IOS_APPLE_CLIENT_ID'),
+        'ios_client_secret' => env('IOS_APPLE_CLIENT_SECRET'),
+    ],
 ];
