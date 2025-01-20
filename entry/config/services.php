@@ -49,5 +49,6 @@ return [
         'redirect' => env('APPLE_REDIRECT_URL'),
         'android_client_id' => env('ANDROID_APPLE_CLIENT_ID'),
         'ios_client_id' => env('IOS_APPLE_CLIENT_ID'),
+        'private_key' => str_replace('\n', "\n", env('APPLE_PRIVATE_KEY')),
     ],
 ];
