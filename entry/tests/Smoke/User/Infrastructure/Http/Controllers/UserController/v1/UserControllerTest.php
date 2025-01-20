@@ -6,6 +6,7 @@ namespace Tests\Smoke\User\Infrastructure\Http\Controllers\UserController\v1;
 
 use Tests\TestCase;
 use App\Models\User;
+use Firebase\JWT\JWT;
 use Shared\Enum\Platform;
 use Shared\Enum\UserProvider;
 use Illuminate\Support\Facades\Config;
@@ -51,6 +52,41 @@ class UserControllerTest extends TestCase
         ]);
         $this->assertArrayHasKey('client_id', Config::get('services.google'));
         $this->assertArrayHasKey('client_secret', Config::get('services.google'));
+    }
+
+    /**
+     * @test
+     */
+    public function loginWithProvider_WhenValidOAuthUserAppleAndUserNotExists_createUser(): void
+    {
+        // GIVEN
+        $user = $this->fakeSocialiteUser();
+        $this->fakeOAuthLogin($user, UserProvider::APPLE);
+        \Mockery::mock('alias:' . JWT::class)
+            ->shouldReceive('encode')
+            ->andReturn('DSADSAADSASD');
+
+        // WHEN
+        $response = $this
+            ->postJson(route('user.oauth.login'), [
+                'access_token' => 'adsadsdsa',
+                'user_provider' => UserProvider::APPLE->value,
+                'platform' => Platform::WEB,
+            ]);
+
+        // THEN
+        $response->assertStatus(200);
+        $response->assertJsonStructure([
+            'data' => [
+                'token',
+                'user' => [
+                    'id',
+                    'name',
+                    'email',
+                    'has_any_session',
+                ],
+            ],
+        ]);
     }
 
     /**

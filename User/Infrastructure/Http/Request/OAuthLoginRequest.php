@@ -22,7 +22,7 @@ use Illuminate\Foundation\Http\FormRequest;
         new OAT\Property(
             property: 'user_provider',
             type: 'string',
-            enum: [UserProvider::GOOGLE->value],
+            enum: [UserProvider::GOOGLE->value, UserProvider::APPLE->value],
             example: UserProvider::GOOGLE->value
         ),
         new OAT\Property(
@@ -39,7 +39,7 @@ class OAuthLoginRequest extends FormRequest
     {
         return [
             'access_token' => ['required', 'string'],
-            'user_provider' => ['required', Rule::in([UserProvider::GOOGLE->value])],
+            'user_provider' => ['required', Rule::in([UserProvider::GOOGLE->value, UserProvider::APPLE->value])],
             'platform' => ['required', Rule::in([Platform::WEB->value, Platform::ANDROID->value, Platform::IOS->value])],
         ];
     }
