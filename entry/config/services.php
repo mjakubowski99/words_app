@@ -47,7 +47,7 @@ return [
         'client_id' => env('APPLE_CLIENT_ID'),
         'client_secret' => '',
         'key_id' => env('APPLE_KEY_ID'),
-        'private_key' => str_replace('\n', "\n", env('APPLE_PRIVATE_KEY')),
+        'private_key' => str_replace('\n', "\n", env('APPLE_PRIVATE_KEY', '')),
         // 'redirect' => env('APPLE_REDIRECT_URL'),
 
         'android_client_id' => env('ANDROID_APPLE_CLIENT_ID'),
