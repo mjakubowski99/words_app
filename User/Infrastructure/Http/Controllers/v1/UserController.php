@@ -6,7 +6,6 @@ namespace User\Infrastructure\Http\Controllers\v1;
 
 use App\Http\OpenApi\Tags;
 use OpenApi\Attributes as OAT;
-use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use Shared\Flashcard\IFlashcardFacade;
 use User\Application\Query\GetOAuthUser;
@@ -17,6 +16,7 @@ use User\Infrastructure\Http\Request\GetUserRequest;
 use User\Infrastructure\Http\Resources\UserResource;
 use User\Application\Command\CreateExternalUserHandler;
 use User\Infrastructure\Http\Request\OAuthLoginRequest;
+use User\Infrastructure\Http\Resources\TokenUserResource;
 
 class UserController extends Controller
 {
@@ -36,19 +36,8 @@ class UserController extends Controller
                 content: new OAT\JsonContent(properties: [
                     new OAT\Property(
                         property: 'data',
-                        properties: [
-                            new OAT\Property(
-                                property: 'token',
-                                type: 'string',
-                                example: '123',
-                            ),
-                            new OAT\Property(
-                                property: 'data',
-                                type: 'array',
-                                items: new OAT\Items(ref: '#/components/schemas/Resources\User\UserResource'),
-                            ),
-                        ],
-                        type: 'object',
+                        type: 'array',
+                        items: new OAT\Items(ref: '#/components/schemas/Resources\User\v2\TokenUserResource'),
                     ),
                 ]),
             ),
@@ -72,7 +61,7 @@ class UserController extends Controller
         FindExternalUserHandler $find,
         CreateTokenHandler $create_token,
         IFlashcardFacade $flashcard_facade,
-    ): JsonResponse {
+    ): TokenUserResource {
         $oauth_user = $get_oauth_user->get(
             $request->getUserProvider(),
             $request->getAccessToken(),
@@ -91,14 +80,10 @@ class UserController extends Controller
 
         $user = $find->handle($command->getProviderId(), $command->getProviderType());
 
-        return new JsonResponse([
-            'data' => [
-                'token' => $create_token->handle($user->getId()),
-                'user' => new UserResource([
-                    'user' => $user,
-                    'has_any_session' => $flashcard_facade->hasAnySession($user->getId()),
-                ]),
-            ],
+        return new TokenUserResource([
+            'token' => $create_token->handle($user->getId()),
+            'user' => $user,
+            'has_any_session' => $flashcard_facade->hasAnySession($user->getId()),
         ]);
     }
 
