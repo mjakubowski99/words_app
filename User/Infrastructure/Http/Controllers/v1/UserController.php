@@ -36,19 +36,8 @@ class UserController extends Controller
                 content: new OAT\JsonContent(properties: [
                     new OAT\Property(
                         property: 'data',
-                        properties: [
-                            new OAT\Property(
-                                property: 'token',
-                                type: 'string',
-                                example: '123',
-                            ),
-                            new OAT\Property(
-                                property: 'data',
-                                type: 'array',
-                                items: new OAT\Items(ref: '#/components/schemas/Resources\User\UserResource'),
-                            ),
-                        ],
-                        type: 'object',
+                        type: 'array',
+                        items: new OAT\Items(ref: '#/components/schemas/Resources\User\v2\TokenUserResource'),
                     ),
                 ]),
             ),
