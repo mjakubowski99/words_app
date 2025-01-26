@@ -17,7 +17,7 @@ class RegenerateAdditionalFlashcardsHandler
         private FlashcardGeneratorService $flashcard_generator_service,
     ) {}
 
-    public function handle(Owner $owner, FlashcardDeckId $id): void
+    public function handle(Owner $owner, FlashcardDeckId $id, int $words_count, int $words_count_to_save): void
     {
         $resolved_deck = $this->deck_resolver->resolveById($id);
 
@@ -27,7 +27,9 @@ class RegenerateAdditionalFlashcardsHandler
 
         $this->flashcard_generator_service->generate(
             $resolved_deck,
-            $resolved_deck->getDeck()->getName()
+            $resolved_deck->getDeck()->getName(),
+            $words_count,
+            $words_count_to_save
         );
     }
 }

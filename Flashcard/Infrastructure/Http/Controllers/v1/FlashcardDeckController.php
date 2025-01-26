@@ -22,6 +22,9 @@ use Flashcard\Infrastructure\Http\Request\v1\RegenerateFlashcardsRequest;
 
 class FlashcardDeckController
 {
+    public const int FLASHCARDS_LIMIT = 20;
+    public const int FLASHCARDS_SAVE_LIMIT = 10;
+
     #[OAT\Get(
         path: '/api/flashcards/categories/by-user',
         operationId: 'flashcards.categories.by-user',
@@ -120,7 +123,11 @@ class FlashcardDeckController
         GenerateFlashcardsHandler $generate_flashcards,
         GetDeckDetails $get_deck_details,
     ): DeckDetailsResource {
-        $result = $generate_flashcards->handle($request->toCommand());
+        $result = $generate_flashcards->handle(
+            $request->toCommand(),
+            self::FLASHCARDS_SAVE_LIMIT,
+            self::FLASHCARDS_SAVE_LIMIT
+        );
 
         return (new DeckDetailsResource([
             'details' => $get_deck_details->get($request->currentId(), $result->getDeckId(), null, $request->getPage(), $request->getPerPage()),
@@ -160,7 +167,12 @@ class FlashcardDeckController
         RegenerateAdditionalFlashcardsHandler $regenerate_flashcards,
         GetDeckDetails $get_deck_details,
     ): DeckDetailsResource {
-        $regenerate_flashcards->handle($request->getOwner(), $request->getDeckId());
+        $regenerate_flashcards->handle(
+            $request->getOwner(),
+            $request->getDeckId(),
+            self::FLASHCARDS_LIMIT,
+            self::FLASHCARDS_SAVE_LIMIT,
+        );
 
         return new DeckDetailsResource([
             'details' => $get_deck_details->get($request->currentId(), $request->getDeckId(), null, $request->getPage(), $request->getPerPage()),

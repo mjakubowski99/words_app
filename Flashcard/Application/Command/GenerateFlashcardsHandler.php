@@ -15,7 +15,7 @@ final readonly class GenerateFlashcardsHandler
         private FlashcardGeneratorService $flashcard_generator_service,
     ) {}
 
-    public function handle(GenerateFlashcards $command): GenerateFlashcardsResult
+    public function handle(GenerateFlashcards $command, int $flashcards_limit, int $flashcards_save_limit): GenerateFlashcardsResult
     {
         $resolved_deck = $this->deck_resolver->resolveByName(
             $command->getUserId(),
@@ -23,7 +23,12 @@ final readonly class GenerateFlashcardsHandler
             $command->getLanguageLevel(),
         );
 
-        $flashcards = $this->flashcard_generator_service->generate($resolved_deck, $command->getDeckName());
+        $flashcards = $this->flashcard_generator_service->generate(
+            $resolved_deck,
+            $command->getDeckName(),
+            $flashcards_limit,
+            $flashcards_save_limit
+        );
 
         return new GenerateFlashcardsResult(
             $resolved_deck->getDeck()->getId(),
