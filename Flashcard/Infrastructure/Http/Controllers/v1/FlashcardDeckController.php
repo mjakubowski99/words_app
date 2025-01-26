@@ -22,7 +22,7 @@ use Flashcard\Infrastructure\Http\Request\v1\RegenerateFlashcardsRequest;
 
 class FlashcardDeckController
 {
-    public const int FLASHCARDS_LIMIT = 20;
+    public const int FLASHCARDS_LIMIT = 15;
     public const int FLASHCARDS_SAVE_LIMIT = 10;
 
     #[OAT\Get(
