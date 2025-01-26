@@ -23,4 +23,12 @@ abstract class TestCase extends BaseTestCase
     {
         return \Mockery::mock($class);
     }
+
+    public function assertArraysAreTheSame(array $a, array $b): void
+    {
+        sort($a);
+        sort($b);
+
+        $this->assertSame($a, $b, 'Failed to assert that two arrays are the same.');
+    }
 }

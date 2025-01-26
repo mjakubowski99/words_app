@@ -15,7 +15,7 @@ class FlashcardPrompt
 
     private string $prompt = '
         Jesteś algorytmem ai generującym słowa do nauki angielskiego.
-        Wygeneruj 10 słów.
+        Wygeneruj ${{words_count}} słów.
         Słowa muszą bezpośrednio nawiązywać do tematu narzuconego przez użytkownika. Przedstaw słowa po polsku jak i po angielsku.
         Dodaj takze emoji kontekstowe do slowka.
         Zapisz je w formie prostego kodu.
@@ -30,6 +30,8 @@ class FlashcardPrompt
         Wygeneruj odpowiedź w formacie JSON zawierającą 10 rekordów.
         Ton odpowiedzi: Jasne i zrozumiałe zdania, przydatne do praktycznej komunikacji w danej sytuacji.
         Uwzględnij również specyfikację poziomu języka. Wybrany poziom to: ${{level}}
+        ${{letters_condition}}
+        Dodaj sobie również jakiś losowo przez ciebie wybrany kontekst do tematu użytkownika
         Prompt użytkownika to: ${{category}}.
         Warunek błedu: Jeśli z jakiegoś powodu nie jesteś w stanie wygenerować rekordów dla danej sytuacji, zamiast rekordów odpowiedz w formacie {"error":"prompt"}
         Twoja odpowiedź ma zawierać tylko i wyłącznie dane w formacie JSON i nic więcej.
@@ -37,7 +39,9 @@ class FlashcardPrompt
 
     public function __construct(
         private readonly string $category,
-        private readonly LanguageLevel $language_level
+        private readonly LanguageLevel $language_level,
+        private readonly int $words_count = 10,
+        private array $initial_letters_to_avoid = [],
     ) {
         $this->buildPrompt();
         $this->word_lang = Language::pl();
@@ -63,6 +67,8 @@ class FlashcardPrompt
     {
         $this->setCategory();
         $this->setLanguageLevel();
+        $this->setWordsCount();
+        $this->setInitialLettersToAvoid();
         $this->removeWhiteCharacters();
     }
 
@@ -82,6 +88,31 @@ class FlashcardPrompt
         }
 
         $this->prompt = str_replace('${{level}}', $this->language_level->value, $this->prompt);
+    }
+
+    private function setWordsCount(): void
+    {
+        if (!str_contains($this->prompt, '${{words_count}}')) {
+            throw new InvalidPromptException('Invalid prompt exception');
+        }
+
+        $this->prompt = str_replace('${{words_count}}', (string) $this->words_count, $this->prompt);
+    }
+
+    private function setInitialLettersToAvoid(): void
+    {
+        if (!str_contains($this->prompt, '${{letters_condition}}')) {
+            throw new InvalidPromptException('Invalid prompt exception');
+        }
+
+        $letters = implode(',', $this->initial_letters_to_avoid);
+
+        if ($letters === '') {
+            $this->prompt = str_replace('${{letters_condition}}', '', $this->prompt);
+        } else {
+            $condition = 'Unikaj słów zaczynających się na litery: ';
+            $this->prompt = str_replace('${{letters_condition}}', $condition . $letters, $this->prompt);
+        }
     }
 
     private function removeWhiteCharacters(): void

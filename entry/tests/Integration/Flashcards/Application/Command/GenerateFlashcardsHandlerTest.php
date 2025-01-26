@@ -85,7 +85,7 @@ class GenerateFlashcardsHandlerTest extends TestCase
         );
 
         // WHEN
-        $result = $this->handler->handle($command);
+        $result = $this->handler->handle($command, 10, 10);
 
         // THEN
         $this->assertDatabaseHas('flashcard_decks', [
@@ -114,7 +114,7 @@ class GenerateFlashcardsHandlerTest extends TestCase
         );
 
         // WHEN
-        $result = $this->handler->handle($command);
+        $result = $this->handler->handle($command, 10, 10);
 
         // THEN
         $this->assertDatabaseHas('flashcards', [
@@ -141,7 +141,7 @@ class GenerateFlashcardsHandlerTest extends TestCase
         $this->expectException(AiResponseFailedException::class);
 
         // WHEN
-        $this->handler->handle($command);
+        $this->handler->handle($command, 10, 10);
 
         // THEN
         $this->assertDatabaseHas('flashcard_decks', [
@@ -166,7 +166,7 @@ class GenerateFlashcardsHandlerTest extends TestCase
         $this->expectException(AiResponseFailedException::class);
 
         // WHEN
-        $this->handler->handle($command);
+        $this->handler->handle($command, 10, 10);
 
         // THEN
         $this->assertDatabaseMissing('flashcard_decks', [

@@ -4,15 +4,16 @@ declare(strict_types=1);
 
 namespace Integration\Flashcards\Application\Command;
 
-use Tests\TestCase;
 use App\Models\User;
+use App\Models\Flashcard;
 use App\Models\FlashcardDeck;
+use Tests\Base\FlashcardTestCase;
 use Illuminate\Support\Facades\Http;
 use Integrations\Gemini\GeminiApiClient;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Flashcard\Application\Command\RegenerateAdditionalFlashcardsHandler;
 
-class GenerateAdditionalFlashcardsHandlerTest extends TestCase
+class GenerateAdditionalFlashcardsHandlerTest extends FlashcardTestCase
 {
     use DatabaseTransactions;
 
@@ -80,11 +81,46 @@ class GenerateAdditionalFlashcardsHandlerTest extends TestCase
         ]);
 
         // WHEN
-        $this->handler->handle($user->toOwner(), $deck->getId());
+        $this->handler->handle($user->toOwner(), $deck->getId(), 3, 3);
 
         // THEN
         $this->assertDatabaseHas('flashcards', [
             'flashcard_deck_id' => $deck->getId(),
         ]);
+    }
+
+    public function test__handle_ShouldEliminateDuplicates(): void
+    {
+        // GIVEN
+        Flashcard::query()->forceDelete();
+        Http::fake([
+            '*' => Http::response(json_decode($this->response, true)),
+        ]);
+        $user = $this->createUser();
+        $deck = FlashcardDeck::factory()->byUser($user)->create();
+        $flashcard = Flashcard::factory()->byUser($user)->create([
+            'flashcard_deck_id' => $deck->id,
+            'front_word' => 'Gatunek',
+        ]);
+
+        // WHEN
+        $this->handler->handle($user->toOwner(), $deck->getId(), 4, 2);
+
+        // THEN
+        $this->assertDatabaseHas('flashcards', [
+            'flashcard_deck_id' => $deck->getId(),
+        ]);
+
+        $flashcard_not_duplicated = Flashcard::query()
+            ->where('flashcard_deck_id', $deck->id)
+            ->whereRaw('LOWER(front_word) = ?', ['gatunek'])
+            ->count();
+
+        $flashcard_count = Flashcard::query()
+            ->where('flashcard_deck_id', $deck->id)
+            ->count();
+
+        $this->assertSame(1, $flashcard_not_duplicated);
+        $this->assertSame(3, $flashcard_count);
     }
 }

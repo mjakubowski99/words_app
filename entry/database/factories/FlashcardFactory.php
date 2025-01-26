@@ -20,7 +20,7 @@ class FlashcardFactory extends Factory
     public function definition(): array
     {
         return [
-            'flashcard_deck_id' => FlashcardDeck::factory()->create(),
+            'flashcard_deck_id' => fn () => FlashcardDeck::factory()->create(),
             'user_id' => fn () => User::factory()->create(),
             'front_word' => $this->faker->name,
             'front_lang' => Language::pl()->getValue(),
