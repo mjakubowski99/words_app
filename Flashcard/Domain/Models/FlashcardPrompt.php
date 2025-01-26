@@ -27,11 +27,13 @@ class FlashcardPrompt
         "sentence_trans":"Cashier greeted me with a smile",
         "emoji":"😀"
         },...]
-        Wygeneruj odpowiedź w formacie JSON zawierającą 10 rekordów.
+        Wygeneruj odpowiedź w formacie JSON zawierającą ${{words_count}} rekordów.
         Ton odpowiedzi: Jasne i zrozumiałe zdania, przydatne do praktycznej komunikacji w danej sytuacji.
         Uwzględnij również specyfikację poziomu języka. Wybrany poziom to: ${{level}}
         ${{letters_condition}}
-        Dodaj sobie również jakiś losowo przez ciebie wybrany kontekst do tematu użytkownika
+        Zastosuj:
+            - kreatywność w tworzeniu przykładów
+            - dodaj sobie unikalny kontekst do tematu
         Prompt użytkownika to: ${{category}}.
         Warunek błedu: Jeśli z jakiegoś powodu nie jesteś w stanie wygenerować rekordów dla danej sytuacji, zamiast rekordów odpowiedz w formacie {"error":"prompt"}
         Twoja odpowiedź ma zawierać tylko i wyłącznie dane w formacie JSON i nic więcej.
