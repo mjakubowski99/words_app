@@ -77,7 +77,7 @@ class FlashcardPrompt
 
     private function setRandomSeed(): void
     {
-        str_replace('${{seed}}', (string) random_int(0, 1000), $this->prompt);
+        $this->prompt = str_replace('${{seed}}', (string) random_int(0, 1000), $this->prompt);
     }
 
     private function setCategory(): void
