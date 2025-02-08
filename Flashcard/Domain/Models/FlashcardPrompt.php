@@ -33,7 +33,7 @@ class FlashcardPrompt
         ${{letters_condition}}
         Zastosuj:
             - kreatywność w tworzeniu przykładów
-            - dodaj sobie unikalny kontekst do tematu
+            - losowe ziarno generowania: ${{seed}}
         Prompt użytkownika to: ${{category}}.
         Warunek błedu: Jeśli z jakiegoś powodu nie jesteś w stanie wygenerować rekordów dla danej sytuacji, zamiast rekordów odpowiedz w formacie {"error":"prompt"}
         Twoja odpowiedź ma zawierać tylko i wyłącznie dane w formacie JSON i nic więcej.
@@ -67,11 +67,17 @@ class FlashcardPrompt
 
     private function buildPrompt(): void
     {
+        $this->setRandomSeed();
         $this->setCategory();
         $this->setLanguageLevel();
         $this->setWordsCount();
         $this->setInitialLettersToAvoid();
         $this->removeWhiteCharacters();
+    }
+
+    private function setRandomSeed(): void
+    {
+        str_replace('${{seed}}', (string) random_int(0, 1000), $this->prompt);
     }
 
     private function setCategory(): void

@@ -29,7 +29,7 @@ class GenerateFlashcardsRequest extends Request
     public function rules(): array
     {
         return [
-            'category_name' => ['required', 'string', 'min:5', 'max:40'],
+            'category_name' => ['required', 'string', 'min:5', 'max:100'],
             'language_level' => ['nullable', 'string'],
             'page' => ['integer', 'gte:0'],
             'per_page' => ['integer', 'gte:0', 'lte:30'],
