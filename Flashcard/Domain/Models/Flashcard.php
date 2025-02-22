@@ -9,7 +9,7 @@ use Shared\Enum\LanguageLevel;
 use Shared\Utils\ValueObjects\Language;
 use Flashcard\Domain\ValueObjects\FlashcardId;
 
-final class Flashcard
+class Flashcard
 {
     private Language $learned_language;
 

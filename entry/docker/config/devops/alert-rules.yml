@@ -1,0 +1,17 @@
+groups:
+  - name: recording_rules
+    interval: 5s
+    rules:
+      - record: node_exporter:node_filesystem_free:fs_used_percents
+        expr: 100 - 100 * ( node_filesystem_free{mountpoint="/"} / node_filesystem_size{mountpoint="/"} )
+
+  - name: alerting_rules
+    rules:
+      - alert: HighDiskUsage
+        expr: 100 - ((node_filesystem_avail_bytes{job="node_exporter",mountpoint="/",fstype!="rootfs"} * 100) / node_filesystem_size_bytes{job="node_exporter",mountpoint="/",fstype!="rootfs"}) > 90
+        for: 10s
+        labels:
+          severity: critical
+        annotations:
+          summary: "🚨 Low storage value {{ $labels.instance }}"
+          description: "{{ $labels.instance }} uses {{ $value }}% of disk! Scale it fast bro!"

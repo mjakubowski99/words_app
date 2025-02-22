@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Base;
 
+use App\Models\FlashcardPoll;
+use App\Models\FlashcardPollItem;
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\Flashcard;
@@ -24,6 +26,11 @@ abstract class FlashcardTestCase extends TestCase
     public function createUserFlashcard(User $user, array $attributes = []): Flashcard
     {
         return Flashcard::factory()->byUser($user)->create($attributes);
+    }
+
+    public function createFlashcardPollItem(array $attributes): FlashcardPollItem
+    {
+        return FlashcardPollItem::factory()->create($attributes);
     }
 
     public function createFlashcard(array $attributes = []): Flashcard

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Flashcard\Infrastructure\Http\Controllers\v2;
 
 use App\Http\OpenApi\Tags;
+use Flashcard\Application\Command\RefreshFlashcardPoll;
 use OpenApi\Attributes as OAT;
 use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
@@ -81,8 +82,13 @@ class SessionController extends Controller
         CreateSessionHandler $create_session,
         AddSessionFlashcardsHandler $add_session_flashcards,
         GetNextSessionFlashcardsHandler $get_next_session_flashcards,
+        RefreshFlashcardPoll $refresh_flashcard_poll,
     ): JsonResponse|NextSessionFlashcardsResource {
         $result = $create_session->handle($request->toCommand());
+
+        if (!$request->toCommand()->hasDeckId()) {
+            $refresh_flashcard_poll->refresh($request->currentId());
+        }
 
         if (!$result->success()) {
             return new JsonResponse(['message' => $result->getFailReason()], 400);

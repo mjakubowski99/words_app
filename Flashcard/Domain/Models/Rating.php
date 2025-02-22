@@ -15,4 +15,9 @@ enum Rating: int
     {
         return max(array_map(fn (Rating $rating) => $rating->value, self::cases()));
     }
+
+    public function leitnerLevel(): int
+    {
+        return $this->value;
+    }
 }

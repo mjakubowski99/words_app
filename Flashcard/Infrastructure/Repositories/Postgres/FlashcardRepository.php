@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Repositories\Postgres;
 
+use Shared\Exceptions\NotFoundException;
 use Shared\Utils\ValueObjects\UserId;
 use Flashcard\Domain\Models\Flashcard;
 use Flashcard\Domain\ValueObjects\SessionId;
@@ -39,7 +40,18 @@ class FlashcardRepository implements IFlashcardRepository
 
     public function find(FlashcardId $id): Flashcard
     {
-        return $this->mapper->find($id);
+        $flashcards = $this->mapper->findMany([$id]);
+
+        if (count($flashcards) === 0) {
+            throw new NotFoundException();
+        }
+
+        return $flashcards[0];
+    }
+
+    public function findMany(array $flashcard_ids): array
+    {
+        return $this->mapper->findMany($flashcard_ids);
     }
 
     public function update(Flashcard $flashcard): void

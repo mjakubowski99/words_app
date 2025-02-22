@@ -14,12 +14,16 @@ services:
         working_dir: /var/www/entry
         volumes:
             - ../../:/var/www
+            - ./config/php/php-fpm.conf:/usr/local/etc/php-fpm.d/www.conf
         extra_hosts:
             - "host.docker.internal:host-gateway"
             - "php.docker:127.0.0.1"
         environment:
             PHP_IDE_CONFIG: serverName=server
             USER: ${USER}
+        ports:
+            - "9000:9000"
+            - "9003:9003"
         links:
             - db
         networks:
@@ -49,6 +53,7 @@ services:
             - "${DATABASE_PORT}:5432"
         volumes:
             - db_volume:/data/postgres
+            - ../backups:/backups
         environment:
             POSTGRES_DATABASE: "${PROJECT_NAME}_db"
             POSTGRES_USER: app
@@ -57,9 +62,114 @@ services:
         networks:
             - app-network
 
+    prometheus:
+        image: prom/prometheus
+        container_name: "${PROJECT_NAME}_prometheus"
+        volumes:
+            - "./config/devops/prometheus.yml:/etc/prometheus/prometheus.yml"
+            - ./config/devops/alert-rules.yml:/etc/prometheus/alert-rules.yml
+        ports:
+            - "9091:9090"
+        networks:
+            - app-network
+
+    node_exporter:
+        image: quay.io/prometheus/node-exporter:latest
+        container_name: "${PROJECT_NAME}_node_exporter"
+        command:
+            - '--path.rootfs=/host'
+        restart: unless-stopped
+        volumes:
+            - '/:/host:ro,rslave'
+        ports:
+            - 9100:9100
+        networks:
+            - app-network
+
+    php-fpm-exporter:
+        image: hipages/php-fpm_exporter:latest
+        container_name: "${PROJECT_NAME}_php_fpm_exporter"
+        ports:
+            - "9253:9253"
+        environment:
+            PHP_FPM_SCRAPE_URI: "tcp://php:9000/status"
+            PHP_FPM_LOG_LEVEL: "debug"
+        networks:
+            - app-network
+
+    loki:
+        image: grafana/loki:2.9.2
+        container_name: "${PROJECT_NAME}_loki"
+        ports:
+            - "3100:3100"
+        volumes:
+            - ./config/devops/loki-local-config.yml:/etc/loki/local-config.yaml
+        command: -config.file=/etc/loki/local-config.yaml
+        networks:
+            - app-network
+
+    promtail:
+        image: grafana/promtail:2.9.2
+        container_name: "${PROJECT_NAME}_promtail"
+        volumes:
+            - ./config/devops/promtail.yml:/etc/promtail/config.yml
+            - /var/log:/var/log
+            - "${PROJECT_REAL_PATH}/entry/storage/logs/:/var/laravel/storage"
+        command: -config.file=/etc/promtail/config.yml
+        networks:
+            - app-network
+
+    grafana:
+        environment:
+            - GF_PATHS_PROVISIONING=/etc/grafana/provisioning
+            - GF_AUTH_ANONYMOUS_ENABLED=true
+            - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+        entrypoint:
+            - sh
+            - -euc
+            - |
+                mkdir -p /etc/grafana/provisioning/datasources
+                cat <<EOF > /etc/grafana/provisioning/datasources/ds.yaml
+                apiVersion: 1
+                datasources:
+                - name: Loki
+                  type: loki
+                  access: proxy
+                  orgId: 1
+                  url: http://loki:3100
+                  basicAuth: false
+                  isDefault: true
+                  version: 1
+                  editable: false
+                EOF
+                /run.sh
+        image: grafana/grafana:latest
+        container_name: "${PROJECT_NAME}_grafana"
+        restart: unless-stopped
+        ports:
+            - "3000:3000"
+        volumes:
+            - grafana_storage:/var/lib/grafana
+        networks:
+            - app-network
+
+    alertmanager:
+        image: prom/alertmanager:latest
+        container_name: words_alertmanager
+        volumes:
+            - ./config/devops/alertmanager.yml:/etc/alertmanager/alertmanager.yml
+        ports:
+            - "9093:9093"
+        command:
+            - --config.file=/etc/alertmanager/alertmanager.yml
+        networks:
+            - app-network
+
 volumes:
     db_volume:
         name: ${PROJECT_NAME}_db_volume
+    grafana_storage:
+        name: ${PROJECT_NAME}_grafana_storage
 
 networks:
     app-network:

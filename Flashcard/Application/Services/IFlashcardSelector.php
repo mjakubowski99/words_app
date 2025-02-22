@@ -13,5 +13,11 @@ interface IFlashcardSelector
     public function resetRepetitionsInSession(UserId $user_id): void;
 
     /** @return Flashcard[] */
+    public function selectToPoll(UserId $user_id, int $limit): array;
+
+    /** @return Flashcard[] */
     public function select(NextSessionFlashcards $next_session_flashcards, int $limit): array;
+
+    /** @return Flashcard[] */
+    public function selectFromPoll(NextSessionFlashcards $next_session_flashcards, int $limit): array;
 }

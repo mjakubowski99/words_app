@@ -15,13 +15,6 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
-/**
- * @method static AdminFactory          factory($count = null, $state = [])
- * @method static Builder<static>|Admin newModelQuery()
- * @method static Builder<static>|Admin newQuery()
- * @method static Builder<static>|Admin query()
- * @mixin \Eloquent
- */
 class Admin extends Authenticatable implements FilamentUser
 {
     use HasFactory;

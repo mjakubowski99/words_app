@@ -13,6 +13,7 @@ use Flashcard\Domain\ValueObjects\FlashcardDeckId;
 interface IFlashcardRepository
 {
     public function find(FlashcardId $id): Flashcard;
+    public function findMany(array $flashcard_ids): array;
 
     /** @param Flashcard[] $flashcards */
     public function createMany(array $flashcards): void;

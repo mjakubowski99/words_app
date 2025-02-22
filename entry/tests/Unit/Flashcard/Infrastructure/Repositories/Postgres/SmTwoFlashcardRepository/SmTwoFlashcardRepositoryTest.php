@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Flashcard\Infrastructure\Repositories\Postgres\SmTwoFlashcardRepository;
 
+use App\Models\FlashcardPollItem;
 use App\Models\User;
 use App\Models\Admin;
 use App\Models\Flashcard;
@@ -145,6 +146,11 @@ class SmTwoFlashcardRepositoryTest extends FlashcardTestCase
             ]),
         ];
 
+        $flashcard_poll = FlashcardPollItem::factory()->create([
+            'user_id' => $user->id,
+            'flashcard_id' => $sm_two_flashcards[1]->flashcard_id,
+        ]);
+
         // WHEN
         $results = $this->repository->getNextFlashcardsByDeck($user->getId(), $deck->getId(), 5, [], [
             FlashcardSortCriteria::HARD_FLASHCARDS_FIRST,
@@ -155,9 +161,11 @@ class SmTwoFlashcardRepositoryTest extends FlashcardTestCase
             FlashcardSortCriteria::RANDOMIZE_LATEST_FLASHCARDS_ORDER,
             FlashcardSortCriteria::PLANNED_FLASHCARDS_FOR_CURRENT_DATE_FIRST,
             FlashcardSortCriteria::LOWEST_REPETITION_INTERVAL_FIRST,
-        ], 2);
+        ], 2, true);
 
         // THEN
-        $this->assertCount(3, $results);
+        $this->assertCount(1, $results);
+        $this->assertSame($flashcard_poll->flashcard_id, $results[0]->getId()->getValue());
     }
+
 }

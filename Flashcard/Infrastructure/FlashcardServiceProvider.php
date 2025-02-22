@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure;
 
+use Flashcard\Application\Repository\IFlashcardPollRepository;
+use Flashcard\Infrastructure\Repositories\Postgres\FlashcardPollRepository;
 use Shared\Flashcard\IFlashcardFacade;
 use Illuminate\Support\ServiceProvider;
 use Shared\Flashcard\IFlashcardAdminFacade;
@@ -59,5 +61,6 @@ class FlashcardServiceProvider extends ServiceProvider
         $this->app->bind(IFlashcardReadRepository::class, FlashcardReadRepository::class);
         $this->app->bind(IFlashcardAdminFacade::class, FlashcardAdminFacade::class);
         $this->app->bind(IFlashcardDuplicateRepository::class, FlashcardDuplicateRepository::class);
+        $this->app->bind(IFlashcardPollRepository::class, FlashcardPollRepository::class);
     }
 }
