@@ -10,5 +10,5 @@ route:
 receivers:
   - name: grafana
     webhook_configs:
-      - url: "http://grafana:3000/api/prom/alertmanager"
+      - url: "https://webhook.site/e61d12cc-8cb5-4090-a22a-ce219f46becd"
         send_resolved: true

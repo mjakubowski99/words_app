@@ -9,10 +9,10 @@ use Flashcard\Application\Services\FlashcardPollManager;
 use Flashcard\Application\Services\IFlashcardSelector;
 use Flashcard\Domain\Models\Flashcard;
 use Flashcard\Domain\Models\FlashcardPoll;
+use Flashcard\Domain\Types\FlashcardIdCollection;
 use Flashcard\Domain\ValueObjects\FlashcardId;
 use Mockery\MockInterface;
 use Ramsey\Uuid\Uuid;
-use Shared\Utils\ValueObjects\Language;
 use Shared\Utils\ValueObjects\UserId;
 use Tests\TestCase;
 
@@ -33,7 +33,7 @@ class FlashcardPollManagerTest extends TestCase
             'selector' => $this->selector,
         ]);
         $this->repository->shouldReceive('save')->andReturn();
-        $this->repository->shouldReceive('resetLeitnerLevelIfNeeded')->andReturn();
+        $this->repository->shouldReceive('resetLeitnerLevelIfMaxLevelExceeded')->andReturn();
     }
 
     /**
@@ -74,10 +74,11 @@ class FlashcardPollManagerTest extends TestCase
     {
         // GIVEN
         $user_id = new UserId(Uuid::uuid4()->toString());
-        $to_purge = [
+        $to_purge = new FlashcardIdCollection([
             new FlashcardId(9),
             new FlashcardId(10)
-        ];
+        ]);
+
         $to_add = [
             \Mockery::mock(Flashcard::class),
             \Mockery::mock(Flashcard::class),

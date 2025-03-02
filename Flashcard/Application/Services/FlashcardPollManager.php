@@ -7,6 +7,7 @@ namespace Flashcard\Application\Services;
 use Flashcard\Application\Repository\IFlashcardPollRepository;
 use Flashcard\Domain\Models\Flashcard;
 use Flashcard\Domain\Models\FlashcardPoll;
+use Flashcard\Domain\Types\FlashcardIdCollection;
 use Shared\Utils\ValueObjects\UserId;
 
 class FlashcardPollManager
@@ -31,19 +32,19 @@ class FlashcardPollManager
                 $this->selector->selectToPoll($user_id, $poll->countToFillPoll())
             );
 
-            $poll->push($flashcard_ids);
+            $poll->push(FlashcardIdCollection::fromArray($flashcard_ids));
         } else if ($poll->areFlashcardsToPurge()) {
             $limit = $poll->getCountToPurge();
             $flashcard_ids = array_map(
                 fn(Flashcard $flashcard) => $flashcard->getId(),
                 $this->selector->selectToPoll($user_id, $limit)
             );
-            $poll->replaceWithNew($flashcard_ids);
+            $poll->replaceWithNew(FlashcardIdCollection::fromArray($flashcard_ids));
         }
 
         $this->repository->save($poll);
 
-        $this->repository->resetLeitnerLevelIfNeeded($user_id);
+        $this->repository->resetLeitnerLevelIfMaxLevelExceeded($user_id);
 
         return $poll;
     }

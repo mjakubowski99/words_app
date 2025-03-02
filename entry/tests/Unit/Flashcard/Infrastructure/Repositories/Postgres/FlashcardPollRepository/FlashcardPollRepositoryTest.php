@@ -4,6 +4,9 @@ namespace Tests\Unit\Flashcard\Infrastructure\Repositories\Postgres\FlashcardPol
 
 use App\Models\FlashcardPollItem;
 use Flashcard\Domain\Models\FlashcardPoll;
+use Flashcard\Domain\Models\LeitnerLevelUpdate;
+use Flashcard\Domain\Models\Rating;
+use Flashcard\Domain\Types\FlashcardIdCollection;
 use Flashcard\Domain\ValueObjects\FlashcardId;
 use Flashcard\Infrastructure\Repositories\Postgres\FlashcardPollRepository;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -98,9 +101,9 @@ class FlashcardPollRepositoryTest extends FlashcardTestCase
         $poll = new FlashcardPoll(
             $user->getId(),
             1,
-            [new FlashcardId($poll_item->flashcard_id)]
+            FlashcardIdCollection::fromArray([new FlashcardId($poll_item->flashcard_id)])
         );
-        $poll->replaceWithNew([$flashcard->getId()]);
+        $poll->replaceWithNew(FlashcardIdCollection::fromArray([$flashcard->getId()]));
 
         // WHEN
         $this->repository->save($poll);
@@ -127,8 +130,8 @@ class FlashcardPollRepositoryTest extends FlashcardTestCase
         $poll = new FlashcardPoll(
             $user->getId(),
             1,
-            [],
-            [new FlashcardId($flashcard->id)],
+            new FlashcardIdCollection([]),
+            new FlashcardIdCollection([new FlashcardId($flashcard->id)]),
         );
 
         // WHEN
@@ -187,7 +190,7 @@ class FlashcardPollRepositoryTest extends FlashcardTestCase
         ]);
 
         // WHEN
-        $this->repository->resetLeitnerLevelIfNeeded($user->getId());
+        $this->repository->resetLeitnerLevelIfMaxLevelExceeded($user->getId(), Rating::maxLeitnerLevel());
 
         // THEN
         $this->assertDatabaseHas('flashcard_poll_items', [
@@ -214,7 +217,7 @@ class FlashcardPollRepositoryTest extends FlashcardTestCase
         ]);
 
         // WHEN
-        $this->repository->resetLeitnerLevelIfNeeded($user->getId());
+        $this->repository->resetLeitnerLevelIfMaxLevelExceeded($user->getId(), Rating::maxLeitnerLevel());
 
         // THEN
         $this->assertDatabaseHas('flashcard_poll_items', [
@@ -230,7 +233,7 @@ class FlashcardPollRepositoryTest extends FlashcardTestCase
     {
         // GIVEN
         $user = $this->createUser();
-        $step = 2;
+        $step = Rating::maxRating();
 
         $other_poll_item = $this->createFlashcardPollItem([
             'user_id' => $user->id,
@@ -242,13 +245,19 @@ class FlashcardPollRepositoryTest extends FlashcardTestCase
             'easy_ratings_count' => 3,
         ]);
 
+        $update = new LeitnerLevelUpdate(
+            $user->getId(),
+            FlashcardIdCollection::fromArray([new FlashcardId($poll_item->flashcard_id)]),
+            $step
+        );
+
         // WHEN
-        $this->repository->incrementEasyRatingsCountAndLeitnerLevel($user->getId(), [new FlashcardId($poll_item->flashcard_id)], $step);
+        $this->repository->saveLeitnerLevelUpdated($update);
 
         // THEN
         $this->assertDatabaseHas('flashcard_poll_items', [
             'id' => $poll_item->id,
-            'leitner_level' => 2+$step,
+            'leitner_level' => 2+$step+1,
             'easy_ratings_count' => 4,
         ]);
         $this->assertDatabaseHas('flashcard_poll_items', [

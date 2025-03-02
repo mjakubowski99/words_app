@@ -3,7 +3,9 @@
 namespace Flashcard\Infrastructure\Mappers\Postgres;
 
 use Flashcard\Domain\Models\FlashcardPoll;
+use Flashcard\Domain\Models\LeitnerLevelUpdate;
 use Flashcard\Domain\Models\Rating;
+use Flashcard\Domain\Types\FlashcardIdCollection;
 use Flashcard\Domain\ValueObjects\FlashcardId;
 use Illuminate\Support\Facades\DB;
 use Shared\Utils\ValueObjects\UserId;
@@ -28,30 +30,24 @@ class FlashcardPollMapper
         return new FlashcardPoll(
             $user_id,
             $count,
-            $flashcards_to_reject
+            FlashcardIdCollection::fromArray($flashcards_to_reject),
         );
     }
 
-    public function incrementEasyRatingsCountAndLeitnerLevel(
-        UserId $user_id,
-        array $flashcard_ids,
-        int $leitner_step,
-    ): void
+    public function saveLeitnerLevelUpdate(LeitnerLevelUpdate $update): bool
     {
-        $is_easy = Rating::maxRating() === $leitner_step;
-
         $update_array = [
-            'leitner_level' => DB::raw("leitner_level+{$leitner_step}+1"),
+            'leitner_level' => DB::raw("leitner_level+{$update->getLeitnerLevelIncrementStep()}+1"),
             'updated_at' => now(),
         ];
 
-        if ($is_easy) {
+        if ($update->incrementEasyRatingsCount()) {
             $update_array['easy_ratings_count'] = DB::raw('easy_ratings_count+1');
         }
 
         $this->db::table('flashcard_poll_items')
-            ->where('user_id', $user_id)
-            ->whereIn('flashcard_id', $flashcard_ids)
+            ->where('user_id', $update->getUserId())
+            ->whereIn('flashcard_id', $update->getFlashcardIds()->getAll())
             ->update($update_array);
     }
 
@@ -59,7 +55,7 @@ class FlashcardPollMapper
     {
         $this->db::table('flashcard_poll_items')
             ->where('user_id', $poll->getUserId())
-            ->whereIn('flashcard_id', $poll->getFlashcardIdsToPurge())
+            ->whereIn('flashcard_id', $poll->getFlashcardIdsToPurge()->getAll())
             ->delete();
 
         $insert_data = [];
@@ -100,13 +96,13 @@ class FlashcardPollMapper
             })->all();
     }
 
-    public function resetLeitnerLevelIfNeeded(UserId $user_id): void
+    public function resetLeitnerLevelIfMaxLevelExceeded(UserId $user_id, int $max_level): void
     {
-        $max = $this->db::table('flashcard_poll_items')
+        $current_max = $this->db::table('flashcard_poll_items')
             ->where('user_id', $user_id)
             ->max('leitner_level');
 
-        if ($max > 20000) {
+        if ($current_max > $max_level) {
             $this->db::table('flashcard_poll_items')
                 ->where('user_id', $user_id)
                 ->update(['leitner_level' => 0]);

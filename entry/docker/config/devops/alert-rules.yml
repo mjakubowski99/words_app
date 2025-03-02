@@ -7,11 +7,21 @@ groups:
 
   - name: alerting_rules
     rules:
-      - alert: HighDiskUsage
-        expr: 100 - ((node_filesystem_avail_bytes{job="node_exporter",mountpoint="/",fstype!="rootfs"} * 100) / node_filesystem_size_bytes{job="node_exporter",mountpoint="/",fstype!="rootfs"}) > 90
-        for: 10s
+#      - alert: HighDiskUsage
+#        expr: 100 - ((node_filesystem_avail_bytes{job="node_exporter",mountpoint="/",fstype!="rootfs"} * 100) / node_filesystem_size_bytes{job="node_exporter",mountpoint="/",fstype!="rootfs"}) > 90
+#        for: 10s
+#        labels:
+#          severity: critical
+#        annotations:
+#          summary: "🚨 Low storage value {{ $labels.instance }}"
+#          description: "{{ $labels.instance }} uses {{ $value }}% of disk! Fix this bro!"
+      - alert: Php-fpmMax-childrenReached
+        expr: sum(phpfpm_max_children_reached) by (instance) > 0
+        for: 0m
         labels:
-          severity: critical
+          severity: warning
         annotations:
-          summary: "🚨 Low storage value {{ $labels.instance }}"
-          description: "{{ $labels.instance }} uses {{ $value }}% of disk! Scale it fast bro!"
+          summary: PHP-FPM max-children reached (instance {{ $labels.instance }})
+          description: "PHP-FPM reached max children - {{ $labels.instance }}\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+
+

@@ -2,6 +2,7 @@
 
 namespace Flashcard\Domain\Models;
 
+use Flashcard\Domain\Types\FlashcardIdCollection;
 use Flashcard\Domain\ValueObjects\FlashcardId;
 use Shared\Utils\ValueObjects\UserId;
 
@@ -9,18 +10,19 @@ class FlashcardPoll
 {
     private const int POLL_LIMIT = 30;
     private const int EASY_REPETITIONS_COUNT_TO_PURGE = 3;
-
-    private array $flashcard_ids_to_purge = [];
+    private FlashcardIdCollection $flashcard_ids_to_purge;
 
     public function __construct(
-        private UserId $user_id,
-        private int $poll_size,
-        private array $purge_candidates = [],
-        private array $flashcard_ids_to_add = [],
+        private readonly UserId $user_id,
+        private readonly int $poll_size,
+        private FlashcardIdCollection $purge_candidates = new FlashcardIdCollection(),
+        private FlashcardIdCollection $flashcard_ids_to_add = new FlashcardIdCollection(),
     ) {
         if ($this->poll_size > $this->getPollLimit()) {
             throw new \UnexpectedValueException('Poll size cannot be bigger than');
         }
+
+        $this->flashcard_ids_to_purge = new FlashcardIdCollection();
     }
 
     public function getEasyRepetitionsCountToPurge(): int
@@ -33,7 +35,7 @@ class FlashcardPoll
         return $this->user_id;
     }
 
-    public function replaceWithNew(array $flashcard_ids): void
+    public function replaceWithNew(FlashcardIdCollection $flashcard_ids): void
     {
         if (!$this->areFlashcardsToPurge() && !$this->pollIsFull()) {
             return;
@@ -41,14 +43,14 @@ class FlashcardPoll
 
         $i = 0;
         foreach ($this->getPurgeCandidates() as $flashcard_to_reject) {
-            if (array_key_exists($i, $flashcard_ids)) {
+            if ($flashcard_ids[$i]) {
                 $this->replace($flashcard_to_reject, $flashcard_ids[$i]);
             }
             $i++;
         }
     }
 
-    public function push(FlashcardId|array $id): void
+    public function push(FlashcardId|FlashcardIdCollection $id): void
     {
         if (!is_iterable($id)) {
             $id = [$id];
@@ -92,17 +94,17 @@ class FlashcardPoll
         return count($this->purge_candidates);
     }
 
-    public function getPurgeCandidates(): array
+    public function getPurgeCandidates(): FlashcardIdCollection
     {
         return $this->purge_candidates;
     }
 
-    public function getFlashcardIdsToPurge(): array
+    public function getFlashcardIdsToPurge(): FlashcardIdCollection
     {
         return $this->flashcard_ids_to_purge;
     }
 
-    public function getFlashcardIdsToAdd(): array
+    public function getFlashcardIdsToAdd(): FlashcardIdCollection
     {
         return $this->flashcard_ids_to_add;
     }

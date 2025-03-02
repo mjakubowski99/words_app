@@ -4,20 +4,15 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\Services\SmTwo;
 
-use Flashcard\Application\Repository\IFlashcardPollRepository;
+use Flashcard\Application\Repository\ISmTwoFlashcardRepository;
+use Flashcard\Application\Services\IRepetitionAlgorithm;
 use Flashcard\Domain\Models\RateableSessionFlashcard;
 use Flashcard\Domain\Models\RateableSessionFlashcards;
-use Flashcard\Application\Services\IRepetitionAlgorithm;
-use Flashcard\Application\Repository\ISmTwoFlashcardRepository;
-use Flashcard\Domain\Models\Rating;
 
 class SmTwoRepetitionAlgorithm implements IRepetitionAlgorithm
 {
-    public const int LEITNER_MAX_LEVEL = Rating::VERY_GOOD->value;
-
     public function __construct(
         private ISmTwoFlashcardRepository $repository,
-        private IFlashcardPollRepository $poll_repository,
     ) {}
 
     public function handle(RateableSessionFlashcards $session_flashcards): void
@@ -45,12 +40,6 @@ class SmTwoRepetitionAlgorithm implements IRepetitionAlgorithm
                 $sm_two_flashcards->updateByRating(
                     $session_flashcard->getFlashcardId(),
                     $session_flashcard->getRating(),
-                );
-
-                $this->poll_repository->incrementEasyRatingsCountAndLeitnerLevel(
-                    $session_flashcards->getUserId(),
-                    [$session_flashcard->getFlashcardId()],
-                    $session_flashcard->getRating()->leitnerLevel(),
                 );
             }
         }

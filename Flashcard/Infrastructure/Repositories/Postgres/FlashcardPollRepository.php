@@ -4,6 +4,7 @@ namespace Flashcard\Infrastructure\Repositories\Postgres;
 
 use Flashcard\Application\Repository\IFlashcardPollRepository;
 use Flashcard\Domain\Models\FlashcardPoll;
+use Flashcard\Domain\Models\LeitnerLevelUpdate;
 use Flashcard\Domain\ValueObjects\FlashcardId;
 use Flashcard\Infrastructure\Mappers\Postgres\FlashcardPollMapper;
 use Shared\Utils\ValueObjects\UserId;
@@ -22,9 +23,9 @@ class FlashcardPollRepository implements IFlashcardPollRepository
         return $poll ?: new FlashcardPoll($user_id, 0);
     }
 
-    public function incrementEasyRatingsCountAndLeitnerLevel(UserId $user_id, array $flashcard_ids, int $leitner_step): void
+    public function saveLeitnerLevelUpdate(LeitnerLevelUpdate $update): void
     {
-        $this->mapper->incrementEasyRatingsCountAndLeitnerLevel($user_id, $flashcard_ids, $leitner_step);
+        $this->mapper->saveLeitnerLevelUpdate($update);
     }
 
     public function save(FlashcardPoll $poll): void
@@ -37,9 +38,8 @@ class FlashcardPollRepository implements IFlashcardPollRepository
         return $this->mapper->selectNextLeitnerFlashcard($user_id, $limit);
     }
 
-
-    public function resetLeitnerLevelIfNeeded(UserId $user_id): void
+    public function resetLeitnerLevelIfMaxLevelExceeded(UserId $user_id, int $max_level): void
     {
-        $this->mapper->resetLeitnerLevelIfNeeded($user_id);
+        $this->mapper->resetLeitnerLevelIfMaxLevelExceeded($user_id, $max_level);
     }
 }
