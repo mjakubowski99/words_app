@@ -70,6 +70,8 @@ services:
             - ./config/devops/alert-rules.yml:/etc/prometheus/alert-rules.yml
         ports:
             - "9091:9090"
+        extra_hosts:
+            - "host.docker.internal:host-gateway"
         networks:
             - app-network
 
@@ -92,8 +94,10 @@ services:
         ports:
             - "9253:9253"
         environment:
-            PHP_FPM_SCRAPE_URI: "tcp://php:9000/status"
-            PHP_FPM_LOG_LEVEL: "debug"
+            - PHP_FPM_SCRAPE_URI=tcp://php:9000/status
+            - PHP_FPM_FIX_PROCESS_COUNT=true
+        depends_on:
+            - php
         networks:
             - app-network
 
@@ -162,6 +166,23 @@ services:
             - "9093:9093"
         command:
             - --config.file=/etc/alertmanager/alertmanager.yml
+        networks:
+            - app-network
+
+    cadvisor:
+        image: gcr.io/cadvisor/cadvisor:v0.47.2
+        container_name: "${PROJECT_NAME}_cadvisor"
+        privileged: true
+        devices:
+            - /dev/kmsg:/dev/kmsg
+        volumes:
+            - /:/rootfs:ro
+            - /var/run:/var/run:ro
+            - /sys:/sys:ro
+            - /var/lib/docker/:/var/lib/docker:ro
+            - /dev/disk/:/dev/disk:ro
+        ports:
+            - "8080:8080"
         networks:
             - app-network
 

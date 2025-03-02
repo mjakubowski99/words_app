@@ -7,21 +7,30 @@ groups:
 
   - name: alerting_rules
     rules:
-#      - alert: HighDiskUsage
-#        expr: 100 - ((node_filesystem_avail_bytes{job="node_exporter",mountpoint="/",fstype!="rootfs"} * 100) / node_filesystem_size_bytes{job="node_exporter",mountpoint="/",fstype!="rootfs"}) > 90
-#        for: 10s
-#        labels:
-#          severity: critical
-#        annotations:
-#          summary: "🚨 Low storage value {{ $labels.instance }}"
-#          description: "{{ $labels.instance }} uses {{ $value }}% of disk! Fix this bro!"
-      - alert: Php-fpmMax-childrenReached
-        expr: sum(phpfpm_max_children_reached) by (instance) > 0
-        for: 0m
+      - alert: HighDiskUsage
+        expr: 100 - ((node_filesystem_avail_bytes{job="node_exporter",mountpoint="/",fstype!="rootfs"} * 100) / node_filesystem_size_bytes{job="node_exporter",mountpoint="/",fstype!="rootfs"}) > 90
+        for: 10s
+        labels:
+          severity: critical
+        annotations:
+          summary: "🚨 Low storage value {{ $labels.instance }}"
+          description: "{{ $labels.instance }} uses {{ $value }}% of disk! Fix this bro!"
+         
+      - alert: PhpFpmMaxChildrenReached
+        expr: rate(phpfpm_max_children_reached[1m]) > 0
         labels:
           severity: warning
         annotations:
-          summary: PHP-FPM max-children reached (instance {{ $labels.instance }})
-          description: "PHP-FPM reached max children - {{ $labels.instance }}\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
-
-
+          summary: "🚨 PHP-FPM max children limit reached"
+          description: |
+            PHP-FPM has reached max_children limit (currently set to 1)
+            
+            🔍 Details:
+            - Rate: {{ $value | printf "%.2f" }}/minute
+            - Instance: {{ $labels.instance }}
+            - Job: {{ $labels.job }}
+            
+            💡 Possible solutions:
+            1. Increase pm.max_children in php-fpm.conf
+            2. Optimize PHP scripts to reduce execution time
+            3. Check for memory leaks

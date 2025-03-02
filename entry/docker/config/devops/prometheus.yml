@@ -13,6 +13,27 @@ scrape_configs:
     static_configs:
       - targets:
           - php-fpm-exporter:9253
+    metrics_path: /metrics
+    scrape_interval: 5s
+
+  - job_name: cadvisor
+    static_configs:
+      - targets:
+          - cadvisor:8080
+    metrics_path: /metrics
+    scrape_interval: 5s
+
+  - job_name: prometheus
+    static_configs:
+      - targets:
+        - localhost:9090
+
+  - job_name: alertmanager
+    static_configs:
+      - targets:
+        - alertmanager:9093
+    metrics_path: /metrics
+    scrape_interval: 5s
 
 alerting:
   alertmanagers:
