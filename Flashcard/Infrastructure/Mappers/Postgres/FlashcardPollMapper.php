@@ -1,14 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Flashcard\Infrastructure\Mappers\Postgres;
 
-use Flashcard\Domain\Models\FlashcardPoll;
-use Flashcard\Domain\Models\LeitnerLevelUpdate;
-use Flashcard\Domain\Models\Rating;
-use Flashcard\Domain\Types\FlashcardIdCollection;
-use Flashcard\Domain\ValueObjects\FlashcardId;
 use Illuminate\Support\Facades\DB;
 use Shared\Utils\ValueObjects\UserId;
+use Flashcard\Domain\Models\FlashcardPoll;
+use Flashcard\Domain\ValueObjects\FlashcardId;
+use Flashcard\Domain\Models\LeitnerLevelUpdate;
+use Flashcard\Domain\Types\FlashcardIdCollection;
 
 class FlashcardPollMapper
 {
@@ -25,7 +26,7 @@ class FlashcardPollMapper
 
         $count = $this->db::table('flashcard_poll_items')->where('user_id', $user_id->getValue())->count();
 
-        $flashcards_to_reject = array_map(fn(object $data) => new FlashcardId($data->flashcard_id), $flashcards);
+        $flashcards_to_reject = array_map(fn (object $data) => new FlashcardId($data->flashcard_id), $flashcards);
 
         return new FlashcardPoll(
             $user_id,
@@ -49,6 +50,8 @@ class FlashcardPollMapper
             ->where('user_id', $update->getUserId())
             ->whereIn('flashcard_id', $update->getFlashcardIds()->getAll())
             ->update($update_array);
+
+        return true;
     }
 
     public function save(FlashcardPoll $poll): void

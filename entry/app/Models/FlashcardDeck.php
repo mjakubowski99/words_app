@@ -4,15 +4,18 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use Flashcard\Domain\Models\Deck;
-use Flashcard\Domain\ValueObjects\FlashcardDeckId;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Shared\Enum\LanguageLevel;
+use Flashcard\Domain\Models\Deck;
 use Shared\Utils\ValueObjects\UserId;
+use Illuminate\Database\Eloquent\Model;
+use Flashcard\Domain\ValueObjects\FlashcardDeckId;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
+/**
+ * @property User $user
+ */
 class FlashcardDeck extends Model
 {
     use HasFactory;

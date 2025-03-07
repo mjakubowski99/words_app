@@ -9,7 +9,7 @@ use Flashcard\Domain\ValueObjects\SessionId;
 use Flashcard\Domain\Exceptions\InvalidNextSessionFlashcards;
 use Flashcard\Domain\Exceptions\TooManySessionFlashcardsException;
 
-class NextSessionFlashcards
+class NextSessionFlashcards extends SessionFlashcardsBase
 {
     public const UNRATED_LIMIT = 5;
 

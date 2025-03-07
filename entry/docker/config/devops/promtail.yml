@@ -24,3 +24,18 @@ scrape_configs:
         labels:
           job: laravelLogs
           __path__: /var/laravel/storage/*log
+
+  - job_name: docker
+    pipeline_stages:
+      - docker: {}
+      - labels:
+          container_name:
+      - template:
+          source: output
+          template: '[{{ .container_name }}] {{ .message }}'
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: docker
+          __path__: /var/docker/containers/*/*log

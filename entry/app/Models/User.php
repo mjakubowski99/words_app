@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Laravel\Sanctum\HasApiTokens;
 use Flashcard\Domain\Models\Owner;
+use Shared\Utils\ValueObjects\UserId;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
-use Shared\Utils\ValueObjects\UserId;
 
 class User extends Authenticatable
 {

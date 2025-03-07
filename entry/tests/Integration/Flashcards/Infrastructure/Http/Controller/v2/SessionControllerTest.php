@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace Tests\Integration\Flashcards\Infrastructure\Http\Controller\v2;
 
+use Tests\TestCase;
+use App\Models\User;
 use App\Models\Admin;
 use App\Models\Flashcard;
 use App\Models\FlashcardDeck;
-use App\Models\FlashcardPollItem;
-use App\Models\LearningSession;
-use App\Models\LearningSessionFlashcard;
 use App\Models\SmTwoFlashcard;
-use App\Models\User;
+use App\Models\LearningSession;
+use App\Models\FlashcardPollItem;
 use Flashcard\Domain\Models\Rating;
+use App\Models\LearningSessionFlashcard;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Tests\TestCase;
 
 class SessionControllerTest extends TestCase
 {

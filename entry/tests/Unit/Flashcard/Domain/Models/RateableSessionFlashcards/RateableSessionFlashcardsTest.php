@@ -11,6 +11,7 @@ use Shared\Utils\ValueObjects\Uuid;
 use Shared\Utils\ValueObjects\UserId;
 use Flashcard\Domain\ValueObjects\SessionId;
 use Flashcard\Domain\ValueObjects\FlashcardId;
+use Flashcard\Domain\ValueObjects\FlashcardDeckId;
 use Flashcard\Domain\Models\RateableSessionFlashcard;
 use Flashcard\Domain\ValueObjects\SessionFlashcardId;
 use Flashcard\Domain\Models\RateableSessionFlashcards;
@@ -33,6 +34,7 @@ class RateableSessionFlashcardsTest extends TestCase
         $this->model = new RateableSessionFlashcards(
             new SessionId(1),
             UserId::fromString(Uuid::make()->getValue()),
+            new FlashcardDeckId(1),
             SessionStatus::FINISHED,
             9,
             10,
@@ -48,6 +50,7 @@ class RateableSessionFlashcardsTest extends TestCase
         $this->model = new RateableSessionFlashcards(
             new SessionId(1),
             UserId::fromString(Uuid::make()->getValue()),
+            new FlashcardDeckId(1),
             SessionStatus::STARTED,
             9,
             10,
@@ -78,6 +81,7 @@ class RateableSessionFlashcardsTest extends TestCase
         $this->model = new RateableSessionFlashcards(
             new SessionId(1),
             UserId::fromString(Uuid::make()->getValue()),
+            new FlashcardDeckId(1),
             SessionStatus::STARTED,
             9,
             10,
@@ -108,6 +112,7 @@ class RateableSessionFlashcardsTest extends TestCase
         $this->model = new RateableSessionFlashcards(
             new SessionId(1),
             UserId::fromString(Uuid::make()->getValue()),
+            new FlashcardDeckId(1),
             SessionStatus::STARTED,
             9,
             10,

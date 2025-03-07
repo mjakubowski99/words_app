@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Flashcard\Domain\Models;
 
-use Flashcard\Domain\Types\FlashcardIdCollection;
-use Flashcard\Domain\ValueObjects\FlashcardId;
 use Shared\Utils\ValueObjects\UserId;
+use Flashcard\Domain\ValueObjects\FlashcardId;
+use Flashcard\Domain\Types\FlashcardIdCollection;
 
 class FlashcardPoll
 {
@@ -46,7 +48,7 @@ class FlashcardPoll
             if ($flashcard_ids[$i]) {
                 $this->replace($flashcard_to_reject, $flashcard_ids[$i]);
             }
-            $i++;
+            ++$i;
         }
     }
 
@@ -76,7 +78,7 @@ class FlashcardPoll
 
     public function canAddNext(): bool
     {
-        return $this->poll_size+1 < $this->getPollLimit();
+        return $this->poll_size + 1 < $this->getPollLimit();
     }
 
     public function pollIsFull(): bool

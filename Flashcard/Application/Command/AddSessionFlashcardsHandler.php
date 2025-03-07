@@ -20,7 +20,7 @@ class AddSessionFlashcardsHandler
     {
         $next_session_flashcards = $this->next_session_flashcards_repository->find($command->getSessionId());
 
-        if ($next_session_flashcards->getUnratedCount() >= $display_limit + 1) {
+        if ($next_session_flashcards->getUnratedCount() >= $display_limit) {
             return;
         }
 

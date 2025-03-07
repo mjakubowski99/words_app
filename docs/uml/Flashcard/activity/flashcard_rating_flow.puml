@@ -1,0 +1,31 @@
+@startuml Flashcard Rating Flow
+
+title Flashcard Rating Flow
+
+start
+
+:User submits flashcard ratings;
+
+:RateFlashcardsHandler receives ratings;
+
+:Verify user is session owner;
+
+:Apply ratings to session flashcards;
+
+:Save updated session flashcards;
+
+:Apply repetition algorithm;
+note right
+  Determines when flashcards
+  should be shown again
+end note
+
+:Update flashcard poll;
+note right
+  Updates Leitner levels
+  based on ratings
+end note
+
+stop
+
+@enduml 

@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Flashcard\Infrastructure\Repositories\Postgres\SmTwoFlashcardRepository;
 
-use App\Models\FlashcardPollItem;
 use App\Models\User;
 use App\Models\Admin;
 use App\Models\Flashcard;
 use App\Models\FlashcardDeck;
 use App\Models\SmTwoFlashcard;
+use App\Models\FlashcardPollItem;
 use Tests\Base\FlashcardTestCase;
 use Flashcard\Domain\Models\SmTwoFlashcards;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -167,5 +167,4 @@ class SmTwoFlashcardRepositoryTest extends FlashcardTestCase
         $this->assertCount(1, $results);
         $this->assertSame($flashcard_poll->flashcard_id, $results[0]->getId()->getValue());
     }
-
 }

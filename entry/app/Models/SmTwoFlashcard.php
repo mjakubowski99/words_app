@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Builder;
-use Database\Factories\SmTwoFlashcardFactory;
 use Flashcard\Domain\ValueObjects\FlashcardId;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
+/**
+ * @property User $user
+ */
 class SmTwoFlashcard extends Model
 {
     use HasFactory;

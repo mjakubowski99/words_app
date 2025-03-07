@@ -7,8 +7,6 @@ namespace App\Models;
 use Filament\Panel;
 use Flashcard\Domain\Models\Owner;
 use Shared\Enum\FlashcardOwnerType;
-use Database\Factories\AdminFactory;
-use Illuminate\Database\Eloquent\Builder;
 use Flashcard\Domain\ValueObjects\OwnerId;
 use Filament\Models\Contracts\FilamentUser;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;

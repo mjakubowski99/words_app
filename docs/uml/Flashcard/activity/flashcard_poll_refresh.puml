@@ -1,0 +1,31 @@
+@startuml Flashcard Poll Refresh Flow
+
+title Flashcard Poll Refresh Flow
+
+start
+
+:User triggers poll refresh;
+
+:FlashcardPollManager.refresh is called;
+
+if (Poll is full?) then (no)
+  :Select flashcards to fill poll;
+  :Add flashcards to poll;
+else (yes)
+  if (Flashcards to purge?) then (yes)
+    :Select new flashcards;
+    :Replace purged flashcards with new ones;
+  else (no)
+    :No changes needed;
+  endif
+endif
+
+:Save updated poll;
+
+:Reset Leitner levels if max level exceeded;
+
+:Return updated poll;
+
+stop
+
+@enduml 

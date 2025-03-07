@@ -5,16 +5,17 @@ declare(strict_types=1);
 namespace App\Models;
 
 use Shared\Models\Emoji;
-use Illuminate\Support\Carbon;
 use Shared\Enum\LanguageLevel;
 use Illuminate\Database\Eloquent\Model;
 use Shared\Utils\ValueObjects\Language;
-use Database\Factories\FlashcardFactory;
-use Illuminate\Database\Eloquent\Builder;
 use Flashcard\Domain\ValueObjects\FlashcardId;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
+/**
+ * @property User          $user
+ * @property FlashcardDeck $deck
+ */
 class Flashcard extends Model
 {
     use HasFactory;

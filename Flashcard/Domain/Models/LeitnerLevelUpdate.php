@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace Flashcard\Domain\Models;
 
-use Flashcard\Domain\Types\FlashcardIdCollection;
 use Shared\Utils\ValueObjects\UserId;
+use Flashcard\Domain\Types\FlashcardIdCollection;
 
 class LeitnerLevelUpdate
 {
     public function __construct(
-        private UserId                $user_id,
+        private UserId $user_id,
         private FlashcardIdCollection $ids,
-        private readonly int          $leitner_level_increment_step,
+        private readonly int $leitner_level_increment_step,
     ) {}
 
     public function getUserId(): UserId

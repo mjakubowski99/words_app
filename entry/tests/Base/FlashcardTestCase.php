@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Tests\Base;
 
-use App\Models\FlashcardPoll;
-use App\Models\FlashcardPollItem;
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\Flashcard;
@@ -13,6 +11,7 @@ use App\Models\FlashcardDeck;
 use App\Models\SmTwoFlashcard;
 use Shared\Enum\LanguageLevel;
 use App\Models\LearningSession;
+use App\Models\FlashcardPollItem;
 use Flashcard\Domain\Models\Deck;
 use Shared\Utils\ValueObjects\UserId;
 use App\Models\LearningSessionFlashcard;

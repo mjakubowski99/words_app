@@ -1,21 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Flashcard\Infrastructure\Repositories\Postgres;
 
-use Flashcard\Application\Repository\IFlashcardPollRepository;
+use Shared\Utils\ValueObjects\UserId;
 use Flashcard\Domain\Models\FlashcardPoll;
 use Flashcard\Domain\Models\LeitnerLevelUpdate;
-use Flashcard\Domain\ValueObjects\FlashcardId;
+use Flashcard\Application\Repository\IFlashcardPollRepository;
 use Flashcard\Infrastructure\Mappers\Postgres\FlashcardPollMapper;
-use Shared\Utils\ValueObjects\UserId;
 
 class FlashcardPollRepository implements IFlashcardPollRepository
 {
+    public function __construct(private FlashcardPollMapper $mapper) {}
 
-    public function __construct(private FlashcardPollMapper $mapper)
-    {
-
-    }
     public function findByUser(UserId $user_id, int $learnt_cards_purge_limit): FlashcardPoll
     {
         $poll = $this->mapper->findByUser($user_id, $learnt_cards_purge_limit);

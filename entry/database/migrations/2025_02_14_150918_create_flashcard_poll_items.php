@@ -1,15 +1,15 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
+declare(strict_types=1);
 
-return new class extends Migration
-{
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
+
+return new class extends Migration {
     public function up(): void
     {
         Schema::create('flashcard_poll_items', function (Blueprint $table) {
-
             $table->id();
             $table->uuid('user_id');
             $table->unsignedBigInteger('flashcard_id');

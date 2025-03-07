@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure;
 
-use Flashcard\Application\Repository\IFlashcardPollRepository;
-use Flashcard\Infrastructure\Repositories\Postgres\FlashcardPollRepository;
 use Shared\Flashcard\IFlashcardFacade;
 use Illuminate\Support\ServiceProvider;
 use Shared\Flashcard\IFlashcardAdminFacade;
@@ -17,6 +15,7 @@ use Flashcard\Application\Services\IRepetitionAlgorithm;
 use Flashcard\Application\Repository\IFlashcardRepository;
 use Flashcard\Application\Repository\ISessionReadRepository;
 use Flashcard\Application\Repository\IFlashcardDeckRepository;
+use Flashcard\Application\Repository\IFlashcardPollRepository;
 use Flashcard\Application\Repository\IFlashcardReadRepository;
 use Flashcard\Application\Repository\ISmTwoFlashcardRepository;
 use Flashcard\Application\Services\AiGenerators\GeminiGenerator;
@@ -32,6 +31,7 @@ use Flashcard\Infrastructure\Repositories\Postgres\FlashcardRepository;
 use Flashcard\Infrastructure\Repositories\Postgres\SessionReadRepository;
 use Flashcard\Application\Repository\IRateableSessionFlashcardsRepository;
 use Flashcard\Infrastructure\Repositories\Postgres\FlashcardDeckRepository;
+use Flashcard\Infrastructure\Repositories\Postgres\FlashcardPollRepository;
 use Flashcard\Infrastructure\Repositories\Postgres\FlashcardReadRepository;
 use Flashcard\Infrastructure\Repositories\Postgres\SmTwoFlashcardRepository;
 use Flashcard\Infrastructure\Repositories\Postgres\FlashcardDeckReadRepository;

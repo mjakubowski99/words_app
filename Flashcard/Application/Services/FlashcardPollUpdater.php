@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\Services;
 
-use Flashcard\Application\Repository\IFlashcardPollRepository;
 use Flashcard\Domain\Models\LeitnerLevelUpdate;
-use Flashcard\Domain\Models\RateableSessionFlashcards;
 use Flashcard\Domain\Types\FlashcardIdCollection;
+use Flashcard\Domain\Models\RateableSessionFlashcards;
+use Flashcard\Application\Repository\IFlashcardPollRepository;
 
 class FlashcardPollUpdater
 {

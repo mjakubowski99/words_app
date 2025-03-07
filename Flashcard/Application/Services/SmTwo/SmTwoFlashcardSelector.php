@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\Services\SmTwo;
 
-use Flashcard\Application\Repository\IFlashcardPollRepository;
 use Shared\Utils\ValueObjects\UserId;
 use Flashcard\Domain\Models\NextSessionFlashcards;
 use Flashcard\Application\Services\IFlashcardSelector;
 use Flashcard\Application\Repository\IFlashcardRepository;
 use Flashcard\Application\Repository\FlashcardSortCriteria;
+use Flashcard\Application\Repository\IFlashcardPollRepository;
 use Flashcard\Application\Repository\ISmTwoFlashcardRepository;
 
 class SmTwoFlashcardSelector implements IFlashcardSelector
@@ -42,11 +42,13 @@ class SmTwoFlashcardSelector implements IFlashcardSelector
 
     public function select(NextSessionFlashcards $next_session_flashcards, int $limit): array
     {
-        if ($next_session_flashcards->hasDeck()) {
-            return $this->selectNormal($next_session_flashcards, $limit, false);
-        }
+        $flashcards = [];
 
-        $flashcards = $this->selectFromPoll($next_session_flashcards, $limit);
+        if ($next_session_flashcards->hasFlashcardPoll()) {
+            $flashcards = $this->selectFromPoll($next_session_flashcards, $limit);
+        } elseif ($next_session_flashcards->hasDeck()) {
+            return $this->selectFromCategory($next_session_flashcards, $limit, false);
+        }
 
         if (count($flashcards) === 0) {
             return $this->selectGeneral($next_session_flashcards, $limit, false);
@@ -98,7 +100,7 @@ class SmTwoFlashcardSelector implements IFlashcardSelector
         return $results;
     }
 
-    private function selectNormal(NextSessionFlashcards $next_session_flashcards, int $limit, bool $from_poll): array
+    private function selectFromCategory(NextSessionFlashcards $next_session_flashcards, int $limit, bool $from_poll): array
     {
         $latest_limit = max(3, (int) ($next_session_flashcards->getMaxFlashcardsCount() * 0.2));
         $latest_limit = min(5, $latest_limit);

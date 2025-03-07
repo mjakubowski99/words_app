@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Shared\Utils\ValueObjects\UserId;
 use Flashcard\Domain\ValueObjects\SessionId;
 use Flashcard\Domain\ValueObjects\FlashcardId;
+use Flashcard\Domain\ValueObjects\FlashcardDeckId;
 use Flashcard\Domain\Models\RateableSessionFlashcard;
 use Flashcard\Domain\ValueObjects\SessionFlashcardId;
 use Flashcard\Domain\Models\RateableSessionFlashcards;
@@ -26,9 +27,9 @@ class RateableSessionFlashcardsMapper
                 SELECT id, flashcard_id 
                 FROM learning_session_flashcards
                 WHERE rating IS NULL AND learning_session_id = ?
-            ),
+            ),                              
             session_data AS (
-                SELECT id AS session_id, status, user_id, cards_per_session 
+                SELECT id AS session_id, status, user_id, cards_per_session, flashcard_deck_id
                 FROM learning_sessions 
                 WHERE id = ?
             ),
@@ -42,6 +43,7 @@ class RateableSessionFlashcardsMapper
                 sd.status, 
                 sd.user_id,
                 sd.cards_per_session,
+                sd.flashcard_deck_id,
                 rfc.count AS rated_flashcard_count,
                 lsf.id,
                 lsf.flashcard_id 
@@ -69,6 +71,7 @@ class RateableSessionFlashcardsMapper
         return new RateableSessionFlashcards(
             $id,
             new UserId($results[0]->user_id),
+            $results[0]->flashcard_deck_id ? new FlashcardDeckId($results[0]->flashcard_deck_id) : null,
             SessionStatus::from($results[0]->status),
             $results[0]->rated_flashcard_count,
             $results[0]->cards_per_session,

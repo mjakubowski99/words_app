@@ -1,18 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Unit\Flashcard\Infrastructure\Repositories\Postgres\FlashcardPollRepository;
 
 use App\Models\FlashcardPollItem;
-use Flashcard\Domain\Models\FlashcardPoll;
-use Flashcard\Domain\Models\LeitnerLevelUpdate;
-use Flashcard\Domain\Models\Rating;
-use Flashcard\Domain\Types\FlashcardIdCollection;
-use Flashcard\Domain\ValueObjects\FlashcardId;
-use Flashcard\Infrastructure\Repositories\Postgres\FlashcardPollRepository;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Shared\Utils\ValueObjects\UserId;
-use Shared\Utils\ValueObjects\Uuid;
 use Tests\Base\FlashcardTestCase;
+use Flashcard\Domain\Models\Rating;
+use Shared\Utils\ValueObjects\Uuid;
+use Shared\Utils\ValueObjects\UserId;
+use Flashcard\Domain\Models\FlashcardPoll;
+use Flashcard\Domain\ValueObjects\FlashcardId;
+use Flashcard\Domain\Models\LeitnerLevelUpdate;
+use Flashcard\Domain\Types\FlashcardIdCollection;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Flashcard\Infrastructure\Repositories\Postgres\FlashcardPollRepository;
 
 class FlashcardPollRepositoryTest extends FlashcardTestCase
 {
@@ -176,7 +178,7 @@ class FlashcardPollRepositoryTest extends FlashcardTestCase
     /**
      * @test
      */
-    public function resetLeitnerLevelIfNeeded_WhenResetNeeded_reset(): void
+    public function resetLeitnerLevelIfMaxLevelExceeded_WhenResetNeeded_reset(): void
     {
         // GIVEN
         $user = $this->createUser();
@@ -206,7 +208,7 @@ class FlashcardPollRepositoryTest extends FlashcardTestCase
     /**
      * @test
      */
-    public function resetLeitnerLevelIfNeeded_WhenResetNotNeeded_doNotRestLimits(): void
+    public function resetLeitnerLevelIfMaxLevelExceeded_WhenResetNotNeeded_doNotResetLevels(): void
     {
         // GIVEN
         $user = $this->createUser();
@@ -229,7 +231,7 @@ class FlashcardPollRepositoryTest extends FlashcardTestCase
     /**
      * @test
      */
-    public function incrementEasyRatingsCountAndLeitnerLevel_IncrementCorrectly(): void
+    public function saveLeitnerLevelUpdate_IncrementCorrectly(): void
     {
         // GIVEN
         $user = $this->createUser();
@@ -252,12 +254,12 @@ class FlashcardPollRepositoryTest extends FlashcardTestCase
         );
 
         // WHEN
-        $this->repository->saveLeitnerLevelUpdated($update);
+        $this->repository->saveLeitnerLevelUpdate($update);
 
         // THEN
         $this->assertDatabaseHas('flashcard_poll_items', [
             'id' => $poll_item->id,
-            'leitner_level' => 2+$step+1,
+            'leitner_level' => 2 + $step + 1,
             'easy_ratings_count' => 4,
         ]);
         $this->assertDatabaseHas('flashcard_poll_items', [
@@ -266,8 +268,6 @@ class FlashcardPollRepositoryTest extends FlashcardTestCase
             'easy_ratings_count' => $other_poll_item->easy_ratings_count,
         ]);
     }
-
-
 
     public static function dataProvider(): \Generator
     {

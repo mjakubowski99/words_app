@@ -1,0 +1,28 @@
+@startuml Flashcard Generation Flow
+
+title Flashcard Generation Flow
+
+start
+
+:User requests to generate flashcards;
+
+:GenerateFlashcardsHandler processes request;
+
+:Resolve deck by name;
+note right
+  Creates new deck if needed
+end note
+
+:Generate flashcards;
+note right
+  Uses external service to
+  generate flashcard content
+end note
+
+:Save generated flashcards;
+
+:Return result with deck ID and count;
+
+stop
+
+@enduml 

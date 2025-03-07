@@ -13,7 +13,6 @@ use Flashcard\Domain\Models\Flashcard;
 use Shared\Utils\ValueObjects\Language;
 use Flashcard\Domain\ValueObjects\FlashcardId;
 use Flashcard\Domain\ValueObjects\FlashcardDeckId;
-use Flashcard\Domain\Exceptions\ModelNotFoundException;
 use Flashcard\Infrastructure\Mappers\Traits\HasOwnerBuilder;
 
 class FlashcardMapper

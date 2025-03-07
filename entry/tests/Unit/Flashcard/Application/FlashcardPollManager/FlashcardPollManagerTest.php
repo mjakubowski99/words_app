@@ -4,24 +4,24 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Flashcard\Application\FlashcardPollManager;
 
-use Flashcard\Application\Repository\IFlashcardPollRepository;
-use Flashcard\Application\Services\FlashcardPollManager;
-use Flashcard\Application\Services\IFlashcardSelector;
+use Tests\TestCase;
+use Ramsey\Uuid\Uuid;
+use Mockery\MockInterface;
+use Shared\Utils\ValueObjects\UserId;
 use Flashcard\Domain\Models\Flashcard;
 use Flashcard\Domain\Models\FlashcardPoll;
-use Flashcard\Domain\Types\FlashcardIdCollection;
 use Flashcard\Domain\ValueObjects\FlashcardId;
-use Mockery\MockInterface;
-use Ramsey\Uuid\Uuid;
-use Shared\Utils\ValueObjects\UserId;
-use Tests\TestCase;
+use Flashcard\Domain\Types\FlashcardIdCollection;
+use Flashcard\Application\Services\IFlashcardSelector;
+use Flashcard\Application\Services\FlashcardPollManager;
+use Flashcard\Application\Repository\IFlashcardPollRepository;
 
 class FlashcardPollManagerTest extends TestCase
 {
     private FlashcardPollManager $service;
 
-    private MockInterface|IFlashcardPollRepository $repository;
-    private MockInterface|IFlashcardSelector $selector;
+    private IFlashcardPollRepository|MockInterface $repository;
+    private IFlashcardSelector|MockInterface $selector;
 
     protected function setUp(): void
     {
@@ -51,7 +51,7 @@ class FlashcardPollManagerTest extends TestCase
         $i = 1;
         foreach ($flashcards as $flashcard) {
             $flashcard->shouldReceive('getId')->andReturn(new FlashcardId($i));
-            $i++;
+            ++$i;
         }
 
         $poll = new FlashcardPoll($user_id, 0);
@@ -76,7 +76,7 @@ class FlashcardPollManagerTest extends TestCase
         $user_id = new UserId(Uuid::uuid4()->toString());
         $to_purge = new FlashcardIdCollection([
             new FlashcardId(9),
-            new FlashcardId(10)
+            new FlashcardId(10),
         ]);
 
         $to_add = [
@@ -87,7 +87,7 @@ class FlashcardPollManagerTest extends TestCase
         $i = 1;
         foreach ($to_add as $flashcard) {
             $flashcard->shouldReceive('getId')->andReturn(new FlashcardId($i));
-            $i++;
+            ++$i;
         }
 
         $poll = new FlashcardPoll($user_id, 2, $to_purge);

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Shared\Utils\Types;
 
 /**
@@ -7,13 +9,13 @@ namespace Shared\Utils\Types;
  */
 abstract class TypedCollection implements \Countable, \IteratorAggregate, \ArrayAccess
 {
-    /** @var  T[]  */
+    /** @var T[] */
     private array $items = [];
 
     private string $type;
 
     /** @param T[] $items */
-    public function __construct(array $items = [])
+    final public function __construct(array $items = [])
     {
         $this->type = $this->getCollectionType();
 
@@ -25,40 +27,40 @@ abstract class TypedCollection implements \Countable, \IteratorAggregate, \Array
     }
 
     /** @param T[] $items */
-    public static function fromArray(array $items): static
+    final public static function fromArray(array $items): static
     {
         return new static($items);
     }
 
-    public function add(object $item): void
+    final public function add(object $item): void
     {
         $this->validateType($item);
         $this->items[] = $item;
     }
 
     /** @return T[] */
-    public function getAll(): array
+    final public function getAll(): array
     {
         return $this->items;
     }
 
-    public function count(): int
+    final public function count(): int
     {
         return count($this->items);
     }
 
-    public function offsetExists(mixed $offset): bool
+    final public function offsetExists(mixed $offset): bool
     {
         return array_key_exists($offset, $this->items);
     }
 
     /** @return ?T */
-    public function offsetGet(mixed $offset): mixed
+    final public function offsetGet(mixed $offset): mixed
     {
         return $this->items[$offset] ?? null;
     }
 
-    public function offsetSet(mixed $offset, mixed $value): void
+    final public function offsetSet(mixed $offset, mixed $value): void
     {
         if ($offset === null) {
             $this->add($value);
@@ -68,12 +70,12 @@ abstract class TypedCollection implements \Countable, \IteratorAggregate, \Array
         }
     }
 
-    public function offsetUnset(mixed $offset): void
+    final public function offsetUnset(mixed $offset): void
     {
         unset($this->items[$offset]);
     }
 
-    public function getIterator(): \ArrayIterator
+    final public function getIterator(): \ArrayIterator
     {
         return new \ArrayIterator($this->items);
     }

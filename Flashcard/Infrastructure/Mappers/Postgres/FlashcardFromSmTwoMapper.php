@@ -33,8 +33,7 @@ class FlashcardFromSmTwoMapper
         int $cards_per_session,
         bool $from_poll,
         bool $exclude_from_poll,
-    ): array
-    {
+    ): array {
         $sort_sql = array_map(fn (PostgresSortCriteria $criteria) => $criteria->apply(), $sort_criteria);
 
         $flashcard_limit = max(3, (int) (0.1 * $cards_per_session));
@@ -48,9 +47,9 @@ class FlashcardFromSmTwoMapper
         }
 
         return $query
-            ->when($exclude_from_poll, fn($q) => $q->whereNotIn(
+            ->when($exclude_from_poll, fn ($q) => $q->whereNotIn(
                 'flashcards.id',
-                fn($q) => $q->select('flashcard_id')->from('flashcard_poll_items')->where('user_id', $user_id)
+                fn ($q) => $q->select('flashcard_id')->from('flashcard_poll_items')->where('user_id', $user_id)
             ))
             ->whereNotIn('flashcards.id', array_map(fn (FlashcardId $id) => $id->getValue(), $exclude_flashcard_ids))
             ->where(function (Builder $builder) use ($user_id) {
