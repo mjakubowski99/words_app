@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\ReadModels;
 
+use Carbon\Carbon;
+use Shared\Enum\LanguageLevel;
 use Shared\Enum\FlashcardOwnerType;
 use Flashcard\Domain\ValueObjects\FlashcardDeckId;
 
@@ -17,6 +19,9 @@ class DeckDetailsRead
         private int $per_page,
         private int $count,
         private FlashcardOwnerType $owner_type,
+        private LanguageLevel $language_level,
+        private ?Carbon $last_learnt_at,
+        private float $rating_percentage,
     ) {}
 
     public function getId(): FlashcardDeckId
@@ -53,5 +58,20 @@ class DeckDetailsRead
     public function getOwnerType(): FlashcardOwnerType
     {
         return $this->owner_type;
+    }
+
+    public function getLanguageLevel(): LanguageLevel
+    {
+        return $this->language_level;
+    }
+
+    public function getLastLearntAt(): ?Carbon
+    {
+        return $this->last_learnt_at;
+    }
+
+    public function getRatingPercentage(): float
+    {
+        return $this->rating_percentage;
     }
 }
