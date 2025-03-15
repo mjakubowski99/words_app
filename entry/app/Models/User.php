@@ -9,6 +9,7 @@ use Flashcard\Domain\Models\Owner;
 use Shared\Utils\ValueObjects\UserId;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -56,5 +57,10 @@ class User extends Authenticatable
     public function toOwner(): Owner
     {
         return Owner::fromUser($this->getId());
+    }
+
+    public function flashcards(): HasMany
+    {
+        return $this->hasMany(Flashcard::class);
     }
 }
