@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Integration\Flashcards\Infrastructure\Http\Controller\v2;
 
+use Shared\Enum\FlashcardOwnerType;
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\Flashcard;
@@ -188,7 +189,9 @@ class FlashcardControllerTest extends TestCase
 
         // WHEN
         $response = $this->actingAs($user)
-            ->json('GET', route('v2.flashcards.get.by-user.rating-stats'));
+            ->json('GET', route('v2.flashcards.get.by-user.rating-stats'), [
+                'owner_type' => FlashcardOwnerType::USER->value,
+            ]);
 
         // THEN
         $response->assertStatus(200);
