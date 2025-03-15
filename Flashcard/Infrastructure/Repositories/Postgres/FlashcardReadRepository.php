@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Repositories\Postgres;
 
+use Shared\Enum\FlashcardOwnerType;
 use Shared\Utils\ValueObjects\UserId;
 use Flashcard\Application\ReadModels\UserFlashcardsRead;
 use Flashcard\Application\Repository\IFlashcardReadRepository;
@@ -14,9 +15,9 @@ class FlashcardReadRepository implements IFlashcardReadRepository
 {
     public function __construct(private FlashcardReadMapper $mapper) {}
 
-    public function findStatsByUser(UserId $user_id): RatingStatsReadCollection
+    public function findStatsByUser(UserId $user_id, ?FlashcardOwnerType $owner_type): RatingStatsReadCollection
     {
-        return $this->mapper->findFlashcardStats(null, $user_id);
+        return $this->mapper->findFlashcardStats(null, $user_id, $owner_type);
     }
 
     public function findByUser(UserId $user_id, ?string $search, int $page, int $per_page): UserFlashcardsRead

@@ -6,7 +6,6 @@ namespace Flashcard\Infrastructure\Http\Controllers\v2;
 
 use App\Http\OpenApi\Tags;
 use OpenApi\Attributes as OAT;
-use Shared\Http\Request\Request;
 use Illuminate\Http\JsonResponse;
 use Flashcard\Application\Query\GetUserFlashcards;
 use Flashcard\Application\Query\GetUserRatingStats;
@@ -18,6 +17,7 @@ use Flashcard\Infrastructure\Http\Resources\v2\RatingStatsResource;
 use Flashcard\Infrastructure\Http\Request\v2\UpdateFlashcardRequest;
 use Flashcard\Infrastructure\Http\Resources\v2\UserFlashcardsResource;
 use Flashcard\Infrastructure\Http\Request\v2\GetFlashcardByUserRequest;
+use Flashcard\Infrastructure\Http\Request\v2\GetUserRatingStatsRequest;
 use Flashcard\Infrastructure\Http\Request\v2\BulkDeleteFlashcardRequest;
 
 class FlashcardController
@@ -162,6 +162,9 @@ class FlashcardController
         description: 'Get rating stats for user flashcards',
         summary: 'Get rating stats for user flashcards',
         security: [['sanctum' => []]],
+        requestBody: new OAT\RequestBody(
+            content: new OAT\JsonContent(ref: '#/components/schemas/Requests\Flashcard\v2\GetUserRatingStatsRequest')
+        ),
         tags: [Tags::V2, Tags::FLASHCARD],
         responses: [
             new OAT\Response(
@@ -181,9 +184,9 @@ class FlashcardController
         ],
     )]
     public function userRatingStats(
-        Request $request,
+        GetUserRatingStatsRequest $request,
         GetUserRatingStats $query,
     ): RatingStatsResource {
-        return new RatingStatsResource($query->get($request->currentId()));
+        return new RatingStatsResource($query->get($request->currentId(), $request->getOwnerType()));
     }
 }
