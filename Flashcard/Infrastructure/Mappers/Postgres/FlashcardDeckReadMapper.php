@@ -94,7 +94,12 @@ class FlashcardDeckReadMapper
                 'flashcard_stats.last_learnt_at',
                 'flashcard_stats.avg_rating'
             )
-            ->orderByRaw('flashcard_decks.created_at DESC NULLS LAST')
+            ->orderByRaw('
+                CASE
+                    WHEN flashcard_stats.last_learnt_at IS NOT NULL THEN flashcard_stats.last_learnt_at
+                    ELSE flashcard_decks.created_at
+                END DESC NULLS LAST
+            ')
             ->get()
             ->map(function (object $data) {
                 return new OwnerCategoryRead(
@@ -148,7 +153,12 @@ class FlashcardDeckReadMapper
                 'flashcard_stats.last_learnt_at',
                 'flashcard_stats.avg_rating'
             )
-            ->orderByRaw('flashcard_decks.created_at DESC NULLS LAST')
+            ->orderByRaw('
+                CASE
+                    WHEN flashcard_stats.last_learnt_at IS NOT NULL THEN flashcard_stats.last_learnt_at
+                    ELSE flashcard_decks.created_at
+                END DESC NULLS LAST
+            ')
             ->get()
             ->map(function (object $data) {
                 return new OwnerCategoryRead(
