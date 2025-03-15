@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\ReadModels;
 
+use Shared\Enum\FlashcardOwnerType;
 use Flashcard\Domain\ValueObjects\FlashcardDeckId;
 
 class DeckDetailsRead
@@ -15,6 +16,7 @@ class DeckDetailsRead
         private int $page,
         private int $per_page,
         private int $count,
+        private FlashcardOwnerType $owner_type,
     ) {}
 
     public function getId(): FlashcardDeckId
@@ -46,5 +48,10 @@ class DeckDetailsRead
     public function getFlashcardsCount(): int
     {
         return $this->count;
+    }
+
+    public function getOwnerType(): FlashcardOwnerType
+    {
+        return $this->owner_type;
     }
 }

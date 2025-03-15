@@ -11,6 +11,7 @@ use Shared\Enum\LanguageLevel;
 use Tests\Base\FlashcardTestCase;
 use Shared\Enum\GeneralRatingType;
 use Flashcard\Domain\Models\Rating;
+use Shared\Enum\FlashcardOwnerType;
 use Flashcard\Application\ReadModels\FlashcardRead;
 use Flashcard\Application\ReadModels\DeckDetailsRead;
 use Flashcard\Application\ReadModels\OwnerCategoryRead;
@@ -52,6 +53,7 @@ class FlashcardDeckReadRepositoryTest extends FlashcardTestCase
         $this->assertSame($flashcard->back_lang, $result->getFlashcards()[0]->getBackLang()->getValue());
         $this->assertSame($flashcard->front_context, $result->getFlashcards()[0]->getFrontContext());
         $this->assertSame($flashcard->back_context, $result->getFlashcards()[0]->getBackContext());
+        $this->assertSame(FlashcardOwnerType::USER, $result->getFlashcards()[0]->getOwnerType());
         $this->assertSame(GeneralRatingType::NEW, $result->getFlashcards()[0]->getGeneralRating()->getValue());
         $this->assertSame(1, $result->getPage());
         $this->assertSame(15, $result->getPerPage());
@@ -77,7 +79,9 @@ class FlashcardDeckReadRepositoryTest extends FlashcardTestCase
 
         // THEN
         $this->assertInstanceOf(DeckDetailsRead::class, $result);
+        $this->assertSame(FlashcardOwnerType::ADMIN, $result->getOwnerType());
         $this->assertSame($flashcard->id, $result->getFlashcards()[0]->getId()->getValue());
+        $this->assertSame(FlashcardOwnerType::ADMIN, $result->getFlashcards()[0]->getOwnerType());
     }
 
     public function test__findDetails_generalRatingIsLastRating(): void
@@ -157,6 +161,7 @@ class FlashcardDeckReadRepositoryTest extends FlashcardTestCase
         $this->assertSame($user_deck->id, $results[0]->getId()->getValue());
         $this->assertSame($user_deck->name, $results[0]->getName());
         $this->assertSame($user_deck->default_language_level->value, $results[0]->getLanguageLevel()->value);
+        $this->assertSame(FlashcardOwnerType::USER, $results[0]->getOwnerType());
     }
 
     public function test__getByUser_paginationWorks(): void
@@ -223,6 +228,7 @@ class FlashcardDeckReadRepositoryTest extends FlashcardTestCase
         $this->assertCount(1, $results);
         $this->assertInstanceOf(OwnerCategoryRead::class, $results[0]);
         $this->assertSame($expected->id, $results[0]->getId()->getValue());
+        $this->assertSame(FlashcardOwnerType::ADMIN, $results[0]->getOwnerType());
     }
 
     public function test__getAdminDecks_lastLearntAtIsCorrect(): void

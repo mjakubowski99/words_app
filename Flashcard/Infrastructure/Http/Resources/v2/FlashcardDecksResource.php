@@ -50,6 +50,10 @@ use Flashcard\Application\ReadModels\OwnerCategoryRead;
                         type: 'float',
                         example: 66.66,
                     ),
+                    new OAT\Property(
+                        property: 'owner_type',
+                        ref: '#/components/schemas/FlashcardOwnerType'
+                    ),
                 ],
                 type: 'object'
             )
@@ -84,6 +88,7 @@ class FlashcardDecksResource extends JsonResource
                     'flashcards_count' => $resource->getFlashcardsCount(),
                     'last_learnt_at' => $resource->getLastLearntAt() ? $resource->getLastLearntAt()->toDateTimeString() : null,
                     'rating_percentage' => $resource->getRatingPercentage(),
+                    'owner_type' => $resource->getOwnerType()->value,
                 ];
             }, $user_decks),
             'page' => $page,
