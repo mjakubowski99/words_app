@@ -10,6 +10,7 @@ use App\Models\Flashcard;
 use App\Models\FlashcardDeck;
 use Shared\Enum\LanguageLevel;
 use Flashcard\Domain\Models\Rating;
+use Shared\Enum\FlashcardOwnerType;
 use Shared\Utils\ValueObjects\Language;
 use App\Models\LearningSessionFlashcard;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -188,7 +189,9 @@ class FlashcardControllerTest extends TestCase
 
         // WHEN
         $response = $this->actingAs($user)
-            ->json('GET', route('v2.flashcards.get.by-user.rating-stats'));
+            ->json('GET', route('v2.flashcards.get.by-user.rating-stats'), [
+                'owner_type' => FlashcardOwnerType::USER->value,
+            ]);
 
         // THEN
         $response->assertStatus(200);
