@@ -25,6 +25,23 @@ class SmTwoFlashcardSelector implements IFlashcardSelector
         $this->repository->resetRepetitionsInSession($user_id);
     }
 
+    public function select(NextSessionFlashcards $next_session_flashcards, int $limit): array
+    {
+        $flashcards = [];
+
+        if ($next_session_flashcards->hasFlashcardPoll()) {
+            $flashcards = $this->selectFromPoll($next_session_flashcards, $limit);
+        } elseif ($next_session_flashcards->hasDeck()) {
+            return $this->selectFromDeck($next_session_flashcards, $limit, false);
+        }
+
+        if (count($flashcards) === 0) {
+            return $this->selectFromAll($next_session_flashcards, $limit, false);
+        }
+
+        return $flashcards;
+    }
+
     public function selectToPoll(UserId $user_id, int $limit): array
     {
         $criteria = [
@@ -40,23 +57,6 @@ class SmTwoFlashcardSelector implements IFlashcardSelector
         return $this->repository->getNextFlashcardsByUser($user_id, $limit, [], $criteria, $limit, false, true);
     }
 
-    public function select(NextSessionFlashcards $next_session_flashcards, int $limit): array
-    {
-        $flashcards = [];
-
-        if ($next_session_flashcards->hasFlashcardPoll()) {
-            $flashcards = $this->selectFromPoll($next_session_flashcards, $limit);
-        } elseif ($next_session_flashcards->hasDeck()) {
-            return $this->selectFromCategory($next_session_flashcards, $limit, false);
-        }
-
-        if (count($flashcards) === 0) {
-            return $this->selectGeneral($next_session_flashcards, $limit, false);
-        }
-
-        return $flashcards;
-    }
-
     public function selectFromPoll(NextSessionFlashcards $next_session_flashcards, int $limit): array
     {
         $flashcard_ids = $this->pool_repository->selectNextLeitnerFlashcard($next_session_flashcards->getUserId(), $limit);
@@ -64,7 +64,7 @@ class SmTwoFlashcardSelector implements IFlashcardSelector
         return $this->flashcard_repository->findMany($flashcard_ids);
     }
 
-    private function selectGeneral(NextSessionFlashcards $next_session_flashcards, int $limit, bool $from_poll): array
+    private function selectFromAll(NextSessionFlashcards $next_session_flashcards, int $limit, bool $from_poll): array
     {
         $latest_limit = max(3, (int) ($next_session_flashcards->getMaxFlashcardsCount() * 0.2));
         $latest_limit = min(5, $latest_limit);
@@ -100,7 +100,7 @@ class SmTwoFlashcardSelector implements IFlashcardSelector
         return $results;
     }
 
-    private function selectFromCategory(NextSessionFlashcards $next_session_flashcards, int $limit, bool $from_poll): array
+    private function selectFromDeck(NextSessionFlashcards $next_session_flashcards, int $limit, bool $from_poll): array
     {
         $latest_limit = max(3, (int) ($next_session_flashcards->getMaxFlashcardsCount() * 0.2));
         $latest_limit = min(5, $latest_limit);
