@@ -38,6 +38,7 @@ class FlashcardDeckControllerTest extends FlashcardTestCase
                         'flashcards_count',
                         'last_learnt_at',
                         'rating_percentage',
+                        'owner_type',
                     ],
                 ],
                 'page',

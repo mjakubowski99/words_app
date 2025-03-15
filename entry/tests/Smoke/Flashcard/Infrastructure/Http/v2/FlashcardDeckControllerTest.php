@@ -32,6 +32,7 @@ class FlashcardDeckControllerTest extends FlashcardTestCase
                     '*' => [
                         'id',
                         'name',
+                        'owner_type',
                     ],
                 ],
                 'page',
@@ -113,6 +114,7 @@ class FlashcardDeckControllerTest extends FlashcardTestCase
             'data' => [
                 'id',
                 'name',
+                'owner_type',
                 'flashcards' => [
                     '*' => [
                         'id',
@@ -124,6 +126,7 @@ class FlashcardDeckControllerTest extends FlashcardTestCase
                         'back_context',
                         'language_level',
                         'emoji',
+                        'owner_type',
                     ],
                 ],
             ],
