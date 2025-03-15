@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Tests\Integration\Flashcards\Infrastructure\Http\Controller\v2;
 
-use Shared\Enum\FlashcardOwnerType;
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\Flashcard;
 use App\Models\FlashcardDeck;
 use Shared\Enum\LanguageLevel;
 use Flashcard\Domain\Models\Rating;
+use Shared\Enum\FlashcardOwnerType;
 use Shared\Utils\ValueObjects\Language;
 use App\Models\LearningSessionFlashcard;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
