@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Flashcard\Application\ReadModels;
 
 use Carbon\Carbon;
+use Shared\Enum\LanguageLevel;
 use Shared\Enum\FlashcardOwnerType;
 use Flashcard\Domain\ValueObjects\FlashcardDeckId;
-use Shared\Enum\LanguageLevel;
 
 class DeckDetailsRead
 {
