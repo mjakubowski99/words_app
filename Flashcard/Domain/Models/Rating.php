@@ -11,8 +11,18 @@ enum Rating: int
     case GOOD = 2;
     case VERY_GOOD = 3;
 
+    public static function maxLeitnerLevel(): int
+    {
+        return self::maxRating();
+    }
+
     public static function maxRating(): int
     {
         return max(array_map(fn (Rating $rating) => $rating->value, self::cases()));
+    }
+
+    public function leitnerLevel(): int
+    {
+        return $this->value;
     }
 }

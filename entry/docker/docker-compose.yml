@@ -14,12 +14,16 @@ services:
         working_dir: /var/www/entry
         volumes:
             - ../../:/var/www
+            - ./config/php/php-fpm.conf:/usr/local/etc/php-fpm.d/www.conf
         extra_hosts:
             - "host.docker.internal:host-gateway"
             - "php.docker:127.0.0.1"
         environment:
             PHP_IDE_CONFIG: serverName=server
             USER: ${USER}
+        ports:
+            - "9000:9000"
+            - "9003:9003"
         links:
             - db
         networks:
@@ -49,6 +53,7 @@ services:
             - "${DATABASE_PORT}:5432"
         volumes:
             - db_volume:/data/postgres
+            - ../backups:/backups
         environment:
             POSTGRES_DATABASE: "${PROJECT_NAME}_db"
             POSTGRES_USER: app
@@ -56,7 +61,6 @@ services:
             PGDATA: /data/postgres
         networks:
             - app-network
-
 volumes:
     db_volume:
         name: ${PROJECT_NAME}_db_volume

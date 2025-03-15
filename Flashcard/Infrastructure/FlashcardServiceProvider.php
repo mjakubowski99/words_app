@@ -15,6 +15,7 @@ use Flashcard\Application\Services\IRepetitionAlgorithm;
 use Flashcard\Application\Repository\IFlashcardRepository;
 use Flashcard\Application\Repository\ISessionReadRepository;
 use Flashcard\Application\Repository\IFlashcardDeckRepository;
+use Flashcard\Application\Repository\IFlashcardPollRepository;
 use Flashcard\Application\Repository\IFlashcardReadRepository;
 use Flashcard\Application\Repository\ISmTwoFlashcardRepository;
 use Flashcard\Application\Services\AiGenerators\GeminiGenerator;
@@ -30,6 +31,7 @@ use Flashcard\Infrastructure\Repositories\Postgres\FlashcardRepository;
 use Flashcard\Infrastructure\Repositories\Postgres\SessionReadRepository;
 use Flashcard\Application\Repository\IRateableSessionFlashcardsRepository;
 use Flashcard\Infrastructure\Repositories\Postgres\FlashcardDeckRepository;
+use Flashcard\Infrastructure\Repositories\Postgres\FlashcardPollRepository;
 use Flashcard\Infrastructure\Repositories\Postgres\FlashcardReadRepository;
 use Flashcard\Infrastructure\Repositories\Postgres\SmTwoFlashcardRepository;
 use Flashcard\Infrastructure\Repositories\Postgres\FlashcardDeckReadRepository;
@@ -59,5 +61,6 @@ class FlashcardServiceProvider extends ServiceProvider
         $this->app->bind(IFlashcardReadRepository::class, FlashcardReadRepository::class);
         $this->app->bind(IFlashcardAdminFacade::class, FlashcardAdminFacade::class);
         $this->app->bind(IFlashcardDuplicateRepository::class, FlashcardDuplicateRepository::class);
+        $this->app->bind(IFlashcardPollRepository::class, FlashcardPollRepository::class);
     }
 }

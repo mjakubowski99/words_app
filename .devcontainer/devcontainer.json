@@ -1,0 +1,29 @@
+{
+    "name": "PHP Dev Container",
+    "dockerComposeFile": "../entry/docker/docker-compose.yml",
+    "service": "php",
+    "workspaceFolder": "/var/www",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-php.php-pack",
+                "ms-vscode.vscode-node-azure-pack",
+                "anan.jetbrains-darcula-theme",
+                "bmewburn.vscode-intelephense-client",
+                "jebbs.plantuml",
+                "eamodio.gitlens"
+            ],
+            "settings": {
+                "php.version": "8.3",
+                "intelephense.environment.phpVersion": "8.3",
+                "php.validate.executablePath": "/usr/local/bin/php",
+                "phpunit.php": "/usr/local/bin/php",
+                "phpunit.phpunit": "/var/www/entry/vendor/bin/phpunit",
+                "phpunit.args": [
+                    "--colors=always"
+                ]
+            }
+        }
+    },
+    "forwardPorts": [9000, 9003]
+}

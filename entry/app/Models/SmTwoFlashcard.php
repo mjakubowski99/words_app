@@ -4,40 +4,13 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Builder;
-use Database\Factories\SmTwoFlashcardFactory;
 use Flashcard\Domain\ValueObjects\FlashcardId;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
- * @property        string                         $user_id
- * @property        int                            $flashcard_id
- * @property        string                         $repetition_ratio
- * @property        string                         $repetition_interval
- * @property        int                            $repetition_count
- * @property        null|Carbon                    $created_at
- * @property        null|Carbon                    $updated_at
- * @property        Flashcard                      $flashcard
- * @method   static SmTwoFlashcardFactory          factory($count = null, $state = [])
- * @method   static Builder|SmTwoFlashcard         newModelQuery()
- * @method   static Builder|SmTwoFlashcard         newQuery()
- * @method   static Builder|SmTwoFlashcard         query()
- * @method   static Builder|SmTwoFlashcard         whereCreatedAt($value)
- * @method   static Builder|SmTwoFlashcard         whereFlashcardId($value)
- * @method   static Builder|SmTwoFlashcard         whereRepetitionCount($value)
- * @method   static Builder|SmTwoFlashcard         whereRepetitionInterval($value)
- * @method   static Builder|SmTwoFlashcard         whereRepetitionRatio($value)
- * @method   static Builder|SmTwoFlashcard         whereUpdatedAt($value)
- * @method   static Builder|SmTwoFlashcard         whereUserId($value)
- * @property        int                            $min_rating
- * @property        User                           $user
- * @method   static Builder<static>|SmTwoFlashcard whereMinRating($value)
- * @property        int                            $repetitions_in_session
- * @method   static Builder<static>|SmTwoFlashcard whereRepetitionsInSession($value)
- * @mixin \Eloquent
+ * @property User $user
  */
 class SmTwoFlashcard extends Model
 {

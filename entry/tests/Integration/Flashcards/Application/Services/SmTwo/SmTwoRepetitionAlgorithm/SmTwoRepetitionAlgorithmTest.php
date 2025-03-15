@@ -38,6 +38,7 @@ class SmTwoRepetitionAlgorithmTest extends TestCase
         $rateable_flashcards = new RateableSessionFlashcards(
             $session->getId(),
             $session->user->getId(),
+            null,
             SessionStatus::IN_PROGRESS,
             0,
             2,
@@ -75,6 +76,7 @@ class SmTwoRepetitionAlgorithmTest extends TestCase
         $rateable_flashcards = new RateableSessionFlashcards(
             $session->getId(),
             $session->user->getId(),
+            null,
             SessionStatus::IN_PROGRESS,
             0,
             2,

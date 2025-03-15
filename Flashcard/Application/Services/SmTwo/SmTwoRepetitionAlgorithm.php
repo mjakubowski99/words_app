@@ -6,13 +6,15 @@ namespace Flashcard\Application\Services\SmTwo;
 
 use Flashcard\Domain\Models\RateableSessionFlashcard;
 use Flashcard\Domain\Models\RateableSessionFlashcards;
+use Flashcard\Application\Services\FlashcardPollUpdater;
 use Flashcard\Application\Services\IRepetitionAlgorithm;
 use Flashcard\Application\Repository\ISmTwoFlashcardRepository;
 
 class SmTwoRepetitionAlgorithm implements IRepetitionAlgorithm
 {
     public function __construct(
-        private ISmTwoFlashcardRepository $repository
+        private ISmTwoFlashcardRepository $repository,
+        private FlashcardPollUpdater $poll_updater,
     ) {}
 
     public function handle(RateableSessionFlashcards $session_flashcards): void
@@ -45,5 +47,9 @@ class SmTwoRepetitionAlgorithm implements IRepetitionAlgorithm
         }
 
         $this->repository->saveMany($sm_two_flashcards);
+
+        if ($session_flashcards->hasFlashcardPoll()) {
+            $this->poll_updater->handle($session_flashcards);
+        }
     }
 }

@@ -1,0 +1,129 @@
+@startuml Flashcard Rating Flow
+
+skinparam ActivityBackgroundColor LightBlue
+skinparam ActivityBorderColor DarkBlue
+skinparam ArrowColor DarkBlue
+skinparam NoteBackgroundColor LightYellow
+skinparam NoteBorderColor DarkGolden
+
+title Flashcard Rating Flow in SessionController
+
+|Client|
+start
+:User rates flashcard(s);
+:Send HTTP PUT request to 
+/flashcards/session/{session_id}/rate-flashcards;
+
+|SessionController|
+:Receive rating request;
+:Extract session_id from URL;
+:Extract user_id from authenticated user;
+:Extract ratings data from request body;
+
+|#AntiqueWhite|Validation|
+:Validate session_id format;
+:Validate ratings data structure;
+if (Valid request data?) then (yes)
+else (no)
+  :Return 400 Bad Request;
+  stop
+endif
+
+|SessionController|
+:Create FlashcardRating objects;
+note right
+  For each rating in request:
+  - Create SessionFlashcardId
+  - Create Rating enum
+  - Create FlashcardRating object
+end note
+
+:Create RateFlashcards command;
+note right
+  RateFlashcards(
+    user_id,
+    session_id,
+    flashcard_ratings[]
+  )
+end note
+
+|RateFlashcardsHandler|
+:Handle rating command;
+:Find session flashcards by session_id;
+
+if (User owns session?) then (yes)
+else (no)
+  :Throw UnauthorizedException;
+  |SessionController|
+  :Return 403 Forbidden;
+  stop
+endif
+
+|RateFlashcardsHandler|
+:Apply ratings to session flashcards;
+note right
+  For each FlashcardRating:
+  - Find SessionFlashcard by ID
+  - Apply rating value
+end note
+
+:Save updated session flashcards;
+
+|#LightGreen|RepetitionAlgorithm|
+:Calculate new repetition intervals;
+note right
+  Based on:
+  - Current level
+  - Rating value
+  - Spaced repetition algorithm
+end note
+:Update next review dates;
+
+|#LightPink|FlashcardPollUpdater|
+:Update flashcard poll;
+note right
+  - Update statistics
+  - Adjust priority in poll
+  - Track performance
+end note
+
+|RateFlashcardsHandler|
+:Return success;
+
+|SessionController|
+:Create AddSessionFlashcards command;
+note right
+  To ensure session has enough
+  flashcards for next review
+end note
+
+|AddSessionFlashcardsHandler|
+:Check if more flashcards needed;
+if (Enough unrated flashcards?) then (yes)
+else (no)
+  |#Orange|FlashcardSelector|
+  :Select new flashcards;
+  note right
+    Based on:
+    - Learning progress
+    - Due dates
+    - Difficulty levels
+  end note
+  :Add flashcards to session;
+endif
+
+|SessionController|
+:Return success response;
+note right
+  JSON response with:
+  - Success status
+  - Updated session data
+  - Next flashcard to review
+end note
+
+|Client|
+:Process response;
+:Display next flashcard;
+stop
+
+@enduml 

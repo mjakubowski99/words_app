@@ -1,0 +1,46 @@
+@startuml Flashcard Session Flow
+
+title Flashcard Session Flow
+
+start
+
+:User requests to create a session;
+
+:CreateSessionHandler processes request;
+note right
+  - Sets previous sessions to FINISHED
+  - Creates new session
+  - Resets repetitions
+end note
+
+:Session is created;
+
+:AddSessionFlashcardsHandler adds flashcards to session;
+note right
+  - Checks if more flashcards are needed
+  - Selects flashcards using selector
+  - Adds flashcards to session
+end note
+
+:User studies flashcards;
+
+:User rates flashcards;
+
+:RateFlashcardsHandler processes ratings;
+note right
+  - Updates session flashcards with ratings
+  - Applies repetition algorithm
+  - Updates flashcard poll
+end note
+
+:FlashcardPollUpdater updates poll;
+note right
+  - Updates Leitner levels
+  - Manages flashcards for future sessions
+end note
+
+:Session continues or completes;
+
+stop
+
+@enduml 

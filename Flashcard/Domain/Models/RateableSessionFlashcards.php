@@ -7,15 +7,17 @@ namespace Flashcard\Domain\Models;
 use Shared\Enum\SessionStatus;
 use Shared\Utils\ValueObjects\UserId;
 use Flashcard\Domain\ValueObjects\SessionId;
+use Flashcard\Domain\ValueObjects\FlashcardDeckId;
 use Flashcard\Domain\ValueObjects\SessionFlashcardId;
 use Flashcard\Domain\Exceptions\SessionFinishedException;
 use Flashcard\Domain\Exceptions\RateableSessionFlashcardNotFound;
 
-class RateableSessionFlashcards
+class RateableSessionFlashcards extends SessionFlashcardsBase
 {
     public function __construct(
         private SessionId $session_id,
         private UserId $user_id,
+        private ?FlashcardDeckId $flashcard_deck_id,
         private SessionStatus $status,
         private int $rated_count,
         private int $total_count,
@@ -30,6 +32,16 @@ class RateableSessionFlashcards
     public function getRateableSessionFlashcards(): array
     {
         return $this->rateable_session_flashcards;
+    }
+
+    public function hasDeck(): bool
+    {
+        return $this->flashcard_deck_id !== null;
+    }
+
+    public function getDeckId(): FlashcardDeckId
+    {
+        return $this->flashcard_deck_id;
     }
 
     public function all(): array

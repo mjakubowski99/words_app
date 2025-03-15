@@ -25,13 +25,32 @@ class FlashcardFromSmTwoMapper
         private readonly DB $db
     ) {}
 
-    public function getNextFlashcards(UserId $user_id, int $limit, array $exclude_flashcard_ids, array $sort_criteria, int $cards_per_session): array
-    {
+    public function getNextFlashcards(
+        UserId $user_id,
+        int $limit,
+        array $exclude_flashcard_ids,
+        array $sort_criteria,
+        int $cards_per_session,
+        bool $from_poll,
+        bool $exclude_from_poll,
+    ): array {
         $sort_sql = array_map(fn (PostgresSortCriteria $criteria) => $criteria->apply(), $sort_criteria);
 
         $flashcard_limit = max(3, (int) (0.1 * $cards_per_session));
 
-        return $this->db::table('flashcards')
+        if ($from_poll) {
+            $query = $this->db::table('flashcards_poll')
+                ->where('flashcards_poll.user_id', $user_id)
+                ->leftJoin('flashcards', 'flashcards.id', '=', 'flashcards_poll.flashcard_id');
+        } else {
+            $query = $this->db::table('flashcards');
+        }
+
+        return $query
+            ->when($exclude_from_poll, fn ($q) => $q->whereNotIn(
+                'flashcards.id',
+                fn ($q) => $q->select('flashcard_id')->from('flashcard_poll_items')->where('user_id', $user_id)
+            ))
             ->whereNotIn('flashcards.id', array_map(fn (FlashcardId $id) => $id->getValue(), $exclude_flashcard_ids))
             ->where(function (Builder $builder) use ($user_id) {
                 return $builder->where('flashcards.user_id', $user_id->getValue())
@@ -57,13 +76,21 @@ class FlashcardFromSmTwoMapper
             })->toArray();
     }
 
-    public function getNextFlashcardsByDeck(UserId $user_id, FlashcardDeckId $deck_id, int $limit, array $exclude_flashcard_ids, array $sort_criteria, int $cards_per_session): array
+    public function getNextFlashcardsByDeck(UserId $user_id, FlashcardDeckId $deck_id, int $limit, array $exclude_flashcard_ids, array $sort_criteria, int $cards_per_session, bool $from_poll): array
     {
         $sort_sql = array_map(fn (PostgresSortCriteria $criteria) => $criteria->apply(), $sort_criteria);
 
         $flashcard_limit = max(3, (int) (0.1 * $cards_per_session));
 
-        return $this->db::table('flashcards')
+        if ($from_poll) {
+            $query = $this->db::table('flashcard_poll_items')
+                ->where('flashcard_poll_items.user_id', $user_id)
+                ->leftJoin('flashcards', 'flashcards.id', '=', 'flashcard_poll_items.flashcard_id');
+        } else {
+            $query = $this->db::table('flashcards');
+        }
+
+        return $query
             ->whereNotIn('flashcards.id', array_map(fn (FlashcardId $id) => $id->getValue(), $exclude_flashcard_ids))
             ->leftJoin('flashcard_decks', 'flashcard_decks.id', '=', 'flashcards.flashcard_deck_id')
             ->where('flashcards.flashcard_deck_id', $deck_id->getValue())

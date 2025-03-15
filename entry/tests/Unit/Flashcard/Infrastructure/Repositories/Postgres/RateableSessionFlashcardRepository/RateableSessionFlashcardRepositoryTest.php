@@ -88,6 +88,7 @@ class RateableSessionFlashcardRepositoryTest extends TestCase
         $flashcards = new RateableSessionFlashcards(
             $session->getId(),
             $user->getId(),
+            null,
             SessionStatus::IN_PROGRESS,
             9,
             10,

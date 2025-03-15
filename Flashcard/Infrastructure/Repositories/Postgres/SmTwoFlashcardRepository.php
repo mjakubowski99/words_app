@@ -37,14 +37,14 @@ class SmTwoFlashcardRepository implements ISmTwoFlashcardRepository
         $this->mapper->saveMany($sm_two_flashcards);
     }
 
-    public function getNextFlashcardsByUser(UserId $user_id, int $limit, array $exclude_flashcard_ids, array $sort_criteria, int $cards_per_session): array
+    public function getNextFlashcardsByUser(UserId $user_id, int $limit, array $exclude_flashcard_ids, array $sort_criteria, int $cards_per_session, bool $from_poll, bool $exclude_from_poll): array
     {
-        return $this->flashcard_mapper->getNextFlashcards($user_id, $limit, $exclude_flashcard_ids, $this->buildCriteria($sort_criteria), $cards_per_session);
+        return $this->flashcard_mapper->getNextFlashcards($user_id, $limit, $exclude_flashcard_ids, $this->buildCriteria($sort_criteria), $cards_per_session, $from_poll, $exclude_from_poll);
     }
 
-    public function getNextFlashcardsByDeck(UserId $user_id, FlashcardDeckId $deck_id, int $limit, array $exclude_flashcard_ids, array $sort_criteria, int $cards_per_session): array
+    public function getNextFlashcardsByDeck(UserId $user_id, FlashcardDeckId $deck_id, int $limit, array $exclude_flashcard_ids, array $sort_criteria, int $cards_per_session, bool $from_poll): array
     {
-        return $this->flashcard_mapper->getNextFlashcardsByDeck($user_id, $deck_id, $limit, $exclude_flashcard_ids, $this->buildCriteria($sort_criteria), $cards_per_session);
+        return $this->flashcard_mapper->getNextFlashcardsByDeck($user_id, $deck_id, $limit, $exclude_flashcard_ids, $this->buildCriteria($sort_criteria), $cards_per_session, $from_poll);
     }
 
     /**

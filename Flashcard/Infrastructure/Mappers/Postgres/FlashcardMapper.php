@@ -13,7 +13,6 @@ use Flashcard\Domain\Models\Flashcard;
 use Shared\Utils\ValueObjects\Language;
 use Flashcard\Domain\ValueObjects\FlashcardId;
 use Flashcard\Domain\ValueObjects\FlashcardDeckId;
-use Flashcard\Domain\Exceptions\ModelNotFoundException;
 use Flashcard\Infrastructure\Mappers\Traits\HasOwnerBuilder;
 
 class FlashcardMapper
@@ -111,10 +110,10 @@ class FlashcardMapper
         $this->db::table('flashcards')->insert($insert_data);
     }
 
-    public function find(FlashcardId $id): Flashcard
+    public function findMany(array $flashcard_ids): array
     {
-        $result = $this->db::table('flashcards')
-            ->where('flashcards.id', $id)
+        return $this->db::table('flashcards')
+            ->whereIn('flashcards.id', $flashcard_ids)
             ->leftJoin('flashcard_decks', 'flashcard_decks.id', '=', 'flashcards.flashcard_deck_id')
             ->select(
                 'flashcards.*',
@@ -124,13 +123,10 @@ class FlashcardMapper
                 'flashcard_decks.name as deck_name',
                 'flashcard_decks.default_language_level as deck_default_language_level',
             )
-            ->first();
-
-        if (!$result) {
-            throw new ModelNotFoundException();
-        }
-
-        return $this->map($result);
+            ->get()
+            ->map(function (object $data) {
+                return $this->map($data);
+            })->all();
     }
 
     public function delete(FlashcardId $id): void

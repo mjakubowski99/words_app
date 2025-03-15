@@ -27,7 +27,8 @@ interface ISmTwoFlashcardRepository
         int $limit,
         array $exclude_flashcard_ids,
         array $sort_criteria,
-        int $cards_per_session
+        int $cards_per_session,
+        bool $from_poll,
     ): array;
 
     /**
@@ -39,6 +40,8 @@ interface ISmTwoFlashcardRepository
         int $limit,
         array $exclude_flashcard_ids,
         array $sort_criteria,
-        int $cards_per_session
+        int $cards_per_session,
+        bool $from_poll,
+        bool $exclude_from_poll,
     ): array;
 }
