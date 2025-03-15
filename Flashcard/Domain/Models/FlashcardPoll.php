@@ -10,7 +10,7 @@ use Flashcard\Domain\Types\FlashcardIdCollection;
 
 class FlashcardPoll
 {
-    private const int POLL_LIMIT = 30;
+    private const int DEFAULT_POLL_LIMIT = 30;
     private const int EASY_REPETITIONS_COUNT_TO_PURGE = 3;
     private FlashcardIdCollection $flashcard_ids_to_purge;
 
@@ -19,6 +19,7 @@ class FlashcardPoll
         private readonly int $poll_size,
         private FlashcardIdCollection $purge_candidates = new FlashcardIdCollection(),
         private FlashcardIdCollection $flashcard_ids_to_add = new FlashcardIdCollection(),
+        private int $poll_limit = self::DEFAULT_POLL_LIMIT,
     ) {
         if ($this->poll_size > $this->getPollLimit()) {
             throw new \UnexpectedValueException('Poll size cannot be bigger than');
@@ -113,6 +114,6 @@ class FlashcardPoll
 
     public function getPollLimit(): int
     {
-        return self::POLL_LIMIT;
+        return $this->poll_limit;
     }
 }

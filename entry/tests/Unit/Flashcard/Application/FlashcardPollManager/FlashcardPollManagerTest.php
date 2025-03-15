@@ -90,7 +90,7 @@ class FlashcardPollManagerTest extends TestCase
             ++$i;
         }
 
-        $poll = new FlashcardPoll($user_id, 2, $to_purge);
+        $poll = new FlashcardPoll($user_id, 2, $to_purge, new FlashcardIdCollection(), 2);
         $this->repository->shouldReceive('findByUser')->andReturn($poll);
         $this->selector->shouldReceive('selectToPoll')->andReturn($to_add);
 
@@ -101,5 +101,44 @@ class FlashcardPollManagerTest extends TestCase
         $this->assertSame(2, count($poll->getFlashcardIdsToAdd()));
         $this->assertSame($to_add[0]->getId()->getValue(), $poll->getFlashcardIdsToAdd()[0]->getValue());
         $this->assertSame($to_add[1]->getId()->getValue(), $poll->getFlashcardIdsToAdd()[1]->getValue());
+        $this->assertSame($to_purge[0]->getValue(), $poll->getFlashcardIdsToPurge()[0]->getValue());
+        $this->assertSame($to_purge[1]->getValue(), $poll->getFlashcardIdsToPurge()[1]->getValue());
+    }
+
+    /**
+     * @test
+     */
+    public function refresh_WhenNoFlashcardsToReplace_ShouldNotReplaceFlashcards(): void
+    {
+        // GIVEN
+        $user_id = new UserId(Uuid::uuid4()->toString());
+        $to_purge = new FlashcardIdCollection([
+            new FlashcardId(9),
+            new FlashcardId(10),
+        ]);
+
+        $to_add = [
+            \Mockery::mock(Flashcard::class),
+            \Mockery::mock(Flashcard::class),
+        ];
+
+        $i = 1;
+        foreach ($to_add as $flashcard) {
+            $flashcard->shouldReceive('getId')->andReturn(new FlashcardId($i));
+            ++$i;
+        }
+
+        $poll = new FlashcardPoll($user_id, 2, $to_purge, new FlashcardIdCollection(), 4);
+        $this->repository->shouldReceive('findByUser')->andReturn($poll);
+        $this->selector->shouldReceive('selectToPoll')->andReturn($to_add);
+
+        // WHEN
+        $poll = $this->service->refresh($user_id);
+
+        // THEN
+        $this->assertSame(2, count($poll->getFlashcardIdsToAdd()));
+        $this->assertSame($to_add[0]->getId()->getValue(), $poll->getFlashcardIdsToAdd()[0]->getValue());
+        $this->assertSame($to_add[1]->getId()->getValue(), $poll->getFlashcardIdsToAdd()[1]->getValue());
+        $this->assertCount(0, $poll->getFlashcardIdsToPurge());
     }
 }
