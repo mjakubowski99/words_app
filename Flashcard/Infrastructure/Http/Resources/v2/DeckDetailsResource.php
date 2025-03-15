@@ -157,6 +157,7 @@ class DeckDetailsResource extends JsonResource
         return [
             'id' => $this->resource->getId()->getValue(),
             'name' => $this->resource->getName(),
+            'owner_type' => $this->resource->getOwnerType()->value,
             'flashcards' => array_map(function (FlashcardRead $flashcard) {
                 return [
                     'id' => $flashcard->getId()->getValue(),
