@@ -45,6 +45,10 @@ class FlashcardDeckReadRepositoryTest extends FlashcardTestCase
         $this->assertSame($deck->getId()->getValue(), $result->getId()->getValue());
         $this->assertSame($deck->name, $result->getName());
         $this->assertCount(1, $result->getFlashcards());
+        $this->assertSame(FlashcardOwnerType::USER, $result->getOwnerType());
+        $this->assertNull($result->getLastLearntAt());
+        $this->assertSame(0.0, $result->getRatingPercentage());
+        $this->assertSame($deck->default_language_level, $result->getLanguageLevel()->value);
         $this->assertInstanceOf(FlashcardRead::class, $result->getFlashcards()[0]);
         $this->assertSame($flashcard->id, $result->getFlashcards()[0]->getId()->getValue());
         $this->assertSame($flashcard->front_word, $result->getFlashcards()[0]->getFrontWord());

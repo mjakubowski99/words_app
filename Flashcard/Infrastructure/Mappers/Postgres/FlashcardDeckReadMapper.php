@@ -47,6 +47,9 @@ class FlashcardDeckReadMapper
             $per_page,
             $flashcards_count,
             $this->buildOwner($deck->user_id, $deck->admin_id)->getOwnerType(),
+            LanguageLevel::from($deck->most_frequent_language_level ?? $deck->default_language_level),
+            $deck->last_learnt_at ? Carbon::parse($deck->last_learnt_at) : null,
+            (float) $deck->avg_rating * 100.0,
         );
     }
 
@@ -162,7 +165,31 @@ class FlashcardDeckReadMapper
 
     private function findDeck(FlashcardDeckId $id): ?object
     {
+        $rating = Rating::maxRating();
+
+        $flashcard_stats = $this->db::table('learning_session_flashcards')
+            ->join('flashcards', 'flashcards.id', '=', 'learning_session_flashcards.flashcard_id')
+            ->whereColumn('flashcards.flashcard_deck_id', 'flashcard_decks.id')
+            ->whereNotNull('learning_session_flashcards.rating')
+            ->limit(1)
+            ->selectRaw("
+                MAX(learning_session_flashcards.updated_at) as last_learnt_at,
+                AVG(COALESCE(rating,0)/{$rating}::float) as avg_rating
+            ");
+
         return $this->db::table('flashcard_decks')
+            ->leftJoinLateral($flashcard_stats, 'flashcard_stats')
+            ->select([
+                'flashcard_decks.*',
+                'flashcard_stats.last_learnt_at',
+                'flashcard_stats.avg_rating',
+                DB::raw('(SELECT language_level
+                    FROM flashcards
+                    WHERE flashcards.flashcard_deck_id = flashcard_decks.id
+                    GROUP BY language_level
+                    ORDER BY COUNT(*) DESC
+                LIMIT 1) as most_frequent_language_level'),
+            ])
             ->find($id->getValue());
     }
 }

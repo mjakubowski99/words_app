@@ -28,6 +28,21 @@ use Flashcard\Application\ReadModels\DeckDetailsRead;
             example: 'Two people talk',
         ),
         new OAT\Property(
+            property: 'language_level',
+            ref: '#/components/schemas/LanguageLevel'
+        ),
+        new OAT\Property(
+            property: 'last_learnt_at',
+            ref: '#/components/schemas/date_time',
+            description: 'Timestamp of last learning of this deck'
+        ),
+        new OAT\Property(
+            property: 'rating_percentage',
+            description: 'Rating percentage which tells how good user knows this deck',
+            type: 'float',
+            example: 66.66,
+        ),
+        new OAT\Property(
             property: 'owner_type',
             ref: '#/components/schemas/FlashcardOwnerType'
         ),
@@ -158,6 +173,9 @@ class DeckDetailsResource extends JsonResource
             'id' => $this->resource->getId()->getValue(),
             'name' => $this->resource->getName(),
             'owner_type' => $this->resource->getOwnerType()->value,
+            'language_level' => $this->resource->getLanguageLevel()->value,
+            'last_learnt_at' => $this->resource->getLastLearntAt(),
+            'rating_percentage' => $this->resource->getRatingPercentage(),
             'flashcards' => array_map(function (FlashcardRead $flashcard) {
                 return [
                     'id' => $flashcard->getId()->getValue(),
