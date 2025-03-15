@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Flashcard\Infrastructure\Repositories\Postgres\FlashcardReadRepository;
 
+use App\Models\Admin;
+use App\Models\Flashcard;
 use Tests\Base\FlashcardTestCase;
 use Shared\Enum\GeneralRatingType;
 use Flashcard\Domain\Models\Rating;
+use Shared\Enum\FlashcardOwnerType;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Flashcard\Infrastructure\Repositories\Postgres\FlashcardReadRepository;
 
@@ -46,7 +49,79 @@ class FlashcardReadRepositoryTest extends FlashcardTestCase
         ];
 
         // WHEN
-        $results = $this->repository->findStatsByUser($user->getId());
+        $results = $this->repository->findStatsByUser($user->getId(), null);
+
+        // THEN
+        $i = 0;
+        foreach ($results->getRatingStats() as $result) {
+            $this->assertSame($expecteds[$i]['rating'], $result->getRating()->getValue()->value);
+            $this->assertSame($expecteds[$i]['rating_percentage'], round($result->getRatingPercentage(), 2));
+            ++$i;
+        }
+    }
+
+    public function test__findRatingStats_WhenOwnerTypeAdmin_returnRatingsOnlyForAdminFlashcards(): void
+    {
+        // GIVEN
+        $user = $this->createUser();
+        $learning_session = $this->createLearningSession([
+            'user_id' => $user->id,
+        ]);
+        $this->createLearningSessionFlashcard([
+            'learning_session_id' => $learning_session->id,
+            'rating' => Rating::GOOD,
+            'flashcard_id' => Flashcard::factory()->byAdmin(Admin::factory()->create())->create()->id,
+        ]);
+        $this->createLearningSessionFlashcard([
+            'learning_session_id' => $learning_session->id,
+            'rating' => Rating::WEAK,
+            'flashcard_id' => Flashcard::factory()->byUser($user)->create()->id,
+        ]);
+        $expecteds = [
+            ['rating' => GeneralRatingType::UNKNOWN->value, 'rating_percentage' => 0.0],
+            ['rating' => GeneralRatingType::WEAK->value, 'rating_percentage' => 0.0],
+            ['rating' => GeneralRatingType::GOOD->value, 'rating_percentage' => 100.0],
+            ['rating' => GeneralRatingType::VERY_GOOD->value, 'rating_percentage' => 0.0],
+        ];
+
+        // WHEN
+        $results = $this->repository->findStatsByUser($user->getId(), FlashcardOwnerType::ADMIN);
+
+        // THEN
+        $i = 0;
+        foreach ($results->getRatingStats() as $result) {
+            $this->assertSame($expecteds[$i]['rating'], $result->getRating()->getValue()->value);
+            $this->assertSame($expecteds[$i]['rating_percentage'], round($result->getRatingPercentage(), 2));
+            ++$i;
+        }
+    }
+
+    public function test__findRatingStats_WhenOwnerTypeUser_returnRatingsOnlyForUserFlashcards(): void
+    {
+        // GIVEN
+        $user = $this->createUser();
+        $learning_session = $this->createLearningSession([
+            'user_id' => $user->id,
+        ]);
+        $this->createLearningSessionFlashcard([
+            'learning_session_id' => $learning_session->id,
+            'rating' => Rating::GOOD,
+            'flashcard_id' => Flashcard::factory()->byAdmin(Admin::factory()->create())->create()->id,
+        ]);
+        $this->createLearningSessionFlashcard([
+            'learning_session_id' => $learning_session->id,
+            'rating' => Rating::WEAK,
+            'flashcard_id' => Flashcard::factory()->byUser($user)->create()->id,
+        ]);
+        $expecteds = [
+            ['rating' => GeneralRatingType::UNKNOWN->value, 'rating_percentage' => 0.0],
+            ['rating' => GeneralRatingType::WEAK->value, 'rating_percentage' => 100.0],
+            ['rating' => GeneralRatingType::GOOD->value, 'rating_percentage' => 0.0],
+            ['rating' => GeneralRatingType::VERY_GOOD->value, 'rating_percentage' => 0.0],
+        ];
+
+        // WHEN
+        $results = $this->repository->findStatsByUser($user->getId(), FlashcardOwnerType::USER);
 
         // THEN
         $i = 0;
@@ -78,7 +153,7 @@ class FlashcardReadRepositoryTest extends FlashcardTestCase
         }
 
         // WHEN
-        $results = $this->repository->findStatsByUser($user->getId());
+        $results = $this->repository->findStatsByUser($user->getId(), null);
 
         // THEN
         $i = 0;

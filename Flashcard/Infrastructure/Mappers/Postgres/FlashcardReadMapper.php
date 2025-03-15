@@ -8,6 +8,7 @@ use Shared\Models\Emoji;
 use Shared\Enum\LanguageLevel;
 use Illuminate\Support\Facades\DB;
 use Flashcard\Domain\Models\Rating;
+use Shared\Enum\FlashcardOwnerType;
 use Shared\Utils\ValueObjects\UserId;
 use Shared\Utils\ValueObjects\Language;
 use Flashcard\Domain\ValueObjects\FlashcardId;
@@ -27,9 +28,14 @@ class FlashcardReadMapper
         private readonly DB $db,
     ) {}
 
-    public function findFlashcardStats(?FlashcardDeckId $deck_id, ?UserId $user_id): RatingStatsReadCollection
-    {
+    public function findFlashcardStats(
+        ?FlashcardDeckId $deck_id,
+        ?UserId $user_id,
+        ?FlashcardOwnerType $flashcard_owner_type = null,
+    ): RatingStatsReadCollection {
         $results = $this->db::table('flashcards')
+            ->when($flashcard_owner_type === FlashcardOwnerType::USER, fn ($q) => $q->whereNotNull('flashcards.user_id'))
+            ->when($flashcard_owner_type === FlashcardOwnerType::ADMIN, fn ($q) => $q->whereNotNull('flashcards.admin_id'))
             ->when($deck_id !== null, fn ($q) => $q->where('flashcards.flashcard_deck_id', '=', $deck_id->getValue()))
             ->when($user_id !== null, fn ($q) => $q->where('learning_sessions.user_id', '=', $user_id->getValue()))
             ->leftJoin(
