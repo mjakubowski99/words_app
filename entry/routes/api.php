@@ -8,10 +8,6 @@ use Flashcard\Infrastructure\Http\Controllers\v1\SessionController;
 use Flashcard\Infrastructure\Http\Controllers\v1\FlashcardController;
 use Flashcard\Infrastructure\Http\Controllers\v1\FlashcardDeckController;
 
-Route::get('/', function () {
-    return 'Done';
-});
-
 Route::post('/user/oauth/login', [UserController::class, 'loginWithProvider'])
     ->name('user.oauth.login');
 
