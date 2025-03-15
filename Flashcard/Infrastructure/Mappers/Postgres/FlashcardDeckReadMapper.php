@@ -8,14 +8,18 @@ use Carbon\Carbon;
 use Shared\Enum\LanguageLevel;
 use Illuminate\Support\Facades\DB;
 use Flashcard\Domain\Models\Rating;
+use Shared\Enum\FlashcardOwnerType;
 use Shared\Utils\ValueObjects\UserId;
 use Flashcard\Domain\ValueObjects\FlashcardDeckId;
 use Flashcard\Application\ReadModels\DeckDetailsRead;
 use Flashcard\Application\ReadModels\OwnerCategoryRead;
 use Flashcard\Domain\Exceptions\ModelNotFoundException;
+use Flashcard\Infrastructure\Mappers\Traits\HasOwnerBuilder;
 
 class FlashcardDeckReadMapper
 {
+    use HasOwnerBuilder;
+
     public function __construct(
         private readonly DB $db,
         private readonly FlashcardReadMapper $flashcard_mapper,
@@ -41,7 +45,8 @@ class FlashcardDeckReadMapper
             $flashcards,
             $page,
             $per_page,
-            $flashcards_count
+            $flashcards_count,
+            $this->buildOwner($deck->user_id, $deck->admin_id)->getOwnerType(),
         );
     }
 
@@ -96,6 +101,7 @@ class FlashcardDeckReadMapper
                     $data->flashcards_count,
                     (float) $data->avg_rating * 100.0,
                     $data->last_learnt_at ? Carbon::parse($data->last_learnt_at) : null,
+                    FlashcardOwnerType::ADMIN,
                 );
             })->toArray();
     }
@@ -149,6 +155,7 @@ class FlashcardDeckReadMapper
                     $data->flashcards_count,
                     (float) $data->avg_rating * 100.0,
                     $data->last_learnt_at ? Carbon::parse($data->last_learnt_at) : null,
+                    FlashcardOwnerType::USER,
                 );
             })->toArray();
     }

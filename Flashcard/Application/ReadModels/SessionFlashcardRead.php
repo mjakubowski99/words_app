@@ -6,6 +6,7 @@ namespace Flashcard\Application\ReadModels;
 
 use Shared\Models\Emoji;
 use Shared\Enum\LanguageLevel;
+use Shared\Enum\FlashcardOwnerType;
 use Shared\Utils\ValueObjects\Language;
 use Flashcard\Domain\ValueObjects\SessionFlashcardId;
 
@@ -21,6 +22,7 @@ class SessionFlashcardRead
         private readonly string $back_context,
         private readonly LanguageLevel $language_level,
         private readonly ?Emoji $emoji,
+        private FlashcardOwnerType $owner_type,
     ) {}
 
     public function getId(): SessionFlashcardId
@@ -66,5 +68,10 @@ class SessionFlashcardRead
     public function getEmoji(): ?Emoji
     {
         return $this->emoji;
+    }
+
+    public function getOwnerType(): FlashcardOwnerType
+    {
+        return $this->owner_type;
     }
 }

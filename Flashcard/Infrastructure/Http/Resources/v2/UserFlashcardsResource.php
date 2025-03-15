@@ -105,6 +105,10 @@ use Flashcard\Application\ReadModels\UserFlashcardsRead;
                         example: '❤️',
                         nullable: true
                     ),
+                    new OAT\Property(
+                        property: 'owner_type',
+                        ref: '#/components/schemas/FlashcardOwnerType'
+                    ),
                 ],
                 type: 'object'
             ),
@@ -148,6 +152,7 @@ class UserFlashcardsResource extends JsonResource
                     'language_level' => $flashcard->getLanguageLevel()->value,
                     'rating_percentage' => $flashcard->getRatingPercentage(),
                     'emoji' => $flashcard->getEmoji(),
+                    'owner_type' => $flashcard->getOwnerType(),
                 ];
             }, $this->resource->getFlashcards()),
             'page' => $this->resource->getPage(),

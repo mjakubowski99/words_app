@@ -16,10 +16,13 @@ use Flashcard\Application\ReadModels\FlashcardRead;
 use Flashcard\Application\ReadModels\GeneralRating;
 use Flashcard\Application\ReadModels\RatingStatsRead;
 use Flashcard\Application\ReadModels\UserFlashcardsRead;
+use Flashcard\Infrastructure\Mappers\Traits\HasOwnerBuilder;
 use Flashcard\Application\ReadModels\RatingStatsReadCollection;
 
 class FlashcardReadMapper
 {
+    use HasOwnerBuilder;
+
     public function __construct(
         private readonly DB $db,
     ) {}
@@ -126,6 +129,7 @@ class FlashcardReadMapper
                     LanguageLevel::from($data->language_level),
                     (float) $data->rating_ratio * 100,
                     $data->emoji ? Emoji::fromUnicode($data->emoji) : null,
+                    $this->buildOwner($data->user_id, $data->admin_id)->getOwnerType(),
                 );
             })->toArray();
 

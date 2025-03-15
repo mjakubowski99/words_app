@@ -5,8 +5,11 @@ declare(strict_types=1);
 namespace Tests\Unit\Flashcard\Infrastructure\Repositories\Postgres\SessionFlashcardReadRepository;
 
 use Tests\TestCase;
+use App\Models\Admin;
+use App\Models\Flashcard;
 use App\Models\LearningSession;
 use Flashcard\Domain\Models\Rating;
+use Shared\Enum\FlashcardOwnerType;
 use App\Models\LearningSessionFlashcard;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Flashcard\Infrastructure\Repositories\Postgres\SessionFlashcardReadRepository;
@@ -51,5 +54,26 @@ class SessionFlashcardReadRepositoryTest extends TestCase
         $this->assertSame($expected->flashcard->back_context, $session_flashcards[0]->getBackContext());
         $this->assertSame($expected->flashcard->language_level, $session_flashcards[0]->getLanguageLevel()->value);
         $this->assertSame($expected->flashcard->emoji, $session_flashcards[0]->getEmoji()->toUnicode());
+        $this->assertSame(FlashcardOwnerType::USER, $session_flashcards[0]->getOwnerType());
+    }
+
+    public function test__findUnratedById_AdminIsOwner(): void
+    {
+        // GIVEN
+        $session = LearningSession::factory()->create();
+        $flashcard = Flashcard::factory()->byAdmin(Admin::factory()->create())->create();
+        LearningSessionFlashcard::factory()->create([
+            'learning_session_id' => $session->id,
+            'flashcard_id' => $flashcard->id,
+            'rating' => null,
+        ]);
+
+        // WHEN
+        $result = $this->repository->findUnratedById($session->getId(), 5);
+        $session_flashcards = $result->getSessionFlashcards();
+
+        // THEN
+        $this->assertCount(1, $result->getSessionFlashcards());
+        $this->assertSame(FlashcardOwnerType::ADMIN, $session_flashcards[0]->getOwnerType());
     }
 }

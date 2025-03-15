@@ -28,6 +28,10 @@ use Flashcard\Application\ReadModels\DeckDetailsRead;
             example: 'Two people talk',
         ),
         new OAT\Property(
+            property: 'owner_type',
+            ref: '#/components/schemas/FlashcardOwnerType'
+        ),
+        new OAT\Property(
             property: 'flashcards',
             description: 'List of flashcards in the session',
             type: 'array',
@@ -117,6 +121,10 @@ use Flashcard\Application\ReadModels\DeckDetailsRead;
                         example: '❤️',
                         nullable: true
                     ),
+                    new OAT\Property(
+                        property: 'owner_type',
+                        ref: '#/components/schemas/FlashcardOwnerType'
+                    ),
                 ],
                 type: 'object'
             ),
@@ -162,6 +170,7 @@ class DeckDetailsResource extends JsonResource
                     'language_level' => $flashcard->getLanguageLevel()->value,
                     'rating_percentage' => $flashcard->getRatingPercentage(),
                     'emoji' => $flashcard->getEmoji(),
+                    'owner_type' => $flashcard->getOwnerType()->value,
                 ];
             }, $this->resource->getFlashcards()),
             'page' => $this->resource->getPage(),

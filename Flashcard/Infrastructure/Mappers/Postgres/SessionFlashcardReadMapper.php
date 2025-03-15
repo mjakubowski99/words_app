@@ -13,9 +13,12 @@ use Flashcard\Domain\ValueObjects\SessionId;
 use Flashcard\Domain\ValueObjects\SessionFlashcardId;
 use Flashcard\Application\ReadModels\SessionFlashcardRead;
 use Flashcard\Application\ReadModels\SessionFlashcardsRead;
+use Flashcard\Infrastructure\Mappers\Traits\HasOwnerBuilder;
 
 class SessionFlashcardReadMapper
 {
+    use HasOwnerBuilder;
+
     public function __construct(
         private readonly DB $db,
     ) {}
@@ -45,7 +48,9 @@ class SessionFlashcardReadMapper
                     flashcards.front_context,
                     flashcards.back_context,
                     flashcards.language_level,
-                    flashcards.emoji
+                    flashcards.emoji,
+                    flashcards.user_id,
+                    flashcards.admin_id
                 FROM 
                     learning_session_flashcards
                 LEFT JOIN
@@ -75,6 +80,8 @@ class SessionFlashcardReadMapper
                 flashcards_data.back_context,
                 flashcards_data.language_level,
                 flashcards_data.emoji,
+                flashcards_data.user_id as flashcard_user_id,
+                flashcards_data.admin_id as flashcard_admin_id,
                 session_data.id AS session_id,
                 session_data.status as status,
                 session_data.cards_per_session,
@@ -122,6 +129,7 @@ class SessionFlashcardReadMapper
             $data->back_context,
             LanguageLevel::from($data->language_level),
             $data->emoji ? Emoji::fromUnicode($data->emoji) : null,
+            $this->buildOwner($data->flashcard_user_id, $data->flashcard_admin_id)->getOwnerType(),
         );
     }
 }

@@ -100,6 +100,10 @@ use Flashcard\Application\ReadModels\SessionFlashcardsRead;
                                 example: '❤️',
                                 nullable: true
                             ),
+                            new OAT\Property(
+                                property: 'owner_type',
+                                ref: '#/components/schemas/FlashcardOwnerType'
+                            ),
                         ],
                         type: 'object'
                     )
@@ -133,6 +137,7 @@ class NextSessionFlashcardsResource extends JsonResource
                         'back_context' => $flashcard->getBackContext(),
                         'language_level' => $flashcard->getLanguageLevel()->value,
                         'emoji' => $flashcard->getEmoji(),
+                        'owner_type' => $flashcard->getOwnerType()->value,
                     ];
                 }, $this->resource->getSessionFlashcards()),
             ],
