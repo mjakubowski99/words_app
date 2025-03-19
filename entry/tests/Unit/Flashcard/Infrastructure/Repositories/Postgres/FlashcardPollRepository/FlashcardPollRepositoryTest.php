@@ -175,6 +175,26 @@ class FlashcardPollRepositoryTest extends FlashcardTestCase
         ]);
     }
 
+    public static function dataProvider(): \Generator
+    {
+        yield 'Many flashcards with lowest level' => [
+            'flashcards' => [
+                ['name' => 'A', 'leitner_level' => 0, 'updated_at' => now()],
+                ['name' => 'C', 'leitner_level' => 0, 'updated_at' => now()->subMinute()],
+                ['name' => 'B', 'leitner_level' => 1, 'updated_at' => now()],
+            ],
+            'expected' => 'C',
+        ];
+
+        yield 'Flashcards from different leitner levels' => [
+            'flashcards' => [
+                ['name' => 'G', 'leitner_level' => 1, 'updated_at' => now()],
+                ['name' => 'B', 'leitner_level' => 2, 'updated_at' => now()->subMinute()],
+            ],
+            'expected' => 'G',
+        ];
+    }
+
     /**
      * @test
      */
@@ -267,25 +287,5 @@ class FlashcardPollRepositoryTest extends FlashcardTestCase
             'leitner_level' => $other_poll_item->leitner_level,
             'easy_ratings_count' => $other_poll_item->easy_ratings_count,
         ]);
-    }
-
-    public static function dataProvider(): \Generator
-    {
-        yield 'Many flashcards with lowest level' => [
-            'flashcards' => [
-                ['name' => 'A', 'leitner_level' => 0, 'updated_at' => now()],
-                ['name' => 'C', 'leitner_level' => 0, 'updated_at' => now()->subMinute()],
-                ['name' => 'B', 'leitner_level' => 1, 'updated_at' => now()],
-            ],
-            'expected' => 'C',
-        ];
-
-        yield 'Flashcards from different leitner levels' => [
-            'flashcards' => [
-                ['name' => 'G', 'leitner_level' => 1, 'updated_at' => now()],
-                ['name' => 'B', 'leitner_level' => 2, 'updated_at' => now()->subMinute()],
-            ],
-            'expected' => 'G',
-        ];
     }
 }

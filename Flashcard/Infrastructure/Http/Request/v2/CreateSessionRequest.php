@@ -42,8 +42,8 @@ class CreateSessionRequest extends Request
             (int) $this->input('cards_per_session'),
             $this->userAgent(),
             $this->input('flashcard_deck_id') !== null ? new FlashcardDeckId((int) $this->input('flashcard_deck_id')) : null,
-            $this->input('flashcard_deck_id') !== null ?
-                LearningSessionType::LEARN_FLASHCARDS_IN_CATEGORY
+            $this->input('flashcard_deck_id') !== null
+                ? LearningSessionType::LEARN_FLASHCARDS_IN_CATEGORY
                 : LearningSessionType::LEARN_YOUR_ALL_FLASHCARDS,
         );
     }

@@ -43,6 +43,21 @@ class FlashcardDuplicateRepositoryTest extends TestCase
         $this->assertArraysAreTheSame($expected, $results);
     }
 
+    public static function savedWordsDataProvider(): \Generator
+    {
+        yield 'set 1' => [
+            'saved_words' => ['apple', 'pen', 'girl'],
+            'new_words' => ['grump', 'girl'],
+            'expected' => ['girl'],
+        ];
+
+        yield 'set 2' => [
+            'saved_words' => ['name', 'game', 'end'],
+            'new_words' => ['Name', 'game', 'End'],
+            'expected' => ['name', 'game', 'end'],
+        ];
+    }
+
     /**
      * @dataProvider initialLetterWordsDataProvider
      */
@@ -61,21 +76,6 @@ class FlashcardDuplicateRepositoryTest extends TestCase
 
         // THEN
         $this->assertArraysAreTheSame($expected, $results);
-    }
-
-    public static function savedWordsDataProvider(): \Generator
-    {
-        yield 'set 1' => [
-            'saved_words' => ['apple', 'pen', 'girl'],
-            'new_words' => ['grump', 'girl'],
-            'expected' => ['girl'],
-        ];
-
-        yield 'set 2' => [
-            'saved_words' => ['name', 'game', 'end'],
-            'new_words' => ['Name', 'game', 'End'],
-            'expected' => ['name', 'game', 'end'],
-        ];
     }
 
     public static function initialLetterWordsDataProvider(): \Generator
