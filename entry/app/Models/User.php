@@ -8,11 +8,15 @@ use Laravel\Sanctum\HasApiTokens;
 use Flashcard\Domain\Models\Owner;
 use Shared\Utils\ValueObjects\UserId;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Concerns\HasVersion4Uuids as HasUuids;
 
+/**
+ * Temporary to fix phpstan bug after upgrade to Laravel 12.
+ * @property string $id
+ */
 class User extends Authenticatable
 {
     use HasApiTokens;

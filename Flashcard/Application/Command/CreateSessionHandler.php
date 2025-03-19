@@ -22,8 +22,8 @@ class CreateSessionHandler
     public function handle(CreateSession $command): CreateSessionResultDTO
     {
         $deck = $command->hasDeckId()
-            ? $this->deck_repository->findById($command->getDeckId()) :
-            null;
+            ? $this->deck_repository->findById($command->getDeckId())
+            : null;
 
         $this->repository->setAllOwnerSessionsStatus($command->getUserId(), SessionStatus::FINISHED);
 
