@@ -14,7 +14,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Concerns\HasVersion4Uuids as HasUuids;
 
 /**
- * Temporary to fix phpstan bug after upgrade to Laravel 12
+ * Temporary to fix phpstan bug after upgrade to Laravel 12.
  * @property string $id
  */
 class User extends Authenticatable
