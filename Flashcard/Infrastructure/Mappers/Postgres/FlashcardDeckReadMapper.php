@@ -70,6 +70,8 @@ class FlashcardDeckReadMapper
                 AVG(COALESCE(rating,0)/{$rating}::float) as avg_rating
             ");
 
+        $activities = $this->db::table('flashcard_deck_activities')->where('user_id', $user_id);
+
         return $this->db::table('flashcard_decks')
             ->whereNotNull('flashcard_decks.admin_id')
             ->when(!is_null($search), function ($query) use ($search) {
@@ -78,6 +80,9 @@ class FlashcardDeckReadMapper
             ->take($per_page)
             ->skip(($page - 1) * $per_page)
             ->leftJoinLateral($flashcard_stats, 'flashcard_stats')
+            ->leftJoinSub($activities, 'flashcard_deck_activities', function ($join) {
+                $join->on('flashcard_deck_activities.flashcard_deck_id', '=', 'flashcard_decks.id');
+            })
             ->select(
                 'flashcard_decks.*',
                 DB::raw('(SELECT language_level
@@ -96,7 +101,7 @@ class FlashcardDeckReadMapper
             )
             ->orderByRaw('
                 CASE
-                    WHEN flashcard_stats.last_learnt_at IS NOT NULL THEN flashcard_stats.last_learnt_at
+                    WHEN flashcard_deck_activities.last_viewed_at IS NOT NULL THEN flashcard_deck_activities.last_viewed_at
                     ELSE flashcard_decks.created_at
                 END DESC NULLS LAST
             ')
@@ -129,6 +134,8 @@ class FlashcardDeckReadMapper
                 AVG(COALESCE(rating,0)/{$rating}::float) as avg_rating
             ");
 
+        $activities = $this->db::table('flashcard_deck_activities')->where('user_id', $user_id);
+
         return $this->db::table('flashcard_decks')
             ->where('flashcard_decks.user_id', $user_id->getValue())
             ->when(!is_null($search), function ($query) use ($search) {
@@ -137,6 +144,9 @@ class FlashcardDeckReadMapper
             ->take($per_page)
             ->skip(($page - 1) * $per_page)
             ->leftJoinLateral($flashcard_stats, 'flashcard_stats')
+            ->leftJoinSub($activities, 'flashcard_deck_activities', function ($join) {
+                $join->on('flashcard_deck_activities.flashcard_deck_id', '=', 'flashcard_decks.id');
+            })
             ->select(
                 'flashcard_decks.*',
                 DB::raw('(SELECT language_level
@@ -155,7 +165,7 @@ class FlashcardDeckReadMapper
             )
             ->orderByRaw('
                 CASE
-                    WHEN flashcard_stats.last_learnt_at IS NOT NULL THEN flashcard_stats.last_learnt_at
+                    WHEN flashcard_deck_activities.last_viewed_at IS NOT NULL THEN flashcard_deck_activities.last_viewed_at
                     ELSE flashcard_decks.created_at
                 END DESC NULLS LAST
             ')

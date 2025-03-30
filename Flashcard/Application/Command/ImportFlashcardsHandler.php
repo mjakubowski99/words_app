@@ -13,6 +13,7 @@ use Shared\Utils\ValueObjects\Language;
 use Shared\Database\ITransactionManager;
 use Shared\Exceptions\UnauthorizedException;
 use Flashcard\Domain\ValueObjects\FlashcardId;
+use Flashcard\Domain\Services\FlashcardDuplicateService;
 use Flashcard\Application\Repository\IFlashcardRepository;
 use Flashcard\Application\Repository\IFlashcardDeckRepository;
 
@@ -21,6 +22,7 @@ class ImportFlashcardsHandler
     public function __construct(
         private IFlashcardDeckRepository $deck_repository,
         private IFlashcardRepository $flashcard_repository,
+        private FlashcardDuplicateService $duplicate_service,
         private ITransactionManager $manager,
     ) {}
 
@@ -40,6 +42,8 @@ class ImportFlashcardsHandler
             foreach ($rows as $row) {
                 $flashcards[] = $this->buildFlashcardModel($owner, $deck, $row);
             }
+
+            $flashcards = $this->duplicate_service->removeDuplicates($deck, $flashcards);
 
             $this->flashcard_repository->createMany($flashcards);
 

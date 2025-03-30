@@ -23,6 +23,8 @@ interface IFlashcardDeckRepository
 
     public function update(Deck $deck): void;
 
+    public function updateLastViewedAt(FlashcardDeckId $id, UserId $user_id): void;
+
     public function remove(Deck $deck): void;
 
     public function deleteAllForUser(UserId $user_id): void;

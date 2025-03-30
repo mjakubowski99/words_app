@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Flashcard\Infrastructure\Repositories\Postgres\FlashcardDeckRepository;
 
+use Carbon\Carbon;
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\Admin;
@@ -14,7 +15,10 @@ use Shared\Enum\LanguageLevel;
 use App\Models\LearningSession;
 use Flashcard\Domain\Models\Deck;
 use Shared\Enum\FlashcardOwnerType;
+use App\Models\FlashcardDeckActivity;
+use Shared\Utils\ValueObjects\UserId;
 use App\Models\LearningSessionFlashcard;
+use Flashcard\Domain\ValueObjects\FlashcardDeckId;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Flashcard\Infrastructure\Repositories\Postgres\FlashcardDeckRepository;
 
@@ -158,6 +162,40 @@ class FlashcardDeckRepositoryTest extends TestCase
             'id' => $deck_model->id,
             'admin_id' => $admin->id,
             'user_id' => null,
+        ]);
+    }
+
+    public function test__updateLastViewedAt_NoEntryInDatabase(): void
+    {
+        // GIVEN
+        Carbon::setTestNow('2023-10-12 12:00');
+        $deck = FlashcardDeck::factory()->create();
+        $user = User::factory()->create();
+
+        // WHEN
+        $this->repository->updateLastViewedAt($deck->getId(), $user->getId());
+
+        // THEN
+        $this->assertDatabaseHas(FlashcardDeckActivity::class, [
+            'flashcard_deck_id' => $deck->getId(),
+            'user_id' => $user->getId(),
+            'last_viewed_at' => '2023-10-12 12:00',
+        ]);
+    }
+
+    public function test__updateLastViewedAt_EntryInDatabase(): void
+    {
+        // GIVEN
+        $activity = FlashcardDeckActivity::factory()->create();
+        Carbon::setTestNow('2023-10-12 12:00');
+
+        // WHEN
+        $this->repository->updateLastViewedAt(new FlashcardDeckId($activity->flashcard_deck_id), new UserId($activity->user_id));
+
+        // THEN
+        $this->assertDatabaseHas(FlashcardDeckActivity::class, [
+            'id' => $activity->id,
+            'last_viewed_at' => '2023-10-12 12:00',
         ]);
     }
 

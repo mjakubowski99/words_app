@@ -43,6 +43,11 @@ class FlashcardDeckRepository implements IFlashcardDeckRepository
         $this->mapper->update($deck);
     }
 
+    public function updateLastViewedAt(FlashcardDeckId $id, UserId $user_id): void
+    {
+        $this->mapper->updateLastViewedAt($id, $user_id);
+    }
+
     /** @return Deck[] */
     public function getByUser(UserId $user_id, int $page, int $per_page): array
     {

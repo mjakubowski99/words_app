@@ -94,6 +94,51 @@ class FlashcardDeckControllerTest extends FlashcardTestCase
         $response->assertStatus(204);
     }
 
+    public function test__get_UserAuthorized_success(): void
+    {
+        // GIVEN
+        $user = $this->createUser();
+        $deck = $this->createFlashcardDeck(['user_id' => $user->id]);
+        $this->createFlashcard([
+            'user_id' => $user->id,
+            'flashcard_deck_id' => $deck->id,
+        ]);
+
+        // WHEN
+        $response = $this
+            ->actingAs($user)
+            ->json(
+                'GET',
+                route('v2.flashcards.decks.get', [
+                    'flashcard_deck_id' => $deck->id,
+                ])
+            );
+
+        // THEN
+        $response->assertStatus(200);
+        $response->assertJsonStructure([
+            'data' => [
+                'id',
+                'name',
+                'owner_type',
+                'flashcards' => [
+                    '*' => [
+                        'id',
+                        'front_word',
+                        'front_lang',
+                        'back_word',
+                        'back_lang',
+                        'front_context',
+                        'back_context',
+                        'language_level',
+                        'emoji',
+                        'owner_type',
+                    ],
+                ],
+            ],
+        ]);
+    }
+
     public function test__generateFlashcards_UserAuthorized_success(): void
     {
         // GIVEN
