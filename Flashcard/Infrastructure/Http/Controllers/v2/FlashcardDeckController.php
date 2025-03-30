@@ -16,6 +16,7 @@ use Flashcard\Application\Command\CreateDeckHandler;
 use Flashcard\Application\Command\UpdateDeckHandler;
 use Flashcard\Application\Command\BulkDeleteDeckHandler;
 use Flashcard\Application\Command\GenerateFlashcardsHandler;
+use Flashcard\Application\Command\UpdateDeckActivityCommand;
 use Flashcard\Application\Command\MergeFlashcardDecksHandler;
 use Flashcard\Infrastructure\Http\Request\v2\BulkDeleteDeckRequest;
 use Flashcard\Infrastructure\Http\Request\v2\GetDeckDetailsRequest;
@@ -351,7 +352,10 @@ class FlashcardDeckController
     public function get(
         GetDeckDetailsRequest $request,
         GetDeckDetails $get_deck_details,
+        UpdateDeckActivityCommand $activity_command,
     ): DeckDetailsResource {
+        $activity_command->updateLastViewed($request->getDeckId(), $request->currentId());
+
         $details = $get_deck_details->get(
             $request->currentId(),
             $request->getDeckId(),

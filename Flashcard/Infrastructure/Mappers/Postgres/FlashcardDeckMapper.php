@@ -54,6 +54,21 @@ class FlashcardDeckMapper
             ]);
     }
 
+    public function updateLastViewedAt(FlashcardDeckId $id, UserId $user_id): void
+    {
+        $this->db::table('flashcard_deck_activities')
+            ->where('flashcard_deck_id', $id->getValue())
+            ->where('user_id', $user_id->getValue())
+            ->upsert([
+                'user_id' => $user_id->getValue(),
+                'flashcard_deck_id' => $id->getValue(),
+                'last_viewed_at' => now(),
+            ], [
+                'user_id',
+                'flashcard_deck_id',
+            ], ['last_viewed_at']);
+    }
+
     public function findById(FlashcardDeckId $id): Deck
     {
         $result = $this->db::table('flashcard_decks')

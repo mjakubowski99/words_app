@@ -49,6 +49,7 @@ trait HasFlashcardDeckConfigurator
                         . 'front_context(context sentence on the end of the card), '
                         . 'back_word(word on the back of the card), '
                         . 'back_context(context sentence on the back of the card). '
+                        . 'emoji(optional can be omitted).'
                         . "If those headers are missing import will fail\n"
                     ),
             ])->action(function (array $data) {
