@@ -18,8 +18,23 @@ class FlashcardDuplicateService
     public function removeDuplicates(Deck $deck, array $flashcards): array
     {
         $front_words = array_map(function (Flashcard $flashcard) {
-            return $flashcard->getFrontWord();
+            return mb_strtolower($flashcard->getFrontWord());
         }, $flashcards);
+
+        $unique_words = array_unique($front_words);
+
+        $unique_flashcards = [];
+        foreach ($unique_words as $unique_word) {
+            foreach ($flashcards as $flashcard) {
+                if (mb_strtolower($flashcard->getFrontWord()) === $unique_word) {
+                    $unique_flashcards[] = $flashcard;
+
+                    break;
+                }
+            }
+        }
+
+        $flashcards = $unique_flashcards;
 
         $duplicated_words = $this->duplicate_repository->getAlreadySavedFrontWords($deck->getId(), $front_words);
 

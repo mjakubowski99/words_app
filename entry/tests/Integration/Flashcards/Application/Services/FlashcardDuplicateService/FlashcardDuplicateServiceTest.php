@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Integration\Flashcards\Application\Services\FlashcardDuplicateService;
+namespace Tests\Integration\Flashcards\Application\Services\FlashcardDuplicateService;
 
 use Mockery\MockInterface;
 use App\Models\FlashcardDeck;
@@ -66,6 +66,18 @@ class FlashcardDuplicateServiceTest extends FlashcardTestCase
             'saved_words' => ['arbuz', 'owocE'],
             'new_words' => ['owoce', 'grzanki', 'Arbuz'],
             'expected' => ['grzanki'],
+        ];
+
+        yield 'duplicate in new words' => [
+            'saved_words' => [],
+            'new_words' => ['gruszka', 'jablko', 'banan', 'jablko', 'banan', 'gruszka'],
+            'expected' => ['gruszka', 'jablko', 'banan'],
+        ];
+
+        yield 'duplicate in new words different character case' => [
+            'saved_words' => [],
+            'new_words' => ['Gra', 'gra'],
+            'expected' => ['Gra'],
         ];
     }
 
