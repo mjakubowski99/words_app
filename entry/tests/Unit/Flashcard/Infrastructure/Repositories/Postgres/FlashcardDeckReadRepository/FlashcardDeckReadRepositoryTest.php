@@ -226,13 +226,39 @@ class FlashcardDeckReadRepositoryTest extends FlashcardTestCase
         ]);
 
         // WHEN
-        $results = $this->repository->getAdminDecks($user->getId(), 'LAn', 1, 15);
+        $results = $this->repository->getAdminDecks($user->getId(), null, 'LAn', 1, 15);
 
         // THEN
         $this->assertCount(1, $results);
         $this->assertInstanceOf(OwnerCategoryRead::class, $results[0]);
         $this->assertSame($expected->id, $results[0]->getId()->getValue());
         $this->assertSame(FlashcardOwnerType::ADMIN, $results[0]->getOwnerType());
+    }
+
+    public function test__getAdminDecks_LanguageLevelFilterWorks(): void
+    {
+        // GIVEN
+        $user = $this->createUser();
+        $other = $this->createFlashcardDeck([
+            'user_id' => null,
+            'admin_id' => Admin::factory()->create(),
+            'name' => 'Nal',
+            'default_language_level' => LanguageLevel::A2,
+        ]);
+        $expected = $this->createFlashcardDeck([
+            'user_id' => null,
+            'admin_id' => Admin::factory()->create(),
+            'name' => 'Alan',
+            'default_language_level' => LanguageLevel::A1,
+        ]);
+
+        // WHEN
+        $results = $this->repository->getAdminDecks($user->getId(), LanguageLevel::A1, 'LAn', 1, 15);
+
+        // THEN
+        $this->assertCount(1, $results);
+        $this->assertInstanceOf(OwnerCategoryRead::class, $results[0]);
+        $this->assertSame($expected->id, $results[0]->getId()->getValue());
     }
 
     public function test__getAdminDecks_lastLearntAtIsCorrect(): void
@@ -264,7 +290,7 @@ class FlashcardDeckReadRepositoryTest extends FlashcardTestCase
         ]);
 
         // WHEN
-        $results = $this->repository->getAdminDecks($user->getId(), 'LAn', 1, 15);
+        $results = $this->repository->getAdminDecks($user->getId(), null, 'LAn', 1, 15);
 
         // THEN
         $this->assertSame($now->toDateTimeString(), $results[0]->getLastLearntAt()->toDateTimeString());

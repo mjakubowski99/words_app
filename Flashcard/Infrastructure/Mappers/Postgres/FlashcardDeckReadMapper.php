@@ -54,7 +54,7 @@ class FlashcardDeckReadMapper
     }
 
     /** @return OwnerCategoryRead[] */
-    public function getAdminDecks(UserId $user_id, ?string $search, int $page, int $per_page): array
+    public function getAdminDecks(UserId $user_id, ?LanguageLevel $level, ?string $search, int $page, int $per_page): array
     {
         $rating = Rating::maxRating();
 
@@ -73,6 +73,7 @@ class FlashcardDeckReadMapper
         $activities = $this->db::table('flashcard_deck_activities')->where('user_id', $user_id);
 
         return $this->db::table('flashcard_decks')
+            ->when($level !== null, fn ($q) => $q->where('flashcard_decks.default_language_level', '=', $level->value))
             ->whereNotNull('flashcard_decks.admin_id')
             ->when(!is_null($search), function ($query) use ($search) {
                 return $query->where(DB::raw('LOWER(flashcard_decks.name)'), 'LIKE', '%' . mb_strtolower($search) . '%');

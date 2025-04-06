@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Http\Request\v2;
 
+use Shared\Enum\LanguageLevel;
+use Illuminate\Validation\Rule;
 use Shared\Http\Request\Request;
 
 class IndexFlashcardDeckRequest extends Request
@@ -12,9 +14,15 @@ class IndexFlashcardDeckRequest extends Request
     {
         return [
             'search' => ['nullable', 'string', 'max:255'],
+            'language_level' => ['nullable', 'string', Rule::enum(LanguageLevel::class)],
             'page' => ['integer', 'gte:0'],
             'per_page' => ['integer', 'gte:0', 'lte:30'],
         ];
+    }
+
+    public function getLanguageLevel(): ?LanguageLevel
+    {
+        return LanguageLevel::from($this->input('language_level'));
     }
 
     public function getSearch(): ?string

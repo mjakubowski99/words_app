@@ -112,6 +112,11 @@ class FlashcardDeckController
                 example: 'Apple',
             ),
             new OAT\Parameter(
+                name: 'language_level',
+                in: 'query',
+                ref: '#/components/schemas/LanguageLevel'
+            ),
+            new OAT\Parameter(
                 name: 'page',
                 description: 'Decks page number',
                 in: 'query',
@@ -148,6 +153,7 @@ class FlashcardDeckController
         return new FlashcardDecksResource([
             'decks' => $get_admin_decks->handle(
                 $request->currentId(),
+                $request->getLanguageLevel(),
                 $request->getSearch(),
                 $request->getPage(),
                 $request->getPerPage(),
