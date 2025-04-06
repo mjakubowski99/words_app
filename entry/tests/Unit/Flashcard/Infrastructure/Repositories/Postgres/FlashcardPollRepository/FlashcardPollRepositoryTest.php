@@ -288,4 +288,41 @@ class FlashcardPollRepositoryTest extends FlashcardTestCase
             'easy_ratings_count' => $other_poll_item->easy_ratings_count,
         ]);
     }
+
+    /**
+     * @test
+     */
+    public function test__purgeLatestFlashcards_RemoveOnlyLatestCards(): void
+    {
+        // GIVEN
+        $user = $this->createUser();
+
+        $poll_item_to_keep = $this->createFlashcardPollItem([
+            'user_id' => $user->id,
+            'created_at' => '2024-01-12 13:00',
+        ]);
+        $poll_items_to_purge = [
+            $this->createFlashcardPollItem([
+                'user_id' => $user->id,
+                'created_at' => '2024-01-12 14:00',
+            ]),
+            $this->createFlashcardPollItem([
+                'user_id' => $user->id,
+                'created_at' => '2024-01-12 15:00',
+            ]),
+        ];
+
+        // WHEN
+        $this->repository->purgeLatestFlashcards($user->getId(), count($poll_items_to_purge));
+
+        // THEN
+        $this->assertDatabaseHas('flashcard_poll_items', [
+            'id' => $poll_item_to_keep->id,
+        ]);
+        foreach ($poll_items_to_purge as $item) {
+            $this->assertDatabaseMissing('flashcard_poll_items', [
+                'id' => $item->id,
+            ]);
+        }
+    }
 }

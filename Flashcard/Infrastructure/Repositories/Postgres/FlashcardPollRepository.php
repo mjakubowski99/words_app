@@ -21,6 +21,11 @@ class FlashcardPollRepository implements IFlashcardPollRepository
         return $poll ?: new FlashcardPoll($user_id, 0);
     }
 
+    public function purgeLatestFlashcards(UserId $user_id, int $limit): void
+    {
+        $this->mapper->purgeLatestFlashcards($user_id, $limit);
+    }
+
     public function saveLeitnerLevelUpdate(LeitnerLevelUpdate $update): void
     {
         $this->mapper->saveLeitnerLevelUpdate($update);

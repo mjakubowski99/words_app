@@ -12,17 +12,17 @@ use Flashcard\Application\Repository\IFlashcardPollRepository;
 
 class FlashcardPollManager
 {
-    public const int LEARNT_CARDS_PURGE_LIMIT = 10;
     public const int LEITNER_MAX_LEVEL = 30000;
 
     public function __construct(
         private IFlashcardSelector $selector,
         private readonly IFlashcardPollRepository $repository,
+        private readonly FlashcardPollResolver $resolver,
     ) {}
 
     public function refresh(UserId $user_id): FlashcardPoll
     {
-        $poll = $this->repository->findByUser($user_id, self::LEARNT_CARDS_PURGE_LIMIT);
+        $poll = $this->resolver->resolve($user_id);
 
         if (!$poll->pollIsFull()) {
             $flashcard_ids = array_map(

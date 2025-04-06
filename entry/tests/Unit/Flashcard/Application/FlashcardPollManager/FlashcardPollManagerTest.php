@@ -14,21 +14,25 @@ use Flashcard\Domain\ValueObjects\FlashcardId;
 use Flashcard\Domain\Types\FlashcardIdCollection;
 use Flashcard\Application\Services\IFlashcardSelector;
 use Flashcard\Application\Services\FlashcardPollManager;
+use Flashcard\Application\Services\FlashcardPollResolver;
 use Flashcard\Application\Repository\IFlashcardPollRepository;
 
 class FlashcardPollManagerTest extends TestCase
 {
     private FlashcardPollManager $service;
 
+    private FlashcardPollResolver $flashcard_poll_resolver;
     private IFlashcardPollRepository|MockInterface $repository;
     private IFlashcardSelector|MockInterface $selector;
 
     protected function setUp(): void
     {
         parent::setUp();
+        $this->flashcard_poll_resolver = \Mockery::mock(FlashcardPollResolver::class);
         $this->repository = \Mockery::mock(IFlashcardPollRepository::class);
         $this->selector = \Mockery::mock(IFlashcardSelector::class);
         $this->service = $this->app->make(FlashcardPollManager::class, [
+            'resolver' => $this->flashcard_poll_resolver,
             'repository' => $this->repository,
             'selector' => $this->selector,
         ]);
@@ -55,7 +59,7 @@ class FlashcardPollManagerTest extends TestCase
         }
 
         $poll = new FlashcardPoll($user_id, 0);
-        $this->repository->shouldReceive('findByUser')->andReturn($poll);
+        $this->flashcard_poll_resolver->shouldReceive('resolve')->andReturn($poll);
         $this->selector->shouldReceive('selectToPoll')->andReturn($flashcards);
 
         // WHEN
@@ -91,7 +95,7 @@ class FlashcardPollManagerTest extends TestCase
         }
 
         $poll = new FlashcardPoll($user_id, 2, $to_purge, new FlashcardIdCollection(), 2);
-        $this->repository->shouldReceive('findByUser')->andReturn($poll);
+        $this->flashcard_poll_resolver->shouldReceive('resolve')->andReturn($poll);
         $this->selector->shouldReceive('selectToPoll')->andReturn($to_add);
 
         // WHEN
@@ -129,7 +133,7 @@ class FlashcardPollManagerTest extends TestCase
         }
 
         $poll = new FlashcardPoll($user_id, 2, $to_purge, new FlashcardIdCollection(), 4);
-        $this->repository->shouldReceive('findByUser')->andReturn($poll);
+        $this->flashcard_poll_resolver->shouldReceive('resolve')->andReturn($poll);
         $this->selector->shouldReceive('selectToPoll')->andReturn($to_add);
 
         // WHEN
