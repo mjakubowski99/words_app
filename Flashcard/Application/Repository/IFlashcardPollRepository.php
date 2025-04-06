@@ -12,6 +12,8 @@ interface IFlashcardPollRepository
 {
     public function findByUser(UserId $user_id, int $learnt_cards_purge_limit): FlashcardPoll;
 
+    public function purgeLatestFlashcards(UserId $user_id, int $limit): void;
+
     public function selectNextLeitnerFlashcard(UserId $user_id, int $limit);
 
     public function saveLeitnerLevelUpdate(LeitnerLevelUpdate $update): void;

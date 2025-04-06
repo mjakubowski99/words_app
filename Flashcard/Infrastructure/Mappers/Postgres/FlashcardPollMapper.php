@@ -35,6 +35,17 @@ class FlashcardPollMapper
         );
     }
 
+    public function purgeLatestFlashcards(UserId $user_id, int $limit): void
+    {
+        $ids = $this->db::table('flashcard_poll_items')
+            ->where('user_id', $user_id->getValue())
+            ->take($limit)
+            ->latest()
+            ->pluck('id');
+
+        $this->db::table('flashcard_poll_items')->whereIn('id', $ids)->delete();
+    }
+
     public function saveLeitnerLevelUpdate(LeitnerLevelUpdate $update): bool
     {
         $update_array = [

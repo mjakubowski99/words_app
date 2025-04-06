@@ -7,6 +7,7 @@ namespace Flashcard\Domain\Models;
 use Shared\Utils\ValueObjects\UserId;
 use Flashcard\Domain\ValueObjects\FlashcardId;
 use Flashcard\Domain\Types\FlashcardIdCollection;
+use Flashcard\Domain\Exceptions\FlashcardPollOverLoadedException;
 
 class FlashcardPoll
 {
@@ -16,13 +17,13 @@ class FlashcardPoll
 
     public function __construct(
         private readonly UserId $user_id,
-        private readonly int $poll_size,
+        private int $poll_size,
         private FlashcardIdCollection $purge_candidates = new FlashcardIdCollection(),
         private FlashcardIdCollection $flashcard_ids_to_add = new FlashcardIdCollection(),
         private int $poll_limit = self::DEFAULT_POLL_LIMIT,
     ) {
         if ($this->poll_size > $this->getPollLimit()) {
-            throw new \UnexpectedValueException('Poll size cannot be bigger than');
+            throw new FlashcardPollOverLoadedException($this->getPollLimit(), $this->poll_size);
         }
 
         $this->flashcard_ids_to_purge = new FlashcardIdCollection();
@@ -62,6 +63,7 @@ class FlashcardPoll
         foreach ($id as $i) {
             if ($this->canAddNext()) {
                 $this->flashcard_ids_to_add[] = $i;
+                ++$this->poll_size;
             }
         }
     }
@@ -79,7 +81,7 @@ class FlashcardPoll
 
     public function canAddNext(): bool
     {
-        return $this->poll_size + 1 < $this->getPollLimit();
+        return $this->poll_size + 1 <= $this->getPollLimit();
     }
 
     public function pollIsFull(): bool
