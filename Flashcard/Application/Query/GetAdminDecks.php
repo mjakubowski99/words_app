@@ -14,7 +14,7 @@ class GetAdminDecks
     public function __construct(private IFlashcardDeckReadRepository $repository) {}
 
     /** @return OwnerCategoryRead[] */
-    public function handle(UserId $user_id, LanguageLevel $level, ?string $search, int $page, int $per_page): array
+    public function handle(UserId $user_id, ?LanguageLevel $level, ?string $search, int $page, int $per_page): array
     {
         return $this->repository->getAdminDecks($user_id, $level, $search, $page, $per_page);
     }

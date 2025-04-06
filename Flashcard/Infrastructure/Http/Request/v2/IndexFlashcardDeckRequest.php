@@ -22,7 +22,7 @@ class IndexFlashcardDeckRequest extends Request
 
     public function getLanguageLevel(): ?LanguageLevel
     {
-        return LanguageLevel::from($this->input('language_level'));
+        return $this->input('language_level') ? LanguageLevel::from($this->input('language_level')) : null;
     }
 
     public function getSearch(): ?string
