@@ -6,6 +6,7 @@ namespace Tests\Base;
 
 use Tests\TestCase;
 use App\Models\User;
+use App\Models\Admin;
 use App\Models\Flashcard;
 use App\Models\FlashcardDeck;
 use App\Models\SmTwoFlashcard;
@@ -22,6 +23,11 @@ use Flashcard\Domain\ValueObjects\SessionFlashcardId;
 
 abstract class FlashcardTestCase extends TestCase
 {
+    public function createAdmin(array $attributes = []): Admin
+    {
+        return Admin::factory()->create($attributes);
+    }
+
     public function createUserFlashcard(User $user, array $attributes = []): Flashcard
     {
         return Flashcard::factory()->byUser($user)->create($attributes);

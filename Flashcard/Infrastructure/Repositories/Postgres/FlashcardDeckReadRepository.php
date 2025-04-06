@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Repositories\Postgres;
 
+use Shared\Enum\LanguageLevel;
 use Shared\Utils\ValueObjects\UserId;
 use Flashcard\Domain\ValueObjects\FlashcardDeckId;
 use Flashcard\Application\ReadModels\DeckDetailsRead;
@@ -37,8 +38,8 @@ class FlashcardDeckReadRepository implements IFlashcardDeckReadRepository
     }
 
     /** @return OwnerCategoryRead[] */
-    public function getAdminDecks(UserId $user_id, ?string $search, int $page, int $per_page): array
+    public function getAdminDecks(UserId $user_id, ?LanguageLevel $level, ?string $search, int $page, int $per_page): array
     {
-        return $this->mapper->getAdminDecks($user_id, $search, $page, $per_page);
+        return $this->mapper->getAdminDecks($user_id, $level, $search, $page, $per_page);
     }
 }
