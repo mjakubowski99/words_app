@@ -1,0 +1,84 @@
+@startuml
+' --- Klasy bazowe ---
+
+class Party <<Party>> {
+  +id: UUID
+  +name: String
+}
+
+class Level <<Status>> {
+  +id: UUID
+  +name: String
+  +number: int
+  +historicalRequiredXP: int
+  +dynamicRequiredXP: int
+}
+
+class UserLevel <<StatusAssignment>> {
+  +currentXP: int
+  +levelAchievedAt: DateTime
+}
+
+class ActionEvent <<Trigger>> {
+  +id: UUID
+  +actionType: String
+  +timestamp: DateTime
+  +xpAmount: int
+  +source: String
+}
+
+class ExperiencePointEvent <<Event>> {
+  +id: UUID
+  +xpAmount: int
+  +timestamp: DateTime
+  +action: ActionEvent
+}
+
+class BonusXP <<Asset>> {
+  +id: UUID
+  +bonusXPAmount: int
+  +reason: String
+}
+
+class Rule <<Rule>> {
+  +id: UUID
+  +evaluate(action: ActionEvent): bool
+  +xpAmount: int
+}
+
+class NotificationRule <<Rule>> {
+  +id: UUID
+  +evaluate(userLevel: UserLevel): bool
+  +notificationMessage: String
+  +notificationTime: DateTime
+}
+
+class LevelProgressNotification <<Notification>> {
+  +message: String
+  +missingXP: int
+  +notificationTime: DateTime
+  +shouldSendNotification(userLevel: UserLevel): bool
+}
+
+class XPManager <<Manager>> {
+  +id: UUID
+  +processEvent(action: ActionEvent, userLevel: UserLevel)
+  +checkForLevelProgressNotification(userLevel: UserLevel): bool
+}
+
+' --- Relacje ---
+Party "1" --> "1" UserLevel : "has >"
+UserLevel --> Level : "refers to >"
+Party "1" --> "*" ActionEvent : "triggers >"
+ActionEvent --> ExperiencePointEvent : "generates >"
+ExperiencePointEvent --> BonusXP : "may grant >"
+Level "0..1" --> BonusXP : "can grant additional XP for level progression"
+XPManager --> ActionEvent : "receives >"
+XPManager --> Rule : "applies >"
+XPManager --> ExperiencePointEvent : "creates >"
+XPManager --> UserLevel : "updates >"
+XPManager --> LevelProgressNotification : "checks >"
+LevelProgressNotification --> UserLevel : "monitors >"
+NotificationRule --> XPManager : "checks >"
+
+@enduml

@@ -1,0 +1,30 @@
+@startuml
+|User|
+start
+:Trigger Action Event;
+
+|XPManager|
+:Evaluate Action Event;
+:Check XP Rule for action;
+
+if (Action qualifies for XP?) then (yes)
+  :Calculate XP amount;
+  :Create ExperiencePointEvent;
+  :Add XP to UserLevel;
+
+  note right
+   We don't update user level as it's calculated from current user experience
+  end note
+
+  :Check for BonusXP;
+
+  if (BonusXP applicable?) then (yes)
+    :Apply BonusXP;
+  endif
+
+else (no)
+  :Ignore Action Event;
+endif
+
+stop
+@enduml
