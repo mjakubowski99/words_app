@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Admin\Traits;
 
-use Admin\Models\FlashcardDeck;
-use Filament\Tables\Actions\BulkAction;
-use Illuminate\Support\Collection;
 use Shared\Enum\LanguageLevel;
+use Admin\Models\FlashcardDeck;
+use Illuminate\Support\Collection;
 use Filament\Tables\Actions\Action;
 use Filament\Forms\Components\Select;
+use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Support\Facades\Storage;
 use Filament\Forms\Components\TextInput;
@@ -107,8 +107,8 @@ trait HasFlashcardDeckConfigurator
                         'text/csv',
                     ])
                     ->helperText(
-                        'Select records. Export them with a export button, edit details in excel' .
-                        ' and use this action to import updated names in quick way'
+                        'Select records. Export them with a export button, edit details in excel'
+                        . ' and use this action to import updated names in quick way'
                     ),
             ])->action(function (array $data) {
                 $file = Storage::disk('public')->path($data['import_file']);
@@ -120,9 +120,4 @@ trait HasFlashcardDeckConfigurator
                 }
             });
     }
-
-
-
-
-
 }
