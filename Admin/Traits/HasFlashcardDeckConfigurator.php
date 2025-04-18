@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Admin\Traits;
 
+use Admin\Models\FlashcardDeck;
+use Filament\Tables\Actions\BulkAction;
+use Illuminate\Support\Collection;
 use Shared\Enum\LanguageLevel;
 use Filament\Tables\Actions\Action;
 use Filament\Forms\Components\Select;
@@ -13,6 +16,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\FileUpload;
 use Spatie\SimpleExcel\SimpleExcelReader;
 use Shared\Flashcard\IFlashcardAdminFacade;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 trait HasFlashcardDeckConfigurator
 {
@@ -68,4 +72,57 @@ trait HasFlashcardDeckConfigurator
                 );
             });
     }
+
+    public static function buildExportAction(): BulkAction
+    {
+        return BulkAction::make('Export')
+            ->action(function (Collection $records): StreamedResponse {
+                $csvData = [];
+                $csvData[] = ['id', 'name'];
+
+                foreach ($records as $deck) {
+                    $csvData[] = [
+                        $deck->id,
+                        $deck->name,
+                    ];
+                }
+
+                return response()->streamDownload(function () use ($csvData) {
+                    $handle = fopen('php://output', 'w');
+                    foreach ($csvData as $row) {
+                        fputcsv($handle, $row);
+                    }
+                    fclose($handle);
+                }, 'flashcard_decks-' . now()->format('Y-m-d-H-i-s') . '.csv');
+            });
+    }
+
+    public static function buildUpsertDeckNames(): Action
+    {
+        return Action::make('Upsert deck details')
+            ->form([
+                FileUpload::make('import_file')
+                    ->required()
+                    ->acceptedFileTypes([
+                        'text/csv',
+                    ])
+                    ->helperText(
+                        'Select records. Export them with a export button, edit details in excel' .
+                        ' and use this action to import updated names in quick way'
+                    ),
+            ])->action(function (array $data) {
+                $file = Storage::disk('public')->path($data['import_file']);
+
+                $rows = SimpleExcelReader::create($file)->getRows()->toArray();
+
+                foreach ($rows as $row) {
+                    FlashcardDeck::query()->where('id', $row['id'])->update(['name' => $row['name']]);
+                }
+            });
+    }
+
+
+
+
+
 }

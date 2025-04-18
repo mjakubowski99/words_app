@@ -37,6 +37,8 @@ class FlashcardDeckResource extends Resource
                 Tables\Actions\EditAction::make(),
             ])->headerActions([
                 self::buildImportAction(),
+                self::buildExportAction(),
+                self::buildUpsertDeckNames(),
             ]);
     }
 
