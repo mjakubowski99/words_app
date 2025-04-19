@@ -116,7 +116,10 @@ trait HasFlashcardDeckConfigurator
                 $rows = SimpleExcelReader::create($file)->getRows()->toArray();
 
                 foreach ($rows as $row) {
-                    FlashcardDeck::query()->where('id', $row['id'])->update(['name' => $row['name']]);
+                    FlashcardDeck::query()
+                        ->whereNull('user_id')
+                        ->where('id', $row['id'])
+                        ->update(['name' => $row['name']]);
                 }
             });
     }

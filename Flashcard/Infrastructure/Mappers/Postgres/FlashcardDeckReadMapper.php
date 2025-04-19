@@ -101,10 +101,8 @@ class FlashcardDeckReadMapper
                 'flashcard_stats.avg_rating'
             )
             ->orderByRaw('
-                CASE
-                    WHEN flashcard_deck_activities.last_viewed_at IS NOT NULL THEN flashcard_deck_activities.last_viewed_at
-                    ELSE flashcard_decks.created_at
-                END DESC NULLS LAST
+                flashcard_deck_activities.last_viewed_at DESC NULLS LAST,
+                flashcard_decks.name ASC
             ')
             ->get()
             ->map(function (object $data) {
