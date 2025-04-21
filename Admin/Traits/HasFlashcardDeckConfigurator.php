@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Admin\Traits;
 
+use Shared\User\IUserFacade;
 use Shared\Enum\LanguageLevel;
 use Admin\Models\FlashcardDeck;
 use Illuminate\Support\Collection;
@@ -14,7 +15,6 @@ use Filament\Tables\Columns\TextColumn;
 use Illuminate\Support\Facades\Storage;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\FileUpload;
-use Shared\User\IUserFacade;
 use Spatie\SimpleExcel\SimpleExcelReader;
 use Shared\Flashcard\IFlashcardAdminFacade;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -43,7 +43,7 @@ trait HasFlashcardDeckConfigurator
             ->form([
                 TextInput::make('name')->required(),
                 Select::make('language_level')->options(LanguageLevel::getForSelectOptions())->required(),
-                Select::make('owner_user')->options(array_combine(config('app.privileged_emails'),config('app.privileged_emails')))
+                Select::make('owner_user')->options(array_combine(config('app.privileged_emails'), config('app.privileged_emails')))
                     ->nullable()
                     ->helperText('This is optional, when we as admins want to import decks for us'),
                 FileUpload::make('import_file')

@@ -7,12 +7,12 @@ namespace User\Application\Facades;
 use Shared\User\IUser;
 use Shared\User\IUserFacade;
 use Shared\Enum\UserProvider;
-use Shared\Utils\ValueObjects\UserId;
 use User\Application\DTO\UserDTO;
+use Shared\Utils\ValueObjects\UserId;
 use User\Application\Query\FindUserHandler;
 use User\Application\Command\CreateTokenHandler;
-use User\Application\Query\FindExternalUserHandler;
 use User\Application\Repositories\IUserRepository;
+use User\Application\Query\FindExternalUserHandler;
 
 class UserFacade implements IUserFacade
 {
@@ -36,6 +36,7 @@ class UserFacade implements IUserFacade
     public function findByEmail(string $email): IUser
     {
         $user = $this->repository->findByEmail($email);
+
         return new UserDTO($user);
     }
 

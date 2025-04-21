@@ -35,7 +35,6 @@ class FlashcardAdminFacade implements IFlashcardAdminFacade
         $this->handler->handle($owner, $deck_name, $level, $flashcard_rows);
     }
 
-
     public function update(
         int $flashcard_id,
         string $front_word,

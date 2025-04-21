@@ -11,7 +11,6 @@ use Flashcard\Domain\Models\Owner;
 use Flashcard\Domain\Models\Flashcard;
 use Shared\Utils\ValueObjects\Language;
 use Shared\Database\ITransactionManager;
-use Shared\Exceptions\UnauthorizedException;
 use Flashcard\Domain\ValueObjects\FlashcardId;
 use Flashcard\Domain\Services\FlashcardDuplicateService;
 use Flashcard\Application\Repository\IFlashcardRepository;
