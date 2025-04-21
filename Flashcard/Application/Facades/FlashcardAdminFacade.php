@@ -28,6 +28,14 @@ class FlashcardAdminFacade implements IFlashcardAdminFacade
         $this->handler->handle($owner, $deck_name, $level, $flashcard_rows);
     }
 
+    public function importDeckForUser(string $user_id, string $deck_name, LanguageLevel $level, array $flashcard_rows): void
+    {
+        $owner = new Owner(new OwnerId($user_id), FlashcardOwnerType::USER);
+
+        $this->handler->handle($owner, $deck_name, $level, $flashcard_rows);
+    }
+
+
     public function update(
         int $flashcard_id,
         string $front_word,

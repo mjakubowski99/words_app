@@ -15,6 +15,13 @@ interface IFlashcardAdminFacade
         array $flashcard_rows
     );
 
+    public function importDeckForUser(
+        string $user_id,
+        string $deck_name,
+        LanguageLevel $level,
+        array $flashcard_rows
+    ): void;
+
     public function delete(int $flashcard_id): void;
 
     public function update(

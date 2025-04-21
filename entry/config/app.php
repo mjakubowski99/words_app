@@ -202,4 +202,8 @@ return [
     'aliases' => Facade::defaultAliases()->merge([
         // 'Example' => App\Facades\Example::class,
     ])->toArray(),
+
+    'privileged_emails' => [
+        'michalk415@gmail.com',
+    ],
 ];

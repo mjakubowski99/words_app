@@ -14,6 +14,7 @@ use Filament\Tables\Columns\TextColumn;
 use Illuminate\Support\Facades\Storage;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\FileUpload;
+use Shared\User\IUserFacade;
 use Spatie\SimpleExcel\SimpleExcelReader;
 use Shared\Flashcard\IFlashcardAdminFacade;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -42,6 +43,9 @@ trait HasFlashcardDeckConfigurator
             ->form([
                 TextInput::make('name')->required(),
                 Select::make('language_level')->options(LanguageLevel::getForSelectOptions())->required(),
+                Select::make('owner_user')->options(array_combine(config('app.privileged_emails'),config('app.privileged_emails')))
+                    ->nullable()
+                    ->helperText('This is optional, when we as admins want to import decks for us'),
                 FileUpload::make('import_file')
                     ->required()
                     ->acceptedFileTypes([
@@ -64,12 +68,24 @@ trait HasFlashcardDeckConfigurator
                 /** @var IFlashcardAdminFacade $facade */
                 $facade = app()->make(IFlashcardAdminFacade::class);
 
-                $facade->importDeck(
-                    auth()->id(),
-                    $data['name'],
-                    LanguageLevel::from($data['language_level']),
-                    $rows
-                );
+                if ($data['owner_user']) {
+                    $user = app()->make(IUserFacade::class);
+                    $user = $user->findByEmail($data['owner_user']);
+
+                    $facade->importDeckForUser(
+                        $user->getId()->getValue(),
+                        $data['name'],
+                        LanguageLevel::from($data['language_level']),
+                        $rows
+                    );
+                } else {
+                    $facade->importDeck(
+                        auth()->id(),
+                        $data['name'],
+                        LanguageLevel::from($data['language_level']),
+                        $rows
+                    );
+                }
             });
     }
 

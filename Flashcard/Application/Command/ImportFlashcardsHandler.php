@@ -28,10 +28,6 @@ class ImportFlashcardsHandler
 
     public function handle(Owner $owner, string $deck_name, LanguageLevel $level, array $rows): void
     {
-        if (!$owner->isAdmin()) {
-            throw new UnauthorizedException('This action is currently not allowed');
-        }
-
         $this->manager->beginTransaction();
 
         try {
