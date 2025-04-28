@@ -9,7 +9,7 @@ use Flashcard\Domain\ValueObjects\SessionId;
 class SessionFlashcardsRead
 {
     /**
-     * @param SessionFlashcardRead[] $session_flashcards
+     * @property SessionFlashcardRead[] $session_flashcards
      */
     public function __construct(
         private SessionId $id,
