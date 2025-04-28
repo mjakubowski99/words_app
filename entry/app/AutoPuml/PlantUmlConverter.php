@@ -1,13 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\AutoPuml;
 
-class PlantUmlConverter {
+class PlantUmlConverter
+{
     private array $processedClasses = [];
     private array $plantUmlRelations = [];
     private array $plantUmlDefinitions = [];
 
-    public function convert(array $structure): string {
+    public function convert(array $structure): string
+    {
         // Process the main class and its dependencies recursively
         $this->processClass($structure);
 
@@ -15,7 +19,8 @@ class PlantUmlConverter {
         return $this->buildPlantUml();
     }
 
-    private function processClass(array $classInfo, ?string $parentClass = null, ?string $relation = null): void {
+    private function processClass(array $classInfo, ?string $parentClass = null, ?string $relation = null): void
+    {
         $className = $classInfo['class'] ?? '';
 
         // Skip if we've already processed this class
@@ -24,6 +29,7 @@ class PlantUmlConverter {
             if ($parentClass && $relation) {
                 $this->addRelation($parentClass, $className, $relation);
             }
+
             return;
         }
 
@@ -73,9 +79,12 @@ class PlantUmlConverter {
         }
     }
 
-    private function addClassDefinition(array $classInfo): void {
+    private function addClassDefinition(array $classInfo): void
+    {
         $className = $classInfo['class'] ?? '';
-        if (empty($className)) return;
+        if (empty($className)) {
+            return;
+        }
 
         $type = $classInfo['type'] ?? 'class';
         $properties = $classInfo['properties'] ?? [];
@@ -86,22 +95,29 @@ class PlantUmlConverter {
         // Define the class with appropriate stereotype
         switch ($type) {
             case 'interface':
-                $definition .= "interface $className {\n";
+                $definition .= "interface {$className} {\n";
+
                 break;
+
             case 'abstract':
-                $definition .= "abstract class $className {\n";
+                $definition .= "abstract class {$className} {\n";
+
                 break;
+
             case 'trait':
-                $definition .= "class $className << (T,orchid) trait >> {\n";
+                $definition .= "class {$className} << (T,orchid) trait >> {\n";
+
                 break;
+
             default:
-                $definition .= "class $className {\n";
+                $definition .= "class {$className} {\n";
+
                 break;
         }
 
         // Add properties
         foreach ($properties as $propName => $propType) {
-            $definition .= "  +$propName: $propType\n";
+            $definition .= "  +{$propName}: {$propType}\n";
         }
 
         // Add a separator if we have both properties and methods
@@ -111,8 +127,8 @@ class PlantUmlConverter {
 
         // Add methods
         foreach ($methods as $methodName => $returnType) {
-            $returnTypeStr = $returnType ? ": $returnType" : "";
-            $definition .= "  +$methodName()$returnTypeStr\n";
+            $returnTypeStr = $returnType ? ": {$returnType}" : '';
+            $definition .= "  +{$methodName}(){$returnTypeStr}\n";
         }
 
         $definition .= "}\n";
@@ -120,43 +136,62 @@ class PlantUmlConverter {
         $this->plantUmlDefinitions[] = $definition;
     }
 
-    private function addRelation(string $source, string $target, string $relationType): void {
+    private function addRelation(string $source, string $target, string $relationType): void
+    {
         $relation = '';
 
         switch ($relationType) {
             case 'extends':
-                $relation = "$target <|-- $source";
+                $relation = "{$target} <|-- {$source}";
+
                 break;
+
             case 'implements':
-                $relation = "$target <|.. $source";
+                $relation = "{$target} <|.. {$source}";
+
                 break;
+
             case 'dependent':
-                $relation = "$target --> $source";
+                $relation = "{$target} --> {$source}";
+
                 break;
+
             case 'property':
-                $relation = "$source --> $target";
+                $relation = "{$source} --> {$target}";
+
                 break;
+
             case 'return type':
-                $relation = "$source o-- $target";
+                $relation = "{$source} o-- {$target}";
+
                 break;
+
             case 'new':
-                $relation = "$source ..> $target : <<create>>";
+                $relation = "{$source} ..> {$target} : <<create>>";
+
                 break;
+
             case 'static call':
-                $relation = "$source ..> $target : <<static>>";
+                $relation = "{$source} ..> {$target} : <<static>>";
+
                 break;
+
             case 'type hint':
-                $relation = "$source ..> $target";
+                $relation = "{$source} ..> {$target}";
+
                 break;
+
             default:
-                $relation = "$source --> $target";
+                $relation = "{$source} --> {$target}";
+
                 break;
         }
 
         $this->plantUmlRelations[] = $relation;
     }
 
-    private function buildPlantUml(): string {
+    private function buildPlantUml(): string
+    {
         $output = "@startuml\n";
         $output .= "skinparam classAttributeIconSize 0\n\n";
 
@@ -170,7 +205,7 @@ class PlantUmlConverter {
             $output .= $relation . "\n";
         }
 
-        $output .= "@enduml";
+        $output .= '@enduml';
 
         return $output;
     }

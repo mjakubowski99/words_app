@@ -60,9 +60,9 @@ class SessionFlashcardReadMapper
                     AND learning_session_flashcards.rating IS NULL
                 LIMIT ?
             ),
-            rated_count AS (
+            progress_count AS (
                 SELECT 
-                    COUNT(id) AS count 
+                    COUNT(DISTINCT progress_tick) AS count 
                 FROM 
                     learning_session_flashcards 
                 WHERE 
@@ -86,11 +86,11 @@ class SessionFlashcardReadMapper
                 session_data.status as status,
                 session_data.cards_per_session,
                 session_data.user_id,
-                rated_count.count AS rated_count
+                progress_count.count as progress
             FROM 
                 session_data
             LEFT JOIN flashcards_data on true
-            LEFT JOIN rated_count on true;
+            LEFT JOIN progress_count on true;
         ';
 
         $results = $this->db::select($stmt, [
@@ -110,7 +110,7 @@ class SessionFlashcardReadMapper
 
         return new SessionFlashcardsRead(
             $session_id,
-            $results[0]->rated_count,
+            $results[0]->progress,
             $results[0]->cards_per_session,
             SessionStatus::from($results[0]->status) === SessionStatus::FINISHED,
             $session_flashcards
