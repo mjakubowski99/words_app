@@ -51,8 +51,8 @@ class NextSessionFlashcardsMapper
                 counts AS (
                     SELECT 
                         lsf.learning_session_id,
-                        COUNT(lsf.id) AS all_count,
-                        COUNT(CASE WHEN lsf.rating IS NULL THEN 1 END) AS unrated_count
+                        COUNT(DISTINCT lsf.progress_tick) AS all_count,
+                        COUNT(DISTINCT CASE WHEN lsf.rating IS NULL THEN lsf.progress_tick END) AS unrated_count
                     FROM 
                         learning_session_flashcards AS lsf
                     WHERE 
@@ -119,6 +119,7 @@ class NextSessionFlashcardsMapper
                 'rating' => null,
                 'created_at' => $now,
                 'updated_at' => $now,
+                'progress_tick' => $next_session_flashcards->generateTick(),
             ];
         }
 

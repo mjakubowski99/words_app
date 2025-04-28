@@ -37,13 +37,18 @@ class RateableSessionFlashcardsMapper
                 SELECT COUNT(id) AS count 
                 FROM learning_session_flashcards 
                 WHERE rating IS NOT NULL AND learning_session_id = ?
+            ),
+            flashcards_count AS (
+                SELECT COUNT(id) AS count 
+                FROM learning_session_flashcards 
+                WHERE learning_session_id = ?
             )
             SELECT 
                 sd.session_id, 
                 sd.status, 
                 sd.user_id,
-                sd.cards_per_session,
                 sd.flashcard_deck_id,
+                fc.count AS flashcards_count,
                 rfc.count AS rated_flashcard_count,
                 lsf.id,
                 lsf.flashcard_id 
@@ -52,10 +57,13 @@ class RateableSessionFlashcardsMapper
             LEFT JOIN 
                 rated_flashcard_count AS rfc ON true
             LEFT JOIN 
+                flashcards_count AS fc ON true
+            LEFT JOIN 
                 flashcards_data AS lsf ON true;
         ';
 
         $results = $this->db::select($stmt, [
+            $id->getValue(),
             $id->getValue(),
             $id->getValue(),
             $id->getValue(),
@@ -74,7 +82,7 @@ class RateableSessionFlashcardsMapper
             $results[0]->flashcard_deck_id ? new FlashcardDeckId($results[0]->flashcard_deck_id) : null,
             SessionStatus::from($results[0]->status),
             $results[0]->rated_flashcard_count,
-            $results[0]->cards_per_session,
+            $results[0]->flashcards_count,
             $flashcards,
         );
     }
