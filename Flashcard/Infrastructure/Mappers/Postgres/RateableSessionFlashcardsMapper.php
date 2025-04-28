@@ -34,7 +34,7 @@ class RateableSessionFlashcardsMapper
                 WHERE id = ?
             ),
             rated_flashcard_count AS (
-                SELECT COUNT(id) AS count 
+                SELECT COUNT(id) + COUNT(DISTINCT batch_timestamp) AS count 
                 FROM learning_session_flashcards 
                 WHERE rating IS NOT NULL AND learning_session_id = ?
             )

@@ -1,0 +1,17 @@
+<?php
+
+namespace Shared\Flashcard;
+
+use Shared\Enum\Language;
+
+interface ISessionFlashcardSummary
+{
+    public function getSessionFlashcardId(): int;
+    public function getFrontWord(): string;
+    public function getBackWord(): string;
+    public function getFrontContext(): string;
+    public function getBackContext(): string;
+    public function getFrontLang(): Language;
+    public function getBackLang(): Language;
+    public function getEmoji(): string;
+}

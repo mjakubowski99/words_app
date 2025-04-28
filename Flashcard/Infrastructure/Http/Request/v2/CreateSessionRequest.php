@@ -32,6 +32,7 @@ class CreateSessionRequest extends Request
         return [
             'cards_per_session' => ['required', 'integer', 'gte:5', 'lte:100'],
             'flashcard_deck_id' => ['nullable', 'integer'],
+            'exercises_type' => ['nullable', 'string', 'in:flashcards,mixed,unscramble_words'],
         ];
     }
 

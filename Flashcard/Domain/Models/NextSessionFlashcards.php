@@ -30,6 +30,11 @@ class NextSessionFlashcards extends SessionFlashcardsBase
         }
     }
 
+    public function getExercisesType(): string
+    {
+        return '';
+    }
+
     public function getSessionId(): SessionId
     {
         return $this->session_id;

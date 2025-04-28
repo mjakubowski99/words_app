@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Mappers\Postgres;
 
+use Flashcard\Domain\ValueObjects\SessionFlashcardId;
 use Shared\Enum\LanguageLevel;
 use Flashcard\Domain\Models\Deck;
 use Flashcard\Domain\Models\Owner;
@@ -50,9 +51,10 @@ class NextSessionFlashcardsMapper
                 ),
                 counts AS (
                     SELECT 
-                        lsf.learning_session_id,
-                        COUNT(lsf.id) AS all_count,
-                        COUNT(CASE WHEN lsf.rating IS NULL THEN 1 END) AS unrated_count
+                        COUNT(CASE WHEN lsf.batch_timestamp IS NOT NULL THEN 1 END) AS distinct_no_batch_count
+                        COUNT(DISTINCT CASE WHEN lsf.batch_timestamp IS NOT NULL THEN lsf.batch_timestamp END) AS distinct_batch_count
+                        COUNT(CASE WHEN lsf.rating IS NULL AND lsf.batch_timestamp IS NULL THEN 1 END) AS unrated_no_batch_count,
+                        COUNT(CASE WHEN lsf.rating IS NULL AND lsf.batch_timestamp IS NOT NULL THEN 1 END) AS unrated_with_batch_count,
                     FROM 
                         learning_session_flashcards AS lsf
                     WHERE 
@@ -123,6 +125,30 @@ class NextSessionFlashcardsMapper
         }
 
         $this->db::table('learning_session_flashcards')->insert($insert_data);
+    }
+
+    /** @return SessionFlashcardId[] */
+    public function saveGetId(NextSessionFlashcards $next_session_flashcards): array
+    {
+        $insert_data = [];
+        $now = now();
+
+        foreach ($next_session_flashcards->getNextFlashcards() as $next_session_flashcard) {
+            $insert_data[] = [
+                'learning_session_id' => $next_session_flashcards->getSessionId()->getValue(),
+                'flashcard_id' => $next_session_flashcard->getFlashcardId()->getValue(),
+                'rating' => null,
+                'created_at' => $now,
+                'updated_at' => $now,
+            ];
+        }
+
+        $ids = [];
+        foreach ($insert_data as $data) {
+            $ids[] = new SessionFlashcardId(DB::table('learning_session_flashcards')->insertGetId($data));
+        }
+
+        return $ids;
     }
 
     private function mapDeck(Owner $owner, object $result): ?Deck

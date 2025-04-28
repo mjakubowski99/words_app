@@ -38,6 +38,7 @@
             "User\\": "../User",
             "Integrations\\": "../Integrations",
             "Flashcard\\": "../Flashcard",
+            "Exercise\\": "../Exercise",
             "Shared\\": "../Shared",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
