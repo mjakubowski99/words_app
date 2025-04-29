@@ -52,4 +52,9 @@ class SmTwoRepetitionAlgorithm implements IRepetitionAlgorithm
             $this->poll_updater->handle($session_flashcards);
         }
     }
+
+    public function updateByRatings(array $ratings)
+    {
+
+    }
 }

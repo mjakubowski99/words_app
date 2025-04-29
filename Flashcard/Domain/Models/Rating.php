@@ -25,4 +25,18 @@ enum Rating: int
     {
         return $this->value;
     }
+
+    public function fromScore(float $score): self
+    {
+        if ($score <= 0.3) {
+            return self::UNKNOWN;
+        }
+        if ($score <= 0.5) {
+            return self::WEAK;
+        } elseif ($score <= 0.85) {
+            return self::GOOD;
+        } else {
+            return self::VERY_GOOD;
+        }
+    }
 }

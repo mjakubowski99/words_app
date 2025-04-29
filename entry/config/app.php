@@ -5,6 +5,7 @@ declare(strict_types=1);
 use Admin\AdminPanelProvider;
 use App\Providers\AppServiceProvider;
 use App\Providers\AuthServiceProvider;
+use Exercise\Infrastructure\ExerciseServiceProvider;
 use Illuminate\Support\Facades\Facade;
 use App\Providers\EventServiceProvider;
 use App\Providers\RouteServiceProvider;
@@ -183,6 +184,7 @@ return [
         SharedServiceProvider::class,
         UserServiceProvider::class,
         FlashcardServiceProvider::class,
+        ExerciseServiceProvider::class,
         IntegrationsServiceProvider::class,
         AdminPanelProvider::class,
         TelescopeServiceProvider::class,

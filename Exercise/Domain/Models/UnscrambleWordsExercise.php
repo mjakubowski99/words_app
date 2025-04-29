@@ -2,7 +2,7 @@
 
 namespace Exercise\Domain\Models;
 
-use Exercise\Domain\ValueObjects\AnswerEntryId;
+use Exercise\Domain\ValueObjects\ExerciseEntryId;
 use Exercise\Domain\ValueObjects\ExerciseId;
 use Exercise\Domain\ValueObjects\SessionFlashcardId;
 use Shared\Enum\ExerciseType;
@@ -11,20 +11,20 @@ use Shared\Utils\ValueObjects\UserId;
 class UnscrambleWordsExercise extends Exercise
 {
     public function __construct(
-        ExerciseId $id,
-        private UserId $user_id,
-        ExerciseStatus $status,
-        AnswerEntryId $answer_entry_id,
-        ?SessionFlashcardId $session_flashcard_id,
-        private string $word,
-        private string $context_sentence,
-        private string $word_translation,
-        private string $emoji,
-        private string $scrambled_word,
+        ExerciseId            $id,
+        private UserId        $user_id,
+        ExerciseStatus        $status,
+        ExerciseEntryId       $answer_entry_id,
+        ?SessionFlashcardId   $session_flashcard_id,
+        private string        $word,
+        private string        $context_sentence,
+        private string        $word_translation,
+        private string        $emoji,
+        private string        $scrambled_word,
         ?UnscrambleWordAnswer $last_answer,
-        ?bool $last_answer_correct,
+        ?bool                 $last_answer_correct,
     ) {
-        $entry = new AnswerEntry(
+        $entry = new ExerciseEntry(
             $answer_entry_id,
             $id,
             new UnscrambleWordAnswer($answer_entry_id, $word),
@@ -50,7 +50,7 @@ class UnscrambleWordsExercise extends Exercise
             ExerciseId::noId(),
             $user_id,
             ExerciseStatus::NEW,
-            AnswerEntryId::noId(),
+            ExerciseEntryId::noId(),
             $session_flashcard_id,
             $word,
             $context_sentence,
@@ -84,7 +84,7 @@ class UnscrambleWordsExercise extends Exercise
 
     public function getEmoji(): string
     {
-        return $this->scrambled_word;
+        return $this->emoji;
     }
 
     public function getScrambledWord(): string

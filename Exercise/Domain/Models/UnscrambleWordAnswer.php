@@ -2,18 +2,18 @@
 
 namespace Exercise\Domain\Models;
 
-use Exercise\Domain\ValueObjects\AnswerEntryId;
+use Exercise\Domain\ValueObjects\ExerciseEntryId;
 
 class UnscrambleWordAnswer extends Answer
 {
     public function __construct(
-        AnswerEntryId $id,
-        private string $unscrambled_word,
+        ExerciseEntryId $id,
+        private string  $unscrambled_word,
     ) {
         parent::__construct($id);
     }
 
-    public static function fromString(AnswerEntryId $id, string $answer): Answer
+    public static function fromString(ExerciseEntryId $id, string $answer): Answer
     {
         return new UnscrambleWordAnswer($id, $answer);
     }

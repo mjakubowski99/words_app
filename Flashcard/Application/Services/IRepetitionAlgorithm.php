@@ -9,4 +9,5 @@ use Flashcard\Domain\Models\RateableSessionFlashcards;
 interface IRepetitionAlgorithm
 {
     public function handle(RateableSessionFlashcards $session_flashcards): void;
+    public function updateByRatings(array $ratings);
 }

@@ -2,28 +2,31 @@
 
 namespace Exercise\Domain\Models;
 
-use Exercise\Domain\ValueObjects\AnswerEntryId;
+use Exercise\Domain\Exceptions\ExerciseAnswerCompareFailureException;
+use Exercise\Domain\ValueObjects\ExerciseEntryId;
 
 abstract class Answer
 {
-    private AnswerEntryId $answer_entry_id;
+    private ExerciseEntryId $answer_entry_id;
 
-    public function __construct(AnswerEntryId $id)
+    public function __construct(ExerciseEntryId $id)
     {
         $this->answer_entry_id = $id;
     }
 
-    public abstract static function fromString(AnswerEntryId $id, string $answer): self;
+    public abstract static function fromString(ExerciseEntryId $id, string $answer): self;
 
-    public function getAnswerEntryId(): AnswerEntryId
+    public function getExerciseEntryId(): ExerciseEntryId
     {
         return $this->answer_entry_id;
     }
 
     public function compare(Answer $answer): AnswerAssessment
     {
-        if ($this->getAnswerEntryId() !== $answer->getAnswerEntryId()) {
-            throw new \UnexpectedValueException('AnswerEntryId mismatch');
+        if ($this->getExerciseEntryId()->getValue() !== $answer->getExerciseEntryId()->getValue()) {
+            throw new ExerciseAnswerCompareFailureException(
+                'Trying to compare answers for invalid exercise entry id'
+            );
         }
         return new AnswerAssessment(
             $this->getCompareScore($answer)

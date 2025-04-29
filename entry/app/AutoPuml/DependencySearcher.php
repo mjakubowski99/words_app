@@ -1,18 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\AutoPuml;
 
-use Flashcard\Application\Command\RateFlashcardsHandler;
-
+/** @TODO Refactor this piece of shit code */
 class DependencySearcher
 {
-    private $scannedFiles = [];
-
     private array $classesToIngore = [];
 
     public function findRelatedClasses(string $class, int $maxDepth = 3): array
     {
-        $this->scannedFiles = [];
         return $this->scanClass($class, $maxDepth, 0);
     }
 
@@ -24,8 +22,6 @@ class DependencySearcher
         if (in_array($class, $this->classesToIngore)) {
             return [];
         }
-
-        $this->scannedFiles[$class] = true;
 
         try {
             $reflection = new \ReflectionClass($class);
@@ -58,7 +54,7 @@ class DependencySearcher
 
         foreach ($reflection->getMethods() as $method) {
             $returnType = $method->getReturnType();
-            $typeName = $returnType ? ($returnType instanceof \ReflectionNamedType ? $returnType->getName() : (string)$returnType) : null;
+            $typeName = $returnType ? ($returnType instanceof \ReflectionNamedType ? $returnType->getName() : (string) $returnType) : null;
             $results['methods'][$method->getName()] = $typeName;
 
             try {
@@ -76,7 +72,7 @@ class DependencySearcher
 
         foreach ($reflection->getProperties() as $property) {
             $propertyType = $property->getType();
-            $typeName = $propertyType ? ($propertyType instanceof \ReflectionNamedType ? $propertyType->getName() : (string)$propertyType) : null;
+            $typeName = $propertyType ? ($propertyType instanceof \ReflectionNamedType ? $propertyType->getName() : (string) $propertyType) : null;
             $results['properties'][$property->getName()] = $typeName;
 
             try {
@@ -120,7 +116,7 @@ class DependencySearcher
                 base_path('../Flashcard'),
                 base_path('../Shared'),
             ]);
-            $dependents = array_filter($dependents, fn($d) => !in_array($d, $this->classesToIngore));
+            $dependents = array_filter($dependents, fn ($d) => !in_array($d, $this->classesToIngore));
 
             foreach ($dependents as $dependent) {
                 try {
@@ -153,119 +149,117 @@ class DependencySearcher
         return $results;
     }
 
-    public function getClassDependencies($className) {
+    public function getClassDependencies($className)
+    {
         $dependencies = [];
         $importMap = []; // Map to store "short name" => "fully qualified name"
 
-        try {
-            $targetClass = new \ReflectionClass($className);
-            $targetFile = $targetClass->getFileName();
-            $targetNamespace = $targetClass->getNamespaceName();
+        $targetClass = new \ReflectionClass($className);
+        $targetFile = $targetClass->getFileName();
+        $targetNamespace = $targetClass->getNamespaceName();
 
-            // Get file content
-            $content = file_get_contents($targetFile);
+        // Get file content
+        $content = file_get_contents($targetFile);
 
-            // Extract use statements and build import map
-            preg_match_all('/^\s*use\s+([^;]+);/m', $content, $useMatches);
-            foreach ($useMatches[1] as $useStatement) {
-                $parts = array_map('trim', explode(',', $useStatement));
-                foreach ($parts as $part) {
-                    if (mb_strpos($part, ' as ') !== false) {
-                        list($class, $alias) = explode(' as ', $part);
-                        $class = trim($class);
-                        $alias = trim($alias);
-                        $shortName = $alias;
-                    } else {
-                        $class = trim($part);
-                        $segments = explode('\\', $class);
-                        $shortName = end($segments);
-                    }
-
-                    $importMap[$shortName] = $class;
-
-                    $this->validateAndAddClass($class, $dependencies);
+        // Extract use statements and build import map
+        preg_match_all('/^\s*use\s+([^;]+);/m', $content, $useMatches);
+        foreach ($useMatches[1] as $useStatement) {
+            $parts = array_map('trim', explode(',', $useStatement));
+            foreach ($parts as $part) {
+                if (mb_strpos($part, ' as ') !== false) {
+                    list($class, $alias) = explode(' as ', $part);
+                    $class = trim($class);
+                    $alias = trim($alias);
+                    $shortName = $alias;
+                } else {
+                    $class = trim($part);
+                    $segments = explode('\\', $class);
+                    $shortName = end($segments);
                 }
+
+                $importMap[$shortName] = $class;
+
+                $this->validateAndAddClass($class, $dependencies);
             }
+        }
 
-            // Extract class references using regex patterns
-            $patterns = [
-                // pattern => relation type
-                '/\bnew\s+([A-Za-z0-9_\\\\]+)/' => 'new', // new class
-                '/([A-Za-z0-9_\\\\]+)::[A-Za-z0-9_]+/' => 'static call', // static call
-                '/\bextends\s+([A-Za-z0-9_\\\\]+)/' => 'extends', // extends
-                '/\bimplements\s+([^{]+)/' => 'implements', // implements
-                '/@var\s+([A-Za-z0-9_\\\\|]+)/' => 'type hint', // variable
-                '/@param\s+([A-Za-z0-9_\\\\|]+)/' => 'type hint', // parameter of function
-                '/@return\s+([A-Za-z0-9_\\\\|]+)/' => 'return type', // return type
-                '/@property\s+([A-Za-z0-9_\\\\|]+)/' => 'property', // property
-                '/\bfunction\s+\w+\s*\([^)]*\)\s*:\s*([A-Za-z0-9_\\\\?]+)/' => 'return type', // function return type
-                '/:\s*([A-Za-z0-9_\\\\]+)\s*\$/' => 'type hint', // function param type
-                '/\bfunction\s+\w+\s*\(([^)]*)\)\s*([A-Za-z0-9_\\\\]+)\s+\$[A-Za-z0-9_]+/' => 'type hint', // method param
-            ];
+        // Extract class references using regex patterns
+        $patterns = [
+            // pattern => relation type
+            '/\bnew\s+([A-Za-z0-9_\\\]+)/' => 'new', // new class
+            '/([A-Za-z0-9_\\\]+)::[A-Za-z0-9_]+/' => 'static call', // static call
+            '/\bextends\s+([A-Za-z0-9_\\\]+)/' => 'extends', // extends
+            '/\bimplements\s+([^{]+)/' => 'implements', // implements
+            '/@var\s+([A-Za-z0-9_\\\|]+)/' => 'type hint', // variable
+            '/@param\s+([A-Za-z0-9_\\\|]+)/' => 'type hint', // parameter of function
+            '/@return\s+([A-Za-z0-9_\\\|]+)/' => 'return type', // return type
+            '/@property\s+([A-Za-z0-9_\\\|]+)/' => 'property', // property
+            '/\bfunction\s+\w+\s*\([^)]*\)\s*:\s*([A-Za-z0-9_\\\?]+)/' => 'return type', // function return type
+            '/:\s*([A-Za-z0-9_\\\]+)\s*\$/' => 'type hint', // function param type
+            '/\bfunction\s+\w+\s*\(([^)]*)\)\s*([A-Za-z0-9_\\\]+)\s+\$[A-Za-z0-9_]+/' => 'type hint', // method param
+        ];
 
-            foreach ($patterns as $pattern => $relationType) {
-                preg_match_all($pattern, $content, $matches);
-                if (!empty($matches[1])) {
-                    foreach ($matches[1] as $match) {
-                        $types = preg_split('/[\|&]/', str_replace(['?', '[', ']'], '', $match));
-                        foreach ($types as $type) {
-                            $type = trim($type);
-                            if (empty($type) || in_array(mb_strtolower($type), ['string', 'int', 'bool', 'float', 'array', 'object', 'null', 'mixed', 'void', 'callable', 'iterable', 'self', 'parent', 'static'])) {
-                                continue;
-                            }
+        foreach ($patterns as $pattern => $relationType) {
+            preg_match_all($pattern, $content, $matches);
+            if (!empty($matches[1])) {
+                foreach ($matches[1] as $match) {
+                    $types = preg_split('/[\|&]/', str_replace(['?', '[', ']'], '', $match));
+                    foreach ($types as $type) {
+                        $type = trim($type);
+                        if (empty($type) || in_array(mb_strtolower($type), ['string', 'int', 'bool', 'float', 'array', 'object', 'null', 'mixed', 'void', 'callable', 'iterable', 'self', 'parent', 'static'])) {
+                            continue;
+                        }
 
-                            // Resolve the fully qualified class name
-                            $fullyQualifiedName = $this->resolveFullyQualifiedName($type, $importMap, $targetNamespace);
+                        // Resolve the fully qualified class name
+                        $fullyQualifiedName = $this->resolveFullyQualifiedName($type, $importMap, $targetNamespace);
 
-                            // Validate class exists
-                            if ($this->validateAndAddClass($fullyQualifiedName, $dependencies, $targetNamespace)) {
-                                // Here, we store the relationship type too
-                                $dependencies[$fullyQualifiedName] = [
-                                    'type' => $fullyQualifiedName,
-                                    'file' => $dependencies[$fullyQualifiedName] ?? null, // original filepath if available
-                                    'relation' => $relationType,
-                                ];
-                            }
+                        // Validate class exists
+                        if ($this->validateAndAddClass($fullyQualifiedName, $dependencies, $targetNamespace)) {
+                            // Here, we store the relationship type too
+                            $dependencies[$fullyQualifiedName] = [
+                                'type' => $fullyQualifiedName,
+                                'file' => $dependencies[$fullyQualifiedName] ?? null, // original filepath if available
+                                'relation' => $relationType,
+                            ];
                         }
                     }
                 }
             }
+        }
 
-            // Handle implements section separately (multiple interfaces)
-            preg_match('/\bimplements\s+([^{]+)/', $content, $implementsMatch);
-            if (!empty($implementsMatch[1])) {
-                $interfaces = array_map('trim', explode(',', $implementsMatch[1]));
-                foreach ($interfaces as $interface) {
-                    $interface = trim($interface);
-                    $fullyQualifiedInterface = $this->resolveFullyQualifiedName($interface, $importMap, $targetNamespace);
+        // Handle implements section separately (multiple interfaces)
+        preg_match('/\bimplements\s+([^{]+)/', $content, $implementsMatch);
+        if (!empty($implementsMatch[1])) {
+            $interfaces = array_map('trim', explode(',', $implementsMatch[1]));
+            foreach ($interfaces as $interface) {
+                $interface = trim($interface);
+                $fullyQualifiedInterface = $this->resolveFullyQualifiedName($interface, $importMap, $targetNamespace);
 
-                    if ($this->validateAndAddClass($fullyQualifiedInterface, $dependencies, $targetNamespace)) {
-                        $dependencies[$fullyQualifiedInterface] = [
-                            'type' => $fullyQualifiedInterface,
-                            'file' => $dependencies[$fullyQualifiedInterface] ?? null,
-                            'relation' => 'implements',
-                        ];
-                    }
+                if ($this->validateAndAddClass($fullyQualifiedInterface, $dependencies, $targetNamespace)) {
+                    $dependencies[$fullyQualifiedInterface] = [
+                        'type' => $fullyQualifiedInterface,
+                        'file' => $dependencies[$fullyQualifiedInterface] ?? null,
+                        'relation' => 'implements',
+                    ];
                 }
             }
-
-            // Remove self from dependencies
-            unset($dependencies[$className]);
-        } catch (\Exception $e) {
-            // Handle errors silently
         }
+
+        // Remove self from dependencies
+        unset($dependencies[$className]);
 
         return $dependencies;
     }
 
-    private function resolveFullyQualifiedName($className, array $importMap, $currentNamespace) {
+    private function resolveFullyQualifiedName($className, array $importMap, $currentNamespace)
+    {
         // If class name is already fully qualified (starts with \)
-        if (strpos($className, '\\') === 0) {
+        if (mb_strpos($className, '\\') === 0) {
             return ltrim($className, '\\');
         }
 
         // If class name contains namespace separators
-        if (strpos($className, '\\') !== false) {
+        if (mb_strpos($className, '\\') !== false) {
             // Check if it's a sub-namespace of an imported namespace
             $parts = explode('\\', $className);
             $firstPart = array_shift($parts);
@@ -287,7 +281,6 @@ class DependencySearcher
         return $currentNamespace . '\\' . $className;
     }
 
-
     public function validateAndAddClass($class, &$dependencies, $currentNamespace = '')
     {
         if (mb_strpos($class, '\\') !== 0 && mb_strpos($class, '\\') === false && !empty($currentNamespace)) {
@@ -297,11 +290,7 @@ class DependencySearcher
         }
 
         if (class_exists($class) || interface_exists($class) || trait_exists($class)) {
-            try {
-                new \ReflectionClass($class);
-                return true; // ✅ exists
-            } catch (\Exception $e) {
-            }
+            new \ReflectionClass($class);
         }
 
         return false; // ❌ does not exist
@@ -362,7 +351,7 @@ class DependencySearcher
                 $classFound = false;
 
                 // Check for fully qualified class name usage
-                if (preg_match('/[\\\\]' . $targetNamespacePattern . '\b/', $content)
+                if (preg_match('/[\\\]' . $targetNamespacePattern . '\b/', $content)
                     || preg_match('/use\s+' . $targetNamespacePattern . '(\s*;|\s+as)/', $content)) {
                     $classFound = true;
                 }
@@ -451,4 +440,3 @@ class DependencySearcher
         return $classes;
     }
 }
-

@@ -25,4 +25,14 @@ class FlashcardFacade implements IFlashcardFacade
     {
         return $this->session_repository->hasAnySession($user_id);
     }
+
+    public function updateRatings(array $session_flashcard_ratings): void
+    {
+
+    }
+
+    public function updateRatingsByPreviousRates(array $session_flashcard_id): void
+    {
+        // TODO: Implement updateRatingsByPreviousRates() method.
+    }
 }

@@ -2,16 +2,20 @@
 
 namespace Exercise\Domain\Models;
 
+use Exercise\Domain\Exceptions\ExerciseAssessmentNotAllowedException;
+use Exercise\Domain\Exceptions\ExerciseEntryNotFoundException;
+use Exercise\Domain\Exceptions\ExerciseStatusTransitionException;
 use Exercise\Domain\ValueObjects\ExerciseId;
 use Shared\Enum\ExerciseType;
 
 abstract class Exercise
 {
+    /** @property ExerciseEntry[] */
     public function __construct(
-        private ExerciseId $id,
-        private array $answer_entries,
+        private ExerciseId     $id,
+        private array $exercise_entries,
         private ExerciseStatus $status,
-        private ExerciseType $type,
+        private ExerciseType   $type,
     ) {}
 
     public function getId(): ExerciseId
@@ -34,50 +38,63 @@ abstract class Exercise
         $this->setStatus(ExerciseStatus::SKIPPED);
     }
 
+    public function markAsFinished(): void
+    {
+        $this->setStatus(ExerciseStatus::DONE);
+    }
+
     public function setStatus(ExerciseStatus $status): void
     {
         if (in_array($this->status, [ExerciseStatus::NEW, ExerciseStatus::IN_PROGRESS], true)) {
             $this->status = $status;
         } else {
-            throw new \UnexpectedValueException("Status {$status->value} cannot be changed");
+            throw new ExerciseStatusTransitionException($this->status, $status);
         }
     }
 
     public function assessAnswer(Answer $answer): AnswerAssessment
     {
         if (!$this->statusAllowsForAssessment()) {
-            throw new \UnexpectedValueException('Status do not allows assessment');
+            throw new ExerciseAssessmentNotAllowedException(
+                'Exercise status does not allow for assessment. Current status: ' . $this->status->name
+            );
         }
 
-        $entry = $this->findAnswerEntry($answer);
-
-        if ($entry === null) {
-            throw new \UnexpectedValueException('AnswerEntry not found');
-        }
+        $entry = $this->findOrFailExerciseEntry($answer);
 
         $assessment = $entry->getCorrectAnswer()->compare($answer);
 
-        $entry->setLastUserAnswerCorrect($assessment->isCorrect());
-        $entry->setLastUserAnswer($answer);
+        $entry->setLastUserAnswer($answer, $assessment);
 
         if ($this->status === ExerciseStatus::NEW) {
             $this->setStatus(ExerciseStatus::IN_PROGRESS);
         }
-        if ($assessment->isCorrect()) {
+        if ($this->allAnswersCorrect()) {
             $this->setStatus(ExerciseStatus::DONE);
         }
 
         return $assessment;
     }
 
-    public function getAnswerEntries(): array
+    public function getExerciseEntries(): array
     {
-        return $this->answer_entries;
+        return $this->exercise_entries;
     }
 
     public function getUpdatedEntries(): array
     {
-        return array_filter($this->answer_entries, fn(AnswerEntry $entry) => $entry->isUpdated());
+        return array_filter($this->exercise_entries, fn(ExerciseEntry $entry) => $entry->isUpdated());
+    }
+
+    public function allAnswersCorrect(): bool
+    {
+        /** @var ExerciseEntry $entry */
+        foreach ($this->exercise_entries as $entry) {
+            if (!$entry->isLastAnswerCorrect()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private function statusAllowsForAssessment(): bool
@@ -85,14 +102,19 @@ abstract class Exercise
         return in_array($this->status, [ExerciseStatus::NEW, ExerciseStatus::IN_PROGRESS], true);
     }
 
-    public function findAnswerEntry(Answer $answer): ?AnswerEntry
+    private function findOrFailExerciseEntry(Answer $answer): ExerciseEntry
     {
-        foreach ($this->answer_entries as $entry) {
-            if ($entry->matches($answer)) {
+        return $this->findExerciseEntry($answer)
+            ?? throw new ExerciseEntryNotFoundException('Exercise entry with given id not found');
+    }
+
+    private function findExerciseEntry(Answer $answer): ?ExerciseEntry
+    {
+        foreach ($this->exercise_entries as $entry) {
+            if ($entry->getId()->getValue() === $answer->getExerciseEntryId()->getValue()) {
                 return $entry;
             }
         }
-
         return null;
     }
 }

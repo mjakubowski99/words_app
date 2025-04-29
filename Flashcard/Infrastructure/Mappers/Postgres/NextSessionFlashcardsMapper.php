@@ -51,10 +51,9 @@ class NextSessionFlashcardsMapper
                 ),
                 counts AS (
                     SELECT 
-                        COUNT(CASE WHEN lsf.batch_timestamp IS NOT NULL THEN 1 END) AS distinct_no_batch_count
-                        COUNT(DISTINCT CASE WHEN lsf.batch_timestamp IS NOT NULL THEN lsf.batch_timestamp END) AS distinct_batch_count
-                        COUNT(CASE WHEN lsf.rating IS NULL AND lsf.batch_timestamp IS NULL THEN 1 END) AS unrated_no_batch_count,
-                        COUNT(CASE WHEN lsf.rating IS NULL AND lsf.batch_timestamp IS NOT NULL THEN 1 END) AS unrated_with_batch_count,
+                        lsf.learning_session_id,
+                        COUNT(DISTINCT lsf.progress_tick) AS all_count,
+                        COUNT(DISTINCT CASE WHEN lsf.rating IS NULL THEN lsf.progress_tick END) AS unrated_count
                     FROM 
                         learning_session_flashcards AS lsf
                     WHERE 
@@ -121,6 +120,7 @@ class NextSessionFlashcardsMapper
                 'rating' => null,
                 'created_at' => $now,
                 'updated_at' => $now,
+                'progress_tick' => $next_session_flashcards->generateTick(),
             ];
         }
 
@@ -140,6 +140,7 @@ class NextSessionFlashcardsMapper
                 'rating' => null,
                 'created_at' => $now,
                 'updated_at' => $now,
+                'progress_tick' => $next_session_flashcards->generateTick(),
             ];
         }
 

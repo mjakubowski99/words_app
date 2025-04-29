@@ -105,4 +105,9 @@ class NextSessionFlashcards extends SessionFlashcardsBase
     {
         return $this->next_session_flashcards;
     }
+
+    public function generateTick(): int
+    {
+        return (int) round(microtime(true) * 1000);
+    }
 }

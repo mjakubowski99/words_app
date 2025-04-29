@@ -34,7 +34,7 @@ class RateableSessionFlashcardsMapper
                 WHERE id = ?
             ),
             rated_flashcard_count AS (
-                SELECT COUNT(id) + COUNT(DISTINCT batch_timestamp) AS count 
+                SELECT COUNT(DISTINCT progress_tick) AS count 
                 FROM learning_session_flashcards 
                 WHERE rating IS NOT NULL AND learning_session_id = ?
             )
@@ -42,8 +42,8 @@ class RateableSessionFlashcardsMapper
                 sd.session_id, 
                 sd.status, 
                 sd.user_id,
-                sd.cards_per_session,
                 sd.flashcard_deck_id,
+                sd.cards_per_session,
                 rfc.count AS rated_flashcard_count,
                 lsf.id,
                 lsf.flashcard_id 
