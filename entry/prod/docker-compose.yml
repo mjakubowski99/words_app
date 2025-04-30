@@ -17,8 +17,8 @@ services:
       - ../.env:/var/www/entry/.env
     extra_hosts:
       - "host.docker.internal:host-gateway"
-    ports:
-      - "9000:9000"
+    expose:
+      - "9000"
     networks:
       - prod-network
 
