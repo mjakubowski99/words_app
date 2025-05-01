@@ -13,6 +13,4 @@ interface INextSessionFlashcardsRepository
     public function find(SessionId $id): NextSessionFlashcards;
 
     public function save(NextSessionFlashcards $next_session_flashcards): void;
-    /** @return SessionFlashcardId[] */
-    public function saveGetId(NextSessionFlashcards $next_session_flashcards): array;
 }

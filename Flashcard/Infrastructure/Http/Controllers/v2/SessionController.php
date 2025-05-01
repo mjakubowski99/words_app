@@ -34,9 +34,10 @@ class SessionController extends Controller
             new AddSessionFlashcards($request->getSessionId(), self::FLASHCARDS_LIMIT)
         );
 
-        return new NextSessionFlashcardsResource(
-            $get_next_session_flashcards->handle($request->getSessionId(), self::DISPLAY_LIMIT)
-        );
+        return new NextSessionFlashcardsResource([
+            'flashcards' => $get_next_session_flashcards->handle($request->getSessionId(), self::DISPLAY_LIMIT),
+            'exercise' => [],
+        ]);
     }
 
     #[OAT\Post(
@@ -95,9 +96,10 @@ class SessionController extends Controller
             new AddSessionFlashcards($result->getId(), self::FLASHCARDS_LIMIT)
         );
 
-        return new NextSessionFlashcardsResource(
-            $get_next_session_flashcards->handle($result->getId(), self::DISPLAY_LIMIT)
-        );
+        return new NextSessionFlashcardsResource([
+            'flashcards' => $get_next_session_flashcards->handle($result->getId(), self::DISPLAY_LIMIT),
+            'exercise' => [],
+        ]);
     }
 
     #[OAT\Put(
@@ -157,8 +159,16 @@ class SessionController extends Controller
 
         $add_session_flashcards->handle($add_session_flashcards_command, self::DISPLAY_LIMIT);
 
-        return new NextSessionFlashcardsResource(
-            $get_next_session_flashcards->handle($request->getSessionId(), self::DISPLAY_LIMIT)
-        );
+//        if ($result->hasExercise()) {
+//            return new NextSessionFlashcardsResource([
+//                'flashcards' => $get_next_session_flashcards->handle($request->getSessionId(), 0),
+//                'exercise' => $result->getExercise(),
+//            ]);
+//        }
+
+        return new NextSessionFlashcardsResource([
+            'flashcards' => $get_next_session_flashcards->handle($request->getSessionId(), self::DISPLAY_LIMIT),
+            'exercise' => [],
+        ]);
     }
 }

@@ -25,10 +25,4 @@ class NextSessionFlashcardsRepository implements INextSessionFlashcardsRepositor
     {
         $this->mapper->save($next_session_flashcards);
     }
-
-    /** @return SessionFlashcardId[] */
-    public function saveGetId(NextSessionFlashcards $next_session_flashcards): array
-    {
-        return $this->mapper->saveGetId($next_session_flashcards);
-    }
 }

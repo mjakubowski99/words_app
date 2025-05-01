@@ -3,8 +3,8 @@
 namespace Exercise\Domain\Models;
 
 use Exercise\Domain\ValueObjects\ExerciseEntryId;
-use Exercise\Domain\ValueObjects\ExerciseId;
 use Exercise\Domain\ValueObjects\SessionFlashcardId;
+use Shared\Utils\ValueObjects\ExerciseId;
 
 class ExerciseEntry
 {
@@ -36,7 +36,7 @@ class ExerciseEntry
         return $this->answers_count;
     }
 
-    public function getSessionFlashcardId(): SessionFlashcardId
+    public function getSessionFlashcardId(): ?SessionFlashcardId
     {
         return $this->session_flashcard_id;
     }

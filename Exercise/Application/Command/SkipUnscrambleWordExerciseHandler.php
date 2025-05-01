@@ -3,8 +3,8 @@
 namespace Exercise\Application\Command;
 
 use Exercise\Application\Repositories\IUnscrambleWordExerciseRepository;
-use Exercise\Domain\ValueObjects\ExerciseId;
 use Shared\Flashcard\IFlashcardFacade;
+use Shared\Utils\ValueObjects\ExerciseId;
 
 class SkipUnscrambleWordExerciseHandler
 {

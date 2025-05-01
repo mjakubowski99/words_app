@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Flashcard\Infrastructure\Mappers\Postgres;
 
 use Shared\Enum\LanguageLevel;
+use Shared\Enum\SessionType;
 use Shared\Enum\SessionStatus;
 use Flashcard\Domain\Models\Deck;
 use Illuminate\Support\Facades\DB;
@@ -44,6 +45,7 @@ class SessionMapper
                 'flashcard_deck_id' => $session->hasFlashcardDeck() ? $session->getDeck()->getId() : null,
                 'cards_per_session' => $session->getCardsPerSession(),
                 'device' => $session->getDevice(),
+                'type' => $session->getType(),
                 'created_at' => $now,
                 'updated_at' => $now,
             ]);
@@ -81,6 +83,7 @@ class SessionMapper
             ->leftJoin('flashcard_decks', 'flashcard_decks.id', '=', 'learning_sessions.flashcard_deck_id')
             ->select(
                 'learning_sessions.id',
+                'learning_sessions.type',
                 'learning_sessions.user_id',
                 'learning_sessions.status',
                 'learning_sessions.cards_per_session',
@@ -126,6 +129,7 @@ class SessionMapper
 
         return (new Session(
             SessionStatus::from($data->status),
+            SessionType::from($data->type),
             new UserId($data->user_id),
             $data->cards_per_session,
             $data->device,

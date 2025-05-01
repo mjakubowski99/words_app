@@ -7,9 +7,9 @@ use Exercise\Domain\Models\ExerciseStatus;
 use Exercise\Domain\Models\UnscrambleWordAnswer;
 use Exercise\Domain\Models\UnscrambleWordsExercise;
 use Exercise\Domain\ValueObjects\ExerciseEntryId;
-use Exercise\Domain\ValueObjects\ExerciseId;
 use Exercise\Domain\ValueObjects\SessionFlashcardId;
 use Illuminate\Support\Facades\DB;
+use Shared\Utils\ValueObjects\ExerciseId;
 use Shared\Utils\ValueObjects\UserId;
 
 class UnscrambleWordExerciseMapper

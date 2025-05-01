@@ -14,6 +14,7 @@ class NextSessionFlashcards extends SessionFlashcardsBase
     public const UNRATED_LIMIT = 5;
 
     private array $next_session_flashcards = [];
+    private array $additional_flashcards = [];
 
     public function __construct(
         private SessionId $session_id,
@@ -28,11 +29,6 @@ class NextSessionFlashcards extends SessionFlashcardsBase
                 "Cannot generate next session flashcards for session: {$this->session_id->getValue()}"
             );
         }
-    }
-
-    public function getExercisesType(): string
-    {
-        return '';
     }
 
     public function getSessionId(): SessionId
@@ -98,12 +94,26 @@ class NextSessionFlashcards extends SessionFlashcardsBase
             $flashcard->getId()
         );
         ++$this->current_session_flashcards_count;
+
+
         ++$this->unrated_count;
+    }
+
+    public function addNextAdditional(Flashcard $flashcard): void
+    {
+        $this->additional_flashcards[] = new NextSessionFlashcard(
+            $flashcard->getId()
+        );
     }
 
     public function getNextFlashcards(): array
     {
         return $this->next_session_flashcards;
+    }
+
+    public function getAdditionalFlashcards(): array
+    {
+        return $this->additional_flashcards;
     }
 
     public function generateTick(): int

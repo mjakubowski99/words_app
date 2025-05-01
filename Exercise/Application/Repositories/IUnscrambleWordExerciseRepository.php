@@ -4,7 +4,7 @@ namespace Exercise\Application\Repositories;
 
 use Exercise\Domain\Models\UnscrambleWordsExercise;
 use Exercise\Domain\ValueObjects\ExerciseEntryId;
-use Exercise\Domain\ValueObjects\ExerciseId;
+use Shared\Utils\ValueObjects\ExerciseId;
 
 interface IUnscrambleWordExerciseRepository
 {

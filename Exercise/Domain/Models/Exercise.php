@@ -5,8 +5,8 @@ namespace Exercise\Domain\Models;
 use Exercise\Domain\Exceptions\ExerciseAssessmentNotAllowedException;
 use Exercise\Domain\Exceptions\ExerciseEntryNotFoundException;
 use Exercise\Domain\Exceptions\ExerciseStatusTransitionException;
-use Exercise\Domain\ValueObjects\ExerciseId;
 use Shared\Enum\ExerciseType;
+use Shared\Utils\ValueObjects\ExerciseId;
 
 abstract class Exercise
 {

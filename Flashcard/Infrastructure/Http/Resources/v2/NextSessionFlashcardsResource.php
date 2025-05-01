@@ -113,19 +113,19 @@ use Flashcard\Application\ReadModels\SessionFlashcardsRead;
         ),
     ]
 )]
-/**
- * @property SessionFlashcardsRead $resource
- */
 class NextSessionFlashcardsResource extends JsonResource
 {
     public function toArray($request): array
     {
+        /** @var SessionFlashcardsRead $resource */
+        $resource = $this->resource['flashcards'];
+
         return [
             'session' => [
-                'id' => $this->resource->getSessionId()->getValue(),
-                'cards_per_session' => $this->resource->getCardsPerSession(),
-                'is_finished' => $this->resource->getIsFinished(),
-                'progress' => $this->resource->getProgress(),
+                'id' => $resource->getSessionId()->getValue(),
+                'cards_per_session' => $resource->getCardsPerSession(),
+                'is_finished' => $resource->getIsFinished(),
+                'progress' => $resource->getProgress(),
                 'next_flashcards' => array_map(function (SessionFlashcardRead $flashcard) {
                     return [
                         'id' => $flashcard->getId()->getValue(),
@@ -139,7 +139,7 @@ class NextSessionFlashcardsResource extends JsonResource
                         'emoji' => $flashcard->getEmoji(),
                         'owner_type' => $flashcard->getOwnerType()->value,
                     ];
-                }, $this->resource->getSessionFlashcards()),
+                }, $resource->getSessionFlashcards()),
             ],
         ];
     }

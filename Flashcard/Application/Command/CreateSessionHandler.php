@@ -29,6 +29,7 @@ class CreateSessionHandler
 
         $session = Session::newSession(
             $command->getUserId(),
+            $command->getType(),
             $command->getCardsPerSession(),
             $command->getDevice(),
             $deck,

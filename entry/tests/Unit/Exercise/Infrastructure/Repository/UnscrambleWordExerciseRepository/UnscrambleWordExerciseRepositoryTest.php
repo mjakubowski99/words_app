@@ -10,11 +10,11 @@ use Exercise\Domain\Models\ExerciseEntry;
 use Exercise\Domain\Models\ExerciseStatus;
 use Exercise\Domain\Models\UnscrambleWordsExercise;
 use Exercise\Domain\ValueObjects\ExerciseEntryId;
-use Exercise\Domain\ValueObjects\ExerciseId;
 use Exercise\Domain\ValueObjects\SessionFlashcardId;
 use Exercise\Infrastructure\Repositories\UnscrambleWordExerciseRepository;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Shared\Enum\ExerciseType;
+use Shared\Utils\ValueObjects\ExerciseId;
 use Tests\TestCase;
 
 class UnscrambleWordExerciseRepositoryTest extends TestCase

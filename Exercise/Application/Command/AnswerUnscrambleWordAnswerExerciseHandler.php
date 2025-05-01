@@ -10,7 +10,7 @@ use Exercise\Domain\Models\UnscrambleWordAnswer;
 use Exercise\Domain\ValueObjects\ExerciseEntryId;
 use Shared\Flashcard\IFlashcardFacade;
 
-class UnscrambleWordExerciseHandler extends AbstractExerciseHandler
+class AnswerUnscrambleWordAnswerExerciseHandler extends AbstractAnswerExerciseHandler
 {
     public function __construct(
         private IUnscrambleWordExerciseRepository $repository,

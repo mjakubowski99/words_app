@@ -3,9 +3,9 @@
 namespace Exercise\Domain\Models;
 
 use Exercise\Domain\ValueObjects\ExerciseEntryId;
-use Exercise\Domain\ValueObjects\ExerciseId;
 use Exercise\Domain\ValueObjects\SessionFlashcardId;
 use Shared\Enum\ExerciseType;
+use Shared\Utils\ValueObjects\ExerciseId;
 use Shared\Utils\ValueObjects\UserId;
 
 class UnscrambleWordsExercise extends Exercise
@@ -29,7 +29,8 @@ class UnscrambleWordsExercise extends Exercise
             $id,
             new UnscrambleWordAnswer($answer_entry_id, $word),
             $last_answer,
-            $last_answer_correct
+            $last_answer_correct,
+            $session_flashcard_id,
         );
 
         parent::__construct($id, [$entry], $status, ExerciseType::UNSCRAMBLE_WORDS);
@@ -44,7 +45,9 @@ class UnscrambleWordsExercise extends Exercise
         string $emoji,
     ): self
     {
-        $scrambled_word = implode("", shuffle(str_split($word)));
+        $word_arr = str_split($word);
+        shuffle($word_arr);
+        $scrambled_word = implode('', $word_arr);
 
         return new self(
             ExerciseId::noId(),

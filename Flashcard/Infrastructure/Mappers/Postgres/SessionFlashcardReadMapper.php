@@ -62,12 +62,13 @@ class SessionFlashcardReadMapper
             ),
             progress_count AS (
                 SELECT 
-                    COUNT(DISTINCT progress_tick) AS count 
+                    COUNT(learning_session_flashcards.id) AS count 
                 FROM 
                     learning_session_flashcards 
                 WHERE 
                     learning_session_id = ?
                     AND rating IS NOT NULL
+                    AND affects_progress = false
             )
             SELECT 
                 flashcards_data.id, 

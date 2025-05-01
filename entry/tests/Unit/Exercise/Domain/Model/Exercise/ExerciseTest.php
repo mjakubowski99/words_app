@@ -9,8 +9,8 @@ use Exercise\Domain\Models\Exercise;
 use Exercise\Domain\Models\ExerciseEntry;
 use Exercise\Domain\Models\ExerciseStatus;
 use Exercise\Domain\ValueObjects\ExerciseEntryId;
-use Exercise\Domain\ValueObjects\ExerciseId;
 use Shared\Enum\ExerciseType;
+use Shared\Utils\ValueObjects\ExerciseId;
 use Tests\TestCase;
 
 class ExerciseTest extends TestCase

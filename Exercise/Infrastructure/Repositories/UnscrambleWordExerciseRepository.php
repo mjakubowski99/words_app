@@ -5,8 +5,8 @@ namespace Exercise\Infrastructure\Repositories;
 use Exercise\Application\Repositories\IUnscrambleWordExerciseRepository;
 use Exercise\Domain\Models\UnscrambleWordsExercise;
 use Exercise\Domain\ValueObjects\ExerciseEntryId;
-use Exercise\Domain\ValueObjects\ExerciseId;
 use Exercise\Infrastructure\Mappers\UnscrambleWordExerciseMapper;
+use Shared\Utils\ValueObjects\ExerciseId;
 
 class UnscrambleWordExerciseRepository implements IUnscrambleWordExerciseRepository
 {

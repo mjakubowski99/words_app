@@ -9,7 +9,7 @@ use Exercise\Domain\Models\ExerciseStatus;
 use Exercise\Domain\ValueObjects\ExerciseEntryId;
 use Shared\Flashcard\IFlashcardFacade;
 
-abstract class AbstractExerciseHandler
+abstract class AbstractAnswerExerciseHandler
 {
     public function __construct(
         private IFlashcardFacade $facade,

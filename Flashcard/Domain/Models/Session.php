@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Flashcard\Domain\Models;
 
+use Shared\Enum\ExerciseType;
+use Shared\Enum\SessionType;
 use Shared\Enum\SessionStatus;
 use Shared\Utils\ValueObjects\UserId;
 use Shared\Exceptions\ForbiddenException;
@@ -14,23 +16,26 @@ class Session
     private SessionId $id;
 
     public function __construct(
-        private SessionStatus $status,
+        private SessionStatus   $status,
+        private SessionType     $type,
         private readonly UserId $user_id,
-        private readonly int $cards_per_session,
+        private readonly int    $cards_per_session,
         private readonly string $device,
-        private readonly ?Deck $deck,
+        private readonly ?Deck  $deck,
     ) {
         $this->validate();
     }
 
     public static function newSession(
-        UserId $user_id,
-        int $cards_per_session,
-        string $device,
-        ?Deck $deck
+        UserId      $user_id,
+        SessionType $type,
+        int         $cards_per_session,
+        string      $device,
+        ?Deck       $deck
     ): self {
         return new Session(
             SessionStatus::STARTED,
+            $type,
             $user_id,
             $cards_per_session,
             $device,
@@ -48,6 +53,11 @@ class Session
     public function getId(): SessionId
     {
         return $this->id;
+    }
+
+    public function getType(): SessionType
+    {
+        return $this->type;
     }
 
     public function hasFlashcardDeck(): bool
@@ -83,6 +93,21 @@ class Session
     public function getDevice(): string
     {
         return $this->device;
+    }
+
+    public function resolveExerciseType(): ?ExerciseType
+    {
+        $type = $this->type;
+
+        if ($type === SessionType::MIXED) {
+            $type = SessionType::allowedInMixed()[array_rand(SessionType::allowedInMixed())];
+        }
+
+        if ($type === SessionType::UNSCRAMBLE_WORDS) {
+            return ExerciseType::UNSCRAMBLE_WORDS;
+        } else {
+            return null;
+        }
     }
 
     private function validate(): void

@@ -6,6 +6,7 @@ namespace Tests\Unit\Flashcard\Infrastructure\Repositories\Postgres\SessionRepos
 
 use App\Models\User;
 use App\Models\FlashcardDeck;
+use Shared\Enum\SessionType;
 use Shared\Enum\SessionStatus;
 use App\Models\LearningSession;
 use Tests\Base\FlashcardTestCase;
@@ -39,6 +40,7 @@ class SessionRepositoryTest extends FlashcardTestCase
         $domain_deck = $this->domainDeck($deck);
         $session = new Session(
             SessionStatus::STARTED,
+            SessionType::UNSCRAMBLE_WORDS,
             $user->getId(),
             10,
             'Mozilla/Firefox',
@@ -50,6 +52,7 @@ class SessionRepositoryTest extends FlashcardTestCase
         $this->assertDatabaseHas('learning_sessions', [
             'id' => $session_id->getValue(),
             'user_id' => $user->id,
+            'type' => SessionType::UNSCRAMBLE_WORDS->value,
         ]);
     }
 

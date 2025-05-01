@@ -2,7 +2,7 @@
 
 namespace Shared\Enum;
 
-enum SessionExerciseType: string
+enum SessionType: string
 {
     case UNSCRAMBLE_WORDS = 'unscramble_words';
     case FLASHCARD = 'flashcard';

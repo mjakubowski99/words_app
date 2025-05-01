@@ -112,7 +112,7 @@ class SmTwoFlashcardMapper
             (float) $data->repetition_interval,
             $data->repetition_count,
             $data->min_rating,
-            $data->repetitions_in_session
+            $data->repetitions_in_session,
         );
     }
 }

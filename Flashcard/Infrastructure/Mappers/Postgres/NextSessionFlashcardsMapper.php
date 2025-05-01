@@ -52,12 +52,13 @@ class NextSessionFlashcardsMapper
                 counts AS (
                     SELECT 
                         lsf.learning_session_id,
-                        COUNT(DISTINCT lsf.progress_tick) AS all_count,
-                        COUNT(DISTINCT CASE WHEN lsf.rating IS NULL THEN lsf.progress_tick END) AS unrated_count
+                        COUNT(lsf.id) AS all_count,
+                        COUNT(CASE WHEN lsf.rating IS NULL THEN 1 END) AS unrated_count
                     FROM 
                         learning_session_flashcards AS lsf
                     WHERE 
                         lsf.learning_session_id = ?
+                        AND lsf.affects_progress = true 
                     GROUP BY 
                         lsf.learning_session_id
                 )
@@ -120,36 +121,21 @@ class NextSessionFlashcardsMapper
                 'rating' => null,
                 'created_at' => $now,
                 'updated_at' => $now,
-                'progress_tick' => $next_session_flashcards->generateTick(),
+                'affects_progress' => true,
             ];
         }
-
-        $this->db::table('learning_session_flashcards')->insert($insert_data);
-    }
-
-    /** @return SessionFlashcardId[] */
-    public function saveGetId(NextSessionFlashcards $next_session_flashcards): array
-    {
-        $insert_data = [];
-        $now = now();
-
-        foreach ($next_session_flashcards->getNextFlashcards() as $next_session_flashcard) {
+        foreach ($next_session_flashcards->getAdditionalFlashcards() as $next_session_flashcard) {
             $insert_data[] = [
                 'learning_session_id' => $next_session_flashcards->getSessionId()->getValue(),
                 'flashcard_id' => $next_session_flashcard->getFlashcardId()->getValue(),
                 'rating' => null,
                 'created_at' => $now,
                 'updated_at' => $now,
-                'progress_tick' => $next_session_flashcards->generateTick(),
+                'affects_progress' => false,
             ];
         }
 
-        $ids = [];
-        foreach ($insert_data as $data) {
-            $ids[] = new SessionFlashcardId(DB::table('learning_session_flashcards')->insertGetId($data));
-        }
-
-        return $ids;
+        $this->db::table('learning_session_flashcards')->insert($insert_data);
     }
 
     private function mapDeck(Owner $owner, object $result): ?Deck
