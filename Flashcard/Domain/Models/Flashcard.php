@@ -28,6 +28,7 @@ class Flashcard
         private ?Deck $deck,
         private LanguageLevel $level,
         private ?Emoji $emoji = null,
+        private ?Rating $last_user_rating = null,
     ) {
         $this->learned_language = Language::from($this->back_lang->getValue());
 
@@ -124,5 +125,10 @@ class Flashcard
     public function getEmoji(): ?Emoji
     {
         return $this->emoji;
+    }
+
+    public function getLastUserRating(): ?Rating
+    {
+        return $this->last_user_rating;
     }
 }

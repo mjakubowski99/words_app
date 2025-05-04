@@ -6,14 +6,19 @@ namespace Flashcard\Application\Facades;
 
 use Shared\Utils\ValueObjects\UserId;
 use Shared\Flashcard\IFlashcardFacade;
+use Shared\Flashcard\ISessionFlashcardRating;
+use Flashcard\Application\Command\UpdateRatingsHandler;
 use Flashcard\Application\Command\DeleteUserDataHandler;
 use Flashcard\Application\Repository\ISessionRepository;
+use Flashcard\Application\Command\UpdateRatingsByPreviousRatingHandler;
 
 class FlashcardFacade implements IFlashcardFacade
 {
     public function __construct(
         private DeleteUserDataHandler $delete_user_data_handler,
         private ISessionRepository $session_repository,
+        private UpdateRatingsHandler $update_ratings_handler,
+        private UpdateRatingsByPreviousRatingHandler $update_ratings_by_previous_rating_handler,
     ) {}
 
     public function deleteUserData(UserId $user_id): void
@@ -26,13 +31,15 @@ class FlashcardFacade implements IFlashcardFacade
         return $this->session_repository->hasAnySession($user_id);
     }
 
+    /** @param ISessionFlashcardRating[] $session_flashcard_ratings */
     public function updateRatings(array $session_flashcard_ratings): void
     {
-
+        $this->update_ratings_handler->handle($session_flashcard_ratings);
     }
 
-    public function updateRatingsByPreviousRates(array $session_flashcard_id): void
+    /** @param int[] $session_flashcard_ids */
+    public function updateRatingsByPreviousRates(array $session_flashcard_ids): void
     {
-        // TODO: Implement updateRatingsByPreviousRates() method.
+        $this->update_ratings_by_previous_rating_handler->handle($session_flashcard_ids);
     }
 }

@@ -1,11 +1,12 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
+declare(strict_types=1);
 
-return new class extends Migration
-{
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
+
+return new class extends Migration {
     public function up(): void
     {
         Schema::create('exercise_entries', function (Blueprint $table) {
@@ -25,12 +26,6 @@ return new class extends Migration
                 ->onDelete('cascade');
 
             $table->index('exercise_id');
-
-            $table->foreign('session_flashcard_id')
-                ->references('id')
-                ->on('learning_session_flashcards')
-                ->onDelete('cascade');
-
             $table->index('session_flashcard_id');
         });
     }

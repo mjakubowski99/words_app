@@ -68,7 +68,7 @@ class SessionFlashcardReadMapper
                 WHERE 
                     learning_session_id = ?
                     AND rating IS NOT NULL
-                    AND affects_progress = false
+                    AND is_additional = false
             )
             SELECT 
                 flashcards_data.id, 

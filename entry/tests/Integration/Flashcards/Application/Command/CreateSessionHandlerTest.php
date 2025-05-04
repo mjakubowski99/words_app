@@ -5,10 +5,9 @@ declare(strict_types=1);
 namespace Tests\Integration\Flashcards\Application\Command;
 
 use App\Models\User;
-use App\Models\FlashcardDeck;
 use Shared\Enum\SessionType;
+use App\Models\FlashcardDeck;
 use Tests\Base\FlashcardTestCase;
-use Shared\Enum\LearningSessionType;
 use Shared\Exceptions\ForbiddenException;
 use Flashcard\Application\Command\CreateSession;
 use Flashcard\Application\Command\CreateSessionHandler;

@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\Services;
 
-use Flashcard\Domain\Models\RateableSessionFlashcards;
+use Flashcard\Domain\Contracts\IRepetitionAlgorithmDTO;
 
 interface IRepetitionAlgorithm
 {
-    public function handle(RateableSessionFlashcards $session_flashcards): void;
-    public function updateByRatings(array $ratings);
+    public function handle(IRepetitionAlgorithmDTO $dto): void;
 }

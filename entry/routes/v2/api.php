@@ -5,6 +5,7 @@ declare(strict_types=1);
 use Illuminate\Support\Facades\Route;
 use User\Infrastructure\Http\Controllers\v2\AuthController;
 use User\Infrastructure\Http\Controllers\v2\UserController;
+use Exercise\Infrastructure\Http\Controllers\ExerciseController;
 use Flashcard\Infrastructure\Http\Controllers\v2\SessionController;
 use Flashcard\Infrastructure\Http\Controllers\v2\FlashcardController;
 use Flashcard\Infrastructure\Http\Controllers\v2\FlashcardDeckController;
@@ -54,4 +55,9 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         ->name('v2.flashcards.session.store');
     Route::put('/flashcards/session/{session_id}/rate-flashcards', [SessionController::class, 'rate'])
         ->name('v2.flashcards.session.rate');
+
+    Route::put('/exercises/unscramble-words/{exercise_entry_id}/answer', [ExerciseController::class, 'answerUnscrambleWordExercise'])
+        ->name('v2.exercises.unscramble-words.answer');
+    Route::put('/exercises/unscramble-words/{exercise_id}/skip', [ExerciseController::class, 'skipUnscrambleWordExercise'])
+        ->name('v2.exercises.unscramble-words.skip');
 });

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Flashcard\Infrastructure\Http\Resources\v2;
 
 use Shared\Enum\Language;
+use Shared\Enum\ExerciseType;
 use OpenApi\Attributes as OAT;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Flashcard\Application\ReadModels\SessionFlashcardRead;
@@ -39,6 +40,14 @@ use Flashcard\Application\ReadModels\SessionFlashcardsRead;
                     type: 'number',
                     format: 'float',
                     example: 5,
+                ),
+                new OAT\Property(
+                    property: 'is_exercise_mode',
+                    description: 'This property tells if at the current step exercise should be displayed. '
+                    . 'If its false it means that we should display flashcard. '
+                    . 'In some modes this is always false.'
+                    . 'If flag is true it basically means that we should display exercise from next_exercises property.',
+                    type: 'boolean'
                 ),
                 new OAT\Property(
                     property: 'next_flashcards',
@@ -108,6 +117,26 @@ use Flashcard\Application\ReadModels\SessionFlashcardsRead;
                         type: 'object'
                     )
                 ),
+                new OAT\Property(
+                    property: 'next_exercises',
+                    description: 'List of exercises in the session. Type of "data" depends on "exercise_type".',
+                    type: 'array',
+                    items: new OAT\Items(
+                        type: 'object',
+                        oneOf: [
+                            new OAT\Schema(
+                                ref: '#/components/schemas/Resources\Flashcard\v2\UnscrambleWordExerciseResource',
+                                discriminator: new OAT\Discriminator(
+                                    propertyName: 'exercise_type',
+                                    mapping: [
+                                        ExerciseType::UNSCRAMBLE_WORDS->value => '#/components/schemas/UnscrambleWordExerciseResource',
+                                    ]
+                                )
+                            ),
+                            // new OAT\Schema(ref: '#/components/schemas/NextType')
+                        ]
+                    )
+                ),
             ],
             type: 'object'
         ),
@@ -120,12 +149,16 @@ class NextSessionFlashcardsResource extends JsonResource
         /** @var SessionFlashcardsRead $resource */
         $resource = $this->resource['flashcards'];
 
+        /** @var array $exercises */
+        $exercises = $this->resource['exercises'];
+
         return [
             'session' => [
                 'id' => $resource->getSessionId()->getValue(),
                 'cards_per_session' => $resource->getCardsPerSession(),
                 'is_finished' => $resource->getIsFinished(),
                 'progress' => $resource->getProgress(),
+                'is_exercise_mode' => empty($resource->getSessionFlashcards()) && !empty($exercises),
                 'next_flashcards' => array_map(function (SessionFlashcardRead $flashcard) {
                     return [
                         'id' => $flashcard->getId()->getValue(),
@@ -140,6 +173,12 @@ class NextSessionFlashcardsResource extends JsonResource
                         'owner_type' => $flashcard->getOwnerType()->value,
                     ];
                 }, $resource->getSessionFlashcards()),
+                'next_exercises' => array_map(function (array $exercise) {
+                    return [
+                        'exercise_type' => $exercise['type'],
+                        'data' => $exercise['resource'],
+                    ];
+                }, $exercises),
             ],
         ];
     }

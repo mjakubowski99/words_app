@@ -7,12 +7,14 @@ namespace Flashcard\Domain\Models;
 use Shared\Enum\SessionStatus;
 use Shared\Utils\ValueObjects\UserId;
 use Flashcard\Domain\ValueObjects\SessionId;
+use Flashcard\Domain\ValueObjects\FlashcardId;
 use Flashcard\Domain\ValueObjects\FlashcardDeckId;
 use Flashcard\Domain\ValueObjects\SessionFlashcardId;
+use Flashcard\Domain\Contracts\IRepetitionAlgorithmDTO;
 use Flashcard\Domain\Exceptions\SessionFinishedException;
 use Flashcard\Domain\Exceptions\RateableSessionFlashcardNotFound;
 
-class RateableSessionFlashcards extends SessionFlashcardsBase
+class RateableSessionFlashcards extends SessionFlashcardsBase implements IRepetitionAlgorithmDTO
 {
     public function __construct(
         private SessionId $session_id,
@@ -54,7 +56,12 @@ class RateableSessionFlashcards extends SessionFlashcardsBase
         return $this->session_id;
     }
 
-    public function getUserId(): UserId
+    public function getSessionUserId(): UserId
+    {
+        return $this->user_id;
+    }
+
+    public function getUserIdForFlashcard(SessionFlashcardId $id): UserId
     {
         return $this->user_id;
     }
@@ -91,5 +98,35 @@ class RateableSessionFlashcards extends SessionFlashcardsBase
         }
 
         throw new RateableSessionFlashcardNotFound('Flashcard already rated or not exists', (string) $id->getValue());
+    }
+
+    public function getRatedSessionFlashcardIds(): array
+    {
+        $rated_flashcards = array_filter($this->rateable_session_flashcards, fn (RateableSessionFlashcard $flashcard) => $flashcard->rated());
+
+        $rated_flashcards = array_values($rated_flashcards);
+
+        return array_map(fn (RateableSessionFlashcard $flashcard) => $flashcard->getId(), $rated_flashcards);
+    }
+
+    public function getFlashcardRating(SessionFlashcardId $id): Rating
+    {
+        return array_values(array_filter(
+            $this->rateable_session_flashcards,
+            fn (RateableSessionFlashcard $flashcard) => $flashcard->getId()->equals($id)
+        ))[0]->getRating();
+    }
+
+    public function getFlashcardId(SessionFlashcardId $id): FlashcardId
+    {
+        return array_values(array_filter(
+            $this->rateable_session_flashcards,
+            fn (RateableSessionFlashcard $flashcard) => $flashcard->getId()->equals($id)
+        ))[0]->getFlashcardId();
+    }
+
+    public function updatePoll(SessionFlashcardId $id): bool
+    {
+        return $this->hasFlashcardPoll();
     }
 }

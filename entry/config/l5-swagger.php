@@ -47,6 +47,7 @@ return [
                     base_path('../Shared'),
                     base_path('../User/Infrastructure/Http/'),
                     base_path('../Flashcard/Infrastructure/Http/'),
+                    base_path('../Exercise/Infrastructure/Http/'),
                 ],
             ],
         ],

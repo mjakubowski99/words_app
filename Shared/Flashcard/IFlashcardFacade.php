@@ -12,7 +12,9 @@ interface IFlashcardFacade
 
     public function deleteUserData(UserId $user_id): void;
 
+    /** @param ISessionFlashcardRating[] $session_flashcard_ratings */
     public function updateRatings(array $session_flashcard_ratings): void;
 
-    public function updateRatingsByPreviousRates(array $session_flashcard_id): void;
+    /** @param int[] $session_flashcard_ids*/
+    public function updateRatingsByPreviousRates(array $session_flashcard_ids): void;
 }

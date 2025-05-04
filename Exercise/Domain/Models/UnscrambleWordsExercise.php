@@ -1,28 +1,30 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Exercise\Domain\Models;
 
+use Shared\Enum\ExerciseType;
+use Shared\Utils\ValueObjects\UserId;
+use Shared\Utils\ValueObjects\ExerciseId;
 use Exercise\Domain\ValueObjects\ExerciseEntryId;
 use Exercise\Domain\ValueObjects\SessionFlashcardId;
-use Shared\Enum\ExerciseType;
-use Shared\Utils\ValueObjects\ExerciseId;
-use Shared\Utils\ValueObjects\UserId;
 
 class UnscrambleWordsExercise extends Exercise
 {
     public function __construct(
-        ExerciseId            $id,
-        private UserId        $user_id,
-        ExerciseStatus        $status,
-        ExerciseEntryId       $answer_entry_id,
-        ?SessionFlashcardId   $session_flashcard_id,
-        private string        $word,
-        private string        $context_sentence,
-        private string        $word_translation,
-        private string        $emoji,
-        private string        $scrambled_word,
+        ExerciseId $id,
+        UserId $user_id,
+        ExerciseStatus $status,
+        ExerciseEntryId $answer_entry_id,
+        ?SessionFlashcardId $session_flashcard_id,
+        private string $word,
+        private string $context_sentence,
+        private string $word_translation,
+        private string $emoji,
+        private string $scrambled_word,
         ?UnscrambleWordAnswer $last_answer,
-        ?bool                 $last_answer_correct,
+        ?bool $last_answer_correct,
     ) {
         $entry = new ExerciseEntry(
             $answer_entry_id,
@@ -33,7 +35,7 @@ class UnscrambleWordsExercise extends Exercise
             $session_flashcard_id,
         );
 
-        parent::__construct($id, [$entry], $status, ExerciseType::UNSCRAMBLE_WORDS);
+        parent::__construct($id, $user_id, [$entry], $status, ExerciseType::UNSCRAMBLE_WORDS);
     }
 
     public static function newExercise(
@@ -43,9 +45,8 @@ class UnscrambleWordsExercise extends Exercise
         string $context_sentence,
         string $word_translation,
         string $emoji,
-    ): self
-    {
-        $word_arr = str_split($word);
+    ): self {
+        $word_arr = mb_str_split($word);
         shuffle($word_arr);
         $scrambled_word = implode('', $word_arr);
 
@@ -63,11 +64,6 @@ class UnscrambleWordsExercise extends Exercise
             null,
             null,
         );
-    }
-
-    public function getUserId(): UserId
-    {
-        return $this->user_id;
     }
 
     public function getWord(): string

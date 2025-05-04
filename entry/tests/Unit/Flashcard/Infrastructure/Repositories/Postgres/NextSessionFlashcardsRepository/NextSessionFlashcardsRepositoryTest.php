@@ -7,6 +7,7 @@ namespace Tests\Unit\Flashcard\Infrastructure\Repositories\Postgres\NextSessionF
 use Tests\TestCase;
 use App\Models\Admin;
 use App\Models\Flashcard;
+use Shared\Enum\SessionType;
 use App\Models\FlashcardDeck;
 use App\Models\LearningSession;
 use Flashcard\Domain\Models\Rating;
@@ -143,6 +144,7 @@ class NextSessionFlashcardsRepositoryTest extends TestCase
         $flashcard = Flashcard::factory()->create();
         $object = new NextSessionFlashcards(
             $session->getId(),
+            SessionType::FLASHCARD,
             $session->user->getId(),
             $session->deck->toDomainModel(),
             8,
@@ -159,6 +161,35 @@ class NextSessionFlashcardsRepositoryTest extends TestCase
             'learning_session_id' => $session->id,
             'flashcard_id' => $flashcard->id,
             'rating' => null,
+            'is_additional' => false,
+        ]);
+    }
+
+    public function test__save_WhenAdditionalFlashcards_ShouldSaveObject(): void
+    {
+        // GIVEN
+        $session = LearningSession::factory()->create();
+        $flashcard = Flashcard::factory()->create();
+        $object = new NextSessionFlashcards(
+            $session->getId(),
+            SessionType::FLASHCARD,
+            $session->user->getId(),
+            $session->deck->toDomainModel(),
+            8,
+            2,
+            10
+        );
+        $object->addNextAdditional($flashcard->toDomainModel());
+
+        // WHEN
+        $this->repository->save($object);
+
+        // THEN
+        $this->assertDatabaseHas('learning_session_flashcards', [
+            'learning_session_id' => $session->id,
+            'flashcard_id' => $flashcard->id,
+            'rating' => null,
+            'is_additional' => true,
         ]);
     }
 }

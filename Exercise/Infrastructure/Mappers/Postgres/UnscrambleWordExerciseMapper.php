@@ -1,16 +1,18 @@
 <?php
 
-namespace Exercise\Infrastructure\Mappers;
+declare(strict_types=1);
 
+namespace Exercise\Infrastructure\Mappers\Postgres;
+
+use Illuminate\Support\Facades\DB;
+use Shared\Utils\ValueObjects\UserId;
 use Exercise\Domain\Models\ExerciseEntry;
+use Shared\Utils\ValueObjects\ExerciseId;
 use Exercise\Domain\Models\ExerciseStatus;
 use Exercise\Domain\Models\UnscrambleWordAnswer;
-use Exercise\Domain\Models\UnscrambleWordsExercise;
 use Exercise\Domain\ValueObjects\ExerciseEntryId;
+use Exercise\Domain\Models\UnscrambleWordsExercise;
 use Exercise\Domain\ValueObjects\SessionFlashcardId;
-use Illuminate\Support\Facades\DB;
-use Shared\Utils\ValueObjects\ExerciseId;
-use Shared\Utils\ValueObjects\UserId;
 
 class UnscrambleWordExerciseMapper
 {
@@ -59,7 +61,7 @@ class UnscrambleWordExerciseMapper
             $result->word_translation,
             $result->emoji,
             $result->scrambled_word,
-            $result->last_answer ? UnscrambleWordAnswer::fromString($entry_id, $result->last_answer) : null,
+            $result->last_answer ? new UnscrambleWordAnswer($entry_id, $result->last_answer) : null,
             $result->last_answer_correct
         );
     }
@@ -105,7 +107,7 @@ class UnscrambleWordExerciseMapper
             $result->word_translation,
             $result->emoji,
             $result->scrambled_word,
-            $result->last_answer ? UnscrambleWordAnswer::fromString($entry_id, $result->last_answer) : null,
+            $result->last_answer ? new UnscrambleWordAnswer($entry_id, $result->last_answer) : null,
             $result->last_answer_correct
         );
     }
@@ -155,7 +157,7 @@ class UnscrambleWordExerciseMapper
 
     public function save(UnscrambleWordsExercise $exercise): void
     {
-        $exercise_id = $this->db::table('exercises')
+        $this->db::table('exercises')
             ->where('id', $exercise->getId())
             ->update([
                 'exercise_type' => $exercise->getExerciseType()->value,
@@ -163,10 +165,11 @@ class UnscrambleWordExerciseMapper
             ]);
 
         $data = [];
+
         /** @var ExerciseEntry $entry */
         foreach ($exercise->getUpdatedEntries() as $entry) {
             $data[$entry->getId()->getValue()] = [
-                'exercise_id' => $exercise_id,
+                'exercise_id' => $exercise->getId(),
                 'correct_answer' => $entry->getCorrectAnswer()->toString(),
                 'score' => $entry->getScore(),
                 'answers_count' => $entry->getAnswersCount(),

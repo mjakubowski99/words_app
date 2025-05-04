@@ -1,16 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Exercise\Application\Command;
 
+use Exercise\Domain\Models\Exercise;
+use Shared\Flashcard\IFlashcardFacade;
+use Exercise\Domain\ValueObjects\ExerciseEntryId;
 use Exercise\Domain\Models\UnscrambleWordsExercise;
 use Exercise\Application\Repositories\IUnscrambleWordExerciseRepository;
-use Exercise\Domain\Models\Answer;
-use Exercise\Domain\Models\Exercise;
-use Exercise\Domain\Models\UnscrambleWordAnswer;
-use Exercise\Domain\ValueObjects\ExerciseEntryId;
-use Shared\Flashcard\IFlashcardFacade;
 
-class AnswerUnscrambleWordAnswerExerciseHandler extends AbstractAnswerExerciseHandler
+class UnscrambleWordExerciseAnswerHandler extends AbstractExerciseAnswerHandler
 {
     public function __construct(
         private IUnscrambleWordExerciseRepository $repository,
@@ -22,11 +22,6 @@ class AnswerUnscrambleWordAnswerExerciseHandler extends AbstractAnswerExerciseHa
     protected function resolveExercise(ExerciseEntryId $id): Exercise
     {
         return $this->repository->findByAnswerEntryId($id);
-    }
-
-    protected function resolveAnswer(ExerciseEntryId $id, string $answer): Answer
-    {
-        return UnscrambleWordAnswer::fromString($id, $answer);
     }
 
     protected function save(Exercise $exercise): void

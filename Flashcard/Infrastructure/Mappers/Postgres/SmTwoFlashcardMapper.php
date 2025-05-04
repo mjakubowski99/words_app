@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Flashcard\Infrastructure\Mappers\Postgres;
 
 use Illuminate\Support\Facades\DB;
+use Flashcard\Domain\Models\Rating;
 use Shared\Utils\ValueObjects\UserId;
 use Flashcard\Domain\Models\SmTwoFlashcard;
 use Flashcard\Domain\Models\SmTwoFlashcards;
@@ -38,6 +39,7 @@ class SmTwoFlashcardMapper
                 'sm_two_flashcards.repetition_count',
                 'sm_two_flashcards.min_rating',
                 'sm_two_flashcards.repetitions_in_session',
+                'sm_two_flashcards.last_rating',
             )
             ->get()
             ->map(function (object $sm_two_flashcard) {
@@ -79,6 +81,7 @@ class SmTwoFlashcardMapper
                     'repetition_count' => $flashcard->getRepetitionCount(),
                     'min_rating' => $flashcard->getMinRating(),
                     'repetitions_in_session' => $flashcard->getRepetitionsInSession(),
+                    'last_rating' => $flashcard->getLastRating(),
                     'created_at' => $now,
                     'updated_at' => $now,
                 ];
@@ -93,6 +96,7 @@ class SmTwoFlashcardMapper
                         'repetition_count' => $flashcard->getRepetitionCount(),
                         'min_rating' => $flashcard->getMinRating(),
                         'repetitions_in_session' => $flashcard->getRepetitionsInSession(),
+                        'last_rating' => $flashcard->getLastRating(),
                         'updated_at' => $now,
                     ]);
             }
@@ -113,6 +117,7 @@ class SmTwoFlashcardMapper
             $data->repetition_count,
             $data->min_rating,
             $data->repetitions_in_session,
+            $data->last_rating ? Rating::from($data->last_rating) : null,
         );
     }
 }

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Mappers\Postgres;
 
-use Flashcard\Domain\ValueObjects\SessionFlashcardId;
+use Shared\Enum\SessionType;
 use Shared\Enum\LanguageLevel;
 use Flashcard\Domain\Models\Deck;
 use Flashcard\Domain\Models\Owner;
@@ -12,8 +12,11 @@ use Illuminate\Support\Facades\DB;
 use Shared\Utils\ValueObjects\UserId;
 use Shared\Exceptions\NotFoundException;
 use Flashcard\Domain\ValueObjects\SessionId;
+use Flashcard\Domain\ValueObjects\FlashcardId;
 use Flashcard\Domain\Models\NextSessionFlashcards;
 use Flashcard\Domain\ValueObjects\FlashcardDeckId;
+use Flashcard\Domain\ValueObjects\SessionFlashcardId;
+use Flashcard\Domain\Models\NextSessionFlashcardResult;
 use Flashcard\Infrastructure\Mappers\Traits\HasOwnerBuilder;
 
 class NextSessionFlashcardsMapper
@@ -34,6 +37,7 @@ class NextSessionFlashcardsMapper
                     SELECT 
                         ls.id AS session_id,
                         ls.user_id,
+                        ls.type,
                         ls.cards_per_session,
                         ls.status AS session_status,
                         fd.id AS deck_id,
@@ -58,13 +62,14 @@ class NextSessionFlashcardsMapper
                         learning_session_flashcards AS lsf
                     WHERE 
                         lsf.learning_session_id = ?
-                        AND lsf.affects_progress = true 
+                        AND lsf.is_additional = false
                     GROUP BY 
                         lsf.learning_session_id
                 )
                 SELECT 
                     sd.session_id,
                     sd.user_id,
+                    sd.type,
                     sd.cards_per_session,
                     sd.session_status,
                     sd.deck_id,
@@ -101,6 +106,7 @@ class NextSessionFlashcardsMapper
 
         return new NextSessionFlashcards(
             $id,
+            SessionType::from($result->type),
             new UserId($result->user_id),
             $deck,
             $result->all_count ?? 0,
@@ -109,7 +115,7 @@ class NextSessionFlashcardsMapper
         );
     }
 
-    public function save(NextSessionFlashcards $next_session_flashcards): void
+    public function save(NextSessionFlashcards $next_session_flashcards): array
     {
         $insert_data = [];
         $now = now();
@@ -121,9 +127,10 @@ class NextSessionFlashcardsMapper
                 'rating' => null,
                 'created_at' => $now,
                 'updated_at' => $now,
-                'affects_progress' => true,
+                'is_additional' => false,
             ];
         }
+
         foreach ($next_session_flashcards->getAdditionalFlashcards() as $next_session_flashcard) {
             $insert_data[] = [
                 'learning_session_id' => $next_session_flashcards->getSessionId()->getValue(),
@@ -131,11 +138,41 @@ class NextSessionFlashcardsMapper
                 'rating' => null,
                 'created_at' => $now,
                 'updated_at' => $now,
-                'affects_progress' => false,
+                'is_additional' => true,
             ];
         }
 
-        $this->db::table('learning_session_flashcards')->insert($insert_data);
+        if (count($insert_data) === 0) {
+            return [];
+        }
+
+        $placeholders = [];
+        $values = [];
+
+        foreach ($insert_data as $row) {
+            $placeholders[] = '(?, ?, ?, ?, ?, ?)';
+            $values = array_merge($values, array_values($row));
+        }
+
+        $results = DB::select(
+            'INSERT INTO learning_session_flashcards 
+    (learning_session_id, flashcard_id, rating, created_at, updated_at, is_additional) 
+    VALUES ' . implode(', ', $placeholders) . ' 
+    RETURNING id',
+            $values
+        );
+
+        $final_results = [];
+
+        $i = 0;
+        foreach ($insert_data as $data) {
+            $final_results[] = new NextSessionFlashcardResult(
+                new SessionFlashcardId($results[$i]->id),
+                new FlashcardId($data['flashcard_id']),
+            );
+        }
+
+        return $final_results;
     }
 
     private function mapDeck(Owner $owner, object $result): ?Deck

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Exercise\Domain\Models;
 
 use Exercise\Domain\ValueObjects\ExerciseEntryId;
@@ -8,7 +10,7 @@ class UnscrambleWordAnswer extends Answer
 {
     public function __construct(
         ExerciseEntryId $id,
-        private string  $unscrambled_word,
+        private string $unscrambled_word,
     ) {
         parent::__construct($id);
     }
@@ -25,9 +27,10 @@ class UnscrambleWordAnswer extends Answer
 
     protected function getCompareScore(Answer $answer): float
     {
-        if ($answer->toString() === $this->toString()) {
+        if (mb_strtolower($answer->toString()) === mb_strtolower($this->toString())) {
             return 100.0;
         }
+
         return 0.0;
     }
 }

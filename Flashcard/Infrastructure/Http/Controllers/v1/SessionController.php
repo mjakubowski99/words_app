@@ -29,7 +29,7 @@ class SessionController extends Controller
         GetNextSessionFlashcardsHandler $get_next_session_flashcards,
     ): JsonResponse|NextSessionFlashcardsResource {
         $add_session_flashcards->handle(
-            new AddSessionFlashcards($request->getSessionId(), self::FLASHCARDS_LIMIT)
+            new AddSessionFlashcards($request->getSessionId(), $request->currentId(), self::FLASHCARDS_LIMIT)
         );
 
         return new NextSessionFlashcardsResource(
@@ -85,7 +85,7 @@ class SessionController extends Controller
         }
 
         $add_session_flashcards->handle(
-            new AddSessionFlashcards($result->getId(), self::FLASHCARDS_LIMIT)
+            new AddSessionFlashcards($result->getId(), $request->currentId(), self::FLASHCARDS_LIMIT)
         );
 
         return new NextSessionFlashcardsResource(
@@ -139,7 +139,7 @@ class SessionController extends Controller
             $request->getSessionId(),
             $request->getRatings(),
         );
-        $add_session_flashcards_command = new AddSessionFlashcards($request->getSessionId(), self::FLASHCARDS_LIMIT);
+        $add_session_flashcards_command = new AddSessionFlashcards($request->getSessionId(), $request->currentId(), self::FLASHCARDS_LIMIT);
 
         $rate->handle($rate_command);
 

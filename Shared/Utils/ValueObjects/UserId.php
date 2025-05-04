@@ -13,6 +13,11 @@ class UserId implements \Stringable
         $this->value = Uuid::fromString($value);
     }
 
+    public static function new(): self
+    {
+        return new self(Uuid::make()->getValue());
+    }
+
     public static function fromString(string $value): self
     {
         return new self($value);

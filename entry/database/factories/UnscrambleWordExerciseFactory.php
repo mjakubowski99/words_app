@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
 use App\Models\Exercise;
@@ -18,7 +20,7 @@ class UnscrambleWordExerciseFactory extends Factory
     public function definition(): array
     {
         return [
-            'exercise_id' => fn() => Exercise::factory()->create(),
+            'exercise_id' => fn () => Exercise::factory()->create(),
             'word' => 'word',
             'context_sentence' => 'sentence',
             'word_translation' => 'translation',

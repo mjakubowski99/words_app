@@ -1,21 +1,23 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Unit\Exercise\Infrastructure\Repository\UnscrambleWordExerciseRepository;
 
-use App\Models\Exercise;
-use App\Models\LearningSessionFlashcard;
-use App\Models\UnscrambleWordExercise;
-use Exercise\Domain\Models\Answer;
-use Exercise\Domain\Models\ExerciseEntry;
-use Exercise\Domain\Models\ExerciseStatus;
-use Exercise\Domain\Models\UnscrambleWordsExercise;
-use Exercise\Domain\ValueObjects\ExerciseEntryId;
-use Exercise\Domain\ValueObjects\SessionFlashcardId;
-use Exercise\Infrastructure\Repositories\UnscrambleWordExerciseRepository;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Shared\Enum\ExerciseType;
-use Shared\Utils\ValueObjects\ExerciseId;
 use Tests\TestCase;
+use App\Models\Exercise;
+use Shared\Enum\ExerciseType;
+use Exercise\Domain\Models\Answer;
+use App\Models\UnscrambleWordExercise;
+use App\Models\LearningSessionFlashcard;
+use Exercise\Domain\Models\ExerciseEntry;
+use Shared\Utils\ValueObjects\ExerciseId;
+use Exercise\Domain\Models\ExerciseStatus;
+use Exercise\Domain\ValueObjects\ExerciseEntryId;
+use Exercise\Domain\Models\UnscrambleWordsExercise;
+use Exercise\Domain\ValueObjects\SessionFlashcardId;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Exercise\Infrastructure\Repositories\UnscrambleWordExerciseRepository;
 
 class UnscrambleWordExerciseRepositoryTest extends TestCase
 {

@@ -24,6 +24,7 @@ class SmTwoFlashcard
         ?int $repetition_count = null,
         private int $min_rating = 0,
         private int $repetitions_in_session = 0,
+        private ?Rating $rating = null,
     ) {
         $this->repetition_ratio = $repetition_ratio ?? self::INITIAL_REPETITION_RATIO;
         $this->repetition_interval = $repetition_interval ?? self::INITIAL_REPETITION_INTERVAL;
@@ -57,6 +58,8 @@ class SmTwoFlashcard
 
     public function updateByRating(Rating $rating): void
     {
+        $this->rating = $rating;
+
         if ($rating->value < $this->min_rating) {
             $this->min_rating = $rating->value;
         }
@@ -76,6 +79,11 @@ class SmTwoFlashcard
     public function getMinRating(): int
     {
         return $this->min_rating;
+    }
+
+    public function getLastRating(): ?Rating
+    {
+        return $this->rating;
     }
 
     private function calculateRepetitionInterval(Rating $rating): void

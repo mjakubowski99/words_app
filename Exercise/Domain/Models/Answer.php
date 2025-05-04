@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Exercise\Domain\Models;
 
-use Exercise\Domain\Exceptions\ExerciseAnswerCompareFailureException;
 use Exercise\Domain\ValueObjects\ExerciseEntryId;
+use Exercise\Domain\Exceptions\ExerciseAnswerCompareFailureException;
 
 abstract class Answer
 {
@@ -14,7 +16,7 @@ abstract class Answer
         $this->answer_entry_id = $id;
     }
 
-    public abstract static function fromString(ExerciseEntryId $id, string $answer): self;
+    abstract public static function fromString(ExerciseEntryId $id, string $answer): self;
 
     public function getExerciseEntryId(): ExerciseEntryId
     {
@@ -28,12 +30,13 @@ abstract class Answer
                 'Trying to compare answers for invalid exercise entry id'
             );
         }
+
         return new AnswerAssessment(
             $this->getCompareScore($answer)
         );
     }
 
-    public abstract function toString(): string;
+    abstract public function toString(): string;
 
-    protected abstract function getCompareScore(Answer $answer): float;
+    abstract protected function getCompareScore(Answer $answer): float;
 }

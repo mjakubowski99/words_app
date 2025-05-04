@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Flashcard\Application\DTO;
 
-use Shared\Enum\Language;
+use Shared\Utils\ValueObjects\Language;
 use Shared\Flashcard\ISessionFlashcardSummary;
 
 class SessionFlashcardSummary implements ISessionFlashcardSummary

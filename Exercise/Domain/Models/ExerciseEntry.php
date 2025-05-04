@@ -1,21 +1,23 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Exercise\Domain\Models;
 
+use Shared\Utils\ValueObjects\ExerciseId;
 use Exercise\Domain\ValueObjects\ExerciseEntryId;
 use Exercise\Domain\ValueObjects\SessionFlashcardId;
-use Shared\Utils\ValueObjects\ExerciseId;
 
 class ExerciseEntry
 {
     private bool $updated = false;
 
     public function __construct(
-        private ExerciseEntryId     $id,
-        private ExerciseId          $exercise_id,
-        private Answer              $correct_answer,
-        private ?Answer             $last_user_answer,
-        private ?bool               $last_answer_correct,
+        private ExerciseEntryId $id,
+        private ExerciseId $exercise_id,
+        private Answer $correct_answer,
+        private ?Answer $last_user_answer,
+        private ?bool $last_answer_correct,
         private ?SessionFlashcardId $session_flashcard_id = null,
         private float $score = 0.0,
         private int $answers_count = 0,
@@ -69,7 +71,7 @@ class ExerciseEntry
     public function setLastUserAnswer(Answer $answer, AnswerAssessment $assessment): void
     {
         $this->last_user_answer = $answer;
-        $this->answers_count++;
+        ++$this->answers_count;
         $this->recalculateScoreBasedOnAssessment($assessment);
         $this->setLastUserAnswerCorrect($assessment->isCorrect());
         $this->updated = true;

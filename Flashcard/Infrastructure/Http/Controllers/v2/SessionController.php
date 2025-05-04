@@ -15,29 +15,26 @@ use Flashcard\Application\Command\RefreshFlashcardPoll;
 use Flashcard\Application\Command\RateFlashcardsHandler;
 use Flashcard\Application\Command\AddSessionFlashcardsHandler;
 use Flashcard\Infrastructure\Http\Request\v2\GetSessionRequest;
-use Flashcard\Application\Query\GetNextSessionFlashcardsHandler;
 use Flashcard\Infrastructure\Http\Request\v2\CreateSessionRequest;
 use Flashcard\Infrastructure\Http\Request\v2\RateSessionFlashcardRequest;
 use Flashcard\Infrastructure\Http\Resources\v2\NextSessionFlashcardsResource;
+use Flashcard\Infrastructure\Http\Factories\NextSessionFlashcardResourceFactory;
 
 class SessionController extends Controller
 {
-    public const FLASHCARDS_LIMIT = 1;
-    public const DISPLAY_LIMIT = 1;
+    public const int FLASHCARDS_LIMIT = 1;
+    public const int DISPLAY_LIMIT = 1;
 
     public function get(
         GetSessionRequest $request,
         AddSessionFlashcardsHandler $add_session_flashcards,
-        GetNextSessionFlashcardsHandler $get_next_session_flashcards,
+        NextSessionFlashcardResourceFactory $factory,
     ): JsonResponse|NextSessionFlashcardsResource {
         $add_session_flashcards->handle(
-            new AddSessionFlashcards($request->getSessionId(), self::FLASHCARDS_LIMIT)
+            new AddSessionFlashcards($request->getSessionId(), $request->currentId(), self::FLASHCARDS_LIMIT)
         );
 
-        return new NextSessionFlashcardsResource([
-            'flashcards' => $get_next_session_flashcards->handle($request->getSessionId(), self::DISPLAY_LIMIT),
-            'exercise' => [],
-        ]);
+        return $factory->make($request->getSessionId(), self::FLASHCARDS_LIMIT);
     }
 
     #[OAT\Post(
@@ -79,8 +76,8 @@ class SessionController extends Controller
         CreateSessionRequest $request,
         CreateSessionHandler $create_session,
         AddSessionFlashcardsHandler $add_session_flashcards,
-        GetNextSessionFlashcardsHandler $get_next_session_flashcards,
         RefreshFlashcardPoll $refresh_flashcard_poll,
+        NextSessionFlashcardResourceFactory $factory,
     ): JsonResponse|NextSessionFlashcardsResource {
         $result = $create_session->handle($request->toCommand());
 
@@ -93,13 +90,10 @@ class SessionController extends Controller
         }
 
         $add_session_flashcards->handle(
-            new AddSessionFlashcards($result->getId(), self::FLASHCARDS_LIMIT)
+            new AddSessionFlashcards($result->getId(), $request->currentId(), self::FLASHCARDS_LIMIT)
         );
 
-        return new NextSessionFlashcardsResource([
-            'flashcards' => $get_next_session_flashcards->handle($result->getId(), self::DISPLAY_LIMIT),
-            'exercise' => [],
-        ]);
+        return $factory->make($result->getId(), self::FLASHCARDS_LIMIT);
     }
 
     #[OAT\Put(
@@ -149,26 +143,16 @@ class SessionController extends Controller
         RateSessionFlashcardRequest $request,
         RateFlashcardsHandler $rate,
         AddSessionFlashcardsHandler $add_session_flashcards,
-        GetNextSessionFlashcardsHandler $get_next_session_flashcards,
+        NextSessionFlashcardResourceFactory $factory,
     ): NextSessionFlashcardsResource {
         $rate_command = new RateFlashcards($request->currentId(), $request->getSessionId(), $request->getRatings());
 
         $rate->handle($rate_command);
 
-        $add_session_flashcards_command = new AddSessionFlashcards($request->getSessionId(), self::FLASHCARDS_LIMIT);
+        $add_session_flashcards_command = new AddSessionFlashcards($request->getSessionId(), $request->currentId(), self::FLASHCARDS_LIMIT);
 
         $add_session_flashcards->handle($add_session_flashcards_command, self::DISPLAY_LIMIT);
 
-//        if ($result->hasExercise()) {
-//            return new NextSessionFlashcardsResource([
-//                'flashcards' => $get_next_session_flashcards->handle($request->getSessionId(), 0),
-//                'exercise' => $result->getExercise(),
-//            ]);
-//        }
-
-        return new NextSessionFlashcardsResource([
-            'flashcards' => $get_next_session_flashcards->handle($request->getSessionId(), self::DISPLAY_LIMIT),
-            'exercise' => [],
-        ]);
+        return $factory->make($request->getSessionId(), self::FLASHCARDS_LIMIT);
     }
 }

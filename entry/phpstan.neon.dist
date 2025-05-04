@@ -13,6 +13,7 @@ parameters:
         - ../Flashcard
         - ../Shared
         - ../Admin
+        - ../Exercise
 
     excludePaths:
         - tests/*

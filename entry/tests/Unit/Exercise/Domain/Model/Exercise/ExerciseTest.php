@@ -1,17 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Unit\Exercise\Domain\Model\Exercise;
 
-use Exercise\Domain\Exceptions\ExerciseStatusTransitionException;
-use Exercise\Domain\Models\Answer;
-use Exercise\Domain\Models\AnswerAssessment;
-use Exercise\Domain\Models\Exercise;
-use Exercise\Domain\Models\ExerciseEntry;
-use Exercise\Domain\Models\ExerciseStatus;
-use Exercise\Domain\ValueObjects\ExerciseEntryId;
-use Shared\Enum\ExerciseType;
-use Shared\Utils\ValueObjects\ExerciseId;
 use Tests\TestCase;
+use Shared\Enum\ExerciseType;
+use Exercise\Domain\Models\Answer;
+use Exercise\Domain\Models\Exercise;
+use Shared\Utils\ValueObjects\UserId;
+use Exercise\Domain\Models\ExerciseEntry;
+use Shared\Utils\ValueObjects\ExerciseId;
+use Exercise\Domain\Models\ExerciseStatus;
+use Exercise\Domain\Models\AnswerAssessment;
+use Exercise\Domain\ValueObjects\ExerciseEntryId;
+use Exercise\Domain\Exceptions\ExerciseStatusTransitionException;
 
 class ExerciseTest extends TestCase
 {
@@ -38,7 +41,7 @@ class ExerciseTest extends TestCase
             'isUpdated' => true,
             'getCorrectAnswer' => $correct_answer,
             'isLastAnswerCorrect' => true,
-            'setLastUserAnswer' => \Mockery::on(function ($arg) use ($answer, $answer_assessment) {
+            'setLastUserAnswer' => \Mockery::on(function ($arg) use ($answer) {
                 return $arg === $answer;
             }),
         ]);
@@ -50,6 +53,7 @@ class ExerciseTest extends TestCase
 
         $this->model = new ConcreteTestExercise(
             new ExerciseId(1),
+            UserId::new(),
             [$other_entry, $entry],
             ExerciseStatus::IN_PROGRESS,
             ExerciseType::UNSCRAMBLE_WORDS
@@ -77,6 +81,7 @@ class ExerciseTest extends TestCase
 
         $this->model = new ConcreteTestExercise(
             new ExerciseId(1),
+            UserId::new(),
             [$updated_entry, $other_entry],
             ExerciseStatus::IN_PROGRESS,
             ExerciseType::UNSCRAMBLE_WORDS
@@ -99,9 +104,10 @@ class ExerciseTest extends TestCase
         // GIVEN
         $this->model = new ConcreteTestExercise(
             new ExerciseId(1),
+            UserId::new(),
             [],
             $current_status,
-        ExerciseType::UNSCRAMBLE_WORDS
+            ExerciseType::UNSCRAMBLE_WORDS
         );
 
         // WHEN
@@ -109,6 +115,19 @@ class ExerciseTest extends TestCase
 
         // THEN
         $this->assertSame($new_status, $this->model->getStatus());
+    }
+
+    public static function statusTransitionProvider(): \Generator
+    {
+        yield 'new_to_in_progress' => [ExerciseStatus::NEW, ExerciseStatus::IN_PROGRESS];
+
+        yield 'in_progress_to_done' => [ExerciseStatus::IN_PROGRESS, ExerciseStatus::DONE];
+
+        yield 'in_progress_to_skipped' => [ExerciseStatus::IN_PROGRESS, ExerciseStatus::SKIPPED];
+
+        yield 'new_to_done' => [ExerciseStatus::NEW, ExerciseStatus::DONE];
+
+        yield 'new_to_skipped' => [ExerciseStatus::NEW, ExerciseStatus::SKIPPED];
     }
 
     /**
@@ -119,6 +138,7 @@ class ExerciseTest extends TestCase
         // GIVEN
         $this->model = new ConcreteTestExercise(
             new ExerciseId(1),
+            UserId::new(),
             [],
             $current_status,
             ExerciseType::UNSCRAMBLE_WORDS
@@ -131,11 +151,27 @@ class ExerciseTest extends TestCase
         $this->model->setStatus($new_status);
     }
 
+    public static function notAllowedTransitionProvider(): \Generator
+    {
+        yield 'done_to_skipped' => [ExerciseStatus::DONE, ExerciseStatus::SKIPPED];
+
+        yield 'skipped_to_done' => [ExerciseStatus::SKIPPED, ExerciseStatus::DONE];
+
+        yield 'done_to_in_progress' => [ExerciseStatus::DONE, ExerciseStatus::IN_PROGRESS];
+
+        yield 'done_to_new' => [ExerciseStatus::DONE, ExerciseStatus::NEW];
+
+        yield 'skipped_to_in_progress' => [ExerciseStatus::SKIPPED, ExerciseStatus::IN_PROGRESS];
+
+        yield 'skipped_to_new' => [ExerciseStatus::SKIPPED, ExerciseStatus::NEW];
+    }
+
     public function test__skipExercise_setsStatusToSkipped(): void
     {
         // GIVEN
         $this->model = new ConcreteTestExercise(
             new ExerciseId(1),
+            UserId::new(),
             [],
             ExerciseStatus::NEW,
             ExerciseType::UNSCRAMBLE_WORDS
@@ -153,6 +189,7 @@ class ExerciseTest extends TestCase
         // GIVEN
         $this->model = new ConcreteTestExercise(
             new ExerciseId(1),
+            UserId::new(),
             [],
             ExerciseStatus::IN_PROGRESS,
             ExerciseType::UNSCRAMBLE_WORDS
@@ -163,24 +200,5 @@ class ExerciseTest extends TestCase
 
         // THEN
         $this->assertSame(ExerciseStatus::DONE, $this->model->getStatus());
-    }
-
-    public static function statusTransitionProvider(): \Generator
-    {
-        yield 'new_to_in_progress' => [ExerciseStatus::NEW, ExerciseStatus::IN_PROGRESS];
-        yield 'in_progress_to_done' => [ExerciseStatus::IN_PROGRESS, ExerciseStatus::DONE];
-        yield 'in_progress_to_skipped' => [ExerciseStatus::IN_PROGRESS, ExerciseStatus::SKIPPED];
-        yield 'new_to_done' => [ExerciseStatus::NEW, ExerciseStatus::DONE];
-        yield 'new_to_skipped' => [ExerciseStatus::NEW, ExerciseStatus::SKIPPED];
-    }
-
-    public static function notAllowedTransitionProvider(): \Generator
-    {
-        yield 'done_to_skipped' => [ExerciseStatus::DONE, ExerciseStatus::SKIPPED];
-        yield 'skipped_to_done' => [ExerciseStatus::SKIPPED, ExerciseStatus::DONE];
-        yield 'done_to_in_progress' => [ExerciseStatus::DONE, ExerciseStatus::IN_PROGRESS];
-        yield 'done_to_new' => [ExerciseStatus::DONE, ExerciseStatus::NEW];
-        yield 'skipped_to_in_progress' => [ExerciseStatus::SKIPPED, ExerciseStatus::IN_PROGRESS];
-        yield 'skipped_to_new' => [ExerciseStatus::SKIPPED, ExerciseStatus::NEW];
     }
 }

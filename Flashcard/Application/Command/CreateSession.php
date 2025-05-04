@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\Command;
 
-use Shared\Enum\LearningSessionType;
 use Shared\Enum\SessionType;
 use Shared\Utils\ValueObjects\UserId;
 use Flashcard\Domain\ValueObjects\FlashcardDeckId;
@@ -12,11 +11,11 @@ use Flashcard\Domain\ValueObjects\FlashcardDeckId;
 final readonly class CreateSession
 {
     public function __construct(
-        private UserId           $user_id,
-        private int              $cards_per_session,
-        private string           $device,
+        private UserId $user_id,
+        private int $cards_per_session,
+        private string $device,
         private ?FlashcardDeckId $deck_id,
-        private SessionType      $type,
+        private SessionType $type,
     ) {}
 
     public function getUserId(): UserId

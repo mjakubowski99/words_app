@@ -165,7 +165,7 @@ class FlashcardPollRepositoryTest extends FlashcardTestCase
         }
 
         // WHEN
-        $flashcards = $this->repository->selectNextLeitnerFlashcard($user->getId(), 1);
+        $flashcards = $this->repository->selectNextLeitnerFlashcard($user->getId(), [], 1);
 
         // THEN
         $this->assertCount(1, $flashcards);

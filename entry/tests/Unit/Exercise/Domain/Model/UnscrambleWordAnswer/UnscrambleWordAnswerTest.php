@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Unit\Exercise\Domain\Model\UnscrambleWordAnswer;
 
-use Exercise\Domain\Exceptions\ExerciseAnswerCompareFailureException;
+use Tests\TestCase;
 use Exercise\Domain\Models\UnscrambleWordAnswer;
 use Exercise\Domain\ValueObjects\ExerciseEntryId;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Tests\TestCase;
+use Exercise\Domain\Exceptions\ExerciseAnswerCompareFailureException;
 
 class UnscrambleWordAnswerTest extends TestCase
 {
@@ -17,7 +19,7 @@ class UnscrambleWordAnswerTest extends TestCase
     public function test__fromString_success(): void
     {
         // GIVEN
-        //WHEN
+        // WHEN
         $this->model = UnscrambleWordAnswer::fromString(new ExerciseEntryId(1), 'answer1');
 
         // THEN

@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Http\Request\v1;
 
-use OpenApi\Attributes as OAT;
 use Shared\Enum\SessionType;
+use OpenApi\Attributes as OAT;
 use Shared\Http\Request\Request;
-use Shared\Enum\LearningSessionType;
 use Flashcard\Application\Command\CreateSession;
 use Flashcard\Domain\ValueObjects\FlashcardDeckId;
 

@@ -1,11 +1,12 @@
 <?php
 
-namespace Exercise\Infrastructure\Mappers;
+declare(strict_types=1);
 
-use Exercise\Application\ReadModels\UnscrambleWordExerciseRead;
-use Exercise\Domain\Models\UnscrambleWordsExercise;
+namespace Exercise\Infrastructure\Mappers\Postgres;
+
 use Illuminate\Support\Facades\DB;
 use Shared\Utils\ValueObjects\ExerciseId;
+use Exercise\Application\ReadModels\UnscrambleWordExerciseRead;
 
 class UnscrambleWordExerciseReadMapper
 {

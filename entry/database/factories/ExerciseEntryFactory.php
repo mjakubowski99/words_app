@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
 use App\Models\Exercise;
@@ -19,8 +21,8 @@ class ExerciseEntryFactory extends Factory
     public function definition(): array
     {
         return [
-            'exercise_id' => fn() => Exercise::factory()->create(),
-            'session_flashcard_id' => fn() => LearningSessionFlashcard::factory()->create(),
+            'exercise_id' => fn () => Exercise::factory()->create(),
+            'session_flashcard_id' => fn () => LearningSessionFlashcard::factory()->create(),
             'correct_answer' => 'ans',
             'last_answer' => null,
             'last_answer_correct' => null,

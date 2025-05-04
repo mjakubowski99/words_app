@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Exercise\Infrastructure\Repositories;
 
-use Exercise\Application\Repositories\IUnscrambleWordExerciseRepository;
-use Exercise\Domain\Models\UnscrambleWordsExercise;
-use Exercise\Domain\ValueObjects\ExerciseEntryId;
-use Exercise\Infrastructure\Mappers\UnscrambleWordExerciseMapper;
 use Shared\Utils\ValueObjects\ExerciseId;
+use Exercise\Domain\ValueObjects\ExerciseEntryId;
+use Exercise\Domain\Models\UnscrambleWordsExercise;
+use Exercise\Application\Repositories\IUnscrambleWordExerciseRepository;
+use Exercise\Infrastructure\Mappers\Postgres\UnscrambleWordExerciseMapper;
 
 class UnscrambleWordExerciseRepository implements IUnscrambleWordExerciseRepository
 {
@@ -24,7 +26,7 @@ class UnscrambleWordExerciseRepository implements IUnscrambleWordExerciseReposit
         return $this->mapper->findByEntryId($id);
     }
 
-   public function create(UnscrambleWordsExercise $exercise): ExerciseId
+    public function create(UnscrambleWordsExercise $exercise): ExerciseId
     {
         return $this->mapper->create($exercise);
     }

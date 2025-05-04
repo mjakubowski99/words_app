@@ -2,7 +2,10 @@
 
 declare(strict_types=1);
 
+use App\AutoPuml\PlantUmlConverter;
+use App\AutoPuml\DependencySearcher;
 use Illuminate\Support\Facades\Route;
+use Flashcard\Infrastructure\Http\Controllers\v2\SessionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,6 +18,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::get('/', function (DependencySearcher $searcher, PlantUmlConverter $converter) {
+    $map = $searcher->findRelatedClasses(SessionController::class, 1);
+
+    dump($converter->convert($map));
 });

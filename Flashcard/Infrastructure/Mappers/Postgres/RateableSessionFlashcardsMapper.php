@@ -36,7 +36,7 @@ class RateableSessionFlashcardsMapper
             rated_flashcard_count AS (
                 SELECT COUNT(learning_session_flashcards .id) AS count 
                 FROM learning_session_flashcards 
-                WHERE rating IS NOT NULL AND learning_session_id = ? AND affects_progress = true
+                WHERE rating IS NOT NULL AND learning_session_id = ? AND is_additional = false
             )
             SELECT 
                 sd.session_id, 

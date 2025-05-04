@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\AutoPuml;
 
+use Flashcard\Infrastructure\Http\Controllers\v2\SessionController;
+
 /** @TODO Refactor this piece of shit code */
 class DependencySearcher
 {
@@ -11,7 +13,7 @@ class DependencySearcher
 
     public function findRelatedClasses(string $class, int $maxDepth = 3): array
     {
-        return $this->scanClass($class, $maxDepth, 0);
+        return $this->scanClass(SessionController::class, $maxDepth, 0);
     }
 
     private function scanClass(string $class, int $maxDepth, int $currentDepth = 0, $parent = null): array
@@ -58,6 +60,9 @@ class DependencySearcher
             $results['methods'][$method->getName()] = $typeName;
 
             try {
+                if (!$typeName) {
+                    continue;
+                }
                 $depReflection = new \ReflectionClass($typeName);
             } catch (\ReflectionException $e) {
                 continue;
@@ -76,6 +81,9 @@ class DependencySearcher
             $results['properties'][$property->getName()] = $typeName;
 
             try {
+                if (!$typeName) {
+                    continue;
+                }
                 $depReflection = new \ReflectionClass($typeName);
             } catch (\ReflectionException $e) {
                 continue;
@@ -92,6 +100,9 @@ class DependencySearcher
 
         foreach ($dependencies as $dependency => $values) {
             try {
+                if (!$dependency) {
+                    continue;
+                }
                 $depReflection = new \ReflectionClass($dependency);
             } catch (\ReflectionException $e) {
                 continue;
@@ -114,12 +125,16 @@ class DependencySearcher
                 base_path('../Integrations'),
                 base_path('../User'),
                 base_path('../Flashcard'),
+                base_path('../Exercise'),
                 base_path('../Shared'),
             ]);
             $dependents = array_filter($dependents, fn ($d) => !in_array($d, $this->classesToIngore));
 
             foreach ($dependents as $dependent) {
                 try {
+                    if (!$dependent) {
+                        continue;
+                    }
                     $depReflection = new \ReflectionClass($dependent);
                 } catch (\ReflectionException $e) {
                     continue;
@@ -195,8 +210,7 @@ class DependencySearcher
             '/@return\s+([A-Za-z0-9_\\\|]+)/' => 'return type', // return type
             '/@property\s+([A-Za-z0-9_\\\|]+)/' => 'property', // property
             '/\bfunction\s+\w+\s*\([^)]*\)\s*:\s*([A-Za-z0-9_\\\?]+)/' => 'return type', // function return type
-            '/:\s*([A-Za-z0-9_\\\]+)\s*\$/' => 'type hint', // function param type
-            '/\bfunction\s+\w+\s*\(([^)]*)\)\s*([A-Za-z0-9_\\\]+)\s+\$[A-Za-z0-9_]+/' => 'type hint', // method param
+            '/([?]?[a-zA-Z_\\\][a-zA-Z0-9_\\\]*)\s+\$[a-zA-Z_][a-zA-Z0-9_]*/' => 'type hint', // method param
         ];
 
         foreach ($patterns as $pattern => $relationType) {
@@ -289,11 +303,13 @@ class DependencySearcher
             $class = ltrim($class, '\\');
         }
 
-        if (class_exists($class) || interface_exists($class) || trait_exists($class)) {
+        try {
             new \ReflectionClass($class);
-        }
 
-        return false; // ❌ does not exist
+            return true;
+        } catch (\Throwable $e) {
+            return false;
+        }
     }
 
     public function findDependentClasses($targetClassName, $projectDirs, $ignoredDirs = [])

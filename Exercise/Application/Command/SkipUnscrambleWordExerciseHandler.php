@@ -1,10 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Exercise\Application\Command;
 
-use Exercise\Application\Repositories\IUnscrambleWordExerciseRepository;
+use Shared\Utils\ValueObjects\UserId;
 use Shared\Flashcard\IFlashcardFacade;
+use Exercise\Domain\Models\ExerciseEntry;
 use Shared\Utils\ValueObjects\ExerciseId;
+use Shared\Exceptions\UnauthorizedException;
+use Exercise\Application\Repositories\IUnscrambleWordExerciseRepository;
 
 class SkipUnscrambleWordExerciseHandler
 {
@@ -13,16 +18,27 @@ class SkipUnscrambleWordExerciseHandler
         private IFlashcardFacade $facade,
     ) {}
 
-    public function handle(ExerciseId $id): void
+    public function handle(ExerciseId $id, UserId $user_id): void
     {
         $exercise = $this->repository->find($id);
+
+        if (!$exercise->getUserId()->equals($user_id)) {
+            throw new UnauthorizedException();
+        }
 
         $exercise->skipExercise();
 
         $this->repository->save($exercise);
 
-        $this->facade->updateRatingsByPreviousRates(
-            $exercise->getExerciseEntries()->pluck('session_flashcard_id'),
+        $entries = array_values(
+            array_filter($exercise->getExerciseEntries(), fn (ExerciseEntry $entry) => $entry->getSessionFlashcardId() !== null)
         );
+
+        $session_flashcard_ids = array_map(
+            fn (ExerciseEntry $entry) => $entry->getSessionFlashcardId()->getValue(),
+            $entries
+        );
+
+        $this->facade->updateRatingsByPreviousRates($session_flashcard_ids);
     }
 }

@@ -5,7 +5,6 @@ declare(strict_types=1);
 use Admin\AdminPanelProvider;
 use App\Providers\AppServiceProvider;
 use App\Providers\AuthServiceProvider;
-use Exercise\Infrastructure\ExerciseServiceProvider;
 use Illuminate\Support\Facades\Facade;
 use App\Providers\EventServiceProvider;
 use App\Providers\RouteServiceProvider;
@@ -13,6 +12,7 @@ use Illuminate\Support\ServiceProvider;
 use App\Providers\TelescopeServiceProvider;
 use Shared\Providers\SharedServiceProvider;
 use Integrations\IntegrationsServiceProvider;
+use Exercise\Infrastructure\ExerciseServiceProvider;
 use Flashcard\Infrastructure\FlashcardServiceProvider;
 use User\Infrastructure\Providers\UserServiceProvider;
 

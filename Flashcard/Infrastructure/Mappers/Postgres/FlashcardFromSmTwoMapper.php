@@ -8,6 +8,7 @@ use Shared\Models\Emoji;
 use Shared\Enum\LanguageLevel;
 use Flashcard\Domain\Models\Deck;
 use Illuminate\Support\Facades\DB;
+use Flashcard\Domain\Models\Rating;
 use Shared\Utils\ValueObjects\UserId;
 use Flashcard\Domain\Models\Flashcard;
 use Illuminate\Database\Query\Builder;
@@ -68,7 +69,8 @@ class FlashcardFromSmTwoMapper
                 'flashcard_decks.admin_id as deck_admin_id',
                 'flashcard_decks.tag as deck_tag',
                 'flashcard_decks.name as deck_name',
-                'flashcard_decks.default_language_level as deck_default_language_level'
+                'flashcard_decks.default_language_level as deck_default_language_level',
+                'sm_two_flashcards.last_rating',
             )
             ->get()
             ->map(function (object $flashcard) {
@@ -108,7 +110,8 @@ class FlashcardFromSmTwoMapper
                 'flashcard_decks.admin_id as deck_admin_id',
                 'flashcard_decks.tag as deck_tag',
                 'flashcard_decks.name as deck_name',
-                'flashcard_decks.default_language_level as deck_default_language_level'
+                'flashcard_decks.default_language_level as deck_default_language_level',
+                'sm_two_flashcards.last_rating',
             )
             ->get()
             ->map(function (object $flashcard) {
@@ -137,6 +140,7 @@ class FlashcardFromSmTwoMapper
             $deck,
             LanguageLevel::from($data->language_level),
             $data->emoji ? Emoji::fromUnicode($data->emoji) : null,
+            $data->last_rating ? Rating::from($data->last_rating) : null,
         );
     }
 }

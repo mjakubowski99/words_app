@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Exercise\Application\ReadModels;
 
-use Shared\Exercise\IUnscrambleWordExerciseRead;
 use Shared\Utils\ValueObjects\ExerciseId;
+use Shared\Exercise\IUnscrambleWordExerciseRead;
 
 class UnscrambleWordExerciseRead implements IUnscrambleWordExerciseRead
 {
@@ -43,7 +45,13 @@ class UnscrambleWordExerciseRead implements IUnscrambleWordExerciseRead
 
     public function getKeyboard(): array
     {
-        $words = explode('', $this->scrambled_word);
+        $word = mb_strtolower($this->scrambled_word);
+
+        $words = mb_str_split($word);
+
+        $words = array_filter($words, function ($word) {
+            return !ctype_space($word);
+        });
 
         shuffle($words);
 

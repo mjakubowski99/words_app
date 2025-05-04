@@ -45,6 +45,7 @@ use User\Application\Command\CreateReport;
 )]
 class StoreReportRequest extends Request
 {
+    /** @return array<string,mixed> */
     public function rules(): array
     {
         return [

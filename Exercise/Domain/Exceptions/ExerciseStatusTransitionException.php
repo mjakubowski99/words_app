@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Exercise\Domain\Exceptions;
 
-use Exercise\Domain\Models\ExerciseStatus;
 use Shared\Exceptions\ForbiddenException;
+use Exercise\Domain\Models\ExerciseStatus;
 
 class ExerciseStatusTransitionException extends ForbiddenException
 {

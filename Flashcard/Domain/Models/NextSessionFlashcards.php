@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Flashcard\Domain\Models;
 
+use Shared\Enum\SessionType;
+use Shared\Enum\ExerciseType;
 use Shared\Utils\ValueObjects\UserId;
 use Flashcard\Domain\ValueObjects\SessionId;
 use Flashcard\Domain\Exceptions\InvalidNextSessionFlashcards;
@@ -18,6 +20,7 @@ class NextSessionFlashcards extends SessionFlashcardsBase
 
     public function __construct(
         private SessionId $session_id,
+        private SessionType $type,
         private UserId $user_id,
         private ?Deck $deck,
         private int $current_session_flashcards_count,
@@ -34,6 +37,11 @@ class NextSessionFlashcards extends SessionFlashcardsBase
     public function getSessionId(): SessionId
     {
         return $this->session_id;
+    }
+
+    public function getSessionType(): SessionType
+    {
+        return $this->type;
     }
 
     public function getMaxFlashcardsCount(): int
@@ -95,7 +103,6 @@ class NextSessionFlashcards extends SessionFlashcardsBase
         );
         ++$this->current_session_flashcards_count;
 
-
         ++$this->unrated_count;
     }
 
@@ -106,6 +113,26 @@ class NextSessionFlashcards extends SessionFlashcardsBase
         );
     }
 
+    public function isMixedSessionType(): bool
+    {
+        return $this->type === SessionType::MIXED;
+    }
+
+    public function resolveNextExerciseType(): ?ExerciseType
+    {
+        $type = $this->type;
+
+        if ($type === SessionType::MIXED) {
+            $type = SessionType::allowedInMixed()[array_rand(SessionType::allowedInMixed())];
+        }
+
+        if ($type === SessionType::UNSCRAMBLE_WORDS) {
+            return ExerciseType::UNSCRAMBLE_WORDS;
+        }
+
+        return null;
+    }
+
     public function getNextFlashcards(): array
     {
         return $this->next_session_flashcards;
@@ -114,10 +141,5 @@ class NextSessionFlashcards extends SessionFlashcardsBase
     public function getAdditionalFlashcards(): array
     {
         return $this->additional_flashcards;
-    }
-
-    public function generateTick(): int
-    {
-        return (int) round(microtime(true) * 1000);
     }
 }

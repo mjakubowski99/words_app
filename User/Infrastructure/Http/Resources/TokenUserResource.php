@@ -25,6 +25,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 )]
 class TokenUserResource extends JsonResource
 {
+    /** @return array<string, mixed> */
     public function toArray($request): array
     {
         /** @var string $token */

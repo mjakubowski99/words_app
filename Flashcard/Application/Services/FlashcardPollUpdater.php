@@ -6,7 +6,7 @@ namespace Flashcard\Application\Services;
 
 use Flashcard\Domain\Models\LeitnerLevelUpdate;
 use Flashcard\Domain\Types\FlashcardIdCollection;
-use Flashcard\Domain\Models\RateableSessionFlashcards;
+use Flashcard\Domain\Contracts\IRepetitionAlgorithmDTO;
 use Flashcard\Application\Repository\IFlashcardPollRepository;
 
 class FlashcardPollUpdater
@@ -15,18 +15,20 @@ class FlashcardPollUpdater
         private readonly IFlashcardPollRepository $poll_repository,
     ) {}
 
-    public function handle(RateableSessionFlashcards $session_flashcards): void
+    public function handle(IRepetitionAlgorithmDTO $dto): void
     {
-        foreach ($session_flashcards->getRateableSessionFlashcards() as $session_flashcard) {
-            if ($session_flashcard->rated()) {
-                $update = new LeitnerLevelUpdate(
-                    $session_flashcards->getUserId(),
-                    FlashcardIdCollection::fromArray([$session_flashcard->getFlashcardId()]),
-                    $session_flashcard->getRating()->leitnerLevel(),
-                );
-
-                $this->poll_repository->saveLeitnerLevelUpdate($update);
+        foreach ($dto->getRatedSessionFlashcardIds() as $flashcard_id) {
+            if (!$dto->updatePoll($flashcard_id)) {
+                continue;
             }
+
+            $update = new LeitnerLevelUpdate(
+                $dto->getUserIdForFlashcard($flashcard_id),
+                FlashcardIdCollection::fromArray([$dto->getFlashcardId($flashcard_id)]),
+                $dto->getFlashcardRating($flashcard_id)->leitnerLevel(),
+            );
+
+            $this->poll_repository->saveLeitnerLevelUpdate($update);
         }
     }
 }

@@ -4,14 +4,12 @@ declare(strict_types=1);
 
 namespace Exercise\Application\Services;
 
-use Exercise\Application\Repositories\IUnscrambleWordExerciseRepository;
+use Shared\Enum\ExerciseType;
+use Shared\Utils\ValueObjects\UserId;
+use Shared\Flashcard\ISessionFlashcardSummary;
 use Exercise\Domain\Models\UnscrambleWordsExercise;
 use Exercise\Domain\ValueObjects\SessionFlashcardId;
-use Shared\Enum\ExerciseType;
-use Shared\Exercise\IExerciseSummary;
-use Shared\Flashcard\ISessionFlashcardSummary;
-use Shared\Utils\ValueObjects\ExerciseId;
-use Shared\Utils\ValueObjects\UserId;
+use Exercise\Application\Repositories\IUnscrambleWordExerciseRepository;
 
 class FlashcardExerciseFactory
 {
@@ -20,18 +18,21 @@ class FlashcardExerciseFactory
     ) {}
 
     /** @param ISessionFlashcardSummary[] $session_flashcards_summary */
-    public function makeExercise(array $session_flashcards_summary, UserId $user_id, ExerciseType $type): IExerciseSummary
+    public function makeExercise(array $session_flashcards_summary, UserId $user_id, ExerciseType $type): void
     {
         switch ($type) {
             case ExerciseType::UNSCRAMBLE_WORDS:
-                return $this->makeUnscrambleWordExercise($session_flashcards_summary, $user_id);
+                $this->makeUnscrambleWordExercise($session_flashcards_summary, $user_id);
+
+                break;
+
             default:
                 throw new \InvalidArgumentException('Invalid exercise type');
         }
     }
 
     /** @param ISessionFlashcardSummary[] $session_flashcards_summary */
-    private function makeUnscrambleWordExercise(array $session_flashcards_summary, UserId $user_id): IExerciseSummary
+    private function makeUnscrambleWordExercise(array $session_flashcards_summary, UserId $user_id): void
     {
         $exercise = UnscrambleWordsExercise::newExercise(
             $user_id,
@@ -42,23 +43,6 @@ class FlashcardExerciseFactory
             $session_flashcards_summary[0]->getEmoji(),
         );
 
-        $exercise_id = $this->unscramble_word_repository->create($exercise);
-
-        return new class($exercise_id) implements IExerciseSummary
-        {
-            public function __construct(
-                private ExerciseId $id,
-            ) {}
-
-            public function getId(): ExerciseId
-            {
-                return $this->id;
-            }
-
-            public function getExerciseType(): ExerciseType
-            {
-                return ExerciseType::UNSCRAMBLE_WORDS;
-            }
-        };
+        $this->unscramble_word_repository->create($exercise);
     }
 }

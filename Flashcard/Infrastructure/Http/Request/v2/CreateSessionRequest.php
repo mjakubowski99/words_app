@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Http\Request\v2;
 
-use Illuminate\Validation\Rule;
-use OpenApi\Attributes as OAT;
 use Shared\Enum\SessionType;
+use OpenApi\Attributes as OAT;
+use Illuminate\Validation\Rule;
 use Shared\Http\Request\Request;
 use Flashcard\Application\Command\CreateSession;
 use Flashcard\Domain\ValueObjects\FlashcardDeckId;

@@ -1,26 +1,35 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Exercise\Domain\Models;
 
-use Exercise\Domain\Exceptions\ExerciseAssessmentNotAllowedException;
+use Shared\Enum\ExerciseType;
+use Shared\Utils\ValueObjects\UserId;
+use Shared\Utils\ValueObjects\ExerciseId;
 use Exercise\Domain\Exceptions\ExerciseEntryNotFoundException;
 use Exercise\Domain\Exceptions\ExerciseStatusTransitionException;
-use Shared\Enum\ExerciseType;
-use Shared\Utils\ValueObjects\ExerciseId;
+use Exercise\Domain\Exceptions\ExerciseAssessmentNotAllowedException;
 
 abstract class Exercise
 {
-    /** @property ExerciseEntry[] */
+    /** @property ExerciseEntry[] $exercise_entries */
     public function __construct(
-        private ExerciseId     $id,
+        private ExerciseId $id,
+        private UserId $user_id,
         private array $exercise_entries,
         private ExerciseStatus $status,
-        private ExerciseType   $type,
+        private ExerciseType $type,
     ) {}
 
     public function getId(): ExerciseId
     {
         return $this->id;
+    }
+
+    public function getUserId(): UserId
+    {
+        return $this->user_id;
     }
 
     public function getStatus(): ExerciseStatus
@@ -76,6 +85,7 @@ abstract class Exercise
         return $assessment;
     }
 
+    /** @return ExerciseEntry[] */
     public function getExerciseEntries(): array
     {
         return $this->exercise_entries;
@@ -83,7 +93,7 @@ abstract class Exercise
 
     public function getUpdatedEntries(): array
     {
-        return array_filter($this->exercise_entries, fn(ExerciseEntry $entry) => $entry->isUpdated());
+        return array_filter($this->exercise_entries, fn (ExerciseEntry $entry) => $entry->isUpdated());
     }
 
     public function allAnswersCorrect(): bool
@@ -94,6 +104,7 @@ abstract class Exercise
                 return false;
             }
         }
+
         return true;
     }
 
@@ -115,6 +126,7 @@ abstract class Exercise
                 return $entry;
             }
         }
+
         return null;
     }
 }

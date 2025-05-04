@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Exercise\Infrastructure\Repositories;
 
-use Exercise\Application\Repositories\IUnscrambleWordExerciseReadRepository;
-use Exercise\Infrastructure\Mappers\UnscrambleWordExerciseReadMapper;
-use Shared\Exercise\IUnscrambleWordExerciseRead;
 use Shared\Utils\ValueObjects\ExerciseId;
+use Shared\Exercise\IUnscrambleWordExerciseRead;
+use Exercise\Application\Repositories\IUnscrambleWordExerciseReadRepository;
+use Exercise\Infrastructure\Mappers\Postgres\UnscrambleWordExerciseReadMapper;
 
 class UnscrambleWordExerciseReadRepository implements IUnscrambleWordExerciseReadRepository
 {

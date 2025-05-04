@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Mappers\Postgres;
 
-use Shared\Enum\LanguageLevel;
 use Shared\Enum\SessionType;
+use Shared\Enum\LanguageLevel;
 use Shared\Enum\SessionStatus;
 use Flashcard\Domain\Models\Deck;
 use Illuminate\Support\Facades\DB;
@@ -23,6 +23,21 @@ class SessionMapper
     public function __construct(
         private readonly DB $db,
     ) {}
+
+    public function findSessionIdsForSessionFlashcardIds(array $session_flashcard_ids): array
+    {
+        $session_flashcard_ids = array_map(fn ($id) => $id->getValue(), $session_flashcard_ids);
+
+        $session_ids = $this->db::table('learning_session_flashcards')
+            ->whereIn('id', $session_flashcard_ids)
+            ->select('learning_session_flashcards.learning_session_id')
+            ->pluck('learning_session_id');
+
+        return array_map(
+            fn ($id) => new SessionId($id),
+            $session_ids->toArray()
+        );
+    }
 
     public function updateStatus(UserId $user_id, SessionStatus $status): void
     {

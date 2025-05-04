@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Tests\Unit\Flashcard\Infrastructure\Repositories\Postgres\SessionRepository;
 
 use App\Models\User;
-use App\Models\FlashcardDeck;
 use Shared\Enum\SessionType;
+use App\Models\FlashcardDeck;
 use Shared\Enum\SessionStatus;
 use App\Models\LearningSession;
 use Tests\Base\FlashcardTestCase;
