@@ -9,21 +9,21 @@ use Illuminate\Support\Facades\DB;
 use Flashcard\Domain\Models\Rating;
 use Shared\Utils\ValueObjects\UserId;
 use Flashcard\Domain\ValueObjects\SessionId;
-use Flashcard\Domain\Models\SessionFlashcard;
+use Flashcard\Domain\Models\ActiveSessionFlashcard;
 use Flashcard\Domain\ValueObjects\FlashcardId;
 use Flashcard\Domain\ValueObjects\SessionFlashcardId;
-use Flashcard\Domain\Models\SessionFlashcardCollection;
+use Flashcard\Domain\Models\ActiveSessionFlashcards;
 
-class SessionFlashcardsMapper
+class ActiveSessionFlashcardsMapper
 {
     public function __construct(
         private readonly DB $db,
     ) {}
 
-    public function findBySessionFlashcardIds(array $session_flashcard_ids): SessionFlashcardCollection
+    public function findBySessionFlashcardIds(array $session_flashcard_ids): ActiveSessionFlashcards
     {
         $results = $this->db::table('learning_session_flashcards')
-            ->where('learning_session_flashcards.id', $session_flashcard_ids)
+            ->whereIn('learning_session_flashcards.id', $session_flashcard_ids)
             ->leftJoin('learning_sessions', 'learning_session_flashcards.learning_session_id', '=', 'learning_sessions.id')
             ->select([
                 'learning_sessions.id',
@@ -47,7 +47,7 @@ class SessionFlashcardsMapper
 
         $data = [];
         foreach ($results as $result) {
-            $data[] = new SessionFlashcard(
+            $data[] = new ActiveSessionFlashcard(
                 new SessionId($result->id),
                 SessionStatus::from($result->status),
                 new UserId($result->user_id),
@@ -55,12 +55,12 @@ class SessionFlashcardsMapper
                 new SessionFlashcardId($result->session_flashcard_id),
                 new FlashcardId($result->flashcard_id),
                 $result->rated_count,
-                $result->rating ? Rating::from($result->rating) : null,
+                $result->rating !== null ? Rating::from($result->rating) : null,
                 $result->flashcard_deck_id !== null,
             );
         }
 
-        return new SessionFlashcardCollection($data);
+        return new ActiveSessionFlashcards($data);
     }
 
     public function findLatestRatings(array $session_flashcard_id): array
@@ -89,13 +89,13 @@ class SessionFlashcardsMapper
 
         $final = [];
         foreach ($results as $result) {
-            $final[$result->flashcard_id] = $result->rating ? Rating::from($result->rating) : null;
+            $final[$result->flashcard_id] = $result->rating !== null ? Rating::from($result->rating) : null;
         }
 
         return $final;
     }
 
-    public function save(SessionFlashcardCollection $flashcards): void
+    public function save(ActiveSessionFlashcards $flashcards): void
     {
         if (count($flashcards->all()) === 0) {
             return;
@@ -115,17 +115,6 @@ class SessionFlashcardsMapper
             ->whereIn('id', $ids)
             ->update([
                 'rating' => DB::raw($rating_statement),
-                'updated_at' => now(),
-            ]);
-
-        if (count($flashcards->getSessionIdsToFinish()) === 0) {
-            return;
-        }
-
-        $this->db::table('learning_sessions')
-            ->whereIn('id', $flashcards->getSessionIdsToFinish())
-            ->update([
-                'status' => SessionStatus::FINISHED->value,
                 'updated_at' => now(),
             ]);
     }

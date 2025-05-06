@@ -39,6 +39,16 @@ class SessionMapper
         );
     }
 
+    public function updateStatusByIds(array $session_ids, SessionStatus $status): void
+    {
+        $this->db::table('learning_sessions')
+            ->whereIn('id', $session_ids)
+            ->update([
+                'status' => $status->value,
+                'updated_at' => now(),
+            ]);
+    }
+
     public function updateStatus(UserId $user_id, SessionStatus $status): void
     {
         $this->db::table('learning_sessions')

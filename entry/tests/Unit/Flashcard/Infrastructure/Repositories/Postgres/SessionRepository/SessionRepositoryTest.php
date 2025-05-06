@@ -139,4 +139,37 @@ class SessionRepositoryTest extends FlashcardTestCase
         // THEN
         $this->assertFalse($result);
     }
+
+    /**
+     * @test
+     */
+    public function updateStatusByIds_updatesOnlySessionsWithGivenIds(): void
+    {
+        // GIVEN
+        $session_to_not_udpate = LearningSession::factory()->create([
+            'status' => SessionStatus::STARTED,
+        ]);
+        $sessions_to_update = [
+            LearningSession::factory()->create(['status' => SessionStatus::STARTED,]),
+            LearningSession::factory()->create(['status' => SessionStatus::STARTED,]),
+        ];
+
+        // WHEN
+        $this->repository->updateStatusById([
+            $sessions_to_update[0]->getId(),
+            $sessions_to_update[1]->getId(),
+        ], SessionStatus::FINISHED);
+
+        // THEN
+        $this->assertDatabaseHas('learning_sessions', [
+            'id' => $session_to_not_udpate->id,
+            'status' => SessionStatus::STARTED->value,
+        ]);
+        foreach ($sessions_to_update as $session) {
+            $this->assertDatabaseHas('learning_sessions', [
+                'id' => $session->id,
+                'status' => SessionStatus::FINISHED->value,
+            ]);
+        }
+    }
 }

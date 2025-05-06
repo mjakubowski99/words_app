@@ -10,7 +10,7 @@ use Flashcard\Domain\ValueObjects\SessionId;
 use Flashcard\Domain\ValueObjects\FlashcardId;
 use Flashcard\Domain\ValueObjects\SessionFlashcardId;
 
-class SessionFlashcard
+class ActiveSessionFlashcard
 {
     public function __construct(
         private readonly SessionId $session_id,
@@ -24,7 +24,7 @@ class SessionFlashcard
         private readonly bool $has_deck
     ) {}
 
-    public function getStatus(): SessionStatus
+    public function getSessionStatus(): SessionStatus
     {
         return $this->status;
     }

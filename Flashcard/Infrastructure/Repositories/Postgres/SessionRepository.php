@@ -22,6 +22,11 @@ class SessionRepository implements ISessionRepository
         $this->session_mapper->updateStatus($user_id, $status);
     }
 
+    public function updateStatusById(array $session_ids, SessionStatus $status): void
+    {
+        $this->session_mapper->updateStatusByIds($session_ids, $status);
+    }
+
     public function create(Session $session): SessionId
     {
         return $this->session_mapper->create($session);

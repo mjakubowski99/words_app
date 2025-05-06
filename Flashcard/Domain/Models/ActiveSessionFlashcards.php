@@ -10,11 +10,11 @@ use Flashcard\Domain\ValueObjects\FlashcardId;
 use Flashcard\Domain\ValueObjects\SessionFlashcardId;
 use Flashcard\Domain\Contracts\IRepetitionAlgorithmDTO;
 
-class SessionFlashcardCollection implements IRepetitionAlgorithmDTO
+class ActiveSessionFlashcards implements IRepetitionAlgorithmDTO
 {
     private array $updated_ratings = [];
 
-    /** @property SessionFlashcard[] $full_session_flashcards */
+    /** @property ActiveSessionFlashcard[] $full_session_flashcards */
     public function __construct(
         private array $full_session_flashcards,
     ) {
@@ -24,15 +24,11 @@ class SessionFlashcardCollection implements IRepetitionAlgorithmDTO
 
     public function rate(SessionFlashcardId $session_flashcard_id, Rating $rating): void
     {
-        if (!$this->full_session_flashcards[$session_flashcard_id->getValue()]->rated()) {
-            $this->updated_ratings[
-                $session_flashcard_id->getValue()
-            ] += 1;
-        }
         $this->full_session_flashcards[$session_flashcard_id->getValue()]->rate($rating);
+        $this->saveUpdatedRatingFact($session_flashcard_id);
     }
 
-    public function get(SessionFlashcardId $session_flashcard_id): ?SessionFlashcard
+    public function get(SessionFlashcardId $session_flashcard_id): ?ActiveSessionFlashcard
     {
         if (!array_key_exists($session_flashcard_id->getValue(), $this->full_session_flashcards)) {
             return null;
@@ -41,7 +37,7 @@ class SessionFlashcardCollection implements IRepetitionAlgorithmDTO
         return $this->full_session_flashcards[$session_flashcard_id->getValue()];
     }
 
-    /** @return SessionFlashcard[] */
+    /** @return ActiveSessionFlashcard[] */
     public function all(): array
     {
         return $this->full_session_flashcards;
@@ -49,11 +45,11 @@ class SessionFlashcardCollection implements IRepetitionAlgorithmDTO
 
     public function getRatedSessionFlashcardIds(): array
     {
-        $rated_flashcards = array_filter($this->full_session_flashcards, fn (SessionFlashcard $flashcard) => $flashcard->rated());
+        $rated_flashcards = array_filter($this->full_session_flashcards, fn (ActiveSessionFlashcard $flashcard) => $flashcard->rated());
 
         $rated_flashcards = array_values($rated_flashcards);
 
-        return array_map(fn (SessionFlashcard $flashcard) => $flashcard->getSessionFlashcardId(), $rated_flashcards);
+        return array_map(fn (ActiveSessionFlashcard $flashcard) => $flashcard->getSessionFlashcardId(), $rated_flashcards);
     }
 
     public function getUserIdForFlashcard(SessionFlashcardId $id): UserId
@@ -102,7 +98,7 @@ class SessionFlashcardCollection implements IRepetitionAlgorithmDTO
     {
         $this->full_session_flashcards = array_filter(
             $this->full_session_flashcards,
-            fn (SessionFlashcard $flashcard) => $flashcard->getStatus() !== SessionStatus::FINISHED
+            fn (ActiveSessionFlashcard $flashcard) => $flashcard->getSessionStatus() !== SessionStatus::FINISHED
         );
     }
 
@@ -110,11 +106,22 @@ class SessionFlashcardCollection implements IRepetitionAlgorithmDTO
     {
         $indexed = [];
 
-        /** @var SessionFlashcard $session_flashcard */
+        /** @var ActiveSessionFlashcard $session_flashcard */
         foreach ($this->full_session_flashcards as $session_flashcard) {
             $indexed[$session_flashcard->getSessionFlashcardId()->getValue()] = $session_flashcard;
         }
 
         $this->full_session_flashcards = $indexed;
+    }
+
+    private function saveUpdatedRatingFact(SessionFlashcardId $session_flashcard_id): void
+    {
+        if (!$this->get($session_flashcard_id) || !$this->get($session_flashcard_id)->rated()) {
+            return;
+        }
+        if (!array_key_exists($session_flashcard_id->getValue(), $this->updated_ratings)) {
+            $this->updated_ratings[$session_flashcard_id->getValue()] = 0;
+        }
+        $this->updated_ratings[$session_flashcard_id->getValue()] += 1;
     }
 }
