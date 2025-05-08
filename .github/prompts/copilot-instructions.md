@@ -30,6 +30,9 @@
 - Use `DatabaseTransactions` trait in all tests
 - Always initialize tested properties via Laravel container in `setUp` method
 - Test types: Unit, Integration, Smoke
+- To initalize tested class please always use $this->app->make container method
+- Please always create test trait where you create methods for mocking and initializing db data with eloquent factories
+- for mocking please always use Mockery for mocking
 ## Example test structure:
 ```php
 namespace Tests\Unit\Flashcard\Infrastructure\Repositories\Postgres;
@@ -46,7 +49,7 @@ class FlashcardRepositoryTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->flashcard_repository = app(FlashcardRepository::class);
+        $this->flashcard_repository = $this->app->make(FlashcardRepository::class);
     }
     
     public function test__create_validInput_returnsFlashcard(): void

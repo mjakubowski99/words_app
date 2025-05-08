@@ -41,6 +41,7 @@ class SessionFlashcardReadMapper
                 SELECT 
                     learning_session_flashcards.id, 
                     learning_session_flashcards.rating,
+                    learning_session_flashcards.exercise_entry_id,
                     flashcards.front_word,
                     flashcards.front_lang,
                     flashcards.back_word,
@@ -58,6 +59,7 @@ class SessionFlashcardReadMapper
                 WHERE 
                     learning_session_flashcards.learning_session_id = ?
                     AND learning_session_flashcards.rating IS NULL
+                    AND learning_session_flashcards.is_additional = false
                 LIMIT ?
             ),
             progress_count AS (
@@ -73,6 +75,7 @@ class SessionFlashcardReadMapper
             SELECT 
                 flashcards_data.id, 
                 flashcards_data.rating,
+                flashcards_data.exercise_entry_id,
                 flashcards_data.front_word,
                 flashcards_data.front_lang,
                 flashcards_data.back_word,
@@ -102,19 +105,24 @@ class SessionFlashcardReadMapper
         ]);
 
         $session_flashcards = array_filter($results, function (object $result) {
-            return $result->id !== null;
+            return $result->id !== null && $result->exercise_entry_id === null;
         });
 
         $session_flashcards = array_map(function (object $result) {
             return $this->map($result);
         }, $session_flashcards);
 
+        $exercise_entry_ids = array_filter($results, function (object $result) {
+            return $result->id !== null && $result->exercise_entry_id !== null;
+        });
+
         return new SessionFlashcardsRead(
             $session_id,
             $results[0]->progress,
             $results[0]->cards_per_session,
             SessionStatus::from($results[0]->status) === SessionStatus::FINISHED,
-            $session_flashcards
+            $session_flashcards,
+            array_map(fn($result) => $result->exercise_entry_id, $exercise_entry_ids),
         );
     }
 

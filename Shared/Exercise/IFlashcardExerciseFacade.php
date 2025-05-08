@@ -11,10 +11,13 @@ use Shared\Flashcard\ISessionFlashcardSummary;
 
 interface IFlashcardExerciseFacade
 {
-    public function getExerciseSummaryByFlashcard(int $session_flashcard_id): ?IExerciseSummary;
+    public function getExerciseSummaryByFlashcard(int $exercise_entry_id): ?IExerciseSummary;
 
-    /** @param ISessionFlashcardSummary[] $session_flashcard_summaries */
-    public function makeExercise(array $session_flashcard_summaries, UserId $user_id, ExerciseType $type): void;
+    /**
+     * @param ISessionFlashcardSummary[] $session_flashcard_summaries
+     * @return IFlashcardExercise[]
+     */
+    public function makeExercise(array $session_flashcard_summaries, UserId $user_id, ExerciseType $type): array;
 
     public function getUnscrambleWordExercise(ExerciseId $id): IUnscrambleWordExerciseRead;
 }

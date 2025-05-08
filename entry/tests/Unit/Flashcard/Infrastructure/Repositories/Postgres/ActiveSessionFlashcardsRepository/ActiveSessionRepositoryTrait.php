@@ -8,7 +8,7 @@ use Flashcard\Domain\ValueObjects\SessionFlashcardId;
 use Illuminate\Support\Arr;
 use App\Models\LearningSessionFlashcard;
 
-trait ActiveSessionFlashcardsRepositoryTrait
+trait ActiveSessionRepositoryTrait
 {
     private function createLearningSession(array $attributes = []): LearningSession
     {

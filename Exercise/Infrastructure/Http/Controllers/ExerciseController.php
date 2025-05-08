@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Exercise\Infrastructure\Http\Controllers;
 
-use App\Http\OpenApi\Tags;
-use OpenApi\Attributes as OAT;
-use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
-use Exercise\Application\Command\SkipUnscrambleWordExerciseHandler;
-use Exercise\Application\Command\UnscrambleWordExerciseAnswerHandler;
+use App\Http\OpenApi\Tags;
+use Exercise\Application\Command\AnswerExercise\UnscrambleWordExerciseAnswerHandler;
+use Exercise\Application\Command\SkipExercise\SkipUnscrambleWordExerciseHandler;
 use Exercise\Infrastructure\Http\Request\SkipUnscrambleWordExerciseRequest;
 use Exercise\Infrastructure\Http\Request\UnscrambleWordExerciseAnswerRequest;
+use Illuminate\Http\JsonResponse;
+use OpenApi\Attributes as OAT;
 
 class ExerciseController extends Controller
 {

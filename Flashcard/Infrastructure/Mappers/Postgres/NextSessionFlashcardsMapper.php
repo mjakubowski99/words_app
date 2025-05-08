@@ -115,7 +115,7 @@ class NextSessionFlashcardsMapper
         );
     }
 
-    public function save(NextSessionFlashcards $next_session_flashcards): array
+    public function save(NextSessionFlashcards $next_session_flashcards): void
     {
         $insert_data = [];
         $now = now();
@@ -128,6 +128,7 @@ class NextSessionFlashcardsMapper
                 'created_at' => $now,
                 'updated_at' => $now,
                 'is_additional' => false,
+                'exercise_entry_id' => $next_session_flashcard->hasExercise() ? $next_session_flashcard->getExerciseEntryId() : null,
             ];
         }
 
@@ -139,40 +140,12 @@ class NextSessionFlashcardsMapper
                 'created_at' => $now,
                 'updated_at' => $now,
                 'is_additional' => true,
+                'exercise_entry_id' => $next_session_flashcard->hasExercise() ? $next_session_flashcard->getExerciseEntryId() : null,
             ];
         }
 
-        if (count($insert_data) === 0) {
-            return [];
-        }
-
-        $placeholders = [];
-        $values = [];
-
-        foreach ($insert_data as $row) {
-            $placeholders[] = '(?, ?, ?, ?, ?, ?)';
-            $values = array_merge($values, array_values($row));
-        }
-
-        $results = DB::select(
-            'INSERT INTO learning_session_flashcards 
-    (learning_session_id, flashcard_id, rating, created_at, updated_at, is_additional) 
-    VALUES ' . implode(', ', $placeholders) . ' 
-    RETURNING id',
-            $values
-        );
-
-        $final_results = [];
-
-        $i = 0;
-        foreach ($insert_data as $data) {
-            $final_results[] = new NextSessionFlashcardResult(
-                new SessionFlashcardId($results[$i]->id),
-                new FlashcardId($data['flashcard_id']),
-            );
-        }
-
-        return $final_results;
+        $this->db::table('learning_session_flashcards')
+            ->insert($insert_data);
     }
 
     private function mapDeck(Owner $owner, object $result): ?Deck

@@ -8,7 +8,7 @@ use Shared\Utils\ValueObjects\Language;
 
 interface ISessionFlashcardSummary
 {
-    public function getSessionFlashcardId(): int;
+    public function getFlashcardId(): int;
 
     public function getFrontWord(): string;
 

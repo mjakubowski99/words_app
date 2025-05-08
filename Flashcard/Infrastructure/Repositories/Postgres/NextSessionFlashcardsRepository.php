@@ -20,8 +20,8 @@ class NextSessionFlashcardsRepository implements INextSessionFlashcardsRepositor
         return $this->mapper->find($id);
     }
 
-    public function save(NextSessionFlashcards $next_session_flashcards): array
+    public function save(NextSessionFlashcards $next_session_flashcards): void
     {
-        return $this->mapper->save($next_session_flashcards);
+        $this->mapper->save($next_session_flashcards);
     }
 }

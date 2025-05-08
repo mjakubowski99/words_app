@@ -4,25 +4,25 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Repositories\Postgres;
 
+use Flashcard\Application\Repository\IActiveSessionRepository;
+use Flashcard\Domain\Models\ActiveSession;
 use Flashcard\Domain\Models\Rating;
-use Flashcard\Domain\Models\ActiveSessionFlashcards;
-use Flashcard\Application\Repository\IActiveSessionFlashcardsRepository;
 use Flashcard\Infrastructure\Mappers\Postgres\ActiveSessionFlashcardsMapper;
 
-class ActiveSessionFlashcardsRepository implements IActiveSessionFlashcardsRepository
+class ActiveSessionRepository implements IActiveSessionRepository
 {
     public function __construct(
         private readonly ActiveSessionFlashcardsMapper $mapper
     ) {}
 
-    public function findBySessionFlashcardIds(array $session_flashcard_ids): ActiveSessionFlashcards
+    public function findByExerciseEntryIds(array $exercise_entry_ids): array
     {
-        return $this->mapper->findBySessionFlashcardIds($session_flashcard_ids);
+        return $this->mapper->findByExerciseEntryIds($exercise_entry_ids);
     }
 
-    public function save(ActiveSessionFlashcards $flashcards): void
+    public function save(ActiveSession $session): void
     {
-        $this->mapper->save($flashcards);
+        $this->mapper->save($session);
     }
 
     /** @return array<int,Rating> */

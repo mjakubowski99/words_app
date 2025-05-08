@@ -4,19 +4,19 @@ declare(strict_types=1);
 
 namespace Tests\Integration\Exercise\Application\Command\AnswerUnscrambleWordExerciseHandler;
 
-use Tests\TestCase;
 use App\Models\Exercise;
 use App\Models\ExerciseEntry;
-use Shared\Enum\SessionStatus;
 use App\Models\LearningSession;
-use Flashcard\Domain\Models\Rating;
-use App\Models\UnscrambleWordExercise;
 use App\Models\LearningSessionFlashcard;
+use App\Models\UnscrambleWordExercise;
+use Exercise\Application\Command\AnswerExercise\UnscrambleWordExerciseAnswerHandler;
 use Exercise\Domain\Models\ExerciseStatus;
 use Exercise\Domain\Models\UnscrambleWordAnswer;
 use Exercise\Domain\ValueObjects\ExerciseEntryId;
+use Flashcard\Domain\Models\Rating;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Exercise\Application\Command\UnscrambleWordExerciseAnswerHandler;
+use Shared\Enum\SessionStatus;
+use Tests\TestCase;
 
 class UnscrambleWordAnswerExerciseHandlerTest extends TestCase
 {
@@ -38,6 +38,10 @@ class UnscrambleWordAnswerExerciseHandlerTest extends TestCase
         $u_exercise = UnscrambleWordExercise::factory()->create(['exercise_id' => $exercise->id]);
         $entry = ExerciseEntry::factory()->create(['exercise_id' => $exercise->id]);
         $entry_id = new ExerciseEntryId($entry->id);
+        $lsf = LearningSessionFlashcard::factory()->create([
+            'exercise_entry_id' => $entry_id->getValue(),
+            'rating' => null,
+        ]);
 
         // WHEN
         $assessment = $this->handler->handle(
@@ -49,8 +53,9 @@ class UnscrambleWordAnswerExerciseHandlerTest extends TestCase
         // THEN
         $this->assertTrue($assessment->isCorrect());
         $this->assertDatabaseHas('learning_session_flashcards', [
-            'id' => $entry->session_flashcard_id,
+            'id' => $lsf->id,
             'rating' => Rating::VERY_GOOD,
+            'exercise_entry_id' => $entry_id->getValue(),
         ]);
     }
 

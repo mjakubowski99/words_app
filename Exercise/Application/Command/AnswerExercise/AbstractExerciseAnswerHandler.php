@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace Exercise\Application\Command;
+namespace Exercise\Application\Command\AnswerExercise;
 
+use Exercise\Application\DTO\ExerciseScore;
 use Exercise\Domain\Models\Answer;
-use Flashcard\Domain\Models\Rating;
-use Exercise\Domain\Models\Exercise;
-use Shared\Utils\ValueObjects\UserId;
-use Shared\Flashcard\IFlashcardFacade;
-use Exercise\Domain\Models\ExerciseEntry;
 use Exercise\Domain\Models\AnswerAssessment;
-use Shared\Exceptions\UnauthorizedException;
+use Exercise\Domain\Models\Exercise;
+use Exercise\Domain\Models\ExerciseEntry;
 use Exercise\Domain\ValueObjects\ExerciseEntryId;
-use Exercise\Application\DTO\SessionFlashcardRating;
+use Flashcard\Domain\Models\Rating;
+use Shared\Exceptions\UnauthorizedException;
+use Shared\Flashcard\IFlashcardFacade;
+use Shared\Utils\ValueObjects\UserId;
 
 abstract class AbstractExerciseAnswerHandler
 {
@@ -48,15 +48,15 @@ abstract class AbstractExerciseAnswerHandler
             return $assessment;
         }
 
-        $session_flashcard_ratings = array_map(
-            fn (ExerciseEntry $entry) => new SessionFlashcardRating(
-                $entry->getSessionFlashcardId()->getValue(),
-                Rating::fromScore($entry->getScore())
+        $exercise_scores = array_map(
+            fn (ExerciseEntry $entry) => new ExerciseScore(
+                $entry->getId()->getValue(),
+                $entry->getScore()
             ),
             $exercise->getExerciseEntries()
         );
 
-        $this->facade->updateRatings($session_flashcard_ratings);
+        $this->facade->updateRatings($exercise_scores);
 
         return $assessment;
     }

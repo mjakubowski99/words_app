@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Exercise\Domain\Model\UnscrambleWordsExercise;
 
-use Tests\TestCase;
-use Shared\Utils\ValueObjects\UserId;
 use Exercise\Domain\Models\UnscrambleWordsExercise;
-use Exercise\Domain\ValueObjects\SessionFlashcardId;
+use Shared\Utils\ValueObjects\UserId;
+use Tests\TestCase;
 
 class UnscrambleWordsExerciseTest extends TestCase
 {
@@ -17,7 +16,6 @@ class UnscrambleWordsExerciseTest extends TestCase
         // WHEN
         $exercise = UnscrambleWordsExercise::newExercise(
             UserId::new(),
-            new SessionFlashcardId(1),
             'word',
             'context sentence',
             'word translation',
@@ -42,7 +40,6 @@ class UnscrambleWordsExerciseTest extends TestCase
         // WHEN
         $exercise = UnscrambleWordsExercise::newExercise(
             UserId::new(),
-            new SessionFlashcardId(1),
             'word',
             'context sentence',
             'word translation',

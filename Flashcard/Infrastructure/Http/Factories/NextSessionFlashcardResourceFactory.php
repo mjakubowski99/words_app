@@ -4,28 +4,34 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Http\Factories;
 
-use Shared\Enum\ExerciseType;
-use Shared\Exercise\IExerciseSummary;
+use Flashcard\Application\Query\GetNextSessionFlashcardsHandler;
 use Flashcard\Domain\ValueObjects\SessionId;
-use Shared\Exercise\IFlashcardExerciseFacade;
-use Illuminate\Http\Resources\Json\JsonResource;
-use Flashcard\Application\Query\GetNextLearningExerciseQuery;
 use Flashcard\Infrastructure\Http\Resources\v2\NextSessionFlashcardsResource;
 use Flashcard\Infrastructure\Http\Resources\v2\UnscrambleWordExerciseResource;
+use Illuminate\Http\Resources\Json\JsonResource;
+use Shared\Enum\ExerciseType;
+use Shared\Exercise\IExerciseSummary;
+use Shared\Exercise\IFlashcardExerciseFacade;
 
 class NextSessionFlashcardResourceFactory
 {
     public function __construct(
-        private GetNextLearningExerciseQuery $query,
+        private GetNextSessionFlashcardsHandler $query,
         private IFlashcardExerciseFacade $facade
     ) {}
 
     public function make(SessionId $id, int $limit): NextSessionFlashcardsResource
     {
-        $exercises = $this->query->get($id, $limit);
+        $flashcards = $this->query->handle($id, $limit);
+
+        $summaries = [];
+
+        foreach ($flashcards->getExerciseEntryIds() as $entry_id) {
+            $summaries[] = $this->facade->getExerciseSummaryByFlashcard($entry_id);
+        }
 
         return new NextSessionFlashcardsResource([
-            'flashcards' => $exercises->getSessionFlashcards(),
+            'flashcards' => $flashcards,
             'exercises' => array_map(function (IExerciseSummary $summary) {
                 $resource = $this->resolveExerciseResource($summary);
 
@@ -33,7 +39,7 @@ class NextSessionFlashcardResourceFactory
                     'type' => $summary->getExerciseType()->value,
                     'resource' => $resource,
                 ];
-            }, $exercises->getExerciseSummaries()),
+            }, $summaries),
         ]);
     }
 

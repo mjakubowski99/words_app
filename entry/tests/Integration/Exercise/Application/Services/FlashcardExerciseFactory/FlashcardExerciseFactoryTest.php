@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Integration\Exercise\Application\Services\FlashcardExerciseFactory;
+namespace Tests\Integration\Exercise\Application\Services\FlashcardExerciseFactory;
 
+use Flashcard\Domain\ValueObjects\FlashcardId;
 use Tests\TestCase;
 use Shared\Enum\ExerciseType;
 use App\Models\LearningSessionFlashcard;
@@ -22,14 +23,13 @@ class FlashcardExerciseFactoryTest extends TestCase
 
     public function test__make_WhenTypeIsUnscrambleWord_makeUnscrambleWordExercise(): void
     {
-        $session_flashcard_id = LearningSessionFlashcard::factory()->create()->id;
         $user_id = $this->createUser()->getId();
 
         $flashcard_summaries = [
             \Mockery::mock(ISessionFlashcardSummary::class)->allows([
                 'getFrontWord' => 'jablko',
                 'getEmoji' => '🍏',
-                'getSessionFlashcardId' => $session_flashcard_id,
+                'getFlashcardId' => 1,
                 'getBackWord' => 'apple',
                 'getFrontContext' => 'context',
                 'getBackContext' => 'back context',
@@ -48,7 +48,6 @@ class FlashcardExerciseFactoryTest extends TestCase
             'emoji' => '🍏',
         ]);
         $this->assertDatabaseHas('exercise_entries', [
-            'session_flashcard_id' => $session_flashcard_id,
             'score' => 0.0,
             'answers_count' => 0,
         ]);

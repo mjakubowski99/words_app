@@ -6,7 +6,7 @@ namespace Flashcard\Application\Facades;
 
 use Shared\Utils\ValueObjects\UserId;
 use Shared\Flashcard\IFlashcardFacade;
-use Shared\Flashcard\ISessionFlashcardRating;
+use Shared\Flashcard\IExerciseScore;
 use Flashcard\Application\Command\UpdateRatingsHandler;
 use Flashcard\Application\Command\DeleteUserDataHandler;
 use Flashcard\Application\Repository\ISessionRepository;
@@ -31,7 +31,7 @@ class FlashcardFacade implements IFlashcardFacade
         return $this->session_repository->hasAnySession($user_id);
     }
 
-    /** @param ISessionFlashcardRating[] $session_flashcard_ratings */
+    /** @param IExerciseScore[] $session_flashcard_ratings */
     public function updateRatings(array $session_flashcard_ratings): void
     {
         $this->update_ratings_handler->handle($session_flashcard_ratings);

@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Exercise\Application\Command;
+namespace Exercise\Application\Command\AnswerExercise;
 
-use Exercise\Domain\Models\Exercise;
-use Shared\Flashcard\IFlashcardFacade;
-use Exercise\Domain\ValueObjects\ExerciseEntryId;
-use Exercise\Domain\Models\UnscrambleWordsExercise;
 use Exercise\Application\Repositories\IUnscrambleWordExerciseRepository;
+use Exercise\Domain\Models\Exercise;
+use Exercise\Domain\Models\UnscrambleWordsExercise;
+use Exercise\Domain\ValueObjects\ExerciseEntryId;
+use Shared\Flashcard\IFlashcardFacade;
 
 class UnscrambleWordExerciseAnswerHandler extends AbstractExerciseAnswerHandler
 {

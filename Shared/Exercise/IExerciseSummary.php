@@ -10,8 +10,7 @@ use Shared\Utils\ValueObjects\ExerciseId;
 interface IExerciseSummary
 {
     public function getId(): ExerciseId;
+    public function isFinished(): bool;
 
     public function getExerciseType(): ExerciseType;
-
-    public function getSessionFlashcardId(): int;
 }

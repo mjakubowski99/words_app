@@ -4,72 +4,78 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Flashcard\Infrastructure\Repositories\Postgres\ActiveSessionFlashcardsRepository;
 
+use Flashcard\Domain\Models\ActiveSession;
 use Flashcard\Domain\Models\ActiveSessionFlashcard;
-use Flashcard\Domain\Models\ActiveSessionFlashcards;
 use Flashcard\Domain\Models\Rating;
 use Flashcard\Domain\ValueObjects\FlashcardId;
 use Flashcard\Domain\ValueObjects\SessionId;
-use Flashcard\Infrastructure\Repositories\Postgres\ActiveSessionFlashcardsRepository;
+use Flashcard\Infrastructure\Repositories\Postgres\ActiveSessionRepository;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Shared\Enum\SessionStatus;
 use Shared\Utils\ValueObjects\UserId;
 use Tests\TestCase;
 
-class ActiveSessionFlashcardsRepositoryTest extends TestCase
+class ActiveSessionRepositoryTest extends TestCase
 {
     use DatabaseTransactions;
-    use ActiveSessionFlashcardsRepositoryTrait;
+    use ActiveSessionRepositoryTrait;
 
-    private ActiveSessionFlashcardsRepository $repository;
+    private ActiveSessionRepository $repository;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->repository = $this->app->make(ActiveSessionFlashcardsRepository::class);
+        $this->repository = $this->app->make(ActiveSessionRepository::class);
     }
 
-    public function test__findBySessionFlashcardIds_ShouldFindCorrectFlashcards(): void
+    public function test__findByExerciseEntryIds_ShouldFindCorrectFlashcards(): void
     {
         // GIVEN
+        $exercise_entry_ids = [1,2];
         $session_flashcard_not_to_find = $this->createSessionFlashcard(['rating' => Rating::UNKNOWN]);
         $session_flashcards_to_find = [
-            $this->createSessionFlashcard(['rating' => null]),
-            $this->createSessionFlashcard(['rating' => Rating::GOOD]),
+            $this->createSessionFlashcard([
+                'rating' => null,
+                'exercise_entry_id' => $exercise_entry_ids[0],
+                'learning_session_id' => $this->createLearningSession(['status' => SessionStatus::IN_PROGRESS])
+            ]),
+            $this->createSessionFlashcard([
+                'rating' => Rating::GOOD,
+                'exercise_entry_id' => $exercise_entry_ids[1],
+                'learning_session_id' => $this->createLearningSession(['status' => SessionStatus::IN_PROGRESS]),
+            ]),
         ];
-        $ids = $this->pluckLearningSessionFlashcardId($session_flashcards_to_find);
 
         // WHEN
-        $result = $this->repository->findBySessionFlashcardIds($ids);
+        $sessions = $this->repository->findByExerciseEntryIds($exercise_entry_ids);
 
         // THEN
-        $flashcards = $result->all();
-        $this->assertCount(2, $flashcards);
+        $this->assertCount(2, $sessions);
+        $this->assertCount(1, $sessions[0]->getSessionFlashcards());
+        $this->assertCount(1, $sessions[1]->getSessionFlashcards());
 
-        foreach ($flashcards as $flashcard) {
-            $expected_flashcard = $this->findBySessionFlashcardId($flashcard->getSessionFlashcardId(), $session_flashcards_to_find);
-
-            $this->assertNotNull($expected_flashcard);
-            $this->assertSame($expected_flashcard->flashcard_id, $flashcard->getFlashcardId()->getValue());
-        }
+        $this->assertSame($session_flashcards_to_find[0]->id, $sessions[0]->getSessionFlashcards()[0]->getSessionFlashcardId()->getValue());
+        $this->assertSame($session_flashcards_to_find[1]->id, $sessions[1]->getSessionFlashcards()[0]->getSessionFlashcardId()->getValue());
     }
 
-    public function test__findBySessionFlashcardIds_returnsCorrectRatings(): void
+    public function test__findByExerciseEntryIds_returnsCorrectRatings(): void
     {
         // GIVEN
+        $exercise_entry_ids = [1,2];
+        $session = $this->createLearningSession(['status' => SessionStatus::IN_PROGRESS]);
         $session_flashcards = [
-            $this->createSessionFlashcard(['rating' => Rating::UNKNOWN]),
-            $this->createSessionFlashcard(['rating' => Rating::GOOD]),
+            $this->createSessionFlashcard(['rating' => Rating::UNKNOWN, 'learning_session_id' => $session->id, 'exercise_entry_id' => $exercise_entry_ids[0]]),
+            $this->createSessionFlashcard(['rating' => Rating::GOOD, 'learning_session_id' => $session->id, 'exercise_entry_id' => $exercise_entry_ids[0]]),
         ];
-        $ids = $this->pluckLearningSessionFlashcardId($session_flashcards);
 
         // WHEN
-        $result = $this->repository->findBySessionFlashcardIds($ids);
+        $sessions = $this->repository->findByExerciseEntryIds($exercise_entry_ids);
 
         // THEN
-        $flashcards = $result->all();
-        $this->assertCount(2, $flashcards);
+        $this->assertCount(1, $sessions);
+        $this->assertCount(2, $sessions[0]->getSessionFlashcards());
 
-        foreach ($flashcards as $flashcard) {
+        foreach ($sessions[0]->getSessionFlashcards() as $flashcard) {
             $expected_flashcard = $this->findBySessionFlashcardId($flashcard->getSessionFlashcardId(), $session_flashcards);
 
             $this->assertNotNull($expected_flashcard);
@@ -77,81 +83,83 @@ class ActiveSessionFlashcardsRepositoryTest extends TestCase
         }
     }
 
-    public function test__findBySessionFlashcardIds_returnsCorrectSessionData(): void
+    public function test__findByExerciseEntryIds_returnsCorrectSessionData(): void
     {
         // GIVEN
+        $exercise_entry_ids = [1,2];
         $session_flashcards = [
             $this->createSessionFlashcard([
                 'learning_session_id' => $this->createLearningSession([
                     'status' => SessionStatus::STARTED,
                     'cards_per_session' => 12,
                 ]),
+                'exercise_entry_id' => $exercise_entry_ids[0],
             ]),
             $this->createSessionFlashcard([
                 'learning_session_id' => $this->createLearningSession([
                     'status' => SessionStatus::IN_PROGRESS,
                     'cards_per_session' => 14,
                 ]),
+                'exercise_entry_id' => $exercise_entry_ids[1],
             ]),
         ];
-        $ids = $this->pluckLearningSessionFlashcardId($session_flashcards);
-
         // WHEN
-        $result = $this->repository->findBySessionFlashcardIds($ids);
+        $sessions = $this->repository->findByExerciseEntryIds($exercise_entry_ids);
 
         // THEN
-        $flashcards = $result->all();
-        $this->assertCount(2, $flashcards);
+        $this->assertCount(2, $sessions);
+        $this->assertCount(1, $sessions[0]->getSessionFlashcards());
+        $this->assertCount(1, $sessions[1]->getSessionFlashcards());
 
-        foreach ($flashcards as $flashcard) {
-            $expected_flashcard = $this->findBySessionFlashcardId($flashcard->getSessionFlashcardId(), $session_flashcards);
+        $this->assertSame($session_flashcards[0]->learning_session_id, $sessions[0]->getSessionId()->getValue());
+        $this->assertSame($session_flashcards[0]->session->cards_per_session, $sessions[0]->getMaxCount());
 
-            $this->assertNotNull($expected_flashcard);
-            $this->assertSame($expected_flashcard->learning_session_id, $flashcard->getSessionId()->getValue());
-            $this->assertSame($expected_flashcard->session->status, $flashcard->getSessionStatus()->value);
-            $this->assertSame($expected_flashcard->session->cards_per_session, $flashcard->getMaxCount());
-        }
+        $this->assertSame($session_flashcards[1]->learning_session_id, $sessions[1]->getSessionId()->getValue());
+        $this->assertSame($session_flashcards[1]->session->cards_per_session, $sessions[1]->getMaxCount());
     }
 
-    public function test__findBySessionFlashcardIds_filtersOutFinishedSessions(): void
+    public function test__findByExerciseEntryIds_filtersOutFinishedSessions(): void
     {
         // GIVEN
-        $session_flashcard = $this->createSessionFlashcard([
+        $exercise_entry_id = 4;
+        $this->createSessionFlashcard([
             'learning_session_id' => $this->createLearningSession([
                 'status' => SessionStatus::FINISHED,
                 'cards_per_session' => 12,
             ]),
+            'exercise_entry_id' => $exercise_entry_id,
         ]);
 
         // WHEN
-        $result = $this->repository->findBySessionFlashcardIds([$session_flashcard->getId()]);
+        $sessions = $this->repository->findByExerciseEntryIds([$exercise_entry_id]);
 
         // THEN
-        $flashcards = $result->all();
-        $this->assertCount(0, $flashcards);
+        $this->assertCount(0, $sessions);
     }
 
-    public function test__findBySessionFlashcardIds_sessionNotFinished_findSession(): void
+    public function test__findByExerciseEntryIds_SessionNotFinished_doNotFilterOut(): void
     {
         // GIVEN
-        $session_flashcard = $this->createSessionFlashcard([
+        $exercise_entry_id = 4;
+        $this->createSessionFlashcard([
             'learning_session_id' => $this->createLearningSession([
                 'status' => SessionStatus::IN_PROGRESS,
                 'cards_per_session' => 12,
             ]),
+            'exercise_entry_id' => $exercise_entry_id,
         ]);
 
         // WHEN
-        $result = $this->repository->findBySessionFlashcardIds([$session_flashcard->getId()]);
+        $sessions = $this->repository->findByExerciseEntryIds([$exercise_entry_id]);
 
         // THEN
-        $flashcards = $result->all();
-        $this->assertCount(1, $flashcards);
+        $this->assertCount(1, $sessions);
     }
 
-    public function test__findBySessionFlashcardIds_ratedCountIsCorrect(): void
+    public function test__findByExerciseEntryIds_ratedCountIsCorrect(): void
     {
         // GIVEN
+        $exercise_entry_id = 5;
         $session = $this->createLearningSession(['status' => SessionStatus::IN_PROGRESS->value]);
 
         $this->createSessionFlashcard([
@@ -165,22 +173,21 @@ class ActiveSessionFlashcardsRepositoryTest extends TestCase
         $session_flashcard = $this->createSessionFlashcard([
             'learning_session_id' => $session->id,
             'rating' => Rating::UNKNOWN,
+            'exercise_entry_id' =>5,
         ]);
 
-
         // WHEN
-        $result = $this->repository->findBySessionFlashcardIds([$session_flashcard->getId()]);
+        $sessions = $this->repository->findByExerciseEntryIds([$exercise_entry_id]);
 
         // THEN
-        $flashcards = $result->all();
-        $this->assertCount(1, $flashcards);
-        $this->assertSame($session_flashcard->id, $flashcards[$session_flashcard->id]->getSessionFlashcardId()->getValue());
-        $this->assertSame(2, $flashcards[$session_flashcard->id]->getRatedCount());
+        $this->assertCount(1, $sessions);
+        $this->assertSame(2, $sessions[0]->getRatedCount());
     }
 
-    public function test__findBySessionFlashcardIds_ratedCountDoNotCountsAdditionalFlashcards(): void
+    public function test__findByExerciseEntryIds_ratedCountDoNotCountsAdditionalFlashcards(): void
     {
         // GIVEN
+        $exercise_entry_id = 9;
         $session = $this->createLearningSession(['status' => SessionStatus::IN_PROGRESS->value]);
 
         $this->createSessionFlashcard([
@@ -192,16 +199,15 @@ class ActiveSessionFlashcardsRepositoryTest extends TestCase
             'learning_session_id' => $session->id,
             'rating' => Rating::GOOD,
             'is_additional' => false,
+            'exercise_entry_id' => $exercise_entry_id,
         ]);
 
         // WHEN
-        $result = $this->repository->findBySessionFlashcardIds([$session_flashcard->getId()]);
+        $sessions = $this->repository->findByExerciseEntryIds([$exercise_entry_id]);
 
         // THEN
-        $flashcards = $result->all();
-        $this->assertCount(1, $flashcards);
-        $this->assertSame($session_flashcard->id, $flashcards[$session_flashcard->id]->getSessionFlashcardId()->getValue());
-        $this->assertSame(1, $flashcards[$session_flashcard->id]->getRatedCount());
+        $this->assertCount(1, $sessions);
+        $this->assertSame(1, $sessions[0]->getRatedCount());
     }
 
     public function test__findLatestRatings_WhenFlashcardHasManyPreviousRatings_findLatest(): void
@@ -268,35 +274,33 @@ class ActiveSessionFlashcardsRepositoryTest extends TestCase
                 'rating' => null,
             ]),
         ];
-        $domain_flashcards = [
+        $flashcards = [
             new ActiveSessionFlashcard(
-                new SessionId(1),
-                SessionStatus::IN_PROGRESS,
-                UserId::new(),
-                1,
                 $session_flashcards[0]->getId(),
                 new FlashcardId(1),
-                0,
                 Rating::GOOD,
+                12,
                 false,
             ),
             new ActiveSessionFlashcard(
-                new SessionId(1),
-                SessionStatus::IN_PROGRESS,
-                UserId::new(),
-                1,
                 $session_flashcards[1]->getId(),
                 new FlashcardId(1),
-                0,
                 Rating::UNKNOWN,
+                null,
                 false,
             )
         ];
-        $domain_collection = new ActiveSessionFlashcards($domain_flashcards);
-
+        $session = new ActiveSession(
+            new SessionId($session_flashcards[0]->learning_session_id),
+            UserId::new(),
+            12,
+            2,
+            false,
+            $flashcards
+        );
 
         // WHEN
-        $this->repository->save($domain_collection);
+        $this->repository->save($session);
 
         // THEN
         $this->assertDatabaseHas('learning_session_flashcards', [

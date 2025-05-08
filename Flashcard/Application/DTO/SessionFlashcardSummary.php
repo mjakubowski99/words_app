@@ -9,7 +9,7 @@ use Shared\Flashcard\ISessionFlashcardSummary;
 
 class SessionFlashcardSummary implements ISessionFlashcardSummary
 {
-    private int $sessionFlashcardId;
+    private int $flashcard_id;
     private string $frontWord;
     private string $backWord;
     private string $frontContext;
@@ -19,7 +19,7 @@ class SessionFlashcardSummary implements ISessionFlashcardSummary
     private string $emoji;
 
     public function __construct(
-        int $sessionFlashcardId,
+        int $flashcard_id,
         string $frontWord,
         string $backWord,
         string $frontContext,
@@ -28,7 +28,7 @@ class SessionFlashcardSummary implements ISessionFlashcardSummary
         Language $backLang,
         string $emoji
     ) {
-        $this->sessionFlashcardId = $sessionFlashcardId;
+        $this->flashcard_id = $flashcard_id;
         $this->frontWord = $frontWord;
         $this->backWord = $backWord;
         $this->frontContext = $frontContext;
@@ -38,9 +38,9 @@ class SessionFlashcardSummary implements ISessionFlashcardSummary
         $this->emoji = $emoji;
     }
 
-    public function getSessionFlashcardId(): int
+    public function getFlashcardId(): int
     {
-        return $this->sessionFlashcardId;
+        return $this->flashcard_id;
     }
 
     public function getFrontWord(): string

@@ -18,6 +18,7 @@ class SessionFlashcardsRead
         private readonly int $cards_per_session,
         private readonly bool $is_finished,
         private array $session_flashcards,
+        private array $exercise_entry_ids,
     ) {}
 
     public function getSessionId(): SessionId
@@ -46,14 +47,8 @@ class SessionFlashcardsRead
         return $this->session_flashcards;
     }
 
-    /** @param IExerciseSummary[] $exercise_summaries */
-    public function removeFlashcardsBelongingToExercises(array $exercise_summaries): void
+    public function getExerciseEntryIds(): array
     {
-        $exercise_flashcards = array_map(fn (IExerciseSummary $exercise) => $exercise->getSessionFlashcardId(), $exercise_summaries);
-
-        $this->session_flashcards = array_filter(
-            $this->getSessionFlashcards(),
-            fn (SessionFlashcardRead $flashcard) => !in_array($flashcard->getId()->getValue(), $exercise_flashcards, true)
-        );
+        return $this->exercise_entry_ids;
     }
 }

@@ -17,7 +17,6 @@ class UnscrambleWordsExercise extends Exercise
         UserId $user_id,
         ExerciseStatus $status,
         ExerciseEntryId $answer_entry_id,
-        ?SessionFlashcardId $session_flashcard_id,
         private string $word,
         private string $context_sentence,
         private string $word_translation,
@@ -32,7 +31,6 @@ class UnscrambleWordsExercise extends Exercise
             new UnscrambleWordAnswer($answer_entry_id, $word),
             $last_answer,
             $last_answer_correct,
-            $session_flashcard_id,
         );
 
         parent::__construct($id, $user_id, [$entry], $status, ExerciseType::UNSCRAMBLE_WORDS);
@@ -40,7 +38,6 @@ class UnscrambleWordsExercise extends Exercise
 
     public static function newExercise(
         UserId $user_id,
-        SessionFlashcardId $session_flashcard_id,
         string $word,
         string $context_sentence,
         string $word_translation,
@@ -55,7 +52,6 @@ class UnscrambleWordsExercise extends Exercise
             $user_id,
             ExerciseStatus::NEW,
             ExerciseEntryId::noId(),
-            $session_flashcard_id,
             $word,
             $context_sentence,
             $word_translation,

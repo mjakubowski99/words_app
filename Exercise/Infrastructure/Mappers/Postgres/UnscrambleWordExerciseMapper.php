@@ -55,7 +55,6 @@ class UnscrambleWordExerciseMapper
             new UserId($result->user_id),
             ExerciseStatus::from($result->status),
             $entry_id,
-            $result->session_flashcard_id ? new SessionFlashcardId($result->session_flashcard_id) : null,
             $result->word,
             $result->context_sentence,
             $result->word_translation,
@@ -101,7 +100,6 @@ class UnscrambleWordExerciseMapper
             new UserId($result->user_id),
             ExerciseStatus::from($result->status),
             $entry_id,
-            $result->session_flashcard_id ? new SessionFlashcardId($result->session_flashcard_id) : null,
             $result->word,
             $result->context_sentence,
             $result->word_translation,
@@ -146,7 +144,6 @@ class UnscrambleWordExerciseMapper
                 'answers_count' => 0,
                 'last_answer' => null,
                 'last_answer_correct' => null,
-                'session_flashcard_id' => $entry->getSessionFlashcardId(),
             ];
         }
 
@@ -175,7 +172,6 @@ class UnscrambleWordExerciseMapper
                 'answers_count' => $entry->getAnswersCount(),
                 'last_answer' => $entry->getLastUserAnswer() ? $entry->getLastUserAnswer()->toString() : null,
                 'last_answer_correct' => $entry->isLastAnswerCorrect(),
-                'session_flashcard_id' => $entry->getSessionFlashcardId(),
             ];
         }
 

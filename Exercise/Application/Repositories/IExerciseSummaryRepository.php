@@ -8,5 +8,5 @@ use Shared\Exercise\IExerciseSummary;
 
 interface IExerciseSummaryRepository
 {
-    public function getExerciseSummaryByFlashcard(int $session_flashcard_id): ?IExerciseSummary;
+    public function getExerciseSummaryByFlashcard(int $exercise_entry_id): ?IExerciseSummary;
 }

@@ -14,8 +14,8 @@ class ExerciseSummaryRepository implements IExerciseSummaryRepository
         private ExerciseSummaryMapper $mapper
     ) {}
 
-    public function getExerciseSummaryByFlashcard(int $session_flashcard_id): ?IExerciseSummary
+    public function getExerciseSummaryByFlashcard(int $exercise_entry_id): IExerciseSummary
     {
-        return $this->mapper->getExerciseSummaryByFlashcard($session_flashcard_id);
+        return $this->mapper->getExerciseSummaryByFlashcard($exercise_entry_id);
     }
 }

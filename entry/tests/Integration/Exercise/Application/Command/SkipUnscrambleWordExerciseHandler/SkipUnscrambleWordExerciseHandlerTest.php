@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace Tests\Integration\Exercise\Application\Command;
+namespace Tests\Integration\Exercise\Application\Command\SkipUnscrambleWordExerciseHandler;
 
-use Tests\TestCase;
 use App\Models\Exercise;
 use App\Models\ExerciseEntry;
-use Flashcard\Domain\Models\Rating;
-use App\Models\UnscrambleWordExercise;
 use App\Models\LearningSessionFlashcard;
-use Shared\Utils\ValueObjects\ExerciseId;
+use App\Models\UnscrambleWordExercise;
+use Exercise\Application\Command\SkipExercise\SkipUnscrambleWordExerciseHandler;
 use Exercise\Domain\Models\ExerciseStatus;
+use Flashcard\Domain\Models\Rating;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Exercise\Application\Command\SkipUnscrambleWordExerciseHandler;
+use Shared\Utils\ValueObjects\ExerciseId;
+use Tests\TestCase;
 
 class SkipUnscrambleWordExerciseHandlerTest extends TestCase
 {
@@ -32,13 +32,13 @@ class SkipUnscrambleWordExerciseHandlerTest extends TestCase
     {
         // GIVEN
         $user = $this->createUser();
-        $flashcard = LearningSessionFlashcard::factory()->create(['rating' => null]);
         $exercise = Exercise::factory()->create([
             'status' => ExerciseStatus::IN_PROGRESS,
             'user_id' => $user->getId(),
         ]);
         $u_exercise = UnscrambleWordExercise::factory()->create(['exercise_id' => $exercise->id]);
-        $entry = ExerciseEntry::factory()->create(['exercise_id' => $exercise->id, 'session_flashcard_id' => $flashcard->id]);
+        $entry = ExerciseEntry::factory()->create(['exercise_id' => $exercise->id]);
+        $flashcard = LearningSessionFlashcard::factory()->create(['rating' => null, 'exercise_entry_id' => $entry->id]);
 
         // WHEN
         $this->handler->handle(new ExerciseId($exercise->id), $user->getId());
@@ -49,8 +49,9 @@ class SkipUnscrambleWordExerciseHandlerTest extends TestCase
             'status' => ExerciseStatus::SKIPPED->value,
         ]);
         $this->assertDatabaseHas('learning_session_flashcards', [
-            'id' => $entry->session_flashcard_id,
+            'id' => $flashcard->id,
             'rating' => Rating::UNKNOWN,
+            'exercise_entry_id' => $entry->id,
         ]);
     }
 
@@ -61,7 +62,6 @@ class SkipUnscrambleWordExerciseHandlerTest extends TestCase
         $flashcard = LearningSessionFlashcard::factory()->create(['rating' => Rating::WEAK, 'updated_at' => now()->subDay()]);
         LearningSessionFlashcard::factory()->create(['rating' => Rating::GOOD, 'updated_at' => now()->subDay()]);
         $latest_flashcard = LearningSessionFlashcard::factory()->create(['flashcard_id' => $flashcard->flashcard_id, 'rating' => Rating::VERY_GOOD, 'updated_at' => now()]);
-        $flashcard = LearningSessionFlashcard::factory()->create(['rating' => null, 'flashcard_id' => $flashcard->flashcard_id]);
 
         $exercise = Exercise::factory()->create([
             'status' => ExerciseStatus::IN_PROGRESS,
@@ -69,14 +69,16 @@ class SkipUnscrambleWordExerciseHandlerTest extends TestCase
         ]);
         $u_exercise = UnscrambleWordExercise::factory()->create(['exercise_id' => $exercise->id]);
         $entry = ExerciseEntry::factory()->create(['exercise_id' => $exercise->id, 'session_flashcard_id' => $flashcard->id]);
+        $flashcard = LearningSessionFlashcard::factory()->create(['rating' => null, 'flashcard_id' => $flashcard->flashcard_id, 'exercise_entry_id' => $entry->id]);
 
         // WHEN
         $this->handler->handle(new ExerciseId($exercise->id), $user->getId());
 
         // THEN
         $this->assertDatabaseHas('learning_session_flashcards', [
-            'id' => $entry->session_flashcard_id,
+            'id' => $flashcard->id,
             'rating' => $latest_flashcard->rating,
+            'exercise_entry_id' => $entry->id,
         ]);
     }
 }

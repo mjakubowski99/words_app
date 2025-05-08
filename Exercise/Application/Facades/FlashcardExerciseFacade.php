@@ -6,6 +6,7 @@ namespace Exercise\Application\Facades;
 
 use Shared\Enum\ExerciseType;
 use Shared\Exercise\IExerciseSummary;
+use Shared\Exercise\IFlashcardExercise;
 use Shared\Utils\ValueObjects\UserId;
 use Shared\Utils\ValueObjects\ExerciseId;
 use Shared\Exercise\IFlashcardExerciseFacade;
@@ -23,15 +24,18 @@ class FlashcardExerciseFacade implements IFlashcardExerciseFacade
         private IExerciseSummaryRepository $summary_repository,
     ) {}
 
-    public function getExerciseSummaryByFlashcard(int $session_flashcard_id): ?IExerciseSummary
+    public function getExerciseSummaryByFlashcard(int $exercise_entry_id): IExerciseSummary
     {
-        return $this->summary_repository->getExerciseSummaryByFlashcard($session_flashcard_id);
+        return $this->summary_repository->getExerciseSummaryByFlashcard($exercise_entry_id);
     }
 
-    /** @param ISessionFlashcardSummary[] $session_flashcard_summaries */
-    public function makeExercise(array $session_flashcard_summaries, UserId $user_id, ExerciseType $type): void
+    /** 
+     * @param ISessionFlashcardSummary[] $session_flashcard_summaries
+     * @return IFlashcardExercise[]
+     * */
+    public function makeExercise(array $session_flashcard_summaries, UserId $user_id, ExerciseType $type): array
     {
-        $this->exercise_factory->makeExercise($session_flashcard_summaries, $user_id, $type);
+        return $this->exercise_factory->makeExercise($session_flashcard_summaries, $user_id, $type);
     }
 
     public function getUnscrambleWordExercise(ExerciseId $id): IUnscrambleWordExerciseRead

@@ -4,14 +4,13 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\Command;
 
-use Flashcard\Domain\Models\Rating;
-use Flashcard\Domain\Models\Flashcard;
-use Shared\Exercise\IFlashcardExerciseFacade;
 use Flashcard\Application\DTO\SessionFlashcardSummary;
-use Flashcard\Application\Services\IFlashcardSelector;
-use Flashcard\Domain\Models\NextSessionFlashcardResult;
-use Flashcard\Domain\Services\SessionFlashcardsService;
 use Flashcard\Application\Repository\INextSessionFlashcardsRepository;
+use Flashcard\Application\Services\IFlashcardSelector;
+use Flashcard\Domain\Models\Rating;
+use Flashcard\Domain\Services\SessionFlashcardsService;
+use Flashcard\Domain\ValueObjects\FlashcardId;
+use Shared\Exercise\IFlashcardExerciseFacade;
 
 class AddSessionFlashcardsHandler
 {
@@ -53,15 +52,22 @@ class AddSessionFlashcardsHandler
                 $next_session_flashcards->addNextAdditional($additional_flashcard);
             }
 
-            $save_flashcards_results = $this->next_session_flashcards_repository->save($next_session_flashcards);
-
             $all_flashcards = array_merge([$flashcards[0]], $additional_flashcards);
 
-            $this->facade->makeExercise(
-                $this->buildFlashcardSummaryObjects($all_flashcards, $save_flashcards_results),
+            $exercise_entries = $this->facade->makeExercise(
+                $this->buildFlashcardSummaryObjects($all_flashcards),
                 $command->getUserId(),
                 $exercise_type
             );
+
+            foreach ($exercise_entries as $entry) {
+                $next_session_flashcards->associateExercise(
+                    new FlashcardId($entry->getFlashcardId()),
+                    $entry->getExerciseEntryId()
+                );
+            }
+
+            $this->next_session_flashcards_repository->save($next_session_flashcards);
         } else {
             $next_session_flashcards = $this->service->add($next_session_flashcards, $flashcards);
         }
@@ -69,19 +75,13 @@ class AddSessionFlashcardsHandler
         $this->next_session_flashcards_repository->save($next_session_flashcards);
     }
 
-    private function buildFlashcardSummaryObjects(array $flashcards, array $save_flashcards_results): array
+    private function buildFlashcardSummaryObjects(array $flashcards): array
     {
         $flashcard_summaries = [];
 
-        /** @var NextSessionFlashcardResult $save_flashcards_result */
-        foreach ($save_flashcards_results as $save_flashcards_result) {
-            $flashcard = array_filter(
-                $flashcards,
-                fn (Flashcard $flashcard) => $flashcard->getId()->equals($save_flashcards_result->getFlashcardId())
-            )[0];
-
+        foreach ($flashcards as $flashcard) {
             $flashcard_summaries[] = new SessionFlashcardSummary(
-                $save_flashcards_result->getId()->getValue(),
+                $flashcard->getId()->getValue(),
                 $flashcard->getFrontWord(),
                 $flashcard->getBackWord(),
                 $flashcard->getFrontContext(),

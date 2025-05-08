@@ -1,12 +1,12 @@
 <?php
 
-namespace Integration\Flashcards\Application\Command;
+namespace Tests\Integration\Flashcards\Application\Command;
 
 use App\Models\LearningSessionFlashcard;
 use Flashcard\Application\Command\UpdateRatingsHandler;
 use Flashcard\Domain\Models\Rating;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Shared\Flashcard\ISessionFlashcardRating;
+use Shared\Flashcard\IExerciseScore;
 use Tests\TestCase;
 
 class UpdateRatingHandlerTest extends TestCase
@@ -25,17 +25,17 @@ class UpdateRatingHandlerTest extends TestCase
     {
         //GIVEN
         $flashcards = [
-            $this->createSessionFlashcard(['rating' => null]),
-            $this->createSessionFlashcard(['rating' => null])
+            $this->createSessionFlashcard(['rating' => null, 'exercise_entry_id' => 1]),
+            $this->createSessionFlashcard(['rating' => null, 'exercise_entry_id' => 2])
         ];
         $ratings = [
-            \Mockery::mock(ISessionFlashcardRating::class)->allows([
-                'getSessionFlashcardId' => $flashcards[0]->id,
-                'getRating' => Rating::VERY_GOOD,
+            \Mockery::mock(IExerciseScore::class)->allows([
+                'getExerciseEntryId' => $flashcards[0]->exercise_entry_id,
+                'getScore' => 0.90,
             ]),
-            \Mockery::mock(ISessionFlashcardRating::class)->allows([
-                'getSessionFlashcardId' => $flashcards[1]->id,
-                'getRating' => Rating::UNKNOWN,
+            \Mockery::mock(IExerciseScore::class)->allows([
+                'getExerciseEntryId' => $flashcards[1]->exercise_entry_id,
+                'getScore' => 0.2,
             ]),
         ];
 
@@ -43,12 +43,14 @@ class UpdateRatingHandlerTest extends TestCase
         $this->handler->handle($ratings);
 
         // THEN
-        foreach ($ratings as $rating) {
-            $this->assertDatabaseHas('learning_session_flashcards', [
-                'id' => $rating->getSessionFlashcardId(),
-                'rating' => $rating->getRating(),
-            ]);
-        }
+        $this->assertDatabaseHas('learning_session_flashcards', [
+            'id' => $flashcards[0]->id,
+            'rating' => Rating::VERY_GOOD,
+        ]);
+        $this->assertDatabaseHas('learning_session_flashcards', [
+            'id' => $flashcards[1]->id,
+            'rating' => Rating::UNKNOWN,
+        ]);
         foreach ($flashcards as $flashcard) {
             $flashcard->refresh();
             $this->assertDatabaseHas('sm_two_flashcards', [
