@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Exercise\Application\DTO;
 
-use Shared\Flashcard\IExerciseScore;
+use Shared\Exercise\IExerciseScore;
 
 class ExerciseScore implements IExerciseScore
 {

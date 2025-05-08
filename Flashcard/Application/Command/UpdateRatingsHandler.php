@@ -6,7 +6,7 @@ namespace Flashcard\Application\Command;
 
 use Flashcard\Application\Repository\IActiveSessionRepository;
 use Flashcard\Application\Services\IRepetitionAlgorithm;
-use Shared\Flashcard\IExerciseScore;
+use Shared\Exercise\IExerciseScore;
 
 class UpdateRatingsHandler
 {

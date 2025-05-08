@@ -54,7 +54,7 @@ class AddSessionFlashcardsHandler
 
             $all_flashcards = array_merge([$flashcards[0]], $additional_flashcards);
 
-            $exercise_entries = $this->facade->makeExercise(
+            $exercise_entries = $this->facade->buildExercise(
                 $this->buildFlashcardSummaryObjects($all_flashcards),
                 $command->getUserId(),
                 $exercise_type
@@ -88,7 +88,7 @@ class AddSessionFlashcardsHandler
                 $flashcard->getBackContext(),
                 $flashcard->getFrontLang(),
                 $flashcard->getBackLang(),
-                $flashcard->getEmoji()->toUnicode(),
+                $flashcard->getEmoji(),
             );
         }
 

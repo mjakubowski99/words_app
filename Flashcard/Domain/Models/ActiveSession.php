@@ -38,7 +38,7 @@ class ActiveSession implements IRepetitionAlgorithmDTO
 
     public function isFinished(): bool
     {
-        return $this->rated_count === $this->max_count;
+        return $this->rated_count >= $this->max_count;
     }
 
     public function rate(SessionFlashcardId $id, Rating $rating): void

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Exercise\Infrastructure\Mappers\Postgres;
 
 use Illuminate\Support\Facades\DB;
+use Shared\Models\Emoji;
 use Shared\Utils\ValueObjects\UserId;
 use Exercise\Domain\Models\ExerciseEntry;
 use Shared\Utils\ValueObjects\ExerciseId;
@@ -58,7 +59,7 @@ class UnscrambleWordExerciseMapper
             $result->word,
             $result->context_sentence,
             $result->word_translation,
-            $result->emoji,
+            $result->emoji ? Emoji::fromUnicode($result->emoji) : null,
             $result->scrambled_word,
             $result->last_answer ? new UnscrambleWordAnswer($entry_id, $result->last_answer) : null,
             $result->last_answer_correct
@@ -103,7 +104,7 @@ class UnscrambleWordExerciseMapper
             $result->word,
             $result->context_sentence,
             $result->word_translation,
-            $result->emoji,
+            $result->emoji ? Emoji::fromUnicode($result->emoji) : null,
             $result->scrambled_word,
             $result->last_answer ? new UnscrambleWordAnswer($entry_id, $result->last_answer) : null,
             $result->last_answer_correct
@@ -130,7 +131,7 @@ class UnscrambleWordExerciseMapper
                 'context_sentence' => $exercise->getContextSentence(),
                 'word_translation' => $exercise->getWordTranslation(),
                 'scrambled_word' => $exercise->getScrambledWord(),
-                'emoji' => $exercise->getEmoji(),
+                'emoji' => $exercise->getEmoji()?->toUnicode(),
             ]);
 
         $data = [];

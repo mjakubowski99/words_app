@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Unit\Exercise\Domain\Model\UnscrambleWordsExercise;
 
 use Exercise\Domain\Models\UnscrambleWordsExercise;
+use Shared\Models\Emoji;
 use Shared\Utils\ValueObjects\UserId;
 use Tests\TestCase;
 
@@ -19,7 +20,7 @@ class UnscrambleWordsExerciseTest extends TestCase
             'word',
             'context sentence',
             'word translation',
-            ';)',
+            Emoji::fromUnicode(';)'),
         );
 
         // THEN
@@ -43,7 +44,7 @@ class UnscrambleWordsExerciseTest extends TestCase
             'word',
             'context sentence',
             'word translation',
-            ';)',
+            Emoji::fromUnicode(';)'),
         );
 
         // THEN

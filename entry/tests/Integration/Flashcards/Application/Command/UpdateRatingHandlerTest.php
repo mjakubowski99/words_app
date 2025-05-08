@@ -6,7 +6,7 @@ use App\Models\LearningSessionFlashcard;
 use Flashcard\Application\Command\UpdateRatingsHandler;
 use Flashcard\Domain\Models\Rating;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Shared\Flashcard\IExerciseScore;
+use Shared\Exercise\IExerciseScore;
 use Tests\TestCase;
 
 class UpdateRatingHandlerTest extends TestCase

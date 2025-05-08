@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Shared\Flashcard;
+namespace Shared\Exercise;
 
 interface IExerciseScore
 {

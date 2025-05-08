@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Shared\Exercise;
+namespace Shared\Exercise\ExerciseTypes;
 
+use Shared\Models\Emoji;
 use Shared\Utils\ValueObjects\ExerciseId;
 
 interface IUnscrambleWordExerciseRead
@@ -16,7 +17,7 @@ interface IUnscrambleWordExerciseRead
 
     public function getContextSentence(): string;
 
-    public function getEmoji(): string;
+    public function getEmoji(): ?Emoji;
 
     /** @return string[] */
     public function getKeyboard(): array;

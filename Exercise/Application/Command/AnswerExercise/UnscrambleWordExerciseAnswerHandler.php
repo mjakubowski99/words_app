@@ -21,7 +21,7 @@ class UnscrambleWordExerciseAnswerHandler extends AbstractExerciseAnswerHandler
 
     protected function resolveExercise(ExerciseEntryId $id): Exercise
     {
-        return $this->repository->findByAnswerEntryId($id);
+        return $this->repository->findByEntryId($id);
     }
 
     protected function save(Exercise $exercise): void

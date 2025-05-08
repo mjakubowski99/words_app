@@ -1,19 +1,15 @@
 <?php
 
-declare(strict_types=1);
-
-namespace Shared\Exercise;
+namespace Shared\Exercise\ExerciseTypes;
 
 use Shared\Enum\ExerciseType;
-use Shared\Exercise\ExerciseTypes\IUnscrambleWordExerciseRead;
+use Shared\Exercise\IFlashcardExercise;
 use Shared\Flashcard\ISessionFlashcardSummary;
 use Shared\Utils\ValueObjects\ExerciseId;
 use Shared\Utils\ValueObjects\UserId;
 
-interface IFlashcardExerciseFacade
+interface IExerciseTypeFacade
 {
-    public function getExerciseSummaryByEntryId(int $exercise_entry_id): ?IExerciseSummary;
-
     /**
      * @param ISessionFlashcardSummary[] $session_flashcard_summaries
      * @return IFlashcardExercise[]

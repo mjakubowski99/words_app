@@ -12,7 +12,7 @@ interface IUnscrambleWordExerciseRepository
 {
     public function find(ExerciseId $id): UnscrambleWordsExercise;
 
-    public function findByAnswerEntryId(ExerciseEntryId $id): UnscrambleWordsExercise;
+    public function findByEntryId(ExerciseEntryId $id): UnscrambleWordsExercise;
 
     public function create(UnscrambleWordsExercise $exercise): ExerciseId;
 

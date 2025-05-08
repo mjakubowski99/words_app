@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\DTO;
 
+use Shared\Models\Emoji;
 use Shared\Utils\ValueObjects\Language;
 use Shared\Flashcard\ISessionFlashcardSummary;
 
@@ -16,7 +17,7 @@ class SessionFlashcardSummary implements ISessionFlashcardSummary
     private string $backContext;
     private Language $frontLang;
     private Language $backLang;
-    private string $emoji;
+    private Emoji $emoji;
 
     public function __construct(
         int $flashcard_id,
@@ -26,7 +27,7 @@ class SessionFlashcardSummary implements ISessionFlashcardSummary
         string $backContext,
         Language $frontLang,
         Language $backLang,
-        string $emoji
+        ?Emoji $emoji
     ) {
         $this->flashcard_id = $flashcard_id;
         $this->frontWord = $frontWord;
@@ -73,7 +74,7 @@ class SessionFlashcardSummary implements ISessionFlashcardSummary
         return $this->backLang;
     }
 
-    public function getEmoji(): string
+    public function getEmoji(): ?Emoji
     {
         return $this->emoji;
     }

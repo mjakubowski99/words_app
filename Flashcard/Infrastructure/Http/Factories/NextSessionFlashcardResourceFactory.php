@@ -27,7 +27,7 @@ class NextSessionFlashcardResourceFactory
         $summaries = [];
 
         foreach ($flashcards->getExerciseEntryIds() as $entry_id) {
-            $summaries[] = $this->facade->getExerciseSummaryByFlashcard($entry_id);
+            $summaries[] = $this->facade->getExerciseSummaryByEntryId($entry_id);
         }
 
         return new NextSessionFlashcardsResource([

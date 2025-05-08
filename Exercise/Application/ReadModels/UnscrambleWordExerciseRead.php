@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace Exercise\Application\ReadModels;
 
+use Shared\Exercise\ExerciseTypes\IUnscrambleWordExerciseRead;
+use Shared\Models\Emoji;
 use Shared\Utils\ValueObjects\ExerciseId;
-use Shared\Exercise\IUnscrambleWordExerciseRead;
 
 class UnscrambleWordExerciseRead implements IUnscrambleWordExerciseRead
 {
@@ -14,7 +15,7 @@ class UnscrambleWordExerciseRead implements IUnscrambleWordExerciseRead
         private string $scrambled_word,
         private string $front_word,
         private string $context_sentence,
-        private string $emoji,
+        private ?Emoji $emoji,
         private int $exercise_entry_id,
     ) {}
 
@@ -38,7 +39,7 @@ class UnscrambleWordExerciseRead implements IUnscrambleWordExerciseRead
         return $this->context_sentence;
     }
 
-    public function getEmoji(): string
+    public function getEmoji(): ?Emoji
     {
         return $this->emoji;
     }

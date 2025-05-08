@@ -21,7 +21,7 @@ class UnscrambleWordExerciseRepository implements IUnscrambleWordExerciseReposit
         return $this->mapper->find($id);
     }
 
-    public function findByAnswerEntryId(ExerciseEntryId $id): UnscrambleWordsExercise
+    public function findByEntryId(ExerciseEntryId $id): UnscrambleWordsExercise
     {
         return $this->mapper->findByEntryId($id);
     }

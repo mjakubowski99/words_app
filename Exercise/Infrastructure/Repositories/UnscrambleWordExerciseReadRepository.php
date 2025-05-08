@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Exercise\Infrastructure\Repositories;
 
-use Shared\Utils\ValueObjects\ExerciseId;
-use Shared\Exercise\IUnscrambleWordExerciseRead;
 use Exercise\Application\Repositories\IUnscrambleWordExerciseReadRepository;
 use Exercise\Infrastructure\Mappers\Postgres\UnscrambleWordExerciseReadMapper;
+use Shared\Exercise\ExerciseTypes\IUnscrambleWordExerciseRead;
+use Shared\Utils\ValueObjects\ExerciseId;
 
 class UnscrambleWordExerciseReadRepository implements IUnscrambleWordExerciseReadRepository
 {

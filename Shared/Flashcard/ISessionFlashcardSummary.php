@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Shared\Flashcard;
 
+use Shared\Models\Emoji;
 use Shared\Utils\ValueObjects\Language;
 
 interface ISessionFlashcardSummary
@@ -22,5 +23,5 @@ interface ISessionFlashcardSummary
 
     public function getBackLang(): Language;
 
-    public function getEmoji(): string;
+    public function getEmoji(): ?Emoji;
 }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Exercise\Domain\Models;
 
 use Shared\Enum\ExerciseType;
+use Shared\Models\Emoji;
 use Shared\Utils\ValueObjects\UserId;
 use Shared\Utils\ValueObjects\ExerciseId;
 use Exercise\Domain\ValueObjects\ExerciseEntryId;
@@ -20,7 +21,7 @@ class UnscrambleWordsExercise extends Exercise
         private string $word,
         private string $context_sentence,
         private string $word_translation,
-        private string $emoji,
+        private ?Emoji $emoji,
         private string $scrambled_word,
         ?UnscrambleWordAnswer $last_answer,
         ?bool $last_answer_correct,
@@ -41,7 +42,7 @@ class UnscrambleWordsExercise extends Exercise
         string $word,
         string $context_sentence,
         string $word_translation,
-        string $emoji,
+        ?Emoji $emoji,
     ): self {
         $word_arr = mb_str_split($word);
         shuffle($word_arr);
@@ -77,7 +78,7 @@ class UnscrambleWordsExercise extends Exercise
         return $this->context_sentence;
     }
 
-    public function getEmoji(): string
+    public function getEmoji(): Emoji
     {
         return $this->emoji;
     }

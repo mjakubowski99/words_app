@@ -12,7 +12,7 @@ class Emoji implements \Stringable, \JsonSerializable
 
     public static function fromUnicode(string $emoji): self
     {
-        return new self(json_decode($emoji));
+        return new self(json_decode($emoji)??'');
     }
 
     public function toUnicode(): string

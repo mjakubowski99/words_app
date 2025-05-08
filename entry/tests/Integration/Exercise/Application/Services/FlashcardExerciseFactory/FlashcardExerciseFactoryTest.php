@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Integration\Exercise\Application\Services\FlashcardExerciseFactory;
 
 use Flashcard\Domain\ValueObjects\FlashcardId;
+use Shared\Models\Emoji;
 use Tests\TestCase;
 use Shared\Enum\ExerciseType;
 use App\Models\LearningSessionFlashcard;
@@ -28,7 +29,7 @@ class FlashcardExerciseFactoryTest extends TestCase
         $flashcard_summaries = [
             \Mockery::mock(ISessionFlashcardSummary::class)->allows([
                 'getFrontWord' => 'jablko',
-                'getEmoji' => '🍏',
+                'getEmoji' => Emoji::fromUnicode('🍏'),
                 'getFlashcardId' => 1,
                 'getBackWord' => 'apple',
                 'getFrontContext' => 'context',
@@ -45,7 +46,7 @@ class FlashcardExerciseFactoryTest extends TestCase
             'word' => 'apple',
             'context_sentence' => 'context',
             'word_translation' => 'jablko',
-            'emoji' => '🍏',
+            'emoji' => $flashcard_summaries[0]->getEmoji()->toUnicode(),
         ]);
         $this->assertDatabaseHas('exercise_entries', [
             'score' => 0.0,

@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\Facades;
 
-use Shared\Utils\ValueObjects\UserId;
-use Shared\Flashcard\IFlashcardFacade;
-use Shared\Flashcard\IExerciseScore;
-use Flashcard\Application\Command\UpdateRatingsHandler;
 use Flashcard\Application\Command\DeleteUserDataHandler;
-use Flashcard\Application\Repository\ISessionRepository;
 use Flashcard\Application\Command\UpdateRatingsByPreviousRatingHandler;
+use Flashcard\Application\Command\UpdateRatingsHandler;
+use Flashcard\Application\Repository\ISessionRepository;
+use Shared\Exercise\IExerciseScore;
+use Shared\Flashcard\IFlashcardFacade;
+use Shared\Utils\ValueObjects\UserId;
 
 class FlashcardFacade implements IFlashcardFacade
 {

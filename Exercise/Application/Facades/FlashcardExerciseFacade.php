@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace Exercise\Application\Facades;
 
-use Shared\Enum\ExerciseType;
-use Shared\Exercise\IExerciseSummary;
-use Shared\Exercise\IFlashcardExercise;
-use Shared\Utils\ValueObjects\UserId;
-use Shared\Utils\ValueObjects\ExerciseId;
-use Shared\Exercise\IFlashcardExerciseFacade;
-use Shared\Flashcard\ISessionFlashcardSummary;
-use Shared\Exercise\IUnscrambleWordExerciseRead;
-use Exercise\Application\Services\FlashcardExerciseFactory;
 use Exercise\Application\Repositories\IExerciseSummaryRepository;
 use Exercise\Application\Repositories\IUnscrambleWordExerciseReadRepository;
+use Exercise\Application\Services\FlashcardExerciseFactory;
+use Shared\Enum\ExerciseType;
+use Shared\Exercise\ExerciseTypes\IUnscrambleWordExerciseRead;
+use Shared\Exercise\IExerciseSummary;
+use Shared\Exercise\IFlashcardExercise;
+use Shared\Exercise\IFlashcardExerciseFacade;
+use Shared\Flashcard\ISessionFlashcardSummary;
+use Shared\Utils\ValueObjects\ExerciseId;
+use Shared\Utils\ValueObjects\UserId;
 
 class FlashcardExerciseFacade implements IFlashcardExerciseFacade
 {
@@ -24,7 +24,7 @@ class FlashcardExerciseFacade implements IFlashcardExerciseFacade
         private IExerciseSummaryRepository $summary_repository,
     ) {}
 
-    public function getExerciseSummaryByFlashcard(int $exercise_entry_id): IExerciseSummary
+    public function getExerciseSummaryByEntryId(int $exercise_entry_id): IExerciseSummary
     {
         return $this->summary_repository->getExerciseSummaryByFlashcard($exercise_entry_id);
     }
@@ -33,7 +33,7 @@ class FlashcardExerciseFacade implements IFlashcardExerciseFacade
      * @param ISessionFlashcardSummary[] $session_flashcard_summaries
      * @return IFlashcardExercise[]
      * */
-    public function makeExercise(array $session_flashcard_summaries, UserId $user_id, ExerciseType $type): array
+    public function buildExercise(array $session_flashcard_summaries, UserId $user_id, ExerciseType $type): array
     {
         return $this->exercise_factory->makeExercise($session_flashcard_summaries, $user_id, $type);
     }

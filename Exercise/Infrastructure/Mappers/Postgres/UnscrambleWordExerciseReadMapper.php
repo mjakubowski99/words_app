@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Exercise\Infrastructure\Mappers\Postgres;
 
 use Illuminate\Support\Facades\DB;
+use Shared\Models\Emoji;
 use Shared\Utils\ValueObjects\ExerciseId;
 use Exercise\Application\ReadModels\UnscrambleWordExerciseRead;
 
@@ -34,7 +35,7 @@ class UnscrambleWordExerciseReadMapper
             $data->scrambled_word,
             $data->word_translation,
             $data->context_sentence,
-            $data->emoji,
+            $data->emoji ? Emoji::fromUnicode($data->emoji) : null,
             $data->exercise_entry_id,
         );
     }

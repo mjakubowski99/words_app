@@ -8,6 +8,7 @@ use Flashcard\Domain\Models\ActiveSession;
 use Flashcard\Domain\Models\ActiveSessionFlashcard;
 use Flashcard\Domain\Models\Rating;
 use Flashcard\Domain\ValueObjects\FlashcardId;
+use Flashcard\Domain\ValueObjects\SessionFlashcardId;
 use Flashcard\Domain\ValueObjects\SessionId;
 use Flashcard\Infrastructure\Repositories\Postgres\ActiveSessionRepository;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -310,6 +311,37 @@ class ActiveSessionRepositoryTest extends TestCase
         $this->assertDatabaseHas('learning_session_flashcards', [
             'id' => $session_flashcards[1]->getId(),
             'rating' => Rating::UNKNOWN->value,
+        ]);
+    }
+
+    public function test__save_WhenSessionFinished_ShouldFinishSession(): void
+    {
+        // GIVEN
+        $session = $this->createLearningSession(['status' => SessionStatus::IN_PROGRESS]);
+        $session = new ActiveSession(
+            $session->getId(),
+            UserId::new(),
+            2,
+            2,
+            false,
+            [
+                new ActiveSessionFlashcard(
+                    new SessionFlashcardId(1),
+                    new FlashcardId(1),
+                    Rating::UNKNOWN,
+                    null,
+                    false,
+                )
+            ]
+        );
+
+        // WHEN
+        $this->repository->save($session);
+
+        // THEN
+        $this->assertDatabaseHas('learning_sessions', [
+            'id' => $session->getSessionId()->getValue(),
+            'status' => SessionStatus::FINISHED->value,
         ]);
     }
 }
