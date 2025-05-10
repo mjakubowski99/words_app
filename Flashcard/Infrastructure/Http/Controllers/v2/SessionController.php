@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Flashcard\Infrastructure\Http\Controllers\v2;
 
 use App\Http\OpenApi\Tags;
+use Illuminate\Support\Facades\DB;
 use OpenApi\Attributes as OAT;
 use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
@@ -30,9 +31,11 @@ class SessionController extends Controller
         AddSessionFlashcardsHandler $add_session_flashcards,
         NextSessionFlashcardResourceFactory $factory,
     ): JsonResponse|NextSessionFlashcardsResource {
-        $add_session_flashcards->handle(
-            new AddSessionFlashcards($request->getSessionId(), $request->currentId(), self::FLASHCARDS_LIMIT)
-        );
+        DB::transaction(function () use ($request, $add_session_flashcards) {
+            $add_session_flashcards->handle(
+                new AddSessionFlashcards($request->getSessionId(), $request->currentId(), self::FLASHCARDS_LIMIT)
+            );
+        });
 
         return $factory->make($request->getSessionId(), self::FLASHCARDS_LIMIT);
     }
@@ -89,9 +92,11 @@ class SessionController extends Controller
             return new JsonResponse(['message' => $result->getFailReason()], 400);
         }
 
-        $add_session_flashcards->handle(
-            new AddSessionFlashcards($result->getId(), $request->currentId(), self::FLASHCARDS_LIMIT)
-        );
+        DB::transaction(function () use ($add_session_flashcards, $request, $result){
+            $add_session_flashcards->handle(
+                new AddSessionFlashcards($result->getId(), $request->currentId(), self::FLASHCARDS_LIMIT)
+            );
+        });
 
         return $factory->make($result->getId(), self::FLASHCARDS_LIMIT);
     }
@@ -151,7 +156,9 @@ class SessionController extends Controller
 
         $add_session_flashcards_command = new AddSessionFlashcards($request->getSessionId(), $request->currentId(), self::FLASHCARDS_LIMIT);
 
-        $add_session_flashcards->handle($add_session_flashcards_command, self::DISPLAY_LIMIT);
+        DB::transaction(function () use ($add_session_flashcards, $add_session_flashcards_command) {
+            $add_session_flashcards->handle($add_session_flashcards_command, self::DISPLAY_LIMIT);
+        });
 
         return $factory->make($request->getSessionId(), self::FLASHCARDS_LIMIT);
     }
