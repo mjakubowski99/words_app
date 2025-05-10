@@ -37,11 +37,6 @@ class ExerciseEntry
         return $this->answers_count;
     }
 
-    public function getSessionFlashcardId(): ?SessionFlashcardId
-    {
-        return $this->session_flashcard_id;
-    }
-
     public function getExerciseId(): ExerciseId
     {
         return $this->exercise_id;

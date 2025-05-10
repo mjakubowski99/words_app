@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Flashcard\Infrastructure\Http\Controllers\v2;
 
 use App\Http\OpenApi\Tags;
-use Illuminate\Support\Facades\DB;
 use OpenApi\Attributes as OAT;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Flashcard\Application\Command\RateFlashcards;
 use Flashcard\Application\Command\AddSessionFlashcards;
@@ -92,7 +92,7 @@ class SessionController extends Controller
             return new JsonResponse(['message' => $result->getFailReason()], 400);
         }
 
-        DB::transaction(function () use ($add_session_flashcards, $request, $result){
+        DB::transaction(function () use ($add_session_flashcards, $request, $result) {
             $add_session_flashcards->handle(
                 new AddSessionFlashcards($result->getId(), $request->currentId(), self::FLASHCARDS_LIMIT)
             );

@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Exercise\Infrastructure\Http\Controllers;
 
 use App\Http\OpenApi\Tags;
-use Illuminate\Support\Facades\DB;
 use OpenApi\Attributes as OAT;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Exercise\Infrastructure\Http\Request\SkipUnscrambleWordExerciseRequest;
 use Exercise\Infrastructure\Http\Request\UnscrambleWordExerciseAnswerRequest;

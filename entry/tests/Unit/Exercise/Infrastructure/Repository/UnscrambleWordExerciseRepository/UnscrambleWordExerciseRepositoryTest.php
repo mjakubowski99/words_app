@@ -43,7 +43,6 @@ class UnscrambleWordExerciseRepositoryTest extends TestCase
         $user_answer = null;
         $entry = \Mockery::mock(ExerciseEntry::class)->allows([
             'getId' => ExerciseEntryId::noId(),
-            'getSessionFlashcardId' => new SessionFlashcardId($session_flashcard_id->getValue()),
             'getCorrectAnswer' => $correct_answer,
             'getLastAnswer' => null,
             'isLastAnswerCorrect' => false,
