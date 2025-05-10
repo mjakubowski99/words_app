@@ -69,9 +69,10 @@ class AddSessionFlashcardsHandler
             }
 
             $this->next_session_flashcards_repository->save($next_session_flashcards);
-        } else {
-            $next_session_flashcards = $this->service->add($next_session_flashcards, $flashcards);
+
+            return;
         }
+        $next_session_flashcards = $this->service->add($next_session_flashcards, $flashcards);
 
         $this->next_session_flashcards_repository->save($next_session_flashcards);
     }

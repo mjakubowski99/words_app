@@ -11,7 +11,6 @@ return new class extends Migration {
     {
         Schema::table('exercise_entries', function (Blueprint $table) {
             $table->dropColumn('session_flashcard_id');
-            $table->unsignedBigInteger('session_flashcard_id')->nullable();
         });
         Schema::table('learning_session_flashcards', function (Blueprint $table) {
             $table->unsignedBigInteger('exercise_entry_id')->nullable();

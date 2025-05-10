@@ -68,7 +68,7 @@ class SkipUnscrambleWordExerciseHandlerTest extends TestCase
             'user_id' => $user->getId(),
         ]);
         $u_exercise = UnscrambleWordExercise::factory()->create(['exercise_id' => $exercise->id]);
-        $entry = ExerciseEntry::factory()->create(['exercise_id' => $exercise->id, 'session_flashcard_id' => $flashcard->id]);
+        $entry = ExerciseEntry::factory()->create(['exercise_id' => $exercise->id]);
         $flashcard = LearningSessionFlashcard::factory()->create(['rating' => null, 'flashcard_id' => $flashcard->flashcard_id, 'exercise_entry_id' => $entry->id]);
 
         // WHEN

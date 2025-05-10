@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Database\Factories;
 
 use App\Models\Exercise;
-use App\Models\LearningSessionFlashcard;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -22,7 +21,6 @@ class ExerciseEntryFactory extends Factory
     {
         return [
             'exercise_id' => fn () => Exercise::factory()->create(),
-            'session_flashcard_id' => fn () => LearningSessionFlashcard::factory()->create(),
             'correct_answer' => 'ans',
             'last_answer' => null,
             'last_answer_correct' => null,

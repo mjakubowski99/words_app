@@ -63,10 +63,10 @@ class UnscrambleWordAnswerExerciseHandlerTest extends TestCase
     {
         // GIVEN
         $user = $this->createUser();
-        $session_flashcard = LearningSessionFlashcard::factory()->create(['rating' => null]);
         $exercise = Exercise::factory()->create(['status' => ExerciseStatus::NEW, 'user_id' => $user->getId()]);
         $u_exercise = UnscrambleWordExercise::factory()->create(['exercise_id' => $exercise->id]);
-        $entry = ExerciseEntry::factory()->create(['exercise_id' => $exercise->id, 'session_flashcard_id' => $session_flashcard->id]);
+        $entry = ExerciseEntry::factory()->create(['exercise_id' => $exercise->id]);
+        $session_flashcard = LearningSessionFlashcard::factory()->create(['rating' => null, 'exercise_entry_id' => $entry->id]);
         $entry_id = new ExerciseEntryId($entry->id);
 
         // WHEN
@@ -79,7 +79,7 @@ class UnscrambleWordAnswerExerciseHandlerTest extends TestCase
         // THEN
         $this->assertFalse($assessment->isCorrect());
         $this->assertDatabaseHas('learning_session_flashcards', [
-            'id' => $entry->session_flashcard_id,
+            'id' => $session_flashcard->id,
             'rating' => null,
         ]);
     }
@@ -89,10 +89,14 @@ class UnscrambleWordAnswerExerciseHandlerTest extends TestCase
         // GIVEN
         $user = $this->createUser();
         $session = LearningSession::factory()->create(['status' => SessionStatus::FINISHED]);
-        $session_flashcard = LearningSessionFlashcard::factory()->create(['learning_session_id' => $session->id, 'rating' => null]);
         $exercise = Exercise::factory()->create(['status' => ExerciseStatus::NEW, 'user_id' => $user->getId()]);
         $u_exercise = UnscrambleWordExercise::factory()->create(['exercise_id' => $exercise->id]);
-        $entry = ExerciseEntry::factory()->create(['exercise_id' => $exercise->id, 'session_flashcard_id' => $session_flashcard->id]);
+        $entry = ExerciseEntry::factory()->create(['exercise_id' => $exercise->id]);
+        $session_flashcard = LearningSessionFlashcard::factory()->create([
+            'learning_session_id' => $session->id,
+            'rating' => null,
+            'exercise_entry_id' => $entry->id,
+        ]);
         $entry_id = new ExerciseEntryId($entry->id);
 
         // WHEN
@@ -105,7 +109,7 @@ class UnscrambleWordAnswerExerciseHandlerTest extends TestCase
         // THEN
         $this->assertTrue($assessment->isCorrect());
         $this->assertDatabaseHas('learning_session_flashcards', [
-            'id' => $entry->session_flashcard_id,
+            'id' => $session_flashcard->id,
             'rating' => null,
         ]);
     }

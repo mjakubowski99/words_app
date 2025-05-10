@@ -42,7 +42,6 @@ class UnscrambleWordExerciseMapper
                 'unscramble_word_exercises.word_translation',
                 'unscramble_word_exercises.emoji',
                 'exercise_entries.id as exercise_entry_id',
-                'exercise_entries.session_flashcard_id',
                 'exercise_entries.last_answer',
                 'exercise_entries.last_answer_correct',
             )
@@ -87,7 +86,6 @@ class UnscrambleWordExerciseMapper
                 'unscramble_word_exercises.word_translation',
                 'unscramble_word_exercises.emoji',
                 'exercise_entries.id as exercise_entry_id',
-                'exercise_entries.session_flashcard_id',
                 'exercise_entries.last_answer',
                 'exercise_entries.last_answer_correct',
             )
