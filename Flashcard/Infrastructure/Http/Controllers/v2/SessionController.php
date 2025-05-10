@@ -26,6 +26,46 @@ class SessionController extends Controller
     public const int FLASHCARDS_LIMIT = 1;
     public const int DISPLAY_LIMIT = 1;
 
+    #[OAT\Get(
+        path: '/api/v2/flashcards/session/{session_id}',
+        operationId: 'v2.flashcard.session.get',
+        description: 'Get flashcard learning session data',
+        summary: 'Get flashcard learning session data',
+        security: [['sanctum' => []]],
+        tags: [Tags::V2, Tags::FLASHCARD, Tags::EXERCISE],
+        parameters: [
+            new OAT\Parameter(
+                name: 'session_id',
+                description: 'Session id',
+                in: 'path',
+                example: 1,
+            ),
+        ],
+        responses: [
+            new OAT\Response(
+                response: 200,
+                description: 'success',
+                content: new OAT\JsonContent(properties: [
+                    new OAT\Property(
+                        property: 'data',
+                        type: 'array',
+                        items: new OAT\Items(ref: '#/components/schemas/Resources\Flashcard\v2\NextSessionFlashcardsResource'),
+                    ),
+                ]),
+            ),
+            new OAT\Response(
+                response: 401,
+                description: 'bad request',
+                content: new OAT\JsonContent(properties: [
+                    new OAT\Property(
+                        property: 'message',
+                        type: 'string',
+                        example: 'Unauthenticated'
+                    ),
+                ]),
+            ),
+        ],
+    )]
     public function get(
         GetSessionRequest $request,
         AddSessionFlashcardsHandler $add_session_flashcards,
@@ -49,7 +89,7 @@ class SessionController extends Controller
         requestBody: new OAT\RequestBody(
             content: new OAT\JsonContent(ref: '#/components/schemas/Requests\Flashcard\v2\CreateSessionRequest')
         ),
-        tags: [Tags::V2, Tags::FLASHCARD],
+        tags: [Tags::V2, Tags::FLASHCARD, Tags::EXERCISE],
         responses: [
             new OAT\Response(
                 response: 200,
@@ -110,7 +150,7 @@ class SessionController extends Controller
         requestBody: new OAT\RequestBody(
             content: new OAT\JsonContent(ref: '#/components/schemas/Requests\Flashcard\v2\RateSessionFlashcardRequest')
         ),
-        tags: [Tags::V2, Tags::FLASHCARD],
+        tags: [Tags::V2, Tags::FLASHCARD, Tags::EXERCISE],
         parameters: [
             new OAT\Parameter(
                 name: 'session_id',

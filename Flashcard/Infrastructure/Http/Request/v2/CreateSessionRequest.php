@@ -24,6 +24,18 @@ use Flashcard\Domain\ValueObjects\FlashcardDeckId;
             description: 'Cards per learning session',
             example: 10,
         ),
+        new OAT\Property(
+            property: 'session_type',
+            description: 'Type of the session (e.g., flashcard, unscramble_words, etc.). If not specified flashcard type is used.',
+            type: 'string',
+            enum: [
+                SessionType::FLASHCARD,
+                SessionType::UNSCRAMBLE_WORDS,
+                SessionType::MIXED,
+            ],
+            example: 'flashcard',
+            nullable: true,
+        ),
     ]
 )]
 class CreateSessionRequest extends Request
