@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Flashcard\Application\ReadModels;
 
 use Shared\Enum\ExerciseType;

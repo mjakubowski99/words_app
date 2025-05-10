@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Mappers\Postgres;
 
-use Flashcard\Domain\Models\ActiveSession;
 use Shared\Enum\SessionStatus;
 use Illuminate\Support\Facades\DB;
 use Flashcard\Domain\Models\Rating;
 use Shared\Utils\ValueObjects\UserId;
+use Flashcard\Domain\Models\ActiveSession;
 use Flashcard\Domain\ValueObjects\SessionId;
-use Flashcard\Domain\Models\ActiveSessionFlashcard;
 use Flashcard\Domain\ValueObjects\FlashcardId;
+use Flashcard\Domain\Models\ActiveSessionFlashcard;
 use Flashcard\Domain\ValueObjects\SessionFlashcardId;
 
 class ActiveSessionFlashcardsMapper

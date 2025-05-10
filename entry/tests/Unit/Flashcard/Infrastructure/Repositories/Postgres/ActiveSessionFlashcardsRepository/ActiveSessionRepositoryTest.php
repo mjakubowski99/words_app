@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Flashcard\Infrastructure\Repositories\Postgres\ActiveSessionFlashcardsRepository;
 
-use Flashcard\Domain\Models\ActiveSession;
-use Flashcard\Domain\Models\ActiveSessionFlashcard;
-use Flashcard\Domain\Models\Rating;
-use Flashcard\Domain\ValueObjects\FlashcardId;
-use Flashcard\Domain\ValueObjects\SessionFlashcardId;
-use Flashcard\Domain\ValueObjects\SessionId;
-use Flashcard\Infrastructure\Repositories\Postgres\ActiveSessionRepository;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Shared\Enum\SessionStatus;
-use Shared\Utils\ValueObjects\UserId;
 use Tests\TestCase;
+use Shared\Enum\SessionStatus;
+use Flashcard\Domain\Models\Rating;
+use Shared\Utils\ValueObjects\UserId;
+use Flashcard\Domain\Models\ActiveSession;
+use Flashcard\Domain\ValueObjects\SessionId;
+use Flashcard\Domain\ValueObjects\FlashcardId;
+use Flashcard\Domain\Models\ActiveSessionFlashcard;
+use Flashcard\Domain\ValueObjects\SessionFlashcardId;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Flashcard\Infrastructure\Repositories\Postgres\ActiveSessionRepository;
 
 class ActiveSessionRepositoryTest extends TestCase
 {
@@ -32,13 +32,13 @@ class ActiveSessionRepositoryTest extends TestCase
     public function test__findByExerciseEntryIds_ShouldFindCorrectFlashcards(): void
     {
         // GIVEN
-        $exercise_entry_ids = [1,2];
+        $exercise_entry_ids = [1, 2];
         $session_flashcard_not_to_find = $this->createSessionFlashcard(['rating' => Rating::UNKNOWN]);
         $session_flashcards_to_find = [
             $this->createSessionFlashcard([
                 'rating' => null,
                 'exercise_entry_id' => $exercise_entry_ids[0],
-                'learning_session_id' => $this->createLearningSession(['status' => SessionStatus::IN_PROGRESS])
+                'learning_session_id' => $this->createLearningSession(['status' => SessionStatus::IN_PROGRESS]),
             ]),
             $this->createSessionFlashcard([
                 'rating' => Rating::GOOD,
@@ -62,7 +62,7 @@ class ActiveSessionRepositoryTest extends TestCase
     public function test__findByExerciseEntryIds_returnsCorrectRatings(): void
     {
         // GIVEN
-        $exercise_entry_ids = [1,2];
+        $exercise_entry_ids = [1, 2];
         $session = $this->createLearningSession(['status' => SessionStatus::IN_PROGRESS]);
         $session_flashcards = [
             $this->createSessionFlashcard(['rating' => Rating::UNKNOWN, 'learning_session_id' => $session->id, 'exercise_entry_id' => $exercise_entry_ids[0]]),
@@ -87,7 +87,7 @@ class ActiveSessionRepositoryTest extends TestCase
     public function test__findByExerciseEntryIds_returnsCorrectSessionData(): void
     {
         // GIVEN
-        $exercise_entry_ids = [1,2];
+        $exercise_entry_ids = [1, 2];
         $session_flashcards = [
             $this->createSessionFlashcard([
                 'learning_session_id' => $this->createLearningSession([
@@ -174,7 +174,7 @@ class ActiveSessionRepositoryTest extends TestCase
         $session_flashcard = $this->createSessionFlashcard([
             'learning_session_id' => $session->id,
             'rating' => Rating::UNKNOWN,
-            'exercise_entry_id' =>5,
+            'exercise_entry_id' => 5,
         ]);
 
         // WHEN
@@ -233,7 +233,7 @@ class ActiveSessionRepositoryTest extends TestCase
             ]),
             $this->createSessionFlashcard([
                 'rating' => null,
-            ])
+            ]),
         ];
         $ids = $this->pluckLearningSessionFlashcardId($session_flashcards);
 
@@ -289,7 +289,7 @@ class ActiveSessionRepositoryTest extends TestCase
                 Rating::UNKNOWN,
                 null,
                 false,
-            )
+            ),
         ];
         $session = new ActiveSession(
             new SessionId($session_flashcards[0]->learning_session_id),
@@ -331,7 +331,7 @@ class ActiveSessionRepositoryTest extends TestCase
                     Rating::UNKNOWN,
                     null,
                     false,
-                )
+                ),
             ]
         );
 

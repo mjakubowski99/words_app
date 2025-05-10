@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Tests\Unit\Exercise\Domain\Model\UnscrambleWordAnswer;
 
 use Tests\TestCase;
-use Exercise\Domain\Models\UnscrambleWordAnswer;
 use Shared\Utils\ValueObjects\ExerciseEntryId;
+use Exercise\Domain\Models\UnscrambleWordAnswer;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Exercise\Domain\Exceptions\ExerciseAnswerCompareFailureException;
 

@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Flashcard\Domain\Models\ActiveSession;
 
-use Flashcard\Domain\Models\ActiveSession;
-use Flashcard\Domain\Models\ActiveSessionFlashcard;
 use Flashcard\Domain\Models\Rating;
-use Flashcard\Domain\ValueObjects\FlashcardId;
-use Flashcard\Domain\ValueObjects\SessionFlashcardId;
-use Flashcard\Domain\ValueObjects\SessionId;
 use Shared\Utils\ValueObjects\UserId;
+use Flashcard\Domain\Models\ActiveSession;
+use Flashcard\Domain\ValueObjects\SessionId;
+use Flashcard\Domain\ValueObjects\FlashcardId;
+use Flashcard\Domain\Models\ActiveSessionFlashcard;
+use Flashcard\Domain\ValueObjects\SessionFlashcardId;
 
 trait ActiveSessionTrait
 {
@@ -38,7 +38,7 @@ trait ActiveSessionTrait
     private function createActiveSessionFlashcard(array $attributes = []): ActiveSessionFlashcard
     {
         return new ActiveSessionFlashcard(
-            $attributes['session_flashcard_id'] ?? new SessionFlashcardId(rand(1,100)),
+            $attributes['session_flashcard_id'] ?? new SessionFlashcardId(rand(1, 100)),
             $attributes['flashcard_id'] ?? new FlashcardId(3),
             $attributes['rating'] ?? null,
             $attributes['exercise_entry_id'] ?? null,

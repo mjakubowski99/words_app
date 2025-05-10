@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Exercise\Infrastructure;
 
-use Exercise\Application\Facades\ExerciseReadFacade;
 use Illuminate\Support\ServiceProvider;
-use Shared\Exercise\Exercises\IExerciseReadFacade;
 use Shared\Exercise\IFlashcardExerciseFacade;
+use Shared\Exercise\Exercises\IExerciseReadFacade;
+use Exercise\Application\Facades\ExerciseReadFacade;
 use Exercise\Application\Facades\FlashcardExerciseFacade;
 use Exercise\Application\Repositories\IUnscrambleWordExerciseRepository;
 use Exercise\Infrastructure\Repositories\UnscrambleWordExerciseRepository;

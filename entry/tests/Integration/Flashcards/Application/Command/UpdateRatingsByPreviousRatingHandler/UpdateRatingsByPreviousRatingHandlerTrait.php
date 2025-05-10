@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Integration\Flashcards\Application\Command\UpdateRatingsByPreviousRatingHandler;
 
-use App\Models\LearningSession;
-use App\Models\User;
 use App\Models\Flashcard;
+use App\Models\LearningSession;
 use App\Models\LearningSessionFlashcard;
 
 trait UpdateRatingsByPreviousRatingHandlerTrait

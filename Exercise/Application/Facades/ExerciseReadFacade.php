@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Exercise\Application\Facades;
 
-use Exercise\Application\Repositories\IUnscrambleWordExerciseReadRepository;
 use Shared\Utils\ValueObjects\ExerciseEntryId;
 use Shared\Exercise\Exercises\IExerciseReadFacade;
 use Shared\Exercise\Exercises\IUnscrambleWordExerciseRead;
+use Exercise\Application\Repositories\IUnscrambleWordExerciseReadRepository;
 
 class ExerciseReadFacade implements IExerciseReadFacade
 {

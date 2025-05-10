@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\Integration\Flashcards\Application\Command\UpdateRatingsByPreviousRatingHandler;
 
-
-use Flashcard\Domain\Models\Rating;
-use Shared\Enum\SessionStatus;
 use Tests\TestCase;
+use Shared\Enum\SessionStatus;
+use Flashcard\Domain\Models\Rating;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Flashcard\Application\Command\UpdateRatingsByPreviousRatingHandler;
 

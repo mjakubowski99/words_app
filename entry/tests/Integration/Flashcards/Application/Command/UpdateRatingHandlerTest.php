@@ -1,14 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Integration\Flashcards\Application\Command;
 
-use App\Models\LearningSessionFlashcard;
-use Flashcard\Application\Command\UpdateRatingsHandler;
-use Flashcard\Domain\Models\Rating;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Shared\Exercise\IExerciseScore;
-use Shared\Utils\ValueObjects\ExerciseEntryId;
 use Tests\TestCase;
+use Flashcard\Domain\Models\Rating;
+use Shared\Exercise\IExerciseScore;
+use App\Models\LearningSessionFlashcard;
+use Shared\Utils\ValueObjects\ExerciseEntryId;
+use Flashcard\Application\Command\UpdateRatingsHandler;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class UpdateRatingHandlerTest extends TestCase
 {
@@ -24,10 +26,10 @@ class UpdateRatingHandlerTest extends TestCase
 
     public function test__handle_ShouldUpdateRatingAndUpdateRepetitionAlgorithm(): void
     {
-        //GIVEN
+        // GIVEN
         $flashcards = [
             $this->createSessionFlashcard(['rating' => null, 'exercise_entry_id' => 1]),
-            $this->createSessionFlashcard(['rating' => null, 'exercise_entry_id' => 2])
+            $this->createSessionFlashcard(['rating' => null, 'exercise_entry_id' => 2]),
         ];
         $ratings = [
             \Mockery::mock(IExerciseScore::class)->allows([

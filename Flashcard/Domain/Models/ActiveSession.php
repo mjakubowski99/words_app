@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace Flashcard\Domain\Models;
 
-use Flashcard\Domain\Contracts\IRepetitionAlgorithmDTO;
-use Flashcard\Domain\Exceptions\SessionFlashcardAlreadyRatedException;
-use Shared\Enum\SessionStatus;
 use Shared\Utils\ValueObjects\UserId;
 use Flashcard\Domain\ValueObjects\SessionId;
-use Flashcard\Domain\ValueObjects\SessionFlashcardId;
 use Flashcard\Domain\ValueObjects\FlashcardId;
+use Flashcard\Domain\ValueObjects\SessionFlashcardId;
+use Flashcard\Domain\Contracts\IRepetitionAlgorithmDTO;
+use Flashcard\Domain\Exceptions\SessionFlashcardAlreadyRatedException;
 
 class ActiveSession implements IRepetitionAlgorithmDTO
 {
@@ -33,6 +32,7 @@ class ActiveSession implements IRepetitionAlgorithmDTO
         if (!array_key_exists($id->getValue(), $this->session_flashcards)) {
             return null;
         }
+
         return $this->session_flashcards[$id->getValue()];
     }
 
@@ -55,7 +55,7 @@ class ActiveSession implements IRepetitionAlgorithmDTO
         $flashcard->rate($rating);
 
         if (!$flashcard->isAdditional()) {
-            $this->rated_count += 1;
+            ++$this->rated_count;
         }
     }
 
@@ -76,7 +76,7 @@ class ActiveSession implements IRepetitionAlgorithmDTO
         $flashcard->rate(Rating::fromScore($score));
 
         if (!$flashcard->isAdditional()) {
-            $this->rated_count += 1;
+            ++$this->rated_count;
         }
     }
 
@@ -114,8 +114,8 @@ class ActiveSession implements IRepetitionAlgorithmDTO
     public function getRatedSessionFlashcardIds(): array
     {
         return array_map(
-            fn(ActiveSessionFlashcard $flashcard) => $flashcard->getSessionFlashcardId(),
-            array_values(array_filter($this->session_flashcards, fn(ActiveSessionFlashcard $flashcard) => $flashcard->rated())),
+            fn (ActiveSessionFlashcard $flashcard) => $flashcard->getSessionFlashcardId(),
+            array_values(array_filter($this->session_flashcards, fn (ActiveSessionFlashcard $flashcard) => $flashcard->rated())),
         );
     }
 

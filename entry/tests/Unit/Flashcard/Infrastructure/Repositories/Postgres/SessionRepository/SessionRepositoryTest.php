@@ -150,8 +150,8 @@ class SessionRepositoryTest extends FlashcardTestCase
             'status' => SessionStatus::STARTED,
         ]);
         $sessions_to_update = [
-            LearningSession::factory()->create(['status' => SessionStatus::STARTED,]),
-            LearningSession::factory()->create(['status' => SessionStatus::STARTED,]),
+            LearningSession::factory()->create(['status' => SessionStatus::STARTED]),
+            LearningSession::factory()->create(['status' => SessionStatus::STARTED]),
         ];
 
         // WHEN

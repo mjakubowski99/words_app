@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Flashcard\Domain\Models;
 
+use Shared\Enum\SessionType;
+use Shared\Enum\ExerciseType;
+use Shared\Utils\ValueObjects\UserId;
+use Flashcard\Domain\ValueObjects\SessionId;
+use Flashcard\Domain\ValueObjects\FlashcardId;
+use Shared\Utils\ValueObjects\ExerciseEntryId;
 use Flashcard\Domain\Exceptions\InvalidNextSessionFlashcards;
 use Flashcard\Domain\Exceptions\TooManySessionFlashcardsException;
-use Flashcard\Domain\ValueObjects\FlashcardId;
-use Flashcard\Domain\ValueObjects\SessionId;
-use Shared\Enum\ExerciseType;
-use Shared\Enum\SessionType;
-use Shared\Utils\ValueObjects\UserId;
-use Shared\Utils\ValueObjects\ExerciseEntryId;
 
 class NextSessionFlashcards extends SessionFlashcardsBase
 {
@@ -100,6 +100,7 @@ class NextSessionFlashcards extends SessionFlashcardsBase
         foreach ($this->next_session_flashcards as $flashcard) {
             if ($flashcard_id->equals($flashcard->getFlashcardId())) {
                 $flashcard->setExercise($exercise_entry_id, $type);
+
                 return;
             }
         }

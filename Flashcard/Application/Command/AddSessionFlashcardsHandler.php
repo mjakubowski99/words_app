@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\Command;
 
-use Flashcard\Application\DTO\SessionFlashcardSummary;
-use Flashcard\Application\Repository\INextSessionFlashcardsRepository;
-use Flashcard\Application\Services\IFlashcardSelector;
 use Flashcard\Domain\Models\Rating;
-use Flashcard\Domain\Services\SessionFlashcardsService;
-use Flashcard\Domain\ValueObjects\FlashcardId;
 use Shared\Exercise\IFlashcardExerciseFacade;
+use Flashcard\Domain\ValueObjects\FlashcardId;
+use Flashcard\Application\DTO\SessionFlashcardSummary;
+use Flashcard\Application\Services\IFlashcardSelector;
+use Flashcard\Domain\Services\SessionFlashcardsService;
+use Flashcard\Application\Repository\INextSessionFlashcardsRepository;
 
 class AddSessionFlashcardsHandler
 {

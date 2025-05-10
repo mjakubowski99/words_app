@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\Command;
 
-use Flashcard\Application\Repository\IActiveSessionRepository;
-use Flashcard\Domain\Models\ActiveSessionFlashcard;
 use Flashcard\Domain\Models\Rating;
+use Flashcard\Domain\Models\ActiveSessionFlashcard;
+use Flashcard\Application\Repository\IActiveSessionRepository;
 
 class UpdateRatingsByPreviousRatingHandler
 {
@@ -20,7 +20,7 @@ class UpdateRatingsByPreviousRatingHandler
 
         foreach ($sessions as $session) {
             $session_flashcard_ids = array_map(
-                fn(ActiveSessionFlashcard $flashcard) => $flashcard->getSessionFlashcardId(),
+                fn (ActiveSessionFlashcard $flashcard) => $flashcard->getSessionFlashcardId(),
                 $session->getSessionFlashcards()
             );
 
@@ -29,7 +29,7 @@ class UpdateRatingsByPreviousRatingHandler
             foreach ($session->getSessionFlashcards() as $flashcard) {
                 $session->rate(
                     $flashcard->getSessionFlashcardId(),
-                $ratings[$flashcard->getFlashcardId()->getValue()] ?? Rating::UNKNOWN
+                    $ratings[$flashcard->getFlashcardId()->getValue()] ?? Rating::UNKNOWN
                 );
             }
 

@@ -9,7 +9,7 @@ use Shared\Http\Request\Request;
 use Shared\Utils\ValueObjects\ExerciseId;
 
 #[OAT\Schema(
-    schema: 'Requests\\Exercise\\SkipUnscrambleWordExerciseRequest',
+    schema: 'Requests\Exercise\SkipUnscrambleWordExerciseRequest',
     required: ['exercise_id'],
     properties: [
         new OAT\Property(

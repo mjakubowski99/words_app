@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Exercise\Domain\Model\UnscrambleWordsExercise;
 
-use Exercise\Domain\Models\UnscrambleWordsExercise;
+use Tests\TestCase;
 use Shared\Models\Emoji;
 use Shared\Utils\ValueObjects\UserId;
-use Tests\TestCase;
+use Exercise\Domain\Models\UnscrambleWordsExercise;
 
 class UnscrambleWordsExerciseTest extends TestCase
 {

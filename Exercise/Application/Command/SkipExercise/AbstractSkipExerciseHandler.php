@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Exercise\Application\Command\SkipExercise;
 
 use Exercise\Domain\Models\Exercise;
-use Exercise\Domain\Models\ExerciseEntry;
-use Shared\Exceptions\UnauthorizedException;
-use Shared\Flashcard\IFlashcardFacade;
-use Shared\Utils\ValueObjects\ExerciseId;
 use Shared\Utils\ValueObjects\UserId;
+use Shared\Flashcard\IFlashcardFacade;
+use Exercise\Domain\Models\ExerciseEntry;
+use Shared\Utils\ValueObjects\ExerciseId;
+use Shared\Exceptions\UnauthorizedException;
 
 abstract class AbstractSkipExerciseHandler
 {
@@ -37,6 +37,7 @@ abstract class AbstractSkipExerciseHandler
         $this->facade->updateRatingsByPreviousRates($entry_ids);
     }
 
-    protected abstract function findExercise(ExerciseId $id): Exercise;
-    protected abstract function saveExercise(Exercise $exercise): void;
+    abstract protected function findExercise(ExerciseId $id): Exercise;
+
+    abstract protected function saveExercise(Exercise $exercise): void;
 }

@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Exercise\Application\Facades;
 
-use Exercise\Application\Services\FlashcardExerciseFactory;
 use Shared\Enum\ExerciseType;
+use Shared\Utils\ValueObjects\UserId;
 use Shared\Exercise\IFlashcardExercise;
 use Shared\Exercise\IFlashcardExerciseFacade;
 use Shared\Flashcard\ISessionFlashcardSummary;
-use Shared\Utils\ValueObjects\UserId;
+use Exercise\Application\Services\FlashcardExerciseFactory;
 
 class FlashcardExerciseFacade implements IFlashcardExerciseFacade
 {
@@ -17,8 +17,8 @@ class FlashcardExerciseFacade implements IFlashcardExerciseFacade
         private FlashcardExerciseFactory $exercise_factory,
     ) {}
 
-    /** 
-     * @param ISessionFlashcardSummary[] $session_flashcard_summaries
+    /**
+     * @param  ISessionFlashcardSummary[] $session_flashcard_summaries
      * @return IFlashcardExercise[]
      * */
     public function buildExercise(array $session_flashcard_summaries, UserId $user_id, ExerciseType $type): array

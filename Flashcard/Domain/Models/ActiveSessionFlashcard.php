@@ -31,14 +31,17 @@ class ActiveSessionFlashcard
     {
         return $this->session_flashcard_id;
     }
+
     public function getFlashcardId(): FlashcardId
     {
         return $this->flashcard_id;
     }
+
     public function getRating(): ?Rating
     {
         return $this->rating;
     }
+
     public function hasExercise(): bool
     {
         return $this->exercise_entry_id !== null;

@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Flashcard\Domain\Models\ActiveSession;
 
-use Flashcard\Domain\Exceptions\SessionFlashcardAlreadyRatedException;
-use Flashcard\Domain\Models\ActiveSession;
-use Flashcard\Domain\Models\Rating;
-use Flashcard\Domain\ValueObjects\SessionFlashcardId;
 use Tests\TestCase;
+use Flashcard\Domain\Models\Rating;
+use Flashcard\Domain\Models\ActiveSession;
+use Flashcard\Domain\ValueObjects\SessionFlashcardId;
+use Flashcard\Domain\Exceptions\SessionFlashcardAlreadyRatedException;
 
 class ActiveSessionTest extends TestCase
 {
@@ -89,11 +89,11 @@ class ActiveSessionTest extends TestCase
         // GIVEN
         $rated_flashcard = $this->createActiveSessionFlashcard([
             'session_flashcard_id' => new SessionFlashcardId(43),
-            'rating' => Rating::GOOD
+            'rating' => Rating::GOOD,
         ]);
         $unrated_flashcard = $this->createActiveSessionFlashcard([
             'session_flashcard_id' => new SessionFlashcardId(44),
-            'rating' => null
+            'rating' => null,
         ]);
         $session = $this->createActiveSession();
         $session->addSessionFlashcard($rated_flashcard);

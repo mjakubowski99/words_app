@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Shared\Flashcard;
 
-use Shared\Utils\ValueObjects\UserId;
 use Shared\Exercise\IExerciseScore;
+use Shared\Utils\ValueObjects\UserId;
 
 interface IFlashcardFacade
 {

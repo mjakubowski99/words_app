@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Exercise\Application\Services;
 
-use Shared\Utils\ValueObjects\ExerciseEntryId;
 use Shared\Enum\ExerciseType;
-use Shared\Exercise\IFlashcardExercise;
 use Shared\Utils\ValueObjects\UserId;
+use Shared\Exercise\IFlashcardExercise;
 use Shared\Flashcard\ISessionFlashcardSummary;
+use Shared\Utils\ValueObjects\ExerciseEntryId;
 use Exercise\Domain\Models\UnscrambleWordsExercise;
 use Exercise\Application\Repositories\IUnscrambleWordExerciseRepository;
 
@@ -22,7 +22,7 @@ class FlashcardExerciseFactory
     public function makeExercise(array $session_flashcards_summary, UserId $user_id, ExerciseType $type): array
     {
         return match ($type) {
-            /** @phpstan-ignore-next-line  */
+            /* @phpstan-ignore-next-line */
             ExerciseType::UNSCRAMBLE_WORDS => $this->makeUnscrambleWordExercise($session_flashcards_summary, $user_id),
             default => throw new \InvalidArgumentException('Invalid exercise type'),
         };
@@ -61,6 +61,7 @@ class FlashcardExerciseFactory
                 return $this->flashcard_id;
             }
         };
+
         return [$entries];
     }
 }

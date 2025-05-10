@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Repositories\Postgres;
 
-use Flashcard\Application\Repository\IActiveSessionRepository;
-use Flashcard\Domain\Models\ActiveSession;
 use Flashcard\Domain\Models\Rating;
+use Flashcard\Domain\Models\ActiveSession;
+use Flashcard\Application\Repository\IActiveSessionRepository;
 use Flashcard\Infrastructure\Mappers\Postgres\ActiveSessionFlashcardsMapper;
 
 class ActiveSessionRepository implements IActiveSessionRepository

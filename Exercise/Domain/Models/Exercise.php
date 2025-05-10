@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Exercise\Domain\Models;
 
-use Exercise\Domain\Exceptions\ExerciseAssessmentNotAllowedException;
+use Shared\Enum\ExerciseType;
+use Shared\Utils\ValueObjects\UserId;
+use Shared\Utils\ValueObjects\ExerciseId;
 use Exercise\Domain\Exceptions\ExerciseEntryNotFoundException;
 use Exercise\Domain\Exceptions\ExerciseStatusTransitionException;
-use Shared\Enum\ExerciseType;
-use Shared\Utils\ValueObjects\ExerciseId;
-use Shared\Utils\ValueObjects\UserId;
+use Exercise\Domain\Exceptions\ExerciseAssessmentNotAllowedException;
 
 abstract class Exercise
 {

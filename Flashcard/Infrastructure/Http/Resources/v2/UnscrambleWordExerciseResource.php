@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Http\Resources\v2;
 
-use Illuminate\Http\Resources\Json\JsonResource;
 use OpenApi\Attributes as OAT;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Shared\Exercise\Exercises\IUnscrambleWordExerciseRead;
 
 #[OAT\Schema(

@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\Integration\Exercise\Application\Services\FlashcardExerciseFactory;
 
-use Flashcard\Domain\ValueObjects\FlashcardId;
-use Shared\Models\Emoji;
 use Tests\TestCase;
+use Shared\Models\Emoji;
 use Shared\Enum\ExerciseType;
-use App\Models\LearningSessionFlashcard;
 use Shared\Flashcard\ISessionFlashcardSummary;
 use Exercise\Application\Services\FlashcardExerciseFactory;
 

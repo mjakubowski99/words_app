@@ -4,14 +4,13 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\ReadModels;
 
-use Shared\Exercise\IExerciseSummary;
 use Flashcard\Domain\ValueObjects\SessionId;
 
 class SessionFlashcardsRead
 {
     /**
      * @property SessionFlashcardRead[] $session_flashcards
-     * @property ExerciseSummary[] $exercise_summaries
+     * @property ExerciseSummary[]      $exercise_summaries
      */
     public function __construct(
         private SessionId $id,

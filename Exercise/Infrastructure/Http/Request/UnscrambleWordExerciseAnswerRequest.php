@@ -6,11 +6,11 @@ namespace Exercise\Infrastructure\Http\Request;
 
 use OpenApi\Attributes as OAT;
 use Shared\Http\Request\Request;
-use Exercise\Domain\Models\UnscrambleWordAnswer;
 use Shared\Utils\ValueObjects\ExerciseEntryId;
+use Exercise\Domain\Models\UnscrambleWordAnswer;
 
 #[OAT\Schema(
-    schema: 'Requests\\Exercise\\UnscrambleWordExerciseAnswerRequest',
+    schema: 'Requests\Exercise\UnscrambleWordExerciseAnswerRequest',
     description: 'Request schema for answering an unscramble word exercise.',
     required: ['answer'],
     properties: [

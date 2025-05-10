@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Unit\Flashcard\Infrastructure\Repositories\Postgres\ActiveSessionFlashcardsRepository;
 
 use App\Models\Flashcard;
-use App\Models\LearningSession;
-use Flashcard\Domain\ValueObjects\SessionFlashcardId;
 use Illuminate\Support\Arr;
+use App\Models\LearningSession;
 use App\Models\LearningSessionFlashcard;
+use Flashcard\Domain\ValueObjects\SessionFlashcardId;
 
 trait ActiveSessionRepositoryTrait
 {
@@ -27,7 +29,7 @@ trait ActiveSessionRepositoryTrait
 
     private function pluckLearningSessionFlashcardId(array $flashcards): array
     {
-        return Arr::map($flashcards, fn(LearningSessionFlashcard $f) => $f->getId());
+        return Arr::map($flashcards, fn (LearningSessionFlashcard $f) => $f->getId());
     }
 
     private function findBySessionFlashcardId(SessionFlashcardId $id, array $session_flashcard_models): ?LearningSessionFlashcard

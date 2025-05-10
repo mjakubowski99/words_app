@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Flashcard\Domain\Models;
 
-use Flashcard\Domain\ValueObjects\FlashcardId;
 use Shared\Enum\ExerciseType;
+use Flashcard\Domain\ValueObjects\FlashcardId;
 use Shared\Utils\ValueObjects\ExerciseEntryId;
 
 class NextSessionFlashcard

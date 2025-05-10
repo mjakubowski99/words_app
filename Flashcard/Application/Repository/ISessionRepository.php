@@ -13,6 +13,7 @@ interface ISessionRepository
 {
     /** @param SessionId[] $session_ids */
     public function updateStatusById(array $session_ids, SessionStatus $status): void;
+
     public function setAllOwnerSessionsStatus(UserId $user_id, SessionStatus $status): void;
 
     public function create(Session $session): SessionId;

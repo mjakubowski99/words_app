@@ -9,5 +9,6 @@ use Shared\Utils\ValueObjects\ExerciseEntryId;
 interface IFlashcardExercise
 {
     public function getFlashcardId(): int;
+
     public function getExerciseEntryId(): ExerciseEntryId;
 }

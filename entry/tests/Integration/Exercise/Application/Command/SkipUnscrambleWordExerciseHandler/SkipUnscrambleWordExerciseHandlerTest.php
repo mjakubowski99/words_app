@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace Tests\Integration\Exercise\Application\Command\SkipUnscrambleWordExerciseHandler;
 
+use Tests\TestCase;
 use App\Models\Exercise;
 use App\Models\ExerciseEntry;
-use App\Models\LearningSessionFlashcard;
-use App\Models\UnscrambleWordExercise;
-use Exercise\Application\Command\SkipExercise\SkipUnscrambleWordExerciseHandler;
-use Exercise\Domain\Models\ExerciseStatus;
 use Flashcard\Domain\Models\Rating;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use App\Models\UnscrambleWordExercise;
+use App\Models\LearningSessionFlashcard;
 use Shared\Utils\ValueObjects\ExerciseId;
-use Tests\TestCase;
+use Exercise\Domain\Models\ExerciseStatus;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Exercise\Application\Command\SkipExercise\SkipUnscrambleWordExerciseHandler;
 
 class SkipUnscrambleWordExerciseHandlerTest extends TestCase
 {

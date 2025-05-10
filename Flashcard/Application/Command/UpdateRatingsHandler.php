@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\Command;
 
-use Flashcard\Application\Repository\IActiveSessionRepository;
-use Flashcard\Application\Services\IRepetitionAlgorithm;
 use Shared\Exercise\IExerciseScore;
+use Flashcard\Application\Services\IRepetitionAlgorithm;
+use Flashcard\Application\Repository\IActiveSessionRepository;
 
 class UpdateRatingsHandler
 {
     public function __construct(
         private readonly IActiveSessionRepository $active_session_repository,
-        private readonly IRepetitionAlgorithm     $repetition_algorithm,
+        private readonly IRepetitionAlgorithm $repetition_algorithm,
     ) {}
 
     public function handle(array $exercise_scores): void
@@ -20,7 +20,7 @@ class UpdateRatingsHandler
         $ratings = $this->indexData($exercise_scores);
 
         $sessions = $this->active_session_repository->findByExerciseEntryIds(
-            array_map(fn(IExerciseScore $rating) => $rating->getExerciseEntryId(), $ratings)
+            array_map(fn (IExerciseScore $rating) => $rating->getExerciseEntryId(), $ratings)
         );
 
         foreach ($sessions as $session) {
@@ -45,6 +45,7 @@ class UpdateRatingsHandler
         foreach ($exercise_scores as $exercise_score) {
             $indexed_data[$exercise_score->getExerciseEntryId()->getValue()] = $exercise_score;
         }
+
         return $indexed_data;
     }
 }

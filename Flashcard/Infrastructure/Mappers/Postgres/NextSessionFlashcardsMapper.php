@@ -12,11 +12,8 @@ use Illuminate\Support\Facades\DB;
 use Shared\Utils\ValueObjects\UserId;
 use Shared\Exceptions\NotFoundException;
 use Flashcard\Domain\ValueObjects\SessionId;
-use Flashcard\Domain\ValueObjects\FlashcardId;
 use Flashcard\Domain\Models\NextSessionFlashcards;
 use Flashcard\Domain\ValueObjects\FlashcardDeckId;
-use Flashcard\Domain\ValueObjects\SessionFlashcardId;
-use Flashcard\Domain\Models\NextSessionFlashcardResult;
 use Flashcard\Infrastructure\Mappers\Traits\HasOwnerBuilder;
 
 class NextSessionFlashcardsMapper
@@ -142,7 +139,7 @@ class NextSessionFlashcardsMapper
                 'updated_at' => $now,
                 'is_additional' => true,
                 'exercise_entry_id' => $next_session_flashcard->hasExercise() ? $next_session_flashcard->getExerciseEntryId() : null,
-                'exercise_type' => $next_session_flashcard->hasExercise() ? $next_session_flashcard->getExerciseType()->toNumber(): null,
+                'exercise_type' => $next_session_flashcard->hasExercise() ? $next_session_flashcard->getExerciseType()->toNumber() : null,
             ];
         }
 

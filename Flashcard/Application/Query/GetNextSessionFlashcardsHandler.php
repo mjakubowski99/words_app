@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\Query;
 
+use Flashcard\Domain\ValueObjects\SessionId;
 use Flashcard\Application\ReadModels\SessionFlashcardsRead;
 use Flashcard\Application\Repository\ISessionFlashcardReadRepository;
-use Flashcard\Domain\ValueObjects\SessionId;
 
 class GetNextSessionFlashcardsHandler
 {
