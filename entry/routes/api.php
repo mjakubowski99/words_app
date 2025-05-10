@@ -29,7 +29,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::put('/flashcards/categories/{category_id}/generate-flashcards', [FlashcardDeckController::class, 'regenerateFlashcards'])
         ->name('flashcards.categories.regenerate-flashcards');
 
-    Route::get('/flashcards/session/{session_id}', [SessionController::class, 'get'])
+    Route::put('/flashcards/session/{session_id}/get-next', [SessionController::class, 'get'])
         ->name('flashcards.session.get');
     Route::post('/flashcards/session', [SessionController::class, 'store'])
         ->name('flashcards.session.store');

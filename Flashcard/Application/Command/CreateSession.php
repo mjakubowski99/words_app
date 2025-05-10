@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\Command;
 
-use Shared\Enum\LearningSessionType;
+use Shared\Enum\SessionType;
 use Shared\Utils\ValueObjects\UserId;
 use Flashcard\Domain\ValueObjects\FlashcardDeckId;
 
@@ -15,7 +15,7 @@ final readonly class CreateSession
         private int $cards_per_session,
         private string $device,
         private ?FlashcardDeckId $deck_id,
-        private LearningSessionType $learning_session_type,
+        private SessionType $type,
     ) {}
 
     public function getUserId(): UserId
@@ -43,8 +43,8 @@ final readonly class CreateSession
         return $this->deck_id;
     }
 
-    public function getLearningSessionType(): LearningSessionType
+    public function getType(): SessionType
     {
-        return $this->learning_session_type;
+        return $this->type;
     }
 }

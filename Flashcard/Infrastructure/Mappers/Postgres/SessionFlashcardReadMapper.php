@@ -5,11 +5,14 @@ declare(strict_types=1);
 namespace Flashcard\Infrastructure\Mappers\Postgres;
 
 use Shared\Models\Emoji;
+use Shared\Enum\ExerciseType;
 use Shared\Enum\LanguageLevel;
 use Shared\Enum\SessionStatus;
 use Illuminate\Support\Facades\DB;
 use Shared\Utils\ValueObjects\Language;
 use Flashcard\Domain\ValueObjects\SessionId;
+use Shared\Utils\ValueObjects\ExerciseEntryId;
+use Flashcard\Application\ReadModels\ExerciseSummary;
 use Flashcard\Domain\ValueObjects\SessionFlashcardId;
 use Flashcard\Application\ReadModels\SessionFlashcardRead;
 use Flashcard\Application\ReadModels\SessionFlashcardsRead;
@@ -41,6 +44,8 @@ class SessionFlashcardReadMapper
                 SELECT 
                     learning_session_flashcards.id, 
                     learning_session_flashcards.rating,
+                    learning_session_flashcards.exercise_type,
+                    learning_session_flashcards.exercise_entry_id,
                     flashcards.front_word,
                     flashcards.front_lang,
                     flashcards.back_word,
@@ -58,20 +63,24 @@ class SessionFlashcardReadMapper
                 WHERE 
                     learning_session_flashcards.learning_session_id = ?
                     AND learning_session_flashcards.rating IS NULL
+                    AND learning_session_flashcards.is_additional = false
                 LIMIT ?
             ),
             progress_count AS (
                 SELECT 
-                    COUNT(DISTINCT progress_tick) AS count 
+                    COUNT(learning_session_flashcards.id) AS count 
                 FROM 
                     learning_session_flashcards 
                 WHERE 
                     learning_session_id = ?
                     AND rating IS NOT NULL
+                    AND is_additional = false
             )
             SELECT 
                 flashcards_data.id, 
                 flashcards_data.rating,
+                flashcards_data.exercise_type,
+                flashcards_data.exercise_entry_id,
                 flashcards_data.front_word,
                 flashcards_data.front_lang,
                 flashcards_data.back_word,
@@ -101,19 +110,27 @@ class SessionFlashcardReadMapper
         ]);
 
         $session_flashcards = array_filter($results, function (object $result) {
-            return $result->id !== null;
+            return $result->id !== null && $result->exercise_entry_id === null;
         });
 
         $session_flashcards = array_map(function (object $result) {
             return $this->map($result);
         }, $session_flashcards);
 
+        $exercise_entry_ids = array_filter($results, function (object $result) {
+            return $result->id !== null && $result->exercise_entry_id !== null;
+        });
+
         return new SessionFlashcardsRead(
             $session_id,
             $results[0]->progress,
             $results[0]->cards_per_session,
             SessionStatus::from($results[0]->status) === SessionStatus::FINISHED,
-            $session_flashcards
+            $session_flashcards,
+            array_map(
+                fn ($result) => new ExerciseSummary(new ExerciseEntryId($result->exercise_entry_id), ExerciseType::fromNumber($result->exercise_type)),
+                $exercise_entry_ids
+            ),
         );
     }
 

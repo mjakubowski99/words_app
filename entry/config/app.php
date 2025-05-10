@@ -12,6 +12,7 @@ use Illuminate\Support\ServiceProvider;
 use App\Providers\TelescopeServiceProvider;
 use Shared\Providers\SharedServiceProvider;
 use Integrations\IntegrationsServiceProvider;
+use Exercise\Infrastructure\ExerciseServiceProvider;
 use Flashcard\Infrastructure\FlashcardServiceProvider;
 use User\Infrastructure\Providers\UserServiceProvider;
 
@@ -183,6 +184,7 @@ return [
         SharedServiceProvider::class,
         UserServiceProvider::class,
         FlashcardServiceProvider::class,
+        ExerciseServiceProvider::class,
         IntegrationsServiceProvider::class,
         AdminPanelProvider::class,
         TelescopeServiceProvider::class,

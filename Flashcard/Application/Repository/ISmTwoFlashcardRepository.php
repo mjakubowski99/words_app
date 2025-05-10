@@ -7,12 +7,14 @@ namespace Flashcard\Application\Repository;
 use Shared\Utils\ValueObjects\UserId;
 use Flashcard\Domain\Models\Flashcard;
 use Flashcard\Domain\Models\SmTwoFlashcards;
+use Flashcard\Domain\ValueObjects\FlashcardId;
 use Flashcard\Domain\ValueObjects\FlashcardDeckId;
 
 interface ISmTwoFlashcardRepository
 {
     public function resetRepetitionsInSession(UserId $user_id): void;
 
+    /** @param FlashcardId[] $flashcard_ids */
     public function findMany(UserId $user_id, array $flashcard_ids): SmTwoFlashcards;
 
     public function saveMany(SmTwoFlashcards $sm_two_flashcards): void;

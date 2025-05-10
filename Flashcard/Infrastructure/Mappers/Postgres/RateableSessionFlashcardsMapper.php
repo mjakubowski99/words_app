@@ -34,9 +34,9 @@ class RateableSessionFlashcardsMapper
                 WHERE id = ?
             ),
             rated_flashcard_count AS (
-                SELECT COUNT(DISTINCT progress_tick) AS count 
+                SELECT COUNT(learning_session_flashcards .id) AS count 
                 FROM learning_session_flashcards 
-                WHERE rating IS NOT NULL AND learning_session_id = ?
+                WHERE rating IS NOT NULL AND learning_session_id = ? AND is_additional = false
             )
             SELECT 
                 sd.session_id, 

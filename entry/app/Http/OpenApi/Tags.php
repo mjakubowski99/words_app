@@ -23,4 +23,5 @@ class Tags
     public const USER = 'User';
     public const FLASHCARD = 'Flashcard';
     public const V2 = 'V2';
+    public const EXERCISE = 'Exercise';
 }

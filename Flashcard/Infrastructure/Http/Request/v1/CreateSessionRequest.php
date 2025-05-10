@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Http\Request\v1;
 
+use Shared\Enum\SessionType;
 use OpenApi\Attributes as OAT;
 use Shared\Http\Request\Request;
-use Shared\Enum\LearningSessionType;
 use Flashcard\Application\Command\CreateSession;
 use Flashcard\Domain\ValueObjects\FlashcardDeckId;
 
@@ -42,9 +42,7 @@ class CreateSessionRequest extends Request
             (int) $this->input('cards_per_session'),
             $this->userAgent(),
             $this->input('category_id') !== null ? new FlashcardDeckId((int) $this->input('category_id')) : null,
-            $this->input('category_id') !== null
-                ? LearningSessionType::LEARN_FLASHCARDS_IN_CATEGORY
-                : LearningSessionType::LEARN_YOUR_ALL_FLASHCARDS,
+            SessionType::FLASHCARD,
         );
     }
 }

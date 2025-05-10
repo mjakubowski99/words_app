@@ -36,9 +36,9 @@ class FlashcardPollRepository implements IFlashcardPollRepository
         $this->mapper->save($poll);
     }
 
-    public function selectNextLeitnerFlashcard(UserId $user_id, int $limit): array
+    public function selectNextLeitnerFlashcard(UserId $user_id, array $exclude_flashcard_ids, int $limit): array
     {
-        return $this->mapper->selectNextLeitnerFlashcard($user_id, $limit);
+        return $this->mapper->selectNextLeitnerFlashcard($user_id, $exclude_flashcard_ids, $limit);
     }
 
     public function resetLeitnerLevelIfMaxLevelExceeded(UserId $user_id, int $max_level): void

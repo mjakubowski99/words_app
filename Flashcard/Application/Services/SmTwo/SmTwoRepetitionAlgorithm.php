@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\Services\SmTwo;
 
-use Flashcard\Domain\Models\RateableSessionFlashcard;
-use Flashcard\Domain\Models\RateableSessionFlashcards;
+use Shared\Utils\ValueObjects\UserId;
+use Flashcard\Domain\ValueObjects\SessionFlashcardId;
+use Flashcard\Domain\Contracts\IRepetitionAlgorithmDTO;
 use Flashcard\Application\Services\FlashcardPollUpdater;
 use Flashcard\Application\Services\IRepetitionAlgorithm;
 use Flashcard\Application\Repository\ISmTwoFlashcardRepository;
@@ -17,39 +18,42 @@ class SmTwoRepetitionAlgorithm implements IRepetitionAlgorithm
         private FlashcardPollUpdater $poll_updater,
     ) {}
 
-    public function handle(RateableSessionFlashcards $session_flashcards): void
+    public function handle(IRepetitionAlgorithmDTO $dto): void
     {
-        if ($session_flashcards->isEmpty()) {
+        if (empty($dto->getRatedSessionFlashcardIds())) {
             return;
         }
 
-        $flashcard_ids = [];
+        $user_flashcards = array_map(
+            fn (SessionFlashcardId $id) => ['flashcard_id' => $dto->getFlashcardId($id), 'user_id' => $dto->getUserIdForFlashcard($id)->getValue()],
+            $dto->getRatedSessionFlashcardIds()
+        );
 
-        /** @var RateableSessionFlashcard $session_flashcard */
-        foreach ($session_flashcards->all() as $session_flashcard) {
-            if ($session_flashcard->rated()) {
-                $flashcard_ids[] = $session_flashcard->getFlashcardId()->getValue();
+        $user_flashcard_map = [];
+        foreach ($user_flashcards as $user_flashcard) {
+            if (!array_key_exists($user_flashcard['user_id'], $user_flashcard_map)) {
+                $user_flashcard_map[$user_flashcard['user_id']] = [];
             }
+            $user_flashcard_map[$user_flashcard['user_id']][] = $user_flashcard['flashcard_id'];
         }
 
-        $sm_two_flashcards = $this->repository->findMany($session_flashcards->getUserId(), $flashcard_ids);
+        foreach ($user_flashcard_map as $user_id => $flashcard_ids) {
+            $user_id = new UserId($user_id);
 
-        /** @var RateableSessionFlashcard $session_flashcard */
-        foreach ($session_flashcards->all() as $session_flashcard) {
-            if ($session_flashcard->rated()) {
-                $sm_two_flashcards->fillIfMissing($session_flashcards->getUserId(), $session_flashcard->getFlashcardId());
+            $sm_two_flashcards = $this->repository->findMany($user_id, $flashcard_ids);
+
+            foreach ($dto->getRatedSessionFlashcardIds() as $session_flashcard_id) {
+                $sm_two_flashcards->fillIfMissing($user_id, $dto->getFlashcardId($session_flashcard_id));
 
                 $sm_two_flashcards->updateByRating(
-                    $session_flashcard->getFlashcardId(),
-                    $session_flashcard->getRating(),
+                    $dto->getFlashcardId($session_flashcard_id),
+                    $dto->getFlashcardRating($session_flashcard_id)
                 );
             }
-        }
 
-        $this->repository->saveMany($sm_two_flashcards);
+            $this->repository->saveMany($sm_two_flashcards);
 
-        if ($session_flashcards->hasFlashcardPoll()) {
-            $this->poll_updater->handle($session_flashcards);
+            $this->poll_updater->handle($dto);
         }
     }
 }

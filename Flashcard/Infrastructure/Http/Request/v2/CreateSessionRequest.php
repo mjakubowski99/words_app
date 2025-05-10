@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Http\Request\v2;
 
+use Shared\Enum\SessionType;
 use OpenApi\Attributes as OAT;
+use Illuminate\Validation\Rule;
 use Shared\Http\Request\Request;
-use Shared\Enum\LearningSessionType;
 use Flashcard\Application\Command\CreateSession;
 use Flashcard\Domain\ValueObjects\FlashcardDeckId;
 
@@ -32,6 +33,7 @@ class CreateSessionRequest extends Request
         return [
             'cards_per_session' => ['required', 'integer', 'gte:5', 'lte:100'],
             'flashcard_deck_id' => ['nullable', 'integer'],
+            'session_type' => ['nullable', 'string', Rule::enum(SessionType::class)],
         ];
     }
 
@@ -42,9 +44,7 @@ class CreateSessionRequest extends Request
             (int) $this->input('cards_per_session'),
             $this->userAgent(),
             $this->input('flashcard_deck_id') !== null ? new FlashcardDeckId((int) $this->input('flashcard_deck_id')) : null,
-            $this->input('flashcard_deck_id') !== null
-                ? LearningSessionType::LEARN_FLASHCARDS_IN_CATEGORY
-                : LearningSessionType::LEARN_YOUR_ALL_FLASHCARDS,
+            SessionType::from($this->input('session_type', SessionType::FLASHCARD->value)),
         );
     }
 }

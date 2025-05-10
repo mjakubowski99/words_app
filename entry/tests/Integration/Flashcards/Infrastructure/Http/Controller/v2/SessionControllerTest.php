@@ -8,6 +8,7 @@ use Tests\TestCase;
 use App\Models\User;
 use App\Models\Admin;
 use App\Models\Flashcard;
+use Shared\Enum\SessionType;
 use App\Models\FlashcardDeck;
 use App\Models\SmTwoFlashcard;
 use App\Models\LearningSession;
@@ -45,6 +46,39 @@ class SessionControllerTest extends TestCase
 
         // THEN
         $response->assertStatus(200);
+    }
+
+    /**
+     * @test
+     */
+    public function store_scramble_word_exercise_success(): void
+    {
+        // GIVEN
+        $user = User::factory()->create();
+        $deck = FlashcardDeck::factory()->create([
+            'user_id' => $user->id,
+        ]);
+        $flashcards = Flashcard::factory(3)->create([
+            'flashcard_deck_id' => $deck->id,
+        ]);
+
+        // WHEN
+        $response = $this
+            ->actingAs($user, 'sanctum')
+            ->postJson(route('v2.flashcards.session.store'), [
+                'cards_per_session' => 10,
+                'flashcard_deck_id' => $deck->id,
+                'session_type' => SessionType::UNSCRAMBLE_WORDS->value,
+            ]);
+
+        // THEN
+        $response->assertStatus(200);
+
+        $this->assertDatabaseHas('learning_sessions', [
+            'id' => $response->json('data.session.id'),
+            'user_id' => $user->id,
+            'type' => SessionType::UNSCRAMBLE_WORDS->value,
+        ]);
     }
 
     /**

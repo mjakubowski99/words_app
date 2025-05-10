@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Flashcard\Domain\Models;
 
+use Shared\Enum\SessionType;
 use Shared\Enum\SessionStatus;
 use Shared\Utils\ValueObjects\UserId;
 use Shared\Exceptions\ForbiddenException;
@@ -15,6 +16,7 @@ class Session
 
     public function __construct(
         private SessionStatus $status,
+        private SessionType $type,
         private readonly UserId $user_id,
         private readonly int $cards_per_session,
         private readonly string $device,
@@ -25,12 +27,14 @@ class Session
 
     public static function newSession(
         UserId $user_id,
+        SessionType $type,
         int $cards_per_session,
         string $device,
         ?Deck $deck
     ): self {
         return new Session(
             SessionStatus::STARTED,
+            $type,
             $user_id,
             $cards_per_session,
             $device,
@@ -48,6 +52,11 @@ class Session
     public function getId(): SessionId
     {
         return $this->id;
+    }
+
+    public function getType(): SessionType
+    {
+        return $this->type;
     }
 
     public function hasFlashcardDeck(): bool

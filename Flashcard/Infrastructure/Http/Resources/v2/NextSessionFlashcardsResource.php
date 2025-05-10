@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Flashcard\Infrastructure\Http\Resources\v2;
 
 use Shared\Enum\Language;
+use Shared\Enum\ExerciseType;
 use OpenApi\Attributes as OAT;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Flashcard\Application\ReadModels\SessionFlashcardRead;
@@ -39,6 +40,14 @@ use Flashcard\Application\ReadModels\SessionFlashcardsRead;
                     type: 'number',
                     format: 'float',
                     example: 5,
+                ),
+                new OAT\Property(
+                    property: 'is_exercise_mode',
+                    description: 'This property tells if at the current step exercise should be displayed. '
+                    . 'If its false it means that we should display flashcard. '
+                    . 'In some modes this is always false.'
+                    . 'If flag is true it basically means that we should display exercise from next_exercises property.',
+                    type: 'boolean'
                 ),
                 new OAT\Property(
                     property: 'next_flashcards',
@@ -108,25 +117,51 @@ use Flashcard\Application\ReadModels\SessionFlashcardsRead;
                         type: 'object'
                     )
                 ),
+                new OAT\Property(
+                    property: 'next_exercises',
+                    description: 'List of exercises in the session. Type of "data" depends on "exercise_type".',
+                    type: 'array',
+                    items: new OAT\Items(
+                        type: 'object',
+                        oneOf: [
+                            new OAT\Schema(
+                                ref: '#/components/schemas/Resources\Flashcard\v2\UnscrambleWordExerciseResource',
+                                discriminator: new OAT\Discriminator(
+                                    propertyName: 'exercise_type',
+                                    mapping: [
+                                        ExerciseType::UNSCRAMBLE_WORDS->value => '#/components/schemas/UnscrambleWordExerciseResource',
+                                    ]
+                                )
+                            ),
+                            // new OAT\Schema(ref: '#/components/schemas/NextType')
+                        ]
+                    )
+                ),
             ],
             type: 'object'
         ),
     ]
 )]
-/**
- * @property SessionFlashcardsRead $resource
- */
 class NextSessionFlashcardsResource extends JsonResource
 {
     public function toArray($request): array
     {
+        /** @var SessionFlashcardsRead $resource */
+        $resource = $this->resource['flashcards'];
+
+        /** @var array $exercises */
+        $exercises = $this->resource['exercises'];
+
+        $session_id = $resource->getSessionId()->getValue();
+
         return [
             'session' => [
-                'id' => $this->resource->getSessionId()->getValue(),
-                'cards_per_session' => $this->resource->getCardsPerSession(),
-                'is_finished' => $this->resource->getIsFinished(),
-                'progress' => $this->resource->getProgress(),
-                'next_flashcards' => array_map(function (SessionFlashcardRead $flashcard) {
+                'id' => $session_id,
+                'cards_per_session' => $resource->getCardsPerSession(),
+                'is_finished' => $resource->getIsFinished(),
+                'progress' => $resource->getProgress(),
+                'is_exercise_mode' => empty($resource->getSessionFlashcards()) && !empty($exercises),
+                'next_flashcards' => array_map(function (SessionFlashcardRead $flashcard) use ($session_id) {
                     return [
                         'id' => $flashcard->getId()->getValue(),
                         'front_word' => $flashcard->getFrontWord(),
@@ -138,8 +173,18 @@ class NextSessionFlashcardsResource extends JsonResource
                         'language_level' => $flashcard->getLanguageLevel()->value,
                         'emoji' => $flashcard->getEmoji(),
                         'owner_type' => $flashcard->getOwnerType()->value,
+                        'links' => [
+                            'rate' => route('v2.flashcards.session.rate', ['session_id' => $session_id]),
+                        ],
                     ];
-                }, $this->resource->getSessionFlashcards()),
+                }, $resource->getSessionFlashcards()),
+                'next_exercises' => array_map(function (array $exercise) {
+                    return [
+                        'exercise_type' => $exercise['type'],
+                        'links' => $exercise['links'],
+                        'data' => $exercise['resource'],
+                    ];
+                }, $exercises),
             ],
         ];
     }

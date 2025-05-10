@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Unit\Flashcard\Infrastructure\Repositories\Postgres\SessionRepository;
 
 use App\Models\User;
+use Shared\Enum\SessionType;
 use App\Models\FlashcardDeck;
 use Shared\Enum\SessionStatus;
 use App\Models\LearningSession;
@@ -39,6 +40,7 @@ class SessionRepositoryTest extends FlashcardTestCase
         $domain_deck = $this->domainDeck($deck);
         $session = new Session(
             SessionStatus::STARTED,
+            SessionType::UNSCRAMBLE_WORDS,
             $user->getId(),
             10,
             'Mozilla/Firefox',
@@ -50,6 +52,7 @@ class SessionRepositoryTest extends FlashcardTestCase
         $this->assertDatabaseHas('learning_sessions', [
             'id' => $session_id->getValue(),
             'user_id' => $user->id,
+            'type' => SessionType::UNSCRAMBLE_WORDS->value,
         ]);
     }
 
@@ -135,5 +138,38 @@ class SessionRepositoryTest extends FlashcardTestCase
 
         // THEN
         $this->assertFalse($result);
+    }
+
+    /**
+     * @test
+     */
+    public function updateStatusByIds_updatesOnlySessionsWithGivenIds(): void
+    {
+        // GIVEN
+        $session_to_not_udpate = LearningSession::factory()->create([
+            'status' => SessionStatus::STARTED,
+        ]);
+        $sessions_to_update = [
+            LearningSession::factory()->create(['status' => SessionStatus::STARTED]),
+            LearningSession::factory()->create(['status' => SessionStatus::STARTED]),
+        ];
+
+        // WHEN
+        $this->repository->updateStatusById([
+            $sessions_to_update[0]->getId(),
+            $sessions_to_update[1]->getId(),
+        ], SessionStatus::FINISHED);
+
+        // THEN
+        $this->assertDatabaseHas('learning_sessions', [
+            'id' => $session_to_not_udpate->id,
+            'status' => SessionStatus::STARTED->value,
+        ]);
+        foreach ($sessions_to_update as $session) {
+            $this->assertDatabaseHas('learning_sessions', [
+                'id' => $session->id,
+                'status' => SessionStatus::FINISHED->value,
+            ]);
+        }
     }
 }

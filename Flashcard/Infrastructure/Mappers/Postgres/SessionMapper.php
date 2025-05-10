@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Mappers\Postgres;
 
+use Shared\Enum\SessionType;
 use Shared\Enum\LanguageLevel;
 use Shared\Enum\SessionStatus;
 use Flashcard\Domain\Models\Deck;
@@ -22,6 +23,31 @@ class SessionMapper
     public function __construct(
         private readonly DB $db,
     ) {}
+
+    public function findSessionIdsForSessionFlashcardIds(array $session_flashcard_ids): array
+    {
+        $session_flashcard_ids = array_map(fn ($id) => $id->getValue(), $session_flashcard_ids);
+
+        $session_ids = $this->db::table('learning_session_flashcards')
+            ->whereIn('id', $session_flashcard_ids)
+            ->select('learning_session_flashcards.learning_session_id')
+            ->pluck('learning_session_id');
+
+        return array_map(
+            fn ($id) => new SessionId($id),
+            $session_ids->toArray()
+        );
+    }
+
+    public function updateStatusByIds(array $session_ids, SessionStatus $status): void
+    {
+        $this->db::table('learning_sessions')
+            ->whereIn('id', $session_ids)
+            ->update([
+                'status' => $status->value,
+                'updated_at' => now(),
+            ]);
+    }
 
     public function updateStatus(UserId $user_id, SessionStatus $status): void
     {
@@ -44,6 +70,7 @@ class SessionMapper
                 'flashcard_deck_id' => $session->hasFlashcardDeck() ? $session->getDeck()->getId() : null,
                 'cards_per_session' => $session->getCardsPerSession(),
                 'device' => $session->getDevice(),
+                'type' => $session->getType(),
                 'created_at' => $now,
                 'updated_at' => $now,
             ]);
@@ -81,6 +108,7 @@ class SessionMapper
             ->leftJoin('flashcard_decks', 'flashcard_decks.id', '=', 'learning_sessions.flashcard_deck_id')
             ->select(
                 'learning_sessions.id',
+                'learning_sessions.type',
                 'learning_sessions.user_id',
                 'learning_sessions.status',
                 'learning_sessions.cards_per_session',
@@ -126,6 +154,7 @@ class SessionMapper
 
         return (new Session(
             SessionStatus::from($data->status),
+            SessionType::from($data->type),
             new UserId($data->user_id),
             $data->cards_per_session,
             $data->device,

@@ -22,4 +22,9 @@ class LearningSessionFlashcard extends Model
     {
         return $this->belongsTo(Flashcard::class);
     }
+
+    public function session(): BelongsTo
+    {
+        return $this->belongsTo(LearningSession::class, 'learning_session_id');
+    }
 }

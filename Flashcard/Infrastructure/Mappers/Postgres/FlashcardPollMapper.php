@@ -97,9 +97,10 @@ class FlashcardPollMapper
         $this->db::table('flashcard_poll_items')->insert($insert_data);
     }
 
-    public function selectNextLeitnerFlashcard(UserId $user_id, int $limit): array
+    public function selectNextLeitnerFlashcard(UserId $user_id, array $exclude_flashcard_id, int $limit): array
     {
         return $this->db::table('flashcard_poll_items')
+            ->whereNotIn('flashcard_id', $exclude_flashcard_id)
             ->where('user_id', $user_id)
             ->orderBy('leitner_level')
             ->orderBy('updated_at')

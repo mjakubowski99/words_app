@@ -14,7 +14,7 @@ interface IFlashcardPollRepository
 
     public function purgeLatestFlashcards(UserId $user_id, int $limit): void;
 
-    public function selectNextLeitnerFlashcard(UserId $user_id, int $limit);
+    public function selectNextLeitnerFlashcard(UserId $user_id, array $exclude_flashcard_ids, int $limit): array;
 
     public function saveLeitnerLevelUpdate(LeitnerLevelUpdate $update): void;
 

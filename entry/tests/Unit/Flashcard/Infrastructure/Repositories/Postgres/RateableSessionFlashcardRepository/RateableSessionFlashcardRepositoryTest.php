@@ -66,7 +66,7 @@ class RateableSessionFlashcardRepositoryTest extends TestCase
 
         // THEN
         $this->assertSame($session->id, $result->getSessionId()->getValue());
-        $this->assertSame($session->user_id, $result->getUserId()->getValue());
+        $this->assertSame($session->user_id, $result->getSessionUserId()->getValue());
         $this->assertSame(1, count($result->getRateableSessionFlashcards()));
         $this->assertSame($flashcard->id, $result->getRateableSessionFlashcards()[0]->getId()->getValue());
     }

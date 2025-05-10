@@ -84,6 +84,7 @@ $finder = Finder::create()
 
         $domains_path . '/User',
         $domains_path . '/Flashcard',
+        $domains_path . '/Exercise',
         $domains_path . '/Shared',
         $domains_path . '/Admin',
     ])

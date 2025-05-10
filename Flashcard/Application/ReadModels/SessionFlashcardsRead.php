@@ -10,6 +10,7 @@ class SessionFlashcardsRead
 {
     /**
      * @property SessionFlashcardRead[] $session_flashcards
+     * @property ExerciseSummary[]      $exercise_summaries
      */
     public function __construct(
         private SessionId $id,
@@ -17,6 +18,7 @@ class SessionFlashcardsRead
         private readonly int $cards_per_session,
         private readonly bool $is_finished,
         private array $session_flashcards,
+        private array $exercise_summaries
     ) {}
 
     public function getSessionId(): SessionId
@@ -43,5 +45,11 @@ class SessionFlashcardsRead
     public function getSessionFlashcards(): array
     {
         return $this->session_flashcards;
+    }
+
+    /** @return ExerciseSummary[] */
+    public function getExerciseSummaries(): array
+    {
+        return $this->exercise_summaries;
     }
 }

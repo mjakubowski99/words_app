@@ -17,7 +17,7 @@ class LearningSessionFlashcardFactory extends Factory
             'learning_session_id' => fn () => LearningSession::factory()->create(),
             'flashcard_id' => fn () => Flashcard::factory()->create(),
             'rating' => Rating::WEAK->value,
-            'progress_tick' => (int) (microtime(true) * 1000),
+            'is_additional' => false,
         ];
     }
 }
