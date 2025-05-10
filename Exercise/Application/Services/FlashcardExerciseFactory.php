@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Exercise\Application\Services;
 
+use Shared\Utils\ValueObjects\ExerciseEntryId;
 use Shared\Enum\ExerciseType;
 use Shared\Exercise\IFlashcardExercise;
 use Shared\Utils\ValueObjects\UserId;
@@ -53,9 +54,10 @@ class FlashcardExerciseFactory
                 private readonly UnscrambleWordsExercise $exercise,
                 private readonly int $flashcard_id,
             ) {}
-            public function getExerciseEntryId(): int
+
+            public function getExerciseEntryId(): ExerciseEntryId
             {
-                return $this->exercise->getExerciseEntries()[0]->getId()->getValue();
+                return $this->exercise->getExerciseEntries()[0]->getId();
             }
 
             public function getFlashcardId(): int

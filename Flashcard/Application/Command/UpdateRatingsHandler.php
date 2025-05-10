@@ -43,7 +43,7 @@ class UpdateRatingsHandler
     {
         $indexed_data = [];
         foreach ($exercise_scores as $exercise_score) {
-            $indexed_data[$exercise_score->getExerciseEntryId()] = $exercise_score;
+            $indexed_data[$exercise_score->getExerciseEntryId()->getValue()] = $exercise_score;
         }
         return $indexed_data;
     }

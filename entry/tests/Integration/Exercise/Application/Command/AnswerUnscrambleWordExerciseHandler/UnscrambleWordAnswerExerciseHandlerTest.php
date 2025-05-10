@@ -12,7 +12,7 @@ use App\Models\UnscrambleWordExercise;
 use Exercise\Application\Command\AnswerExercise\UnscrambleWordExerciseAnswerHandler;
 use Exercise\Domain\Models\ExerciseStatus;
 use Exercise\Domain\Models\UnscrambleWordAnswer;
-use Exercise\Domain\ValueObjects\ExerciseEntryId;
+use Shared\Utils\ValueObjects\ExerciseEntryId;
 use Flashcard\Domain\Models\Rating;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Shared\Enum\SessionStatus;

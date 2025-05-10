@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Exercise\Application\Repositories;
 
-use Shared\Exercise\ExerciseTypes\IUnscrambleWordExerciseRead;
-use Shared\Utils\ValueObjects\ExerciseId;
+use Shared\Utils\ValueObjects\ExerciseEntryId;
+use Shared\Exercise\Exercises\IUnscrambleWordExerciseRead;
 
 interface IUnscrambleWordExerciseReadRepository
 {
-    public function find(ExerciseId $id): IUnscrambleWordExerciseRead;
+    public function findByEntryId(ExerciseEntryId $id): IUnscrambleWordExerciseRead;
 }

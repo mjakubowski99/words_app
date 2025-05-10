@@ -40,7 +40,7 @@ class FlashcardExerciseFactoryTest extends TestCase
         $this->factory->makeExercise($flashcard_summaries, $user_id, ExerciseType::UNSCRAMBLE_WORDS);
 
         $this->assertDatabaseHas('exercises', [
-            'exercise_type' => ExerciseType::UNSCRAMBLE_WORDS->value,
+            'exercise_type' => ExerciseType::UNSCRAMBLE_WORDS->toNumber(),
         ]);
         $this->assertDatabaseHas('unscramble_word_exercises', [
             'word' => 'apple',

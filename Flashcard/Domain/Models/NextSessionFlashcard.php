@@ -5,10 +5,13 @@ declare(strict_types=1);
 namespace Flashcard\Domain\Models;
 
 use Flashcard\Domain\ValueObjects\FlashcardId;
+use Shared\Enum\ExerciseType;
+use Shared\Utils\ValueObjects\ExerciseEntryId;
 
 class NextSessionFlashcard
 {
-    private ?int $exercise_entry_id = null;
+    private ?ExerciseEntryId $exercise_entry_id = null;
+    private ?ExerciseType $type = null;
 
     public function __construct(
         private readonly FlashcardId $id,
@@ -19,7 +22,12 @@ class NextSessionFlashcard
         return $this->id;
     }
 
-    public function getExerciseEntryId(): int
+    public function getExerciseType(): ?ExerciseType
+    {
+        return $this->type;
+    }
+
+    public function getExerciseEntryId(): ExerciseEntryId
     {
         return $this->exercise_entry_id;
     }
@@ -29,8 +37,9 @@ class NextSessionFlashcard
         return $this->exercise_entry_id !== null;
     }
 
-    public function setEntryId(int $id): void
+    public function setExercise(ExerciseEntryId $id, ExerciseType $type): void
     {
         $this->exercise_entry_id = $id;
+        $this->type = $type;
     }
 }

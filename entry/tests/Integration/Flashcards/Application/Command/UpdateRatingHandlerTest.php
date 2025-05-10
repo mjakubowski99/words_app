@@ -7,6 +7,7 @@ use Flashcard\Application\Command\UpdateRatingsHandler;
 use Flashcard\Domain\Models\Rating;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Shared\Exercise\IExerciseScore;
+use Shared\Utils\ValueObjects\ExerciseEntryId;
 use Tests\TestCase;
 
 class UpdateRatingHandlerTest extends TestCase
@@ -30,11 +31,11 @@ class UpdateRatingHandlerTest extends TestCase
         ];
         $ratings = [
             \Mockery::mock(IExerciseScore::class)->allows([
-                'getExerciseEntryId' => $flashcards[0]->exercise_entry_id,
+                'getExerciseEntryId' => new ExerciseEntryId($flashcards[0]->exercise_entry_id),
                 'getScore' => 0.90,
             ]),
             \Mockery::mock(IExerciseScore::class)->allows([
-                'getExerciseEntryId' => $flashcards[1]->exercise_entry_id,
+                'getExerciseEntryId' => new ExerciseEntryId($flashcards[1]->exercise_entry_id),
                 'getScore' => 0.2,
             ]),
         ];

@@ -11,6 +11,7 @@ use Flashcard\Domain\ValueObjects\SessionId;
 use Shared\Enum\ExerciseType;
 use Shared\Enum\SessionType;
 use Shared\Utils\ValueObjects\UserId;
+use Shared\Utils\ValueObjects\ExerciseEntryId;
 
 class NextSessionFlashcards extends SessionFlashcardsBase
 {
@@ -94,11 +95,11 @@ class NextSessionFlashcards extends SessionFlashcardsBase
         return $this->current_session_flashcards_count + 1 <= $this->max_flashcards_count;
     }
 
-    public function associateExercise(FlashcardId $flashcard_id, int $entry_id): void
+    public function associateExercise(FlashcardId $flashcard_id, ExerciseEntryId $exercise_entry_id, ExerciseType $type): void
     {
         foreach ($this->next_session_flashcards as $flashcard) {
             if ($flashcard_id->equals($flashcard->getFlashcardId())) {
-                $flashcard->setEntryId($entry_id);
+                $flashcard->setExercise($exercise_entry_id, $type);
                 return;
             }
         }

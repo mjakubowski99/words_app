@@ -7,7 +7,7 @@ namespace Exercise\Application\Command\AnswerExercise;
 use Exercise\Application\Repositories\IUnscrambleWordExerciseRepository;
 use Exercise\Domain\Models\Exercise;
 use Exercise\Domain\Models\UnscrambleWordsExercise;
-use Exercise\Domain\ValueObjects\ExerciseEntryId;
+use Shared\Utils\ValueObjects\ExerciseEntryId;
 use Shared\Flashcard\IFlashcardFacade;
 
 class UnscrambleWordExerciseAnswerHandler extends AbstractExerciseAnswerHandler

@@ -7,7 +7,7 @@ namespace Exercise\Infrastructure\Http\Request;
 use OpenApi\Attributes as OAT;
 use Shared\Http\Request\Request;
 use Exercise\Domain\Models\UnscrambleWordAnswer;
-use Exercise\Domain\ValueObjects\ExerciseEntryId;
+use Shared\Utils\ValueObjects\ExerciseEntryId;
 
 #[OAT\Schema(
     schema: 'Requests\\Exercise\\UnscrambleWordExerciseAnswerRequest',

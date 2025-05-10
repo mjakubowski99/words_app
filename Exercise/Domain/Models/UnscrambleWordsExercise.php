@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace Exercise\Domain\Models;
 
+use Shared\Utils\ValueObjects\ExerciseEntryId;
 use Shared\Enum\ExerciseType;
 use Shared\Models\Emoji;
-use Shared\Utils\ValueObjects\UserId;
 use Shared\Utils\ValueObjects\ExerciseId;
-use Exercise\Domain\ValueObjects\ExerciseEntryId;
-use Exercise\Domain\ValueObjects\SessionFlashcardId;
+use Shared\Utils\ValueObjects\UserId;
 
 class UnscrambleWordsExercise extends Exercise
 {

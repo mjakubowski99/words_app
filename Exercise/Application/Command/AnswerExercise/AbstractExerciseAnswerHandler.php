@@ -9,8 +9,7 @@ use Exercise\Domain\Models\Answer;
 use Exercise\Domain\Models\AnswerAssessment;
 use Exercise\Domain\Models\Exercise;
 use Exercise\Domain\Models\ExerciseEntry;
-use Exercise\Domain\ValueObjects\ExerciseEntryId;
-use Flashcard\Domain\Models\Rating;
+use Shared\Utils\ValueObjects\ExerciseEntryId;
 use Shared\Exceptions\UnauthorizedException;
 use Shared\Flashcard\IFlashcardFacade;
 use Shared\Utils\ValueObjects\UserId;
@@ -50,7 +49,7 @@ abstract class AbstractExerciseAnswerHandler
 
         $exercise_scores = array_map(
             fn (ExerciseEntry $entry) => new ExerciseScore(
-                $entry->getId()->getValue(),
+                $entry->getId(),
                 $entry->getScore()
             ),
             $exercise->getExerciseEntries()

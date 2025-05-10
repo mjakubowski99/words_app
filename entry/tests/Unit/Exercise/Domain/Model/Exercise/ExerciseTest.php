@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Exercise\Domain\Model\Exercise;
 
-use Tests\TestCase;
-use Shared\Enum\ExerciseType;
-use Exercise\Domain\Models\Answer;
-use Exercise\Domain\Models\Exercise;
-use Shared\Utils\ValueObjects\UserId;
-use Exercise\Domain\Models\ExerciseEntry;
-use Shared\Utils\ValueObjects\ExerciseId;
-use Exercise\Domain\Models\ExerciseStatus;
-use Exercise\Domain\Models\AnswerAssessment;
-use Exercise\Domain\ValueObjects\ExerciseEntryId;
 use Exercise\Domain\Exceptions\ExerciseStatusTransitionException;
+use Exercise\Domain\Models\Answer;
+use Exercise\Domain\Models\AnswerAssessment;
+use Exercise\Domain\Models\Exercise;
+use Exercise\Domain\Models\ExerciseEntry;
+use Exercise\Domain\Models\ExerciseStatus;
+use Shared\Utils\ValueObjects\ExerciseEntryId;
+use Shared\Enum\ExerciseType;
+use Shared\Utils\ValueObjects\ExerciseId;
+use Shared\Utils\ValueObjects\UserId;
+use Tests\TestCase;
 
 class ExerciseTest extends TestCase
 {

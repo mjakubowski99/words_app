@@ -129,6 +129,7 @@ class NextSessionFlashcardsMapper
                 'updated_at' => $now,
                 'is_additional' => false,
                 'exercise_entry_id' => $next_session_flashcard->hasExercise() ? $next_session_flashcard->getExerciseEntryId() : null,
+                'exercise_type' => $next_session_flashcard->hasExercise() ? $next_session_flashcard->getExerciseType()->toNumber() : null,
             ];
         }
 
@@ -141,6 +142,7 @@ class NextSessionFlashcardsMapper
                 'updated_at' => $now,
                 'is_additional' => true,
                 'exercise_entry_id' => $next_session_flashcard->hasExercise() ? $next_session_flashcard->getExerciseEntryId() : null,
+                'exercise_type' => $next_session_flashcard->hasExercise() ? $next_session_flashcard->getExerciseType()->toNumber(): null,
             ];
         }
 

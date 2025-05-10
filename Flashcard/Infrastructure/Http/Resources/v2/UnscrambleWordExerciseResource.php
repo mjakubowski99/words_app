@@ -6,7 +6,7 @@ namespace Flashcard\Infrastructure\Http\Resources\v2;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 use OpenApi\Attributes as OAT;
-use Shared\Exercise\ExerciseTypes\IUnscrambleWordExerciseRead;
+use Shared\Exercise\Exercises\IUnscrambleWordExerciseRead;
 
 #[OAT\Schema(
     schema: 'Resources\Flashcard\v2\UnscrambleWordExerciseResource',

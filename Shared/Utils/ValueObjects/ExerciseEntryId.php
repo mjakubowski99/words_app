@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-namespace Exercise\Domain\ValueObjects;
-
-use Shared\Utils\ValueObjects\IntegerId;
+namespace Shared\Utils\ValueObjects;
 
 class ExerciseEntryId extends IntegerId {}

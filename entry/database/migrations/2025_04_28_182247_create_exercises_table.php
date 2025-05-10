@@ -7,22 +7,16 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 return new class extends Migration {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('exercises', function (Blueprint $table) {
             $table->id();
-            $table->string('exercise_type');
+            $table->tinyInteger('exercise_type');
             $table->string('status');
             $table->uuid('user_id');
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('exercises');

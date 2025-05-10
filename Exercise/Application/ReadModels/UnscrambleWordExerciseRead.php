@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Exercise\Application\ReadModels;
 
-use Shared\Exercise\ExerciseTypes\IUnscrambleWordExerciseRead;
+use Shared\Exercise\Exercises\IUnscrambleWordExerciseRead;
 use Shared\Models\Emoji;
 use Shared\Utils\ValueObjects\ExerciseId;
 

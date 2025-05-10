@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Exercise\Domain\Models;
 
-use Exercise\Domain\ValueObjects\ExerciseEntryId;
+use Shared\Utils\ValueObjects\ExerciseEntryId;
 
 class UnscrambleWordAnswer extends Answer
 {

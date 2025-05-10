@@ -4,20 +4,21 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Exercise\Infrastructure\Repository\UnscrambleWordExerciseRepository;
 
-use Tests\TestCase;
 use App\Models\Exercise;
-use Shared\Enum\ExerciseType;
-use Exercise\Domain\Models\Answer;
-use App\Models\UnscrambleWordExercise;
 use App\Models\LearningSessionFlashcard;
+use App\Models\UnscrambleWordExercise;
+use Exercise\Domain\Models\Answer;
 use Exercise\Domain\Models\ExerciseEntry;
-use Shared\Utils\ValueObjects\ExerciseId;
 use Exercise\Domain\Models\ExerciseStatus;
-use Exercise\Domain\ValueObjects\ExerciseEntryId;
 use Exercise\Domain\Models\UnscrambleWordsExercise;
+use Shared\Models\Emoji;
+use Shared\Utils\ValueObjects\ExerciseEntryId;
 use Exercise\Domain\ValueObjects\SessionFlashcardId;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Exercise\Infrastructure\Repositories\UnscrambleWordExerciseRepository;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Shared\Enum\ExerciseType;
+use Shared\Utils\ValueObjects\ExerciseId;
+use Tests\TestCase;
 
 class UnscrambleWordExerciseRepositoryTest extends TestCase
 {
@@ -57,7 +58,7 @@ class UnscrambleWordExerciseRepositoryTest extends TestCase
             'getExerciseType' => ExerciseType::UNSCRAMBLE_WORDS,
             'getScrambledWord' => 'rdow',
             'getWordTranslation' => 'slowo',
-            'getEmoji' => ';)',
+            'getEmoji' => Emoji::fromUnicode(';)'),
         ]);
 
         // WHEN
@@ -67,7 +68,7 @@ class UnscrambleWordExerciseRepositoryTest extends TestCase
         $this->assertDatabaseHas('exercises', [
             'id' => $exercise_id->getValue(),
             'user_id' => $user->getId()->getValue(),
-            'exercise_type' => $exercise->getExerciseType(),
+            'exercise_type' => $exercise->getExerciseType()->toNumber(),
             'status' => $exercise->getStatus(),
         ]);
         $this->assertDatabaseHas('unscramble_word_exercises', [

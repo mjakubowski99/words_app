@@ -4,10 +4,14 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Mappers\Postgres;
 
+use Flashcard\Application\ReadModels\ExerciseSummary;
+use Shared\Enum\ExerciseType;
+use Shared\Enum\SessionType;
 use Shared\Models\Emoji;
 use Shared\Enum\LanguageLevel;
 use Shared\Enum\SessionStatus;
 use Illuminate\Support\Facades\DB;
+use Shared\Utils\ValueObjects\ExerciseEntryId;
 use Shared\Utils\ValueObjects\Language;
 use Flashcard\Domain\ValueObjects\SessionId;
 use Flashcard\Domain\ValueObjects\SessionFlashcardId;
@@ -41,6 +45,7 @@ class SessionFlashcardReadMapper
                 SELECT 
                     learning_session_flashcards.id, 
                     learning_session_flashcards.rating,
+                    learning_session_flashcards.exercise_type,
                     learning_session_flashcards.exercise_entry_id,
                     flashcards.front_word,
                     flashcards.front_lang,
@@ -75,6 +80,7 @@ class SessionFlashcardReadMapper
             SELECT 
                 flashcards_data.id, 
                 flashcards_data.rating,
+                flashcards_data.exercise_type,
                 flashcards_data.exercise_entry_id,
                 flashcards_data.front_word,
                 flashcards_data.front_lang,
@@ -122,7 +128,10 @@ class SessionFlashcardReadMapper
             $results[0]->cards_per_session,
             SessionStatus::from($results[0]->status) === SessionStatus::FINISHED,
             $session_flashcards,
-            array_map(fn($result) => $result->exercise_entry_id, $exercise_entry_ids),
+            array_map(
+                fn($result) => new ExerciseSummary(new ExerciseEntryId($result->exercise_entry_id), ExerciseType::fromNumber($result->exercise_type)),
+                $exercise_entry_ids
+            ),
         );
     }
 

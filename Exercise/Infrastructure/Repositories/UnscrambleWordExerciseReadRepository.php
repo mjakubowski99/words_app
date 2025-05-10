@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Exercise\Infrastructure\Repositories;
 
 use Exercise\Application\Repositories\IUnscrambleWordExerciseReadRepository;
+use Shared\Utils\ValueObjects\ExerciseEntryId;
 use Exercise\Infrastructure\Mappers\Postgres\UnscrambleWordExerciseReadMapper;
-use Shared\Exercise\ExerciseTypes\IUnscrambleWordExerciseRead;
-use Shared\Utils\ValueObjects\ExerciseId;
+use Shared\Exercise\Exercises\IUnscrambleWordExerciseRead;
 
 class UnscrambleWordExerciseReadRepository implements IUnscrambleWordExerciseReadRepository
 {
@@ -15,8 +15,8 @@ class UnscrambleWordExerciseReadRepository implements IUnscrambleWordExerciseRea
         private UnscrambleWordExerciseReadMapper $mapper
     ) {}
 
-    public function find(ExerciseId $id): IUnscrambleWordExerciseRead
+    public function findByEntryId(ExerciseEntryId $id): IUnscrambleWordExerciseRead
     {
-        return $this->mapper->find($id);
+        return $this->mapper->findByEntryId($id);
     }
 }

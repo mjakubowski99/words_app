@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Shared\Exercise\ExerciseTypes;
+namespace Shared\Exercise\Exercises;
 
 use Shared\Models\Emoji;
 use Shared\Utils\ValueObjects\ExerciseId;

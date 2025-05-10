@@ -4,16 +4,15 @@ declare(strict_types=1);
 
 namespace Exercise\Infrastructure\Mappers\Postgres;
 
-use Illuminate\Support\Facades\DB;
-use Shared\Models\Emoji;
-use Shared\Utils\ValueObjects\UserId;
 use Exercise\Domain\Models\ExerciseEntry;
-use Shared\Utils\ValueObjects\ExerciseId;
 use Exercise\Domain\Models\ExerciseStatus;
 use Exercise\Domain\Models\UnscrambleWordAnswer;
-use Exercise\Domain\ValueObjects\ExerciseEntryId;
 use Exercise\Domain\Models\UnscrambleWordsExercise;
-use Exercise\Domain\ValueObjects\SessionFlashcardId;
+use Shared\Utils\ValueObjects\ExerciseEntryId;
+use Illuminate\Support\Facades\DB;
+use Shared\Models\Emoji;
+use Shared\Utils\ValueObjects\ExerciseId;
+use Shared\Utils\ValueObjects\UserId;
 
 class UnscrambleWordExerciseMapper
 {
@@ -119,7 +118,7 @@ class UnscrambleWordExerciseMapper
 
         $exercise_id = $this->db::table('exercises')
             ->insertGetId([
-                'exercise_type' => $exercise->getExerciseType()->value,
+                'exercise_type' => $exercise->getExerciseType()->toNumber(),
                 'user_id' => $exercise->getUserId(),
                 'status' => $exercise->getStatus()->value,
             ]);
@@ -158,7 +157,7 @@ class UnscrambleWordExerciseMapper
         $this->db::table('exercises')
             ->where('id', $exercise->getId())
             ->update([
-                'exercise_type' => $exercise->getExerciseType()->value,
+                'exercise_type' => $exercise->getExerciseType()->toNumber(),
                 'status' => $exercise->getStatus()->value,
             ]);
 

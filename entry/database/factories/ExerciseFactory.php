@@ -24,7 +24,7 @@ class ExerciseFactory extends Factory
         return [
             'user_id' => fn () => User::factory()->create(),
             'status' => ExerciseStatus::IN_PROGRESS,
-            'exercise_type' => ExerciseType::UNSCRAMBLE_WORDS->value,
+            'exercise_type' => ExerciseType::UNSCRAMBLE_WORDS->toNumber(),
         ];
     }
 }

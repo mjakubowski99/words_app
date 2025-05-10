@@ -6,7 +6,7 @@ namespace Tests\Unit\Exercise\Domain\Model\UnscrambleWordAnswer;
 
 use Tests\TestCase;
 use Exercise\Domain\Models\UnscrambleWordAnswer;
-use Exercise\Domain\ValueObjects\ExerciseEntryId;
+use Shared\Utils\ValueObjects\ExerciseEntryId;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Exercise\Domain\Exceptions\ExerciseAnswerCompareFailureException;
 

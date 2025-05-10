@@ -63,7 +63,8 @@ class AddSessionFlashcardsHandler
             foreach ($exercise_entries as $entry) {
                 $next_session_flashcards->associateExercise(
                     new FlashcardId($entry->getFlashcardId()),
-                    $entry->getExerciseEntryId()
+                    $entry->getExerciseEntryId(),
+                    $exercise_type
                 );
             }
 

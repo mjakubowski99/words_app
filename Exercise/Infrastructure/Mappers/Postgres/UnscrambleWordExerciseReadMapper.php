@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace Exercise\Infrastructure\Mappers\Postgres;
 
+use Exercise\Application\ReadModels\UnscrambleWordExerciseRead;
+use Shared\Utils\ValueObjects\ExerciseEntryId;
 use Illuminate\Support\Facades\DB;
 use Shared\Models\Emoji;
 use Shared\Utils\ValueObjects\ExerciseId;
-use Exercise\Application\ReadModels\UnscrambleWordExerciseRead;
 
 class UnscrambleWordExerciseReadMapper
 {
@@ -15,10 +16,10 @@ class UnscrambleWordExerciseReadMapper
         private DB $db,
     ) {}
 
-    public function find(ExerciseId $id): UnscrambleWordExerciseRead
+    public function findByEntryId(ExerciseEntryId $id): UnscrambleWordExerciseRead
     {
         $data = $this->db::table('unscramble_word_exercises')
-            ->where('exercise_entries.exercise_id', $id->getValue())
+            ->where('exercise_entries.id', $id->getValue())
             ->join('exercise_entries', 'exercise_entries.exercise_id', '=', 'unscramble_word_exercises.exercise_id')
             ->select([
                 'unscramble_word_exercises.exercise_id',
