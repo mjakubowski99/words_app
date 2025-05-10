@@ -31,10 +31,10 @@ class FlashcardFacade implements IFlashcardFacade
         return $this->session_repository->hasAnySession($user_id);
     }
 
-    /** @param IExerciseScore[] $session_flashcard_ratings */
-    public function updateRatings(array $session_flashcard_ratings): void
+    /** @param IExerciseScore[] $scores */
+    public function updateRatings(array $scores): void
     {
-        $this->update_ratings_handler->handle($session_flashcard_ratings);
+        $this->update_ratings_handler->handle($scores);
     }
 
     /** @param int[] $session_flashcard_ids */

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Shared\Flashcard;
 
 use Shared\Utils\ValueObjects\UserId;
+use Shared\Exercise\IExerciseScore;
 
 interface IFlashcardFacade
 {
@@ -12,8 +13,8 @@ interface IFlashcardFacade
 
     public function deleteUserData(UserId $user_id): void;
 
-    /** @param IExerciseScore[] $session_flashcard_ratings */
-    public function updateRatings(array $session_flashcard_ratings): void;
+    /** @param IExerciseScore[] $scores */
+    public function updateRatings(array $scores): void;
 
     /** @param int[] $session_flashcard_ids*/
     public function updateRatingsByPreviousRates(array $session_flashcard_ids): void;

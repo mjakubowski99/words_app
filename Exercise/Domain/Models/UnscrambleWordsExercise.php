@@ -77,7 +77,7 @@ class UnscrambleWordsExercise extends Exercise
         return $this->context_sentence;
     }
 
-    public function getEmoji(): Emoji
+    public function getEmoji(): ?Emoji
     {
         return $this->emoji;
     }

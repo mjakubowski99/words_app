@@ -21,15 +21,11 @@ class FlashcardExerciseFactory
     /** @param ISessionFlashcardSummary[] $session_flashcards_summary */
     public function makeExercise(array $session_flashcards_summary, UserId $user_id, ExerciseType $type): array
     {
-        switch ($type) {
-            case ExerciseType::UNSCRAMBLE_WORDS:
-                return $this->makeUnscrambleWordExercise($session_flashcards_summary, $user_id);
-
-                break;
-
-            default:
-                throw new \InvalidArgumentException('Invalid exercise type');
-        }
+        return match ($type) {
+            /** @phpstan-ignore-next-line  */
+            ExerciseType::UNSCRAMBLE_WORDS => $this->makeUnscrambleWordExercise($session_flashcards_summary, $user_id),
+            default => throw new \InvalidArgumentException('Invalid exercise type'),
+        };
     }
 
     /** @param ISessionFlashcardSummary[] $session_flashcards_summary */

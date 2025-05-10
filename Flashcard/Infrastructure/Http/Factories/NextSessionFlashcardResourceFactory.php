@@ -12,7 +12,6 @@ use Flashcard\Infrastructure\Http\Resources\v2\UnscrambleWordExerciseResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Shared\Enum\ExerciseType;
 use Shared\Exercise\Exercises\IExerciseReadFacade;
-use Shared\Exercise\IFlashcardExerciseFacade;
 
 class NextSessionFlashcardResourceFactory
 {
@@ -41,6 +40,7 @@ class NextSessionFlashcardResourceFactory
     private function resolveExerciseResource(ExerciseSummary $summary): JsonResource
     {
         return match ($summary->getExerciseType()) {
+            /** @phpstan-ignore-next-line  */
             ExerciseType::UNSCRAMBLE_WORDS => new UnscrambleWordExerciseResource(
                 $this->exercise_read_facade->getUnscrambleWordExercise($summary->getExerciseEntryId()),
             ),

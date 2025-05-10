@@ -15,10 +15,12 @@ enum ExerciseType: string
     public function toNumber(): int
     {
         foreach (self::NUMBER_REPRESENTATIONS as $key => $value) {
-            if ($value === $this) {
+            /** @phpstan-ignore-next-line  */
+            if ($value->value === $this->value) {
                 return $key;
             }
         }
+        /** @phpstan-ignore-next-line  */
         throw new \InvalidArgumentException('Invalid exercise type');
     }
 
