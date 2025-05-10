@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Exercise\Infrastructure\Http\Controllers;
 
 use App\Http\OpenApi\Tags;
+use Illuminate\Support\Facades\DB;
 use OpenApi\Attributes as OAT;
 use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
@@ -51,7 +52,9 @@ class ExerciseController extends Controller
         UnscrambleWordExerciseAnswerRequest $request,
         UnscrambleWordExerciseAnswerHandler $handler
     ): JsonResponse {
-        $assessment = $handler->handle($request->getExerciseEntryId(), $request->currentId(), $request->getAnswer());
+        $assessment = DB::transaction(function () use ($request, $handler) {
+            return $handler->handle($request->getExerciseEntryId(), $request->currentId(), $request->getAnswer());
+        });
 
         if (!$assessment->isCorrect()) {
             return new JsonResponse([
@@ -87,7 +90,9 @@ class ExerciseController extends Controller
         SkipUnscrambleWordExerciseRequest $request,
         SkipUnscrambleWordExerciseHandler $handler
     ): JsonResponse {
-        $handler->handle($request->getExerciseId(), $request->currentId());
+        DB::transaction(function () use ($request, $handler) {
+            $handler->handle($request->getExerciseId(), $request->currentId());
+        });
 
         return new JsonResponse([], 204);
     }

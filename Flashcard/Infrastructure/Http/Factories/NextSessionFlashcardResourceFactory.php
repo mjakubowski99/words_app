@@ -26,12 +26,17 @@ class NextSessionFlashcardResourceFactory
 
         return new NextSessionFlashcardsResource([
             'flashcards' => $flashcards,
-            'exercises' => array_map(function (ExerciseSummary $summary) {
+            'exercises' => array_map(function (ExerciseSummary $summary) use ($id) {
                 $resource = $this->resolveExerciseResource($summary);
 
                 return [
                     'type' => $summary->getExerciseType()->value,
                     'resource' => $resource,
+                    'links' => [
+                        'next' => route('v2.flashcards.session.get', ['session_id' => $id]),
+                        'answer' => route('v2.exercises.unscramble-words.answer', ['exercise_entry_id' => $summary->getExerciseEntryId()]),
+                        'skip' => route('v2.exercises.unscramble-words.skip', ['exercise_id' => $resource->resource->getId()->getValue()]),
+                    ],
                 ];
             }, $flashcards->getExerciseSummaries()),
         ]);

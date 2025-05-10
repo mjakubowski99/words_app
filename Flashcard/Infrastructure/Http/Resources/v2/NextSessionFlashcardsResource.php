@@ -152,14 +152,16 @@ class NextSessionFlashcardsResource extends JsonResource
         /** @var array $exercises */
         $exercises = $this->resource['exercises'];
 
+        $session_id = $resource->getSessionId()->getValue();
+
         return [
             'session' => [
-                'id' => $resource->getSessionId()->getValue(),
+                'id' => $session_id,
                 'cards_per_session' => $resource->getCardsPerSession(),
                 'is_finished' => $resource->getIsFinished(),
                 'progress' => $resource->getProgress(),
                 'is_exercise_mode' => empty($resource->getSessionFlashcards()) && !empty($exercises),
-                'next_flashcards' => array_map(function (SessionFlashcardRead $flashcard) {
+                'next_flashcards' => array_map(function (SessionFlashcardRead $flashcard) use ($session_id){
                     return [
                         'id' => $flashcard->getId()->getValue(),
                         'front_word' => $flashcard->getFrontWord(),
@@ -171,11 +173,15 @@ class NextSessionFlashcardsResource extends JsonResource
                         'language_level' => $flashcard->getLanguageLevel()->value,
                         'emoji' => $flashcard->getEmoji(),
                         'owner_type' => $flashcard->getOwnerType()->value,
+                        'links' => [
+                            'rate' => route('v2.flashcards.session.rate', ['session_id' => $session_id]),
+                        ],
                     ];
                 }, $resource->getSessionFlashcards()),
                 'next_exercises' => array_map(function (array $exercise) {
                     return [
                         'exercise_type' => $exercise['type'],
+                        'links' => $exercise['links'],
                         'data' => $exercise['resource'],
                     ];
                 }, $exercises),
