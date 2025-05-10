@@ -16,7 +16,6 @@ use Shared\Utils\ValueObjects\ExerciseId;
 use Exercise\Domain\Models\ExerciseStatus;
 use Shared\Utils\ValueObjects\ExerciseEntryId;
 use Exercise\Domain\Models\UnscrambleWordsExercise;
-use Exercise\Domain\ValueObjects\SessionFlashcardId;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Exercise\Infrastructure\Repositories\UnscrambleWordExerciseRepository;
 

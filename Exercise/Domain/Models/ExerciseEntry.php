@@ -6,7 +6,6 @@ namespace Exercise\Domain\Models;
 
 use Shared\Utils\ValueObjects\ExerciseId;
 use Shared\Utils\ValueObjects\ExerciseEntryId;
-use Exercise\Domain\ValueObjects\SessionFlashcardId;
 
 class ExerciseEntry
 {
