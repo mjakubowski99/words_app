@@ -47,6 +47,8 @@ class UnscrambleWordExerciseRepositoryTest extends TestCase
             'getCorrectAnswer' => $correct_answer,
             'getLastAnswer' => null,
             'isLastAnswerCorrect' => false,
+            'getAnswersCount' => 0,
+            'getScore' => 0,
         ]);
         $exercise = \Mockery::mock(UnscrambleWordsExercise::class)->allows([
             'getId' => ExerciseId::noId(),
@@ -78,6 +80,8 @@ class UnscrambleWordExerciseRepositoryTest extends TestCase
         $this->assertDatabaseHas('exercise_entries', [
             'exercise_id' => $exercise_id->getValue(),
             'correct_answer' => $correct_answer->toString(),
+            'answers_count' => $entry->getAnswersCount(),
+            'score' => $entry->getScore(),
         ]);
     }
 
@@ -90,6 +94,8 @@ class UnscrambleWordExerciseRepositoryTest extends TestCase
         ]);
         $exercise_entry = \App\Models\ExerciseEntry::factory()->create([
             'exercise_id' => $exercise->id,
+            'answers_count' => 3,
+            'score' => 0.4,
         ]);
 
         // WHEN
@@ -97,5 +103,8 @@ class UnscrambleWordExerciseRepositoryTest extends TestCase
 
         // THEN
         $this->assertInstanceOf(UnscrambleWordsExercise::class, $exercise);
+        $this->assertCount(1, $exercise->getExerciseEntries());
+        $this->assertSame(3, $exercise->getExerciseEntries()[0]->getAnswersCount());
+        $this->assertSame(0.4, $exercise->getExerciseEntries()[0]->getScore());
     }
 }

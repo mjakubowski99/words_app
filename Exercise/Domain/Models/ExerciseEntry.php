@@ -18,7 +18,6 @@ class ExerciseEntry
         private Answer $correct_answer,
         private ?Answer $last_user_answer,
         private ?bool $last_answer_correct,
-        private ?SessionFlashcardId $session_flashcard_id = null,
         private float $score = 0.0,
         private int $answers_count = 0,
     ) {}

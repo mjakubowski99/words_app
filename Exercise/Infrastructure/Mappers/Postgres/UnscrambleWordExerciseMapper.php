@@ -44,6 +44,8 @@ class UnscrambleWordExerciseMapper
                 'exercise_entries.id as exercise_entry_id',
                 'exercise_entries.last_answer',
                 'exercise_entries.last_answer_correct',
+                'exercise_entries.score',
+                'exercise_entries.answers_count',
             )
             ->firstOrFail();
 
@@ -60,7 +62,9 @@ class UnscrambleWordExerciseMapper
             $result->emoji ? Emoji::fromUnicode($result->emoji) : null,
             $result->scrambled_word,
             $result->last_answer ? new UnscrambleWordAnswer($entry_id, $result->last_answer) : null,
-            $result->last_answer_correct
+            $result->last_answer_correct,
+            (float) $result->score,
+            $result->answers_count,
         );
     }
 
@@ -88,6 +92,8 @@ class UnscrambleWordExerciseMapper
                 'exercise_entries.id as exercise_entry_id',
                 'exercise_entries.last_answer',
                 'exercise_entries.last_answer_correct',
+                'exercise_entries.score',
+                'exercise_entries.answers_count',
             )
             ->firstOrFail();
 
@@ -104,7 +110,9 @@ class UnscrambleWordExerciseMapper
             $result->emoji ? Emoji::fromUnicode($result->emoji) : null,
             $result->scrambled_word,
             $result->last_answer ? new UnscrambleWordAnswer($entry_id, $result->last_answer) : null,
-            $result->last_answer_correct
+            $result->last_answer_correct,
+            (float) $result->score,
+            $result->answers_count,
         );
     }
 

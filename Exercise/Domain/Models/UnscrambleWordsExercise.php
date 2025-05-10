@@ -24,6 +24,8 @@ class UnscrambleWordsExercise extends Exercise
         private string $scrambled_word,
         ?UnscrambleWordAnswer $last_answer,
         ?bool $last_answer_correct,
+        float $score = 0.0,
+        int $answers_count = 0,
     ) {
         $entry = new ExerciseEntry(
             $answer_entry_id,
@@ -31,6 +33,8 @@ class UnscrambleWordsExercise extends Exercise
             new UnscrambleWordAnswer($answer_entry_id, $word),
             $last_answer,
             $last_answer_correct,
+            $score,
+            $answers_count,
         );
 
         parent::__construct($id, $user_id, [$entry], $status, ExerciseType::UNSCRAMBLE_WORDS);
