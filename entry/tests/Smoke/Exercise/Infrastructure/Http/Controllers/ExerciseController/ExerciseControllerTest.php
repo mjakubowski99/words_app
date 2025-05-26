@@ -37,7 +37,10 @@ class ExerciseControllerTest extends TestCase
         // GIVEN
         $user = $this->createUser();
         $exercise = Exercise::factory()->create(['user_id' => $user->id]);
-        $u_exercise = UnscrambleWordExercise::factory()->create(['exercise_id' => $exercise->id]);
+        $u_exercise = UnscrambleWordExercise::factory()->create([
+            'exercise_id' => $exercise->id,
+            'word' => 'trxll',
+        ]);
         $entry = ExerciseEntry::factory()->create(['exercise_id' => $exercise->id]);
 
         // WHEN
@@ -47,6 +50,26 @@ class ExerciseControllerTest extends TestCase
 
         // THEN
         $response->assertStatus(400);
+        $response->assertJsonStructure([
+            'data' => [
+                'assessment' => [
+                    '*' => [
+                        'character',
+                        'correct',
+                    ],
+                ],
+            ],
+        ]);
+
+        // comaprsion trxll vs tralalal
+        $this->assertSame(true, $response->json('data.assessment.0.correct'));
+        $this->assertSame(true, $response->json('data.assessment.1.correct'));
+        $this->assertSame(false, $response->json('data.assessment.2.correct'));
+        $this->assertSame(true, $response->json('data.assessment.3.correct'));
+        $this->assertSame(false, $response->json('data.assessment.4.correct'));
+        $this->assertSame(false, $response->json('data.assessment.5.correct'));
+        $this->assertSame(false, $response->json('data.assessment.6.correct'));
+        $this->assertSame(false, $response->json('data.assessment.7.correct'));
     }
 
     public function test__skipUnscrambleWordExercise_WhenExerciseExists_success(): void

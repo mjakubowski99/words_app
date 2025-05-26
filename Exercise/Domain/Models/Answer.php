@@ -32,7 +32,9 @@ abstract class Answer
         }
 
         return new AnswerAssessment(
-            $this->getCompareScore($answer)
+            $this->getCompareScore($answer),
+            $this->toString(),
+            $answer->toString(),
         );
     }
 
