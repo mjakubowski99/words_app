@@ -9,10 +9,12 @@ use OpenApi\Attributes as OAT;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use Exercise\Domain\Models\AnswerAssessment;
 use Exercise\Infrastructure\Http\Request\SkipUnscrambleWordExerciseRequest;
 use Exercise\Infrastructure\Http\Request\UnscrambleWordExerciseAnswerRequest;
 use Exercise\Application\Command\SkipExercise\SkipUnscrambleWordExerciseHandler;
 use Exercise\Application\Command\AnswerExercise\UnscrambleWordExerciseAnswerHandler;
+use Exercise\Infrastructure\Http\Resources\UnscrambleWordExerciseAssessmentResource;
 
 class ExerciseController extends Controller
 {
@@ -33,12 +35,12 @@ class ExerciseController extends Controller
             ),
             new OAT\Response(
                 response: 400,
-                description: 'Answer is incorrect.',
+                description: 'Answer incorrect',
                 content: new OAT\JsonContent(properties: [
                     new OAT\Property(
-                        property: 'message',
-                        type: 'string',
-                        example: 'Incorrect answer'
+                        property: 'data',
+                        type: 'array',
+                        items: new OAT\Items(ref: '#/components/schemas/Resources\Exercise\UnscrambleWordExerciseAssessmentResource'),
                     ),
                 ]),
             ),
@@ -52,14 +54,15 @@ class ExerciseController extends Controller
         UnscrambleWordExerciseAnswerRequest $request,
         UnscrambleWordExerciseAnswerHandler $handler
     ): JsonResponse {
+        /** @var AnswerAssessment $assessment */
         $assessment = DB::transaction(function () use ($request, $handler) {
             return $handler->handle($request->getExerciseEntryId(), $request->currentId(), $request->getAnswer());
         });
 
         if (!$assessment->isCorrect()) {
-            return new JsonResponse([
-                'message' => 'Incorrect answer',
-            ], 400);
+            return (new UnscrambleWordExerciseAssessmentResource($assessment))
+                ->response()
+                ->setStatusCode(400);
         }
 
         return new JsonResponse([], 204);
