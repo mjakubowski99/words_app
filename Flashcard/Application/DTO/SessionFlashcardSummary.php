@@ -11,31 +11,31 @@ use Shared\Flashcard\ISessionFlashcardSummary;
 class SessionFlashcardSummary implements ISessionFlashcardSummary
 {
     private int $flashcard_id;
-    private string $frontWord;
-    private string $backWord;
-    private string $frontContext;
-    private string $backContext;
-    private Language $frontLang;
-    private Language $backLang;
-    private Emoji $emoji;
+    private string $front_word;
+    private string $back_word;
+    private string $front_context;
+    private string $back_context;
+    private Language $front_lang;
+    private Language $back_lang;
+    private ?Emoji $emoji;
 
     public function __construct(
         int $flashcard_id,
-        string $frontWord,
-        string $backWord,
-        string $frontContext,
-        string $backContext,
+        string $front_word,
+        string $back_word,
+        string $front_context,
+        string $back_context,
         Language $frontLang,
         Language $backLang,
         ?Emoji $emoji
     ) {
         $this->flashcard_id = $flashcard_id;
-        $this->frontWord = $frontWord;
-        $this->backWord = $backWord;
-        $this->frontContext = $frontContext;
-        $this->backContext = $backContext;
-        $this->frontLang = $frontLang;
-        $this->backLang = $backLang;
+        $this->front_word = $front_word;
+        $this->back_word = $back_word;
+        $this->front_context = $front_context;
+        $this->back_context = $back_context;
+        $this->front_lang = $frontLang;
+        $this->back_lang = $backLang;
         $this->emoji = $emoji;
     }
 
@@ -46,32 +46,32 @@ class SessionFlashcardSummary implements ISessionFlashcardSummary
 
     public function getFrontWord(): string
     {
-        return $this->frontWord;
+        return $this->front_word;
     }
 
     public function getBackWord(): string
     {
-        return $this->backWord;
+        return $this->back_word;
     }
 
     public function getFrontContext(): string
     {
-        return $this->frontContext;
+        return $this->front_context;
     }
 
     public function getBackContext(): string
     {
-        return $this->backContext;
+        return $this->back_context;
     }
 
     public function getFrontLang(): Language
     {
-        return $this->frontLang;
+        return $this->front_lang;
     }
 
     public function getBackLang(): Language
     {
-        return $this->backLang;
+        return $this->back_lang;
     }
 
     public function getEmoji(): ?Emoji
