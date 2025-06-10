@@ -34,6 +34,18 @@ use Illuminate\Http\Resources\Json\JsonResource;
                 type: 'object'
             )
         ),
+        new OAT\Property(
+            property: 'user_answer',
+            description: 'The complete answer provided by the user',
+            type: 'string',
+            example: 'tralalal'
+        ),
+        new OAT\Property(
+            property: 'correct_answer',
+            description: 'The correct answer for the exercise',
+            type: 'string',
+            example: 'trxll'
+        ),
     ]
 )]
 /**
@@ -56,6 +68,8 @@ class UnscrambleWordExerciseAssessmentResource extends JsonResource
                     'correct' => ($correct_answer[$i] ?? null) === $character,
                 ];
             }, mb_str_split(trim($this->resource->getUserAnswer()))),
+            'user_answer' => $this->resource->getUserAnswer(),
+            'correct_answer' => $this->resource->getCorrectAnswer(),
         ];
     }
 }

@@ -46,6 +46,11 @@ class UnscrambleWordExerciseRead implements IUnscrambleWordExerciseRead
 
     public function getKeyboard(): array
     {
+        $traps = [];
+        for ($i = 0; $i < 3; ++$i) {
+            $traps[] = mb_strtolower(chr(rand(65, 90))); // A-Z (uppercase)
+        }
+
         $word = mb_strtolower($this->scrambled_word);
 
         $words = mb_str_split($word);
@@ -53,6 +58,8 @@ class UnscrambleWordExerciseRead implements IUnscrambleWordExerciseRead
         $words = array_filter($words, function ($word) {
             return !ctype_space($word);
         });
+
+        $words = array_merge($words, $traps);
 
         shuffle($words);
 

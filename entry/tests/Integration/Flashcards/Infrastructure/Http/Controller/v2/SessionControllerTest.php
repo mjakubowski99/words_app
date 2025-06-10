@@ -60,6 +60,7 @@ class SessionControllerTest extends TestCase
         ]);
         $flashcards = Flashcard::factory(3)->create([
             'flashcard_deck_id' => $deck->id,
+            'emoji' => null,
         ]);
 
         // WHEN

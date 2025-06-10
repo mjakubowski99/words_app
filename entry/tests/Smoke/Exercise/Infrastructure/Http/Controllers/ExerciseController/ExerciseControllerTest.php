@@ -58,6 +58,8 @@ class ExerciseControllerTest extends TestCase
                         'correct',
                     ],
                 ],
+                'user_answer',
+                'correct_answer',
             ],
         ]);
 
