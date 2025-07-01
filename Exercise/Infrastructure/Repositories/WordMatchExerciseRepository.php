@@ -18,9 +18,9 @@ class WordMatchExerciseRepository implements IWordMatchExerciseRepository
         return $this->mapper->find($id);
     }
 
-    public function create(WordMatchExercise $exercise): void
+    public function create(WordMatchExercise $exercise): ExerciseId
     {
-        $this->mapper->create($exercise);
+        return $this->mapper->create($exercise);
     }
 
     public function save(WordMatchExercise $exercise): void

@@ -23,7 +23,7 @@ class WordMatchExerciseMapper
     public function find(ExerciseId $id): WordMatchExercise
     {
         $rows = DB::table('exercises')
-            ->where('exercises.id', $id)
+            ->where('exercises.id', $id->getValue())
             ->join('exercise_entries', 'exercise_entries.exercise_id', '=', 'exercises.id')
             ->select(
                 'exercises.properties',
@@ -73,7 +73,7 @@ class WordMatchExerciseMapper
         );
     }
 
-    public function create(WordMatchExercise $exercise): void
+    public function create(WordMatchExercise $exercise): ExerciseId
     {
         $properties = [
             'story_id' => $exercise->getStoryId()?->getValue(),
@@ -115,6 +115,8 @@ class WordMatchExerciseMapper
         }
 
         $this->db::table('exercise_entries')->insert($data);
+
+        return new ExerciseId($exercise_id);
     }
 
     public function save(WordMatchExercise $exercise): void

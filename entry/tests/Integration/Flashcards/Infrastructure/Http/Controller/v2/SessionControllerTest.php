@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Integration\Flashcards\Infrastructure\Http\Controller\v2;
 
+use App\Models\Exercise;
+use Shared\Utils\ValueObjects\ExerciseId;
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\Admin;
@@ -79,6 +81,38 @@ class SessionControllerTest extends TestCase
             'id' => $response->json('data.session.id'),
             'user_id' => $user->id,
             'type' => SessionType::UNSCRAMBLE_WORDS->value,
+        ]);
+    }
+
+    /**
+     * @test
+     */
+    public function store_word_match_exercise_success(): void
+    {
+        // GIVEN
+        $user = User::factory()->create();
+        $deck = FlashcardDeck::factory()->create([
+            'user_id' => $user->id,
+        ]);
+        $flashcards = Flashcard::factory(3)->create([
+            'flashcard_deck_id' => $deck->id,
+            'emoji' => null,
+        ]);
+
+        // WHEN
+        $response = $this
+            ->actingAs($user, 'sanctum')
+            ->postJson(route('v2.flashcards.session.store'), [
+                'cards_per_session' => 10,
+                'flashcard_deck_id' => $deck->id,
+                'session_type' => SessionType::WORD_MATCH->value,
+            ]);
+
+        // THEN
+        $this->assertDatabaseHas('learning_sessions', [
+            'id' => $response->json('data.session.id'),
+            'user_id' => $user->id,
+            'type' => SessionType::WORD_MATCH->value,
         ]);
     }
 

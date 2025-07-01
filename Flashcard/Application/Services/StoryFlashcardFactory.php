@@ -19,7 +19,7 @@ class StoryFlashcardFactory
 
     public function make(NextSessionFlashcards $next_session_flashcards, Flashcard $base_flashcard): SessionFlashcardSummaries
     {
-        $story = $this->repository->findRandomStoryByFlashcard($base_flashcard->getId());
+        $story = $this->repository->findRandomStoryByFlashcard($base_flashcard->getId(), $next_session_flashcards->getUserId());
 
         if ($story) {
             return SessionFlashcardSummaries::fromStory($story, $base_flashcard);

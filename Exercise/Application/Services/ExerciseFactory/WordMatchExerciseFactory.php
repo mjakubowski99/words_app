@@ -9,6 +9,7 @@ use Exercise\Domain\Models\ExerciseEntry;
 use Exercise\Domain\Models\ExerciseStatus;
 use Exercise\Domain\Models\WordMatchAnswer;
 use Exercise\Domain\Models\WordMatchExercise;
+use Exercise\Domain\Models\WordMatchExerciseEntry;
 use Shared\Flashcard\ISessionFlashcardSummaries;
 use Shared\Utils\ValueObjects\ExerciseEntryId;
 use Shared\Utils\ValueObjects\ExerciseId;
@@ -25,7 +26,10 @@ class WordMatchExerciseFactory implements IExerciseFactory
         $exercise_entries = [];
 
         foreach ($summaries->getSummaries() as $summary) {
-            $exercise_entries[] = new ExerciseEntry(
+            $exercise_entries[] = new WordMatchExerciseEntry(
+                $summary->getBackWord(),
+                $summary->getFrontWord(),
+                $summary->getStorySentence() ?? $summary->getBackContext(),
                 ExerciseEntryId::noId(),
                 ExerciseId::noId(),
                 WordMatchAnswer::fromString(ExerciseEntryId::noId(), $summary->getBackWord()),
@@ -42,9 +46,9 @@ class WordMatchExerciseFactory implements IExerciseFactory
             $exercise_entries
         );
 
-        $this->word_match_exercise_repository->save($exercise);
+        $exercise_id = $this->word_match_exercise_repository->create($exercise);
 
-        $exercise = $this->word_match_exercise_repository->find($exercise->getId());
+        $exercise = $this->word_match_exercise_repository->find($exercise_id);
 
         return FlashcardExercise::newCollection($summaries, $exercise);
     }
