@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Mappers\Postgres;
 
+use Flashcard\Domain\Models\Rating;
+use Illuminate\Support\Arr;
 use Shared\Models\Emoji;
 use Shared\Enum\LanguageLevel;
 use Flashcard\Domain\Models\Deck;
@@ -84,7 +86,7 @@ class FlashcardMapper
             })->toArray();
     }
 
-    public function createMany(array $flashcards): void
+    public function createMany(array $flashcards): array
     {
         $insert_data = [];
         $now = now();
@@ -107,7 +109,20 @@ class FlashcardMapper
                 'updated_at' => $now,
             ];
         }
-        $this->db::table('flashcards')->insert($insert_data);
+
+        $results = $this->db::table('flashcards')
+            ->insertReturning($insert_data, ['id', 'front_word', 'back_word']);
+
+        foreach ($flashcards as $flashcard) {
+            Arr::first($results, function ($result) use ($flashcard) {
+                if ($result->front_word === $flashcard->getFrontWord() && $result->back_word === $flashcard->getBackWord()) {
+                    $flashcard->setId(new FlashcardId($result->id));
+                    return true;
+                }
+                return false;
+            });
+        }
+        return $flashcards;
     }
 
     public function findMany(array $flashcard_ids): array
@@ -117,6 +132,28 @@ class FlashcardMapper
             ->leftJoin('flashcard_decks', 'flashcard_decks.id', '=', 'flashcards.flashcard_deck_id')
             ->select(
                 'flashcards.*',
+                'flashcard_decks.user_id as deck_user_id',
+                'flashcard_decks.admin_id as deck_admin_id',
+                'flashcard_decks.tag as deck_tag',
+                'flashcard_decks.name as deck_name',
+                'flashcard_decks.default_language_level as deck_default_language_level',
+            )
+            ->get()
+            ->map(function (object $data) {
+                return $this->map($data);
+            })->all();
+    }
+
+    public function findManyForUser(array $flashcard_ids, UserId $user_id): array
+    {
+        return $this->db::table('flashcards')
+            ->whereIn('flashcards.id', $flashcard_ids)
+            ->leftJoin('flashcard_decks', 'flashcard_decks.id', '=', 'flashcards.flashcard_deck_id')
+            ->leftJoin('sm_two_flashcards', 'sm_two_flashcards.flashcard_id', '=', 'flashcards.id')
+            ->where(fn($q) => $q->where('sm_two_flashcards.user_id', '=', $user_id->getValue())->orWhereNull('sm_two_flashcards.user_id'))
+            ->select(
+                'flashcards.*',
+                'sm_two_flashcards.last_rating',
                 'flashcard_decks.user_id as deck_user_id',
                 'flashcard_decks.admin_id as deck_admin_id',
                 'flashcard_decks.tag as deck_tag',
@@ -226,6 +263,7 @@ class FlashcardMapper
             $deck,
             LanguageLevel::from($data->language_level),
             $data->emoji ? Emoji::fromUnicode($data->emoji) : null,
+            isset($data->last_rating) ? Rating::from($data->last_rating) : null,
         );
     }
 }

@@ -23,7 +23,7 @@ class Flashcard
         private string $back_word,
         private Language $back_lang,
         private string $front_context,
-        private string $back_context,
+        protected string $back_context,
         private ?Owner $owner,
         private ?Deck $deck,
         private LanguageLevel $level,
@@ -40,6 +40,11 @@ class Flashcard
     public function getId(): FlashcardId
     {
         return $this->id;
+    }
+
+    public function setId(FlashcardId $id): void
+    {
+        $this->id = $id;
     }
 
     public function getFrontWord(): string
@@ -130,5 +135,17 @@ class Flashcard
     public function getLastUserRating(): ?Rating
     {
         return $this->last_user_rating;
+    }
+
+    public function hash(): string
+    {
+        return md5(
+            $this->front_word .
+            $this->front_lang->getValue() .
+            $this->back_word .
+            $this->back_lang->getValue() .
+            $this->front_context .
+            $this->back_context
+        );
     }
 }

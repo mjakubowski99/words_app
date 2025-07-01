@@ -6,6 +6,7 @@ namespace Exercise\Application\Command\AnswerExercise;
 
 use Exercise\Domain\Models\Answer;
 use Exercise\Domain\Models\Exercise;
+use Shared\Utils\ValueObjects\ExerciseId;
 use Shared\Utils\ValueObjects\UserId;
 use Shared\Flashcard\IFlashcardFacade;
 use Exercise\Domain\Models\ExerciseEntry;
@@ -20,22 +21,26 @@ abstract class AbstractExerciseAnswerHandler
         private IFlashcardFacade $facade,
     ) {}
 
-    public function handle(ExerciseEntryId $id, UserId $user_id, Answer $answer): AnswerAssessment
+    /** @return AnswerAssessment[] */
+    public function handle(ExerciseId $exercise_id, UserId $user_id, array $answers): array
     {
-        $exercise = $this->resolveExercise($id);
+        $exercise = $this->resolveExercise($exercise_id);
 
         if (!$exercise->getUserId()->equals($user_id)) {
             throw new UnauthorizedException();
         }
 
-        $assessment = $this->assessesAnswer($exercise, $answer);
+        $assessments = [];
+        foreach ($answers as $answer) {
+            $assessments[] = $this->assessesAnswer($exercise, $answer);
+        }
 
         $this->save($exercise);
 
-        return $assessment;
+        return $assessments;
     }
 
-    abstract protected function resolveExercise(ExerciseEntryId $id): Exercise;
+    abstract protected function resolveExercise(ExerciseId $exercise_id): Exercise;
 
     abstract protected function save(Exercise $exercise): void;
 

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Http\Factories;
 
+use Flashcard\Infrastructure\Http\Resources\v2\WordMatchExerciseResource;
 use Shared\Enum\ExerciseType;
 use Flashcard\Domain\ValueObjects\SessionId;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -32,11 +33,19 @@ class NextSessionFlashcardResourceFactory
                 return [
                     'type' => $summary->getExerciseType()->value,
                     'resource' => $resource,
-                    'links' => [
-                        'next' => route('v2.flashcards.session.get', ['session_id' => $id]),
-                        'answer' => route('v2.exercises.unscramble-words.answer', ['exercise_entry_id' => $summary->getExerciseEntryId()]),
-                        'skip' => route('v2.exercises.unscramble-words.skip', ['exercise_id' => $resource->resource->getId()->getValue()]),
-                    ],
+                    'links' => match ($summary->getExerciseType()) {
+                        ExerciseType::UNSCRAMBLE_WORDS => [
+                            'next' => route('v2.flashcards.session.get', ['session_id' => $id]),
+                            'answer' => route('v2.exercises.unscramble-words.answer', ['exercise_entry_id' => $summary->getExerciseEntryId()]),
+                            'skip' => route('v2.exercises.unscramble-words.skip', ['exercise_id' => $resource->resource->getId()->getValue()]),
+                        ],
+                        ExerciseType::WORD_MATCH => [
+                            'next' => route('v2.flashcards.session.get', ['session_id' => $id]),
+                            'answer' => route('v2.exercises.word-match.answer', ['exercise_id' => $resource->resource->getExerciseId()->getValue()]),
+                            'skip' => route('v2.exercises.word-match.skip', ['exercise_id' => $resource->resource->getExerciseId()->getValue()]),
+                        ],
+                        default => throw new \UnexpectedValueException('Unsupported exercise type'),
+                    }
                 ];
             }, $flashcards->getExerciseSummaries()),
         ]);
@@ -48,6 +57,9 @@ class NextSessionFlashcardResourceFactory
             /* @phpstan-ignore-next-line */
             ExerciseType::UNSCRAMBLE_WORDS => new UnscrambleWordExerciseResource(
                 $this->exercise_read_facade->getUnscrambleWordExercise($summary->getExerciseEntryId()),
+            ),
+            ExerciseType::WORD_MATCH => new WordMatchExerciseResource(
+                $this->exercise_read_facade->getWordMatchExercise($summary->getExerciseEntryId())
             ),
             default => throw new \UnexpectedValueException('Unsupported exercise type'),
         };

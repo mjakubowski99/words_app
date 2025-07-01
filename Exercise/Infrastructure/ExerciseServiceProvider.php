@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace Exercise\Infrastructure;
 
+use Exercise\Application\Repositories\IWordMatchExerciseReadRepository;
+use Exercise\Application\Repositories\IWordMatchExerciseRepository;
+use Exercise\Infrastructure\Repositories\WordMatchExerciseReadRepository;
+use Exercise\Infrastructure\Repositories\WordMatchExerciseRepository;
 use Illuminate\Support\ServiceProvider;
 use Shared\Exercise\IFlashcardExerciseFacade;
 use Shared\Exercise\Exercises\IExerciseReadFacade;
@@ -22,5 +26,7 @@ class ExerciseServiceProvider extends ServiceProvider
         $this->app->bind(IUnscrambleWordExerciseRepository::class, UnscrambleWordExerciseRepository::class);
         $this->app->bind(IUnscrambleWordExerciseReadRepository::class, UnscrambleWordExerciseReadRepository::class);
         $this->app->bind(IExerciseReadFacade::class, ExerciseReadFacade::class);
+        $this->app->bind(IWordMatchExerciseRepository::class, WordMatchExerciseRepository::class);
+        $this->app->bind(IWordMatchExerciseReadRepository::class, WordMatchExerciseReadRepository::class);
     }
 }

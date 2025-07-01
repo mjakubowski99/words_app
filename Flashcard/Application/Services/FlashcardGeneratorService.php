@@ -5,18 +5,21 @@ declare(strict_types=1);
 namespace Flashcard\Application\Services;
 
 use Flashcard\Application\DTO\ResolvedDeck;
-use Flashcard\Domain\Models\FlashcardPrompt;
-use Flashcard\Domain\Services\FlashcardDuplicateService;
-use Flashcard\Application\Repository\IFlashcardRepository;
 use Flashcard\Application\Repository\IFlashcardDeckRepository;
 use Flashcard\Application\Repository\IFlashcardDuplicateRepository;
+use Flashcard\Application\Repository\IFlashcardRepository;
+use Flashcard\Application\Repository\IStoryRepository;
 use Flashcard\Application\Services\AiGenerators\IFlashcardGenerator;
+use Flashcard\Domain\Models\FlashcardPrompt;
+use Flashcard\Domain\Models\StoryFlashcard;
+use Flashcard\Domain\Services\FlashcardDuplicateService;
 
 class FlashcardGeneratorService
 {
     public function __construct(
         private IFlashcardDeckRepository $deck_repository,
-        private IFlashcardRepository $repository,
+        private IFlashcardRepository $flashcard_repository,
+        private IStoryRepository $repository,
         private IFlashcardGenerator $generator,
         private IFlashcardDuplicateRepository $duplicate_repository,
         private FlashcardDuplicateService $duplicate_service,
@@ -27,7 +30,7 @@ class FlashcardGeneratorService
         string $deck_name,
         int $words_count,
         int $words_count_to_save,
-    ): array {
+    ): int {
         $initial_letters_to_avoid = $this->duplicate_repository->getRandomFrontWordInitialLetters($deck->getDeck()->getId(), 5);
 
         $prompt = new FlashcardPrompt(
@@ -38,19 +41,56 @@ class FlashcardGeneratorService
         );
 
         try {
-            $flashcards = $this->generator->generate($deck->getDeck()->getOwner(), $deck->getDeck(), $prompt);
+            $stories = $this->generator->generate($deck->getDeck()->getOwner(), $deck->getDeck(), $prompt);
 
             if ($words_count > $words_count_to_save) {
-                $flashcards = $this->duplicate_service->removeDuplicates($deck->getDeck(), $flashcards);
+                $story_flashcards = [];
+                foreach ($stories as $index => $story) {
+                    $story_flashcards = array_merge($story_flashcards, $story->getStoryFlashcards());
+                }
+
+                $story_flashcards = $this->duplicate_service->removeDuplicates($deck->getDeck(), $story_flashcards);
+
+                $flashcards_not_in_story = [];
+                $stories_to_remove = [];
+
+                foreach ($stories as $index => $story) {
+                    $new_story_flashcards = [];
+
+                    foreach ($story_flashcards as $story_flashcard) {
+                        if ($index === $story_flashcard->getIndex()) {
+                            $new_story_flashcards[] = $story_flashcard;
+                        }
+                    }
+
+                    if (count($new_story_flashcards) !== count($story->getStoryFlashcards())) {
+                        $stories_to_remove[] = $index;
+                        $flashcards_not_in_story = array_merge(
+                            $flashcards_not_in_story,
+                            array_map(fn(StoryFlashcard $flashcard) => $flashcard->getFlashcard(), $new_story_flashcards)
+                        );
+                    } else {
+                        $story->setStoryFlashcards($new_story_flashcards);
+                    }
+                }
+
+                foreach ($stories_to_remove as $index) {
+                    unset($stories[$index]);
+                }
+
+                if (count($flashcards_not_in_story) > 0) {
+                    $this->flashcard_repository->createMany($flashcards_not_in_story);
+                }
             }
 
-            if (count($flashcards) > $words_count_to_save) {
-                $flashcards = array_slice($flashcards, 0, $words_count_to_save);
+            $this->repository->saveMany($stories);
+
+            $count = 0;
+            foreach ($stories as $story) {
+                $count += count($story->getStoryFlashcards());
             }
 
-            $this->repository->createMany($flashcards);
-
-            return $flashcards;
+            return $count;
         } catch (\Throwable $exception) {
             if (!$deck->isExistingDeck()) {
                 $this->deck_repository->remove($deck->getDeck());

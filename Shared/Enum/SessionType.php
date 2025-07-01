@@ -7,6 +7,7 @@ namespace Shared\Enum;
 enum SessionType: string
 {
     case UNSCRAMBLE_WORDS = 'unscramble_words';
+    case WORD_MATCH = 'word_match';
     case FLASHCARD = 'flashcard';
     case MIXED = 'mixed';
 
@@ -15,6 +16,7 @@ enum SessionType: string
         return [
             self::FLASHCARD,
             self::UNSCRAMBLE_WORDS,
+            self::WORD_MATCH,
         ];
     }
 }

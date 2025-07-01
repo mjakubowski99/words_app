@@ -6,6 +6,7 @@ namespace Flashcard\Domain\Models;
 
 use Shared\Enum\SessionType;
 use Shared\Enum\ExerciseType;
+use Shared\Exercise\IFlashcardExercise;
 use Shared\Utils\ValueObjects\UserId;
 use Flashcard\Domain\ValueObjects\SessionId;
 use Flashcard\Domain\ValueObjects\FlashcardId;
@@ -95,6 +96,17 @@ class NextSessionFlashcards extends SessionFlashcardsBase
         return $this->current_session_flashcards_count + 1 <= $this->max_flashcards_count;
     }
 
+    public function associateExercises(array $entries, ExerciseType $type): void
+    {
+        foreach ($entries as $entry) {
+            $this->associateExercise(
+                new FlashcardId($entry->getFlashcardId()),
+                $entry->getExerciseEntryId(),
+                $type
+            );
+        }
+    }
+
     public function associateExercise(FlashcardId $flashcard_id, ExerciseEntryId $exercise_entry_id, ExerciseType $type): void
     {
         foreach ($this->next_session_flashcards as $flashcard) {
@@ -142,6 +154,9 @@ class NextSessionFlashcards extends SessionFlashcardsBase
 
         if ($type === SessionType::UNSCRAMBLE_WORDS) {
             return ExerciseType::UNSCRAMBLE_WORDS;
+        }
+        if ($type === SessionType::WORD_MATCH) {
+            return ExerciseType::WORD_MATCH;
         }
 
         return null;

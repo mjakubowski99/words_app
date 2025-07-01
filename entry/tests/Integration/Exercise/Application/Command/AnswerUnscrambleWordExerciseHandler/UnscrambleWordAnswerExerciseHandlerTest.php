@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Integration\Exercise\Application\Command\AnswerUnscrambleWordExerciseHandler;
 
+use Shared\Utils\ValueObjects\ExerciseId;
 use Tests\TestCase;
 use App\Models\Exercise;
 use App\Models\ExerciseEntry;
@@ -44,14 +45,14 @@ class UnscrambleWordAnswerExerciseHandlerTest extends TestCase
         ]);
 
         // WHEN
-        $assessment = $this->handler->handle(
-            new ExerciseEntryId($entry->id),
+        $assessments = $this->handler->handle(
+            new ExerciseId($exercise->id),
             $user->getId(),
-            UnscrambleWordAnswer::fromString($entry_id, $u_exercise->word),
+            [UnscrambleWordAnswer::fromString($entry_id, $u_exercise->word)],
         );
 
         // THEN
-        $this->assertTrue($assessment->isCorrect());
+        $this->assertTrue($assessments[0]->isCorrect());
         $this->assertDatabaseHas('learning_session_flashcards', [
             'id' => $lsf->id,
             'rating' => Rating::VERY_GOOD,
@@ -70,14 +71,14 @@ class UnscrambleWordAnswerExerciseHandlerTest extends TestCase
         $entry_id = new ExerciseEntryId($entry->id);
 
         // WHEN
-        $assessment = $this->handler->handle(
-            new ExerciseEntryId($entry->id),
+        $assessments = $this->handler->handle(
+            new ExerciseId($exercise->id),
             $user->getId(),
-            UnscrambleWordAnswer::fromString($entry_id, 'invalid answer'),
+            [UnscrambleWordAnswer::fromString($entry_id, 'invalid answer')],
         );
 
         // THEN
-        $this->assertFalse($assessment->isCorrect());
+        $this->assertFalse($assessments[0]->isCorrect());
         $this->assertDatabaseHas('learning_session_flashcards', [
             'id' => $session_flashcard->id,
             'rating' => null,
@@ -100,14 +101,14 @@ class UnscrambleWordAnswerExerciseHandlerTest extends TestCase
         $entry_id = new ExerciseEntryId($entry->id);
 
         // WHEN
-        $assessment = $this->handler->handle(
-            new ExerciseEntryId($entry->id),
+        $assessments = $this->handler->handle(
+            new ExerciseId($exercise->id),
             $user->getId(),
-            UnscrambleWordAnswer::fromString($entry_id, $u_exercise->word),
+            [UnscrambleWordAnswer::fromString($entry_id, $u_exercise->word)],
         );
 
         // THEN
-        $this->assertTrue($assessment->isCorrect());
+        $this->assertTrue($assessments[0]->isCorrect());
         $this->assertDatabaseHas('learning_session_flashcards', [
             'id' => $session_flashcard->id,
             'rating' => null,

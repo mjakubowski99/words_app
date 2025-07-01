@@ -150,6 +150,7 @@ class UnscrambleWordExerciseMapper
                 'answers_count' => 0,
                 'last_answer' => null,
                 'last_answer_correct' => null,
+                'order' => 0,
             ];
         }
 
@@ -178,6 +179,7 @@ class UnscrambleWordExerciseMapper
                 'answers_count' => $entry->getAnswersCount(),
                 'last_answer' => $entry->getLastUserAnswer() ? $entry->getLastUserAnswer()->toString() : null,
                 'last_answer_correct' => $entry->isLastAnswerCorrect(),
+                'order' => 0,
             ];
         }
 
