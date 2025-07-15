@@ -2,6 +2,7 @@
 
 namespace Exercise\Domain\Models;
 
+use Shared\Flashcard\ISessionFlashcardSummary;
 use Shared\Utils\ValueObjects\ExerciseEntryId;
 use Shared\Utils\ValueObjects\ExerciseId;
 
@@ -27,6 +28,20 @@ class WordMatchExerciseEntry extends ExerciseEntry
             $last_answer_correct,
             $score,
             $answers_count
+        );
+    }
+
+    public static function newFromSummary(ISessionFlashcardSummary $summary): self
+    {
+        return new self(
+            $summary->getBackWord(),
+            $summary->getFrontWord(),
+            $summary->getStorySentence() ?? $summary->getBackContext(),
+            ExerciseEntryId::noId(),
+            ExerciseId::noId(),
+            WordMatchAnswer::fromString(ExerciseEntryId::noId(), $summary->getBackWord()),
+            null,
+            null
         );
     }
 

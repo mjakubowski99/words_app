@@ -10,6 +10,7 @@ use Shared\Models\Emoji;
 use Shared\Enum\LanguageLevel;
 use Flashcard\Domain\Models\Deck;
 use Illuminate\Support\Facades\DB;
+use Shared\Utils\ValueObjects\StoryId;
 use Shared\Utils\ValueObjects\UserId;
 use Flashcard\Domain\Models\Flashcard;
 use Shared\Utils\ValueObjects\Language;
@@ -180,6 +181,18 @@ class FlashcardMapper
             ->where('user_id', $user_id)
             ->whereIn('id', $flashcard_ids)
             ->delete();
+    }
+
+    public function getStoryIdForFlashcards(array $flashcard_ids): array
+    {
+        $story_ids = $this->db::table('story_flashcards')
+            ->whereIn('flashcard_id', $flashcard_ids)
+            ->selectRaw('DISTINCT story_id')
+            ->pluck('story_id');
+
+        return $story_ids->map(function ($story_id) {
+            return new StoryId($story_id);
+        })->toArray();
     }
 
     public function deleteAllForUser(UserId $user_id): void

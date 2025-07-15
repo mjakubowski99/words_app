@@ -23,6 +23,7 @@ class FlashcardExercise implements IFlashcardExercise
                 $entry->getId(),
                 $summaries->getSummaries()[$i]->getFlashcardId(),
             );
+            $i++;
         }
         return $items;
     }

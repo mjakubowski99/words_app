@@ -40,7 +40,11 @@ class AddSessionFlashcardsHandler
             $flashcard_summaries = $this->flashcard_story_factory->make($next_session_flashcards, $exercise_type, $flashcards[0]);
 
             foreach ($flashcard_summaries->getSummaries() as $summary) {
-                if ($summary) {
+                if (!$next_session_flashcards->canAddNext()) {
+                    return;
+                }
+
+                if ($summary->getIsAdditional()) {
                     $next_session_flashcards->addNextAdditional($summary->getFlashcard());
                 } else {
                     $next_session_flashcards->addNext($summary->getFlashcard());

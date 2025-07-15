@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Flashcard\Application\Services\AiGenerators;
 
 use Flashcard\Domain\Models\Story;
+use Flashcard\Domain\Models\StoryCollection;
 use Flashcard\Domain\Models\StoryFlashcard;
 use Shared\Models\Emoji;
 use Flashcard\Domain\Models\Deck;
@@ -24,7 +25,7 @@ class GeminiGenerator implements IFlashcardGenerator
         private IGeminiApiClient $client
     ) {}
 
-    public function generate(Owner $owner, Deck $deck, FlashcardPrompt $prompt): array
+    public function generate(Owner $owner, Deck $deck, FlashcardPrompt $prompt): StoryCollection
     {
         $response = $this->client->generateText($prompt->getPrompt());
 
@@ -45,16 +46,16 @@ class GeminiGenerator implements IFlashcardGenerator
         $stories = [];
 
         foreach ($this->parseChatResponse($text) as $row) {
-            $story_id = $row['story_id'] ?? 0;
+            $story_index = $row['story_id'] ?? 0;
 
-            if (!array_key_exists($story_id, $stories)) {
-                $stories[$story_id] = [];
+            if (!array_key_exists($story_index, $stories)) {
+                $stories[$story_index] = [];
             }
 
-            $stories[$story_id][] = new StoryFlashcard(
+            $stories[$story_index][] = new StoryFlashcard(
                 StoryId::noId(),
-                $story_id,
-                (string) $row['sentence_trans'],
+                $story_index,
+                null,
                 new Flashcard(
                     FlashcardId::noId(),
                     (string) $row['word'],
@@ -79,7 +80,7 @@ class GeminiGenerator implements IFlashcardGenerator
             );
         }
 
-        return $results;
+        return new StoryCollection($results);
     }
 
     private function parseChatResponse(string $text): array

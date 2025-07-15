@@ -44,17 +44,14 @@ class FlashcardGeneratorService
             $stories = $this->generator->generate($deck->getDeck()->getOwner(), $deck->getDeck(), $prompt);
 
             if ($words_count > $words_count_to_save) {
-                $story_flashcards = [];
-                foreach ($stories as $index => $story) {
-                    $story_flashcards = array_merge($story_flashcards, $story->getStoryFlashcards());
-                }
+                $story_flashcards = $this->duplicate_service->removeDuplicates($deck->getDeck(), $stories->getAllStoryFlashcards());
 
-                $story_flashcards = $this->duplicate_service->removeDuplicates($deck->getDeck(), $story_flashcards);
+                $story_flashcards = array_slice($story_flashcards, 0, $words_count_to_save);
 
                 $flashcards_not_in_story = [];
                 $stories_to_remove = [];
 
-                foreach ($stories as $index => $story) {
+                foreach ($stories->get() as $index => $story) {
                     $new_story_flashcards = [];
 
                     foreach ($story_flashcards as $story_flashcard) {
@@ -74,9 +71,7 @@ class FlashcardGeneratorService
                     }
                 }
 
-                foreach ($stories_to_remove as $index) {
-                    unset($stories[$index]);
-                }
+                $stories->unset($stories_to_remove);
 
                 if (count($flashcards_not_in_story) > 0) {
                     $this->flashcard_repository->createMany($flashcards_not_in_story);
@@ -86,7 +81,7 @@ class FlashcardGeneratorService
             $this->repository->saveMany($stories);
 
             $count = 0;
-            foreach ($stories as $story) {
+            foreach ($stories->get() as $story) {
                 $count += count($story->getStoryFlashcards());
             }
 

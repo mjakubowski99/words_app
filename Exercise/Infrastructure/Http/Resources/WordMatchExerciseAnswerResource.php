@@ -15,7 +15,7 @@ class WordMatchExerciseAnswerResource extends JsonResource
         return [
             'assessments' => array_map(function (AnswerAssessment $assessment) {
                 return [
-                    'exercise_entry_id' => $assessment->getExerciseEntryId(),
+                    'exercise_entry_id' => $assessment->getExerciseEntryId()->getValue(),
                     'is_correct' => $assessment->isCorrect(),
                     'correct_answer' => $assessment->getCorrectAnswer(),
                 ];

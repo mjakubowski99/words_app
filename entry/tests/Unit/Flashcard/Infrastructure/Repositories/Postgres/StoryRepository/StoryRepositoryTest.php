@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Unit\Flashcard\Infrastructure\Repositories\Postgres\StoryRepository;
 
 use Flashcard\Domain\Models\Story;
+use Flashcard\Domain\Models\StoryCollection;
 use Flashcard\Infrastructure\Repositories\Postgres\StoryRepository;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Shared\Utils\ValueObjects\StoryId;
@@ -72,7 +73,7 @@ class StoryRepositoryTest extends TestCase
         );
 
         // WHEN
-        $this->repository->saveMany($stories);
+        $this->repository->saveMany(new StoryCollection($stories));
 
         // THEN
         $stories = \App\Models\Story::all();
@@ -106,7 +107,7 @@ class StoryRepositoryTest extends TestCase
         );
 
         // WHEN
-        $this->repository->saveMany([$story]);
+        $this->repository->saveMany(new StoryCollection([$story]));
 
         // THEN
         $stories = \App\Models\Story::all();

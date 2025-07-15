@@ -26,6 +26,8 @@ interface IFlashcardRepository
     /** @param FlashcardId[] $flashcard_ids */
     public function bulkDelete(UserId $user_id, array $flashcard_ids);
 
+    public function getStoryIdForFlashcards(array $flashcard_ids);
+
     public function deleteAllForUser(UserId $user_id): void;
 
     /** @return Flashcard[] */

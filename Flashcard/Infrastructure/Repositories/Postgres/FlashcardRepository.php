@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Repositories\Postgres;
 
+use Shared\Utils\ValueObjects\StoryId;
 use Shared\Utils\ValueObjects\UserId;
 use Flashcard\Domain\Models\Flashcard;
 use Shared\Exceptions\NotFoundException;
@@ -68,6 +69,15 @@ class FlashcardRepository implements IFlashcardRepository
     public function bulkDelete(UserId $user_id, array $flashcard_ids): void
     {
         $this->mapper->bulkDelete($user_id, $flashcard_ids);
+    }
+
+    /**
+     * @param FlashcardId[] $flashcard_ids
+     * @return StoryId[]
+     */
+    public function getStoryIdForFlashcards(array $flashcard_ids): array
+    {
+        return $this->mapper->getStoryIdForFlashcards($flashcard_ids);
     }
 
     public function deleteAllForUser(UserId $user_id): void

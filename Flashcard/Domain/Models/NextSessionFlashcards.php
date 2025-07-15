@@ -116,6 +116,13 @@ class NextSessionFlashcards extends SessionFlashcardsBase
                 return;
             }
         }
+        foreach ($this->additional_flashcards as $flashcard) {
+            if ($flashcard_id->equals($flashcard->getFlashcardId())) {
+                $flashcard->setExercise($exercise_entry_id, $type);
+
+                return;
+            }
+        }
     }
 
     public function addNext(Flashcard $flashcard): void

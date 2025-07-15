@@ -71,10 +71,10 @@ class WordMatchExerciseResource extends JsonResource
     public function toArray($request): array
     {
         return [
-            'exercise_id' => $this->resource->getExerciseId(),
+            'exercise_id' => $this->resource->getExerciseId()->getValue(),
             'is_story' => $this->resource->isStory(),
             'entries' => array_map(fn(IWordMatchExerciseReadEntry $entry) => [
-                'id' => $entry->getExerciseEntryId(),
+                'id' => $entry->getExerciseEntryId()->getValue(),
                 'word' => $entry->getWord(),
                 'word_translation' => $entry->getWordTranslation(),
                 'sentence' => $entry->getSentence(),

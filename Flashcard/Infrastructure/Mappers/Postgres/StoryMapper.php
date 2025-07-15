@@ -5,6 +5,7 @@ namespace Flashcard\Infrastructure\Mappers\Postgres;
 use Flashcard\Domain\Models\Flashcard;
 use Flashcard\Domain\Models\Rating;
 use Flashcard\Domain\Models\Story;
+use Flashcard\Domain\Models\StoryCollection;
 use Flashcard\Domain\Models\StoryFlashcard;
 use Flashcard\Domain\ValueObjects\FlashcardId;
 use Flashcard\Infrastructure\Mappers\Traits\HasOwnerBuilder;
@@ -69,12 +70,12 @@ class StoryMapper
     }
 
     /** @param Story[] $stories */
-    public function saveMany(array $stories): void
+    public function saveMany(StoryCollection $stories): void
     {
         $now = now();
 
         $insert_data = [];
-        foreach ($stories as $story) {
+        foreach ($stories->get() as $story) {
             $insert_data[] = [
                 'created_at' => $now,
                 'updated_at' => $now,
@@ -87,7 +88,7 @@ class StoryMapper
 
         $flashcards = [];
         $i = 0;
-        foreach ($stories as $story) {
+        foreach ($stories->get() as $story) {
             foreach ($story->getStoryFlashcards() as $story_flashcard) {
                 $story_flashcard->setStoryId(new StoryId($story_ids[$i]));
                 $flashcards[$story_flashcard->getFlashcard()->hash()] = $story_flashcard->getFlashcard();
@@ -98,7 +99,7 @@ class StoryMapper
         $flashcards = $this->mapper->createMany($flashcards);
 
         $insert_data = [];
-        foreach ($stories as $story) {
+        foreach ($stories->get() as $story) {
             foreach ($story->getStoryFlashcards() as $flashcard) {
                 $flashcard->getFlashcard()->setId(
                     $flashcards[$flashcard->getFlashcard()->hash()]->getId()
@@ -116,5 +117,12 @@ class StoryMapper
             }
         }
         DB::table('story_flashcards')->insert($insert_data);
+    }
+
+    public function bulkDelete(array $story_ids): void
+    {
+        DB::table('stories')
+            ->whereIn('id', array_map(fn(StoryId $id) => $id->getValue(), $story_ids))
+            ->delete();
     }
 }

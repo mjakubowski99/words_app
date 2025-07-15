@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Flashcard\Infrastructure\Repositories\Postgres\FlashcardDeckRepository;
 
+use App\Models\Story;
+use App\Models\StoryFlashcard;
 use Carbon\Carbon;
 use Tests\TestCase;
 use App\Models\User;
@@ -329,6 +331,10 @@ class FlashcardDeckRepositoryTest extends TestCase
         ]);
         $learning_session_flashcard = LearningSessionFlashcard::factory()->create([
             'flashcard_id' => $flashcard->id,
+        ]);
+        StoryFlashcard::factory()->create([
+            'flashcard_id' => $flashcard->id,
+            'story_id' => Story::factory()->create()->id,
         ]);
 
         // WHEN
