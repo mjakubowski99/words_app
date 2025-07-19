@@ -114,11 +114,14 @@ class FlashcardReadMapper
                  ORDER BY learning_session_flashcards.updated_at DESC
                  LIMIT 1
                 ) as last_rating,
-                (SELECT AVG(COALESCE(rating,0)/{$rating}::float)
-                 FROM learning_session_flashcards 
-                 INNER JOIN learning_sessions ON learning_sessions.id = learning_session_flashcards.learning_session_id 
-                 WHERE flashcards.id = learning_session_flashcards.flashcard_id
-                   AND learning_sessions.user_id = '{$user_id->getValue()}'
+                COALESCE(
+                    (
+                         SELECT AVG(CASE WHEN rating IS NULL THEN 0 ELSE rating::float END/{$rating}::float)
+                         FROM learning_session_flashcards 
+                         INNER JOIN learning_sessions ON learning_sessions.id = learning_session_flashcards.learning_session_id 
+                         WHERE flashcards.id = learning_session_flashcards.flashcard_id
+                           AND learning_sessions.user_id = '{$user_id->getValue()}'
+                    ), 0
                 ) as rating_ratio
             ")
             ->get()
