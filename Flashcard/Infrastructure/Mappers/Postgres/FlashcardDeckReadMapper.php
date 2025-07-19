@@ -87,8 +87,14 @@ class FlashcardDeckReadMapper
                     FROM flashcards
                     WHERE flashcards.flashcard_deck_id = flashcard_decks.id
                     ) as flashcards_count'),
-                'flashcard_stats.last_learnt_at',
-                'flashcard_stats.rating_sum',
+                DB::raw("(
+                    SELECT MAX(lsf.updated_at)
+                    FROM learning_session_flashcards as lsf
+                    LEFT JOIN flashcards ON lsf.flashcard_id = flashcards.id
+                    LEFT JOIN learning_sessions as ls on ls.id = lsf.learning_session_id
+                    WHERE flashcards.flashcard_deck_id = flashcard_decks.id
+                    AND ls.user_id = '{$user_id->getValue()}'
+                    ) as last_learnt_at"),
             )
             ->orderByRaw('
                 flashcard_deck_activities.last_viewed_at DESC NULLS LAST,
