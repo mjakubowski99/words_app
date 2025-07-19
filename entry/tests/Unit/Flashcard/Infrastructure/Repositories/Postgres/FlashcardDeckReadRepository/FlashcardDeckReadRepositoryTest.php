@@ -333,15 +333,14 @@ class FlashcardDeckReadRepositoryTest extends FlashcardTestCase
             $this->createFlashcard(['flashcard_deck_id' => $expected->id]),
             $this->createFlashcard(['flashcard_deck_id' => $expected->id]),
         ];
-        $this->createLearningSessionFlashcard(['flashcard_id' => $flashcards[0]->id, 'rating' => Rating::GOOD]);
-        $this->createLearningSessionFlashcard(['flashcard_id' => $flashcards[0]->id, 'rating' => Rating::UNKNOWN]);
-        $this->createLearningSessionFlashcard(['flashcard_id' => $flashcards[0]->id, 'rating' => Rating::VERY_GOOD]);
+        $session = $this->createLearningSession(['user_id' => $user->id]);
+        $this->createLearningSessionFlashcard(['learning_session_id' => $session->id, 'flashcard_id' => $flashcards[0]->id, 'rating' => Rating::GOOD]);
+        $this->createLearningSessionFlashcard(['learning_session_id' => $session->id, 'flashcard_id' => $flashcards[0]->id, 'rating' => Rating::UNKNOWN]);
+        $this->createLearningSessionFlashcard(['learning_session_id' => $session->id, 'flashcard_id' => $flashcards[0]->id, 'rating' => Rating::VERY_GOOD]);
 
         $expected_ratio = (
-            (Rating::UNKNOWN->value / Rating::VERY_GOOD->value)
-            + (Rating::VERY_GOOD->value / Rating::VERY_GOOD->value)
-            + (Rating::GOOD->value / Rating::VERY_GOOD->value)
-        ) / 3 * 100;
+            (Rating::VERY_GOOD->value + Rating::UNKNOWN->value) / 2
+        ) / (2 * Rating::VERY_GOOD->value) * 100.0;
 
         // WHEN
         $results = $this->repository->getByUser($user->getId(), 'LAn', 1, 15);
@@ -363,8 +362,9 @@ class FlashcardDeckReadRepositoryTest extends FlashcardTestCase
             $this->createFlashcard(['flashcard_deck_id' => $expected->id]),
             $this->createFlashcard(['flashcard_deck_id' => $expected->id]),
         ];
-        $this->createLearningSessionFlashcard(['flashcard_id' => $flashcards[0]->id, 'updated_at' => (clone $now)->subMinute()]);
-        $this->createLearningSessionFlashcard(['flashcard_id' => $flashcards[0]->id, 'updated_at' => $now]);
+        $session = $this->createLearningSession(['user_id' => $user->id]);
+        $this->createLearningSessionFlashcard(['learning_session_id' => $session->id, 'flashcard_id' => $flashcards[0]->id, 'updated_at' => (clone $now)->subMinute()]);
+        $this->createLearningSessionFlashcard(['learning_session_id' => $session->id, 'flashcard_id' => $flashcards[0]->id, 'updated_at' => $now]);
 
         // WHEN
         $results = $this->repository->getByUser($user->getId(), 'LAn', 1, 15);
@@ -389,11 +389,15 @@ class FlashcardDeckReadRepositoryTest extends FlashcardTestCase
             'flashcard_deck_id' => $deck->id,
         ]);
         foreach ($flashcards as $flashcard) {
-            $this->createLearningSessionFlashcard([
-                'learning_session_id' => $session->id,
-                'rating' => $flashcard['rating'],
-                'flashcard_id' => $this->createFlashcard(['flashcard_deck_id' => $deck->id])->id,
-            ]);
+            if ($flashcard['rating'] === null) {
+                $this->createFlashcard(['flashcard_deck_id' => $deck->id]);
+            } else {
+                $this->createLearningSessionFlashcard([
+                    'learning_session_id' => $session->id,
+                    'rating' => $flashcard['rating'],
+                    'flashcard_id' => $this->createFlashcard(['flashcard_deck_id' => $deck->id])->id,
+                ]);
+            }
         }
 
         // WHEN
@@ -467,6 +471,21 @@ class FlashcardDeckReadRepositoryTest extends FlashcardTestCase
                     ['rating' => GeneralRatingType::WEAK->value, 'rating_percentage' => 16.67],
                     ['rating' => GeneralRatingType::GOOD->value, 'rating_percentage' => 33.33],
                     ['rating' => GeneralRatingType::VERY_GOOD->value, 'rating_percentage' => 33.33],
+                ],
+            ],
+            'case 5' => [
+                'flashcards' => [
+                    ['rating' => Rating::UNKNOWN],
+                    ['rating' => Rating::WEAK],
+                    ['rating' => Rating::GOOD],
+                    ['rating' => Rating::GOOD],
+                    ['rating' => null],
+                ],
+                'expecteds' => [
+                    ['rating' => GeneralRatingType::UNKNOWN->value, 'rating_percentage' => 25.0],
+                    ['rating' => GeneralRatingType::WEAK->value, 'rating_percentage' => 25.0],
+                    ['rating' => GeneralRatingType::GOOD->value, 'rating_percentage' => 50.0],
+                    ['rating' => GeneralRatingType::VERY_GOOD->value, 'rating_percentage' => 0.0],
                 ],
             ],
         ];
