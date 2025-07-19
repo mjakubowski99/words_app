@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace Tests\Smoke\Exercise\Infrastructure\Http\Controllers\ExerciseController;
 
-use Tests\TestCase;
 use App\Models\Exercise;
 use App\Models\ExerciseEntry;
 use App\Models\UnscrambleWordExercise;
+use Database\Factories\WordMatchExerciseFactory;
 use Exercise\Domain\Models\ExerciseStatus;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Shared\Enum\ExerciseType;
+use Tests\TestCase;
 
 class ExerciseControllerTest extends TestCase
 {
@@ -106,5 +108,145 @@ class ExerciseControllerTest extends TestCase
 
         // THEN
         $response->assertStatus(403);
+    }
+
+
+    public function test__answerWordMatchExercise_WhenExerciseExistsAndValidAnswer_success(): void
+    {
+        // GIVEN
+        $user = $this->createUser();
+        $exercise = WordMatchExerciseFactory::createNew([
+            'user_id' => $user->id,
+            'status' => ExerciseStatus::NEW,
+        ], 2, false);
+
+        // WHEN
+        $response = $this->actingAs($user)->putJson(route('v2.exercises.word-match.answer', [
+            'exercise_id' => $exercise->id,
+        ]), [
+            'answers' => [
+                [
+                    'exercise_entry_id' => $exercise->entries[0]->id,
+                    'answer' => $exercise->entries[0]->correct_answer,
+                ],
+            ]
+        ]);
+
+        // THEN
+        $response->assertOk();
+        $this->assertTrue($response->json('data.assessments.0.is_correct'));
+        $this->assertDatabaseHas('exercises', [
+            'id' => $exercise->id,
+            'status' => ExerciseStatus::IN_PROGRESS,
+        ]);
+    }
+
+    public function test__answerWordMatchExercise_WhenOneValidAnswerAndOneInvalid_success(): void
+    {
+        // GIVEN
+        $user = $this->createUser();
+        $exercise = WordMatchExerciseFactory::createNew([
+            'user_id' => $user->id,
+            'status' => ExerciseStatus::NEW,
+        ], 2, false);
+
+        // WHEN
+        $response = $this->actingAs($user)->putJson(route('v2.exercises.word-match.answer', [
+            'exercise_id' => $exercise->id,
+        ]), [
+            'answers' => [
+                [
+                    'exercise_entry_id' => $exercise->entries[0]->id,
+                    'answer' => $exercise->entries[0]->correct_answer,
+                ],
+                [
+                    'exercise_entry_id' => $exercise->entries[1]->id,
+                    'answer' => $exercise->entries[1]->correct_answer . 'invalid'
+                ],
+            ]
+        ]);
+
+        // THEN
+        $response->assertOk();
+        $this->assertTrue($response->json('data.assessments.0.is_correct'));
+        $this->assertFalse($response->json('data.assessments.1.is_correct'));
+        $this->assertDatabaseHas('exercises', [
+            'id' => $exercise->id,
+            'status' => ExerciseStatus::IN_PROGRESS,
+        ]);
+    }
+
+    public function test__answerWordMatchExercise_WhenTwoValidAnswers_success(): void
+    {
+        // GIVEN
+        $user = $this->createUser();
+        $exercise = WordMatchExerciseFactory::createNew([
+            'user_id' => $user->id,
+            'status' => ExerciseStatus::NEW,
+        ], 2, false);
+
+        // WHEN
+        $response = $this->actingAs($user)->putJson(route('v2.exercises.word-match.answer', [
+            'exercise_id' => $exercise->id,
+        ]), [
+            'answers' => [
+                [
+                    'exercise_entry_id' => $exercise->entries[0]->id,
+                    'answer' => $exercise->entries[0]->correct_answer,
+                ],
+                [
+                    'exercise_entry_id' => $exercise->entries[1]->id,
+                    'answer' => $exercise->entries[1]->correct_answer,
+                ],
+            ]
+        ]);
+
+        // THEN
+        $response->assertOk();
+        $this->assertTrue($response->json('data.assessments.0.is_correct'));
+        $this->assertTrue($response->json('data.assessments.1.is_correct'));
+        $this->assertDatabaseHas('exercises', [
+            'id' => $exercise->id,
+            'status' => ExerciseStatus::DONE,
+        ]);
+    }
+
+    public function test__skipWordMatchExercise_skipExercise(): void
+    {
+        // GIVEN
+        $user = $this->createUser();
+        $exercise = WordMatchExerciseFactory::createNew([
+            'user_id' => $user->id,
+            'status' => ExerciseStatus::NEW,
+        ], 2, false);
+
+        // WHEN
+        $response = $this->actingAs($user)->putJson(route('v2.exercises.word-match.skip', [
+            'exercise_id' => $exercise->id,
+        ]));
+
+        // THEN
+        $response->assertNoContent();
+        $this->assertDatabaseHas('exercises', [
+            'id' => $exercise->id,
+            'status' => ExerciseStatus::SKIPPED,
+        ]);
+    }
+
+    public function test__skipWordMatchExercise_NotOwner_fail(): void
+    {
+        // GIVEN
+        $user = $this->createUser();
+        $exercise = WordMatchExerciseFactory::createNew([
+            'status' => ExerciseStatus::NEW,
+        ], 2, false);
+
+        // WHEN
+        $response = $this->actingAs($user)->putJson(route('v2.exercises.word-match.skip', [
+            'exercise_id' => $exercise->id,
+        ]));
+
+        // THEN
+        $response->assertStatus(401);
     }
 }

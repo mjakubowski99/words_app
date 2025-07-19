@@ -7,6 +7,7 @@ namespace Flashcard\Domain\Services;
 use Flashcard\Domain\Models\Deck;
 use Flashcard\Domain\Models\Flashcard;
 use Flashcard\Application\Repository\IFlashcardDuplicateRepository;
+use Flashcard\Domain\Models\StoryCollection;
 use Flashcard\Domain\Models\StoryFlashcard;
 
 class FlashcardDuplicateService
@@ -16,19 +17,20 @@ class FlashcardDuplicateService
     ) {}
 
     /** @param StoryFlashcard[] $flashcards */
-    public function removeDuplicates(Deck $deck, array $flashcards): array
+    public function removeDuplicates(Deck $deck, StoryCollection $stories): array
     {
-        $front_words = array_map(function (StoryFlashcard $flashcard) {
-            return mb_strtolower($flashcard->getFlashcard()->getFrontWord());
-        }, $flashcards);
+        $front_words = [];
+        foreach ($stories->getAllStoryFlashcards() as $flashcard) {
+            $front_words[] = mb_strtolower($flashcard->getFlashcard()->getFrontWord());
+        }
 
         $unique_words = array_values(array_unique($front_words));
 
         $unique_flashcards = [];
         foreach ($unique_words as $unique_word) {
-            foreach ($flashcards as $flashcard) {
+            foreach ($stories->getAllStoryFlashcards() as $flashcard) {
                 if (mb_strtolower($flashcard->getFlashcard()->getFrontWord()) === $unique_word) {
-                    $unique_flashcards[] = $flashcard;
+                    $unique_flashcards[] = (clone $flashcard);
 
                     break;
                 }

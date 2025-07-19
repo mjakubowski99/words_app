@@ -17,27 +17,38 @@ class SessionFlashcardSummaries implements ISessionFlashcardSummaries
 
     public static function fromStory(Story $story, Flashcard $base_story_flashcard): self
     {
+        $i = -1;
         return new self(
             $story->getId(),
-            array_map(fn(StoryFlashcard $story_flashcard) => new SessionFlashcardSummary(
-                $story_flashcard->getFlashcard(),
-                !$story_flashcard->getFlashcard()->getId()->equals($base_story_flashcard->getId()),
-                true,
-                $story_flashcard->getSentenceOverride(),
-            ), $story->getStoryFlashcards())
+            array_map(function(StoryFlashcard $story_flashcard) use (&$i, $base_story_flashcard){
+                $i++;
+                return new SessionFlashcardSummary(
+                    $i,
+                    $story_flashcard->getFlashcard(),
+                    !$story_flashcard->getFlashcard()->getId()->equals($base_story_flashcard->getId()),
+                    true,
+                    $story_flashcard->getSentenceOverride(),
+                );
+            }, $story->getStoryFlashcards())
         );
     }
 
     public static function fromFlashcards(array $flashcards, Flashcard $base_flashcard): self
     {
+        $i = -1;
+
         return new self(
             null,
-            array_map(fn(Flashcard $flashcard) => new SessionFlashcardSummary(
-                $flashcard,
-                !$flashcard->getId()->equals($base_flashcard->getId()),
-                true,
-                null,
-            ), $flashcards)
+            array_map(function (Flashcard $flashcard) use (&$i, $base_flashcard) {
+                $i++;
+                return new SessionFlashcardSummary(
+                    $i,
+                    $flashcard,
+                    !$flashcard->getId()->equals($base_flashcard->getId()),
+                    true,
+                    null,
+                );
+            }, $flashcards)
         );
     }
 

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Shared\Providers;
 
+use Shared\Utils\Cache\Cache;
+use Shared\Utils\Cache\ICache;
 use Shared\Utils\Str\Str;
 use Shared\Utils\Str\IStr;
 use Shared\Utils\Hash\Hash;
@@ -28,5 +30,6 @@ class SharedServiceProvider extends ServiceProvider
         $this->app->bind(IStr::class, Str::class);
         $this->app->bind(IContainer::class, Container::class);
         $this->app->bind(ITransactionManager::class, LaravelTransactionManager::class);
+        $this->app->bind(ICache::class, Cache::class);
     }
 }

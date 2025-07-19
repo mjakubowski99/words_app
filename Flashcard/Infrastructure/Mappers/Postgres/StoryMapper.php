@@ -75,46 +75,39 @@ class StoryMapper
         $now = now();
 
         $insert_data = [];
+        $i = 0;
         foreach ($stories->get() as $story) {
             $insert_data[] = [
-                'created_at' => $now,
-                'updated_at' => $now,
+                'created_at' => (clone $now)->addSeconds($i),
+                'updated_at' => (clone $now)->addSeconds($i),
             ];
+            $i++;
         }
 
         $story_ids = DB::table('stories')
             ->insertReturning($insert_data)
-            ->pluck('id');
+            ->sortBy('created_at')
+            ->values();
 
-        $flashcards = [];
         $i = 0;
         foreach ($stories->get() as $story) {
             foreach ($story->getStoryFlashcards() as $story_flashcard) {
-                $story_flashcard->setStoryId(new StoryId($story_ids[$i]));
-                $flashcards[$story_flashcard->getFlashcard()->hash()] = $story_flashcard->getFlashcard();
+                $story_flashcard->setStoryId(new StoryId($story_ids[$i]->id));
             }
             $i++;
         }
 
-        $flashcards = $this->mapper->createMany($flashcards);
+        $stories = $this->mapper->createManyFromStoryFlashcards($stories);
 
         $insert_data = [];
-        foreach ($stories->get() as $story) {
-            foreach ($story->getStoryFlashcards() as $flashcard) {
-                $flashcard->getFlashcard()->setId(
-                    $flashcards[$flashcard->getFlashcard()->hash()]->getId()
-                );
-            }
-
-            foreach ($story->getStoryFlashcards() as $story_flashcard) {
-                $insert_data[] = [
-                    'story_id' => $story_flashcard->getStoryId()->getValue(),
-                    'flashcard_id' => $story_flashcard->getFlashcard()->getId()->getValue(),
-                    'sentence_override' => $story_flashcard->getSentenceOverride(),
-                    'created_at' => $now,
-                    'updated_at' => $now,
-                ];
-            }
+        foreach ($stories->getAllStoryFlashcards() as $story_flashcard) {
+            $insert_data[] = [
+                'story_id' => $story_flashcard->getStoryId()->getValue(),
+                'flashcard_id' => $story_flashcard->getFlashcard()->getId()->getValue(),
+                'sentence_override' => $story_flashcard->getSentenceOverride(),
+                'created_at' => $now,
+                'updated_at' => $now,
+            ];
         }
         DB::table('story_flashcards')->insert($insert_data);
     }

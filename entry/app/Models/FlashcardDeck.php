@@ -14,7 +14,32 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
+ * 
+ *
  * @property User $user
+ * @property int $id
+ * @property string $tag
+ * @property string $name
+ * @property string|null $user_id
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property string $default_language_level
+ * @property string|null $admin_id
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Flashcard> $flashcards
+ * @property-read int|null $flashcards_count
+ * @method static \Database\Factories\FlashcardDeckFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FlashcardDeck newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FlashcardDeck newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FlashcardDeck query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FlashcardDeck whereAdminId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FlashcardDeck whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FlashcardDeck whereDefaultLanguageLevel($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FlashcardDeck whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FlashcardDeck whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FlashcardDeck whereTag($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FlashcardDeck whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FlashcardDeck whereUserId($value)
+ * @mixin \Eloquent
  */
 class FlashcardDeck extends Model
 {

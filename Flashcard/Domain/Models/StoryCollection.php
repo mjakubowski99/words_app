@@ -20,14 +20,15 @@ class StoryCollection
         }
     }
 
-    public function getAllStoryFlashcards()
+    /**
+     * @return \Generator<StoryFlashcard>
+     */
+    public function getAllStoryFlashcards(): \Generator
     {
-        $story_flashcards = [];
-
         foreach ($this->stories as $index => $story) {
-            $story_flashcards = array_merge($story_flashcards, $story->getStoryFlashcards());
+            foreach ($story->getStoryFlashcards() as $story_flashcard) {
+                yield $story_flashcard;
+            }
         }
-
-        return $story_flashcards;
     }
 }

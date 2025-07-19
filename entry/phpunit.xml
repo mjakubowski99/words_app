@@ -19,6 +19,7 @@
         <include>
             <directory>app</directory>
             <directory>../Flashcard</directory>
+            <directory>../Exercise</directory>
         </include>
     </source>
     <php>

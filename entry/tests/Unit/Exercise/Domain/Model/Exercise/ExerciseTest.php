@@ -44,11 +44,13 @@ class ExerciseTest extends TestCase
             'setLastUserAnswer' => \Mockery::on(function ($arg) use ($answer) {
                 return $arg === $answer;
             }),
+            'getOrder' => 0,
         ]);
         $other_entry = \Mockery::mock(ExerciseEntry::class)->allows([
             'getId' => new ExerciseEntryId(2),
             'isUpdated' => false,
             'isLastAnswerCorrect' => false,
+            'getOrder' => 1,
         ]);
 
         $this->model = new ConcreteTestExercise(

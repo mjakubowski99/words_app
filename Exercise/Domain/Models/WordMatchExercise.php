@@ -23,8 +23,11 @@ class WordMatchExercise extends Exercise
     public static function newFromSummaries(ISessionFlashcardSummaries $summaries, UserId $user_id): self
     {
         $exercise_entries = [];
+
+        $i = 0;
         foreach ($summaries->getSummaries() as $summary) {
-            $exercise_entries[] = WordMatchExerciseEntry::newFromSummary($summary);
+            $exercise_entries[] = WordMatchExerciseEntry::newFromSummary($summary, $i);
+            $i++;
         }
 
         return new self(

@@ -12,11 +12,17 @@ use Shared\Flashcard\ISessionFlashcardSummary;
 class SessionFlashcardSummary implements ISessionFlashcardSummary
 {
     public function __construct(
+        private int $order,
         private Flashcard $flashcard,
         private bool $is_additional,
         private bool $is_story_part,
         private ?string $story_sentence
     ) {
+    }
+
+    public function getOrder(): int
+    {
+        return $this->order;
     }
 
     public function getFlashcard(): Flashcard

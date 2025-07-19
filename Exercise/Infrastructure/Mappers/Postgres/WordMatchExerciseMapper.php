@@ -57,6 +57,7 @@ class WordMatchExerciseMapper
                 new WordMatchAnswer($entry_id, $row->correct_answer),
                 $row->last_answer ? new WordMatchAnswer($entry_id, $row->last_answer) : null,
                 $row->last_answer_correct,
+                $row->order,
                 (float) $row->score,
                 (int) $row->answers_count
             );
@@ -80,15 +81,13 @@ class WordMatchExerciseMapper
             'sentences' => [],
         ];
 
-        $i = 0;
         foreach ($exercise->getExerciseEntries() as $entry) {
             $properties['sentences'][] = [
-                'order' => $i,
+                'order' => $entry->getOrder(),
                 'sentence' => $entry->getSentence(),
                 'word' => $entry->getWord(),
                 'translation' => $entry->getWordTranslation(),
             ];
-            $i++;
         }
 
         $exercise_id = DB::table('exercises')
@@ -109,7 +108,7 @@ class WordMatchExerciseMapper
                 'answers_count' => 0,
                 'last_answer' => null,
                 'last_answer_correct' => null,
-                'order' => $i,
+                'order' => $entry->getOrder(),
             ];
             $i++;
         }
@@ -129,7 +128,7 @@ class WordMatchExerciseMapper
         $i = 0;
         foreach ($exercise->getExerciseEntries() as $entry) {
             $properties['sentences'][] = [
-                'order' => $i,
+                'order' => $entry->getOrder(),
                 'sentence' => $entry->getSentence(),
                 'word' => $entry->getWord(),
                 'translation' => $entry->getWordTranslation(),
@@ -146,7 +145,6 @@ class WordMatchExerciseMapper
                 'properties' => json_encode($properties),
             ]);
 
-        $i = 0;
         /** @var ExerciseEntry $entry */
         foreach ($exercise->getExerciseEntries() as $entry) {
             $this->db::table('exercise_entries')
@@ -157,7 +155,7 @@ class WordMatchExerciseMapper
                     'answers_count' => $entry->getAnswersCount(),
                     'last_answer' => $entry->getLastUserAnswer()?->toString(),
                     'last_answer_correct' => $entry->isLastAnswerCorrect(),
-                    'order' => $i,
+                    'order' => $entry->getOrder(),
                 ]);
             $i++;
         }

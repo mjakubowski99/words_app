@@ -44,6 +44,7 @@ trait WordMatchExerciseRepositoryTrait
                     new WordMatchAnswer($entry_id, 'correct'),
                     null,
                     null,
+                    0,
                     0.0,
                     0
                 )
@@ -89,6 +90,7 @@ trait WordMatchExerciseRepositoryTrait
                     new WordMatchAnswer(new ExerciseEntryId($entry->id), $entry->correct_answer),
                     null,
                     null,
+                    0,
                     20.0,
                     2
                 )
@@ -142,6 +144,7 @@ trait WordMatchExerciseRepositoryTrait
                 new WordMatchAnswer(new ExerciseEntryId($entry->id), "correct$i"),
                 null,
                 null,
+                $i,
                 20.0,
                 2
             );
@@ -172,6 +175,7 @@ trait WordMatchExerciseRepositoryTrait
                 new WordMatchAnswer($entry_id, "correct$i"),
                 null,
                 null,
+                $i,
                 0.0,
                 0
             );
@@ -206,6 +210,7 @@ trait WordMatchExerciseRepositoryTrait
                     new WordMatchAnswer($entry_id, 'correct'),
                     null,
                     null,
+                    0,
                     0.0,
                     0
                 )

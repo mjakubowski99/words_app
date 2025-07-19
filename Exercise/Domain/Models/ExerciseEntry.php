@@ -17,6 +17,7 @@ class ExerciseEntry
         private Answer $correct_answer,
         private ?Answer $last_user_answer,
         private ?bool $last_answer_correct,
+        private int $order,
         private float $score = 0.0,
         private int $answers_count = 0,
     ) {}
@@ -59,6 +60,11 @@ class ExerciseEntry
     public function isUpdated(): bool
     {
         return $this->updated;
+    }
+
+    public function getOrder(): int
+    {
+        return $this->order;
     }
 
     public function setLastUserAnswer(Answer $answer, AnswerAssessment $assessment): void

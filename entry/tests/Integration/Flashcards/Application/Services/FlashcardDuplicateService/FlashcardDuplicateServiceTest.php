@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Integration\Flashcards\Application\Services\FlashcardDuplicateService;
 
+use Flashcard\Domain\Models\Story;
+use Flashcard\Domain\Models\StoryCollection;
 use Flashcard\Domain\Models\StoryFlashcard;
 use Mockery\MockInterface;
 use App\Models\FlashcardDeck;
@@ -49,7 +51,9 @@ class FlashcardDuplicateServiceTest extends FlashcardTestCase
         $flashcards = $this->makeFlashcards($deck, $new_words);
 
         // WHEN
-        $flashcards = $this->service->removeDuplicates($deck, $flashcards);
+        $flashcards = $this->service->removeDuplicates($deck, new StoryCollection([
+            new Story(StoryId::noId(), $flashcards)
+        ]));
 
         // THEN
         $front_words = array_map(fn (StoryFlashcard $flashcard) => $flashcard->getFlashcard()->getFrontWord(), $flashcards);

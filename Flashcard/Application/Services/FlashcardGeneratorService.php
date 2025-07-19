@@ -11,8 +11,6 @@ use Flashcard\Application\Repository\IFlashcardRepository;
 use Flashcard\Application\Repository\IStoryRepository;
 use Flashcard\Application\Services\AiGenerators\IFlashcardGenerator;
 use Flashcard\Domain\Models\FlashcardPrompt;
-use Flashcard\Domain\Models\StoryFlashcard;
-use Flashcard\Domain\Services\FlashcardDuplicateService;
 
 class FlashcardGeneratorService
 {
@@ -22,7 +20,7 @@ class FlashcardGeneratorService
         private IStoryRepository $repository,
         private IFlashcardGenerator $generator,
         private IFlashcardDuplicateRepository $duplicate_repository,
-        private FlashcardDuplicateService $duplicate_service,
+        private StoryDuplicateService $story_duplicate_service,
     ) {}
 
     public function generate(
@@ -44,41 +42,16 @@ class FlashcardGeneratorService
             $stories = $this->generator->generate($deck->getDeck()->getOwner(), $deck->getDeck(), $prompt);
 
             if ($words_count > $words_count_to_save) {
-                $story_flashcards = $this->duplicate_service->removeDuplicates($deck->getDeck(), $stories->getAllStoryFlashcards());
-
-                $story_flashcards = array_slice($story_flashcards, 0, $words_count_to_save);
-
-                $flashcards_not_in_story = [];
-                $stories_to_remove = [];
-
-                foreach ($stories->get() as $index => $story) {
-                    $new_story_flashcards = [];
-
-                    foreach ($story_flashcards as $story_flashcard) {
-                        if ($index === $story_flashcard->getIndex()) {
-                            $new_story_flashcards[] = $story_flashcard;
-                        }
-                    }
-
-                    if (count($new_story_flashcards) !== count($story->getStoryFlashcards())) {
-                        $stories_to_remove[] = $index;
-                        $flashcards_not_in_story = array_merge(
-                            $flashcards_not_in_story,
-                            array_map(fn(StoryFlashcard $flashcard) => $flashcard->getFlashcard(), $new_story_flashcards)
-                        );
-                    } else {
-                        $story->setStoryFlashcards($new_story_flashcards);
-                    }
-                }
-
-                $stories->unset($stories_to_remove);
+                $flashcards_not_in_story = $this->story_duplicate_service->removeDuplicates($deck, $stories, $words_count_to_save);
 
                 if (count($flashcards_not_in_story) > 0) {
                     $this->flashcard_repository->createMany($flashcards_not_in_story);
                 }
             }
 
-            $this->repository->saveMany($stories);
+            if (count($stories->get()) > 0) {
+                $this->repository->saveMany($stories);
+            }
 
             $count = 0;
             foreach ($stories->get() as $story) {

@@ -109,6 +109,7 @@ class SessionControllerTest extends TestCase
             ]);
 
         // THEN
+        $response->assertStatus(200);
         $this->assertDatabaseHas('learning_sessions', [
             'id' => $response->json('data.session.id'),
             'user_id' => $user->id,

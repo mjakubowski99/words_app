@@ -10,19 +10,22 @@ use Flashcard\Domain\Models\FlashcardExerciseCollection;
 use Flashcard\Domain\Models\NextSessionFlashcards;
 use Flashcard\Domain\Models\StoryFlashcard;
 use Illuminate\Support\Facades\Cache;
+use Shared\Utils\Cache\ICache;
+use Shared\Utils\ValueObjects\UserId;
 
 class StoryFlashcardFactory
 {
     public function __construct(
         private readonly IStoryRepository $repository,
         private readonly IFlashcardSelector $selector,
+        private ICache $cache,
     ) {}
 
     public function make(NextSessionFlashcards $next_session_flashcards, Flashcard $base_flashcard): SessionFlashcardSummaries
     {
-        $key = 'latest-stories:' . $next_session_flashcards->getUserId()->getValue();
+        $key = $this->getCache($next_session_flashcards->getUserId());
 
-        $latest_stories = Cache::get($key);
+        $latest_stories = $this->cache->get($key);
 
         if (!$latest_stories) {
             $latest_stories = [];
@@ -34,7 +37,8 @@ class StoryFlashcardFactory
 
         if ($story && !in_array($story->getId()->getValue(), $latest_stories, true)) {
             $latest_stories[] = $story->getId()->getValue();
-            Cache::put($key, json_encode($latest_stories), 5*60);
+
+            $this->cache->put($key, json_encode($latest_stories), 5 * 60);
 
             return SessionFlashcardSummaries::fromStory($story, $base_flashcard);
         }
@@ -47,5 +51,10 @@ class StoryFlashcardFactory
         $flashcards = array_merge($flashcards, [$base_flashcard]);
 
         return SessionFlashcardSummaries::fromFlashcards($flashcards, $base_flashcard);
+    }
+
+    private function getCache(UserId $user_id): string
+    {
+        return 'latest-stories:' . $user_id->getValue();
     }
 }

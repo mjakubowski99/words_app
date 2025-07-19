@@ -13,6 +13,7 @@ use Flashcard\Domain\Models\Rating;
 use Flashcard\Domain\Services\SessionFlashcardsService;
 use Shared\Enum\ExerciseType;
 use Shared\Exercise\IFlashcardExerciseFacade;
+use Shared\Flashcard\ISessionFlashcardSummaries;
 
 class AddSessionFlashcardsHandler
 {
@@ -39,17 +40,7 @@ class AddSessionFlashcardsHandler
         if ($exercise_type) {
             $flashcard_summaries = $this->flashcard_story_factory->make($next_session_flashcards, $exercise_type, $flashcards[0]);
 
-            foreach ($flashcard_summaries->getSummaries() as $summary) {
-                if (!$next_session_flashcards->canAddNext()) {
-                    return;
-                }
-
-                if ($summary->getIsAdditional()) {
-                    $next_session_flashcards->addNextAdditional($summary->getFlashcard());
-                } else {
-                    $next_session_flashcards->addNext($summary->getFlashcard());
-                }
-            }
+            $next_session_flashcards = $this->addSessionFlashcardsFromSummaries($flashcard_summaries, $next_session_flashcards);
 
             $exercise_entries = $this->facade->buildExercise($flashcard_summaries, $command->getUserId(), $exercise_type);
 
@@ -74,5 +65,24 @@ class AddSessionFlashcardsHandler
         }
 
         return $exercise_type;
+    }
+
+    private function addSessionFlashcardsFromSummaries(
+        ISessionFlashcardSummaries $flashcard_summaries,
+        NextSessionFlashcards $next_session_flashcards
+    ): NextSessionFlashcards
+    {
+        foreach ($flashcard_summaries->getSummaries() as $summary) {
+            if (!$next_session_flashcards->canAddNext()) {
+                return $next_session_flashcards;
+            }
+            if ($summary->getIsAdditional()) {
+                $next_session_flashcards->addNextAdditional($summary->getFlashcard());
+            } else {
+                $next_session_flashcards->addNext($summary->getFlashcard());
+            }
+        }
+
+        return $next_session_flashcards;
     }
 }

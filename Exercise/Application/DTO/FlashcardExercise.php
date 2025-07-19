@@ -18,13 +18,19 @@ class FlashcardExercise implements IFlashcardExercise
     {
         $i = 0;
         $items = [];
-        foreach ($exercise->getExerciseEntries() as $entry) {
-            $items[] = new self(
-                $entry->getId(),
-                $summaries->getSummaries()[$i]->getFlashcardId(),
-            );
+        foreach ($summaries as $summary) {
+            foreach ($exercise->getExerciseEntries() as $entry) {
+                if ($i === $entry->getOrder()) {
+                    $items[] = new self(
+                        $entry->getId(),
+                        $summary->getFlashcardId(),
+                    );
+                    break;
+                }
+            }
             $i++;
         }
+
         return $items;
     }
 

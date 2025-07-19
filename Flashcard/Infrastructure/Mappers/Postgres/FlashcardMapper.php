@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Flashcard\Infrastructure\Mappers\Postgres;
 
 use Flashcard\Domain\Models\Rating;
+use Flashcard\Domain\Models\StoryCollection;
+use Flashcard\Domain\Models\StoryFlashcard;
 use Illuminate\Support\Arr;
 use Shared\Models\Emoji;
 use Shared\Enum\LanguageLevel;
@@ -124,6 +126,47 @@ class FlashcardMapper
             });
         }
         return $flashcards;
+    }
+
+    public function createManyFromStoryFlashcards(StoryCollection $stories): StoryCollection
+    {
+        $insert_data = [];
+        $created_at = now();
+        $updated_at = now();
+
+        /** @var StoryFlashcard $story_flashcard */
+        foreach ($stories->getAllStoryFlashcards() as $story_flashcard) {
+            $flashcard = $story_flashcard->getFlashcard();
+
+            $insert_data[] = [
+                'user_id' => $flashcard->getOwner()->isUser() ? $flashcard->getOwner()->getId() : null,
+                'admin_id' => $flashcard->getOwner()->isAdmin() ? $flashcard->getOwner()->getId() : null,
+                'flashcard_deck_id' => $flashcard->getDeck()->getId(),
+                'front_word' => $flashcard->getFrontWord(),
+                'front_lang' => $flashcard->getFrontLang()->getValue(),
+                'back_word' => $flashcard->getBackWord(),
+                'back_lang' => $flashcard->getBackLang()->getValue(),
+                'front_context' => $flashcard->getFrontContext(),
+                'back_context' => $flashcard->getBackContext(),
+                'language_level' => $flashcard->getLanguageLevel()->value,
+                'emoji' => $flashcard->getEmoji()?->toUnicode(),
+                'created_at' => $created_at,
+                'updated_at' => $updated_at->addSecond(),
+            ];
+        }
+
+        $results = $this->db::table('flashcards')
+            ->insertReturning($insert_data, ['id', 'front_word', 'back_word', 'updated_at'])
+            ->sortBy('updated_at')
+            ->values();
+
+        $i=0;
+        foreach ($stories->getAllStoryFlashcards() as $flashcard) {
+            $flashcard->getFlashcard()->setId(new FlashcardId($results[$i]->id));
+            $i++;
+        }
+
+        return $stories;
     }
 
     public function findMany(array $flashcard_ids): array

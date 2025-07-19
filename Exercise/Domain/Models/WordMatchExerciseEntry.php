@@ -17,6 +17,7 @@ class WordMatchExerciseEntry extends ExerciseEntry
         Answer $correct_answer,
         ?Answer $last_user_answer,
         ?bool $last_answer_correct,
+        int $order,
         float $score = 0.0,
         int $answers_count = 0,
     ) {
@@ -26,12 +27,13 @@ class WordMatchExerciseEntry extends ExerciseEntry
             $correct_answer,
             $last_user_answer,
             $last_answer_correct,
+            $order,
             $score,
-            $answers_count
+            $answers_count,
         );
     }
 
-    public static function newFromSummary(ISessionFlashcardSummary $summary): self
+    public static function newFromSummary(ISessionFlashcardSummary $summary, int $order): self
     {
         return new self(
             $summary->getBackWord(),
@@ -41,7 +43,8 @@ class WordMatchExerciseEntry extends ExerciseEntry
             ExerciseId::noId(),
             WordMatchAnswer::fromString(ExerciseEntryId::noId(), $summary->getBackWord()),
             null,
-            null
+            null,
+            $order
         );
     }
 
