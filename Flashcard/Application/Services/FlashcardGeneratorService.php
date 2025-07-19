@@ -23,20 +23,13 @@ class FlashcardGeneratorService
         private StoryDuplicateService $story_duplicate_service,
     ) {}
 
-    public function generate(
-        ResolvedDeck $deck,
-        string $deck_name,
-        int $words_count,
-        int $words_count_to_save,
-    ): int {
+    public function generate(ResolvedDeck $deck, string $deck_name, int $words_count, int $words_count_to_save,): int
+    {
         $initial_letters_to_avoid = $this->duplicate_repository->getRandomFrontWordInitialLetters($deck->getDeck()->getId(), 5);
 
-        $prompt = new FlashcardPrompt(
-            $deck_name,
-            $deck->getDeck()->getDefaultLanguageLevel(),
-            $words_count,
-            $initial_letters_to_avoid
-        );
+        $default_language_level = $deck->getDeck()->getDefaultLanguageLevel();
+
+        $prompt = new FlashcardPrompt($deck_name, $default_language_level, $words_count, $initial_letters_to_avoid);
 
         try {
             $stories = $this->generator->generate($deck->getDeck()->getOwner(), $deck->getDeck(), $prompt);
@@ -53,12 +46,7 @@ class FlashcardGeneratorService
                 $this->repository->saveMany($stories);
             }
 
-            $count = 0;
-            foreach ($stories->get() as $story) {
-                $count += count($story->getStoryFlashcards());
-            }
-
-            return $count;
+            return $stories->getAllFlashcardsCount();
         } catch (\Throwable $exception) {
             if (!$deck->isExistingDeck()) {
                 $this->deck_repository->remove($deck->getDeck());

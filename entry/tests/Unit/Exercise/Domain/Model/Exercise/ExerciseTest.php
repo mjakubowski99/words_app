@@ -18,6 +18,8 @@ use Exercise\Domain\Exceptions\ExerciseStatusTransitionException;
 
 class ExerciseTest extends TestCase
 {
+    use ExerciseTrait;
+
     private Exercise $model;
 
     public function test__assessesAnswer_statusAllowsForAssessmentAndEntryExists(): void
@@ -104,13 +106,7 @@ class ExerciseTest extends TestCase
     public function test__setStatus_WhenTransitionAllowed_success(ExerciseStatus $current_status, ExerciseStatus $new_status): void
     {
         // GIVEN
-        $this->model = new ConcreteTestExercise(
-            new ExerciseId(1),
-            UserId::new(),
-            [],
-            $current_status,
-            ExerciseType::UNSCRAMBLE_WORDS
-        );
+        $this->model = ConcreteTestExercise::new($current_status);
 
         // WHEN
         $this->model->setStatus($new_status);
@@ -119,32 +115,13 @@ class ExerciseTest extends TestCase
         $this->assertSame($new_status, $this->model->getStatus());
     }
 
-    public static function statusTransitionProvider(): \Generator
-    {
-        yield 'new_to_in_progress' => [ExerciseStatus::NEW, ExerciseStatus::IN_PROGRESS];
-
-        yield 'in_progress_to_done' => [ExerciseStatus::IN_PROGRESS, ExerciseStatus::DONE];
-
-        yield 'in_progress_to_skipped' => [ExerciseStatus::IN_PROGRESS, ExerciseStatus::SKIPPED];
-
-        yield 'new_to_done' => [ExerciseStatus::NEW, ExerciseStatus::DONE];
-
-        yield 'new_to_skipped' => [ExerciseStatus::NEW, ExerciseStatus::SKIPPED];
-    }
-
     /**
      * @dataProvider notAllowedTransitionProvider
      */
     public function test__setStatus_WhenTransitionNotAllowed_fail(ExerciseStatus $current_status, ExerciseStatus $new_status): void
     {
         // GIVEN
-        $this->model = new ConcreteTestExercise(
-            new ExerciseId(1),
-            UserId::new(),
-            [],
-            $current_status,
-            ExerciseType::UNSCRAMBLE_WORDS
-        );
+        $this->model = ConcreteTestExercise::new($current_status);
 
         // THEN
         $this->expectException(ExerciseStatusTransitionException::class);
@@ -153,31 +130,10 @@ class ExerciseTest extends TestCase
         $this->model->setStatus($new_status);
     }
 
-    public static function notAllowedTransitionProvider(): \Generator
-    {
-        yield 'done_to_skipped' => [ExerciseStatus::DONE, ExerciseStatus::SKIPPED];
-
-        yield 'skipped_to_done' => [ExerciseStatus::SKIPPED, ExerciseStatus::DONE];
-
-        yield 'done_to_in_progress' => [ExerciseStatus::DONE, ExerciseStatus::IN_PROGRESS];
-
-        yield 'done_to_new' => [ExerciseStatus::DONE, ExerciseStatus::NEW];
-
-        yield 'skipped_to_in_progress' => [ExerciseStatus::SKIPPED, ExerciseStatus::IN_PROGRESS];
-
-        yield 'skipped_to_new' => [ExerciseStatus::SKIPPED, ExerciseStatus::NEW];
-    }
-
     public function test__skipExercise_setsStatusToSkipped(): void
     {
         // GIVEN
-        $this->model = new ConcreteTestExercise(
-            new ExerciseId(1),
-            UserId::new(),
-            [],
-            ExerciseStatus::NEW,
-            ExerciseType::UNSCRAMBLE_WORDS
-        );
+        $this->model = ConcreteTestExercise::new(ExerciseStatus::NEW);
 
         // WHEN
         $this->model->skipExercise();
@@ -189,13 +145,7 @@ class ExerciseTest extends TestCase
     public function test__markAsFinished_setsStatusToDone(): void
     {
         // GIVEN
-        $this->model = new ConcreteTestExercise(
-            new ExerciseId(1),
-            UserId::new(),
-            [],
-            ExerciseStatus::IN_PROGRESS,
-            ExerciseType::UNSCRAMBLE_WORDS
-        );
+        $this->model = ConcreteTestExercise::new(ExerciseStatus::IN_PROGRESS);
 
         // WHEN
         $this->model->markAsFinished();

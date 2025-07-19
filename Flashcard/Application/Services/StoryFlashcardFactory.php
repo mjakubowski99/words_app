@@ -1,37 +1,31 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Flashcard\Application\Services;
 
 use Flashcard\Application\DTO\SessionFlashcardSummaries;
-use Flashcard\Application\DTO\SessionFlashcardSummary;
 use Flashcard\Application\Repository\IStoryRepository;
 use Flashcard\Domain\Models\Flashcard;
-use Flashcard\Domain\Models\FlashcardExerciseCollection;
 use Flashcard\Domain\Models\NextSessionFlashcards;
-use Flashcard\Domain\Models\StoryFlashcard;
-use Illuminate\Support\Facades\Cache;
 use Shared\Utils\Cache\ICache;
 use Shared\Utils\ValueObjects\UserId;
 
 class StoryFlashcardFactory
 {
+    private const int FLASHCARDS_COUNT_TO_ADD = 2;
+
     public function __construct(
         private readonly IStoryRepository $repository,
         private readonly IFlashcardSelector $selector,
-        private ICache $cache,
+        private readonly ICache $cache,
     ) {}
 
     public function make(NextSessionFlashcards $next_session_flashcards, Flashcard $base_flashcard): SessionFlashcardSummaries
     {
         $key = $this->getCache($next_session_flashcards->getUserId());
 
-        $latest_stories = $this->cache->get($key);
-
-        if (!$latest_stories) {
-            $latest_stories = [];
-        } else {
-            $latest_stories = json_decode($latest_stories, true);
-        }
+        $latest_stories = $this->retrieveStoriesFromCache($key);
 
         $story = $this->repository->findRandomStoryByFlashcard($base_flashcard->getId(), $next_session_flashcards->getUserId());
 
@@ -45,7 +39,7 @@ class StoryFlashcardFactory
 
         $flashcards = $this->selector->select(
             $next_session_flashcards,
-            2,
+            self::FLASHCARDS_COUNT_TO_ADD,
             [$base_flashcard->getId()]
         );
         $flashcards = array_merge($flashcards, [$base_flashcard]);
@@ -56,5 +50,12 @@ class StoryFlashcardFactory
     private function getCache(UserId $user_id): string
     {
         return 'latest-stories:' . $user_id->getValue();
+    }
+
+    private function retrieveStoriesFromCache(string $key): array
+    {
+        $latest_stories = $this->cache->get($key);
+
+        return $latest_stories ? json_decode($latest_stories, true) : [];
     }
 }

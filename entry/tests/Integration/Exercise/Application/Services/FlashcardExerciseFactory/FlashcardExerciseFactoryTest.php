@@ -33,6 +33,7 @@ class FlashcardExerciseFactoryTest extends TestCase
                 'getBackWord' => 'apple',
                 'getFrontContext' => 'context',
                 'getBackContext' => 'back context',
+                'getOrder' => 1,
             ]),
         ];
         $flashcard_summaries = \Mockery::mock(ISessionFlashcardSummaries::class)

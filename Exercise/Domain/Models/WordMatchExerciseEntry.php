@@ -33,7 +33,7 @@ class WordMatchExerciseEntry extends ExerciseEntry
         );
     }
 
-    public static function newFromSummary(ISessionFlashcardSummary $summary, int $order): self
+    public static function newFromSummary(ISessionFlashcardSummary $summary): self
     {
         return new self(
             $summary->getBackWord(),
@@ -44,7 +44,7 @@ class WordMatchExerciseEntry extends ExerciseEntry
             WordMatchAnswer::fromString(ExerciseEntryId::noId(), $summary->getBackWord()),
             null,
             null,
-            $order
+            $summary->getOrder(),
         );
     }
 

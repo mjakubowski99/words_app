@@ -24,10 +24,8 @@ class WordMatchExercise extends Exercise
     {
         $exercise_entries = [];
 
-        $i = 0;
         foreach ($summaries->getSummaries() as $summary) {
-            $exercise_entries[] = WordMatchExerciseEntry::newFromSummary($summary, $i);
-            $i++;
+            $exercise_entries[] = WordMatchExerciseEntry::newFromSummary($summary);
         }
 
         return new self(

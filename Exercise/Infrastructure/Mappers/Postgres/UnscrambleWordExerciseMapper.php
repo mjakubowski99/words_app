@@ -18,102 +18,19 @@ class UnscrambleWordExerciseMapper
 {
     public function __construct(
         private DB $db,
+        private ExerciseEntryMapper $exercise_entry_mapper,
     ) {}
 
     public function find(ExerciseId $id): UnscrambleWordsExercise
     {
-        $result = $this->db::table('exercises')
-            ->where('exercises.id', $id->getValue())
-            ->join('exercise_entries', 'exercise_entries.exercise_id', '=', 'exercises.id')
-            ->join(
-                'unscramble_word_exercises',
-                'exercises.id',
-                '=',
-                'unscramble_word_exercises.exercise_id'
-            )
-            ->select(
-                'exercises.id',
-                'exercises.user_id',
-                'exercises.status',
-                'exercises.exercise_type',
-                'unscramble_word_exercises.word',
-                'unscramble_word_exercises.scrambled_word',
-                'unscramble_word_exercises.context_sentence',
-                'unscramble_word_exercises.word_translation',
-                'unscramble_word_exercises.emoji',
-                'exercise_entries.id as exercise_entry_id',
-                'exercise_entries.last_answer',
-                'exercise_entries.last_answer_correct',
-                'exercise_entries.score',
-                'exercise_entries.answers_count',
-            )
-            ->firstOrFail();
-
-        $entry_id = new ExerciseEntryId($result->exercise_entry_id);
-
-        return new UnscrambleWordsExercise(
-            new ExerciseId($result->id),
-            new UserId($result->user_id),
-            ExerciseStatus::from($result->status),
-            $entry_id,
-            $result->word,
-            $result->context_sentence,
-            $result->word_translation,
-            $result->emoji ? Emoji::fromUnicode($result->emoji) : null,
-            $result->scrambled_word,
-            $result->last_answer ? new UnscrambleWordAnswer($entry_id, $result->last_answer) : null,
-            $result->last_answer_correct,
-            (float) $result->score,
-            $result->answers_count,
-        );
+        $result = $this->getExerciseQuery($id, null);
+        return $this->map($result);
     }
 
     public function findByEntryId(ExerciseEntryId $id): UnscrambleWordsExercise
     {
-        $result = $this->db::table('exercises')
-            ->where('exercise_entries.id', $id->getValue())
-            ->join('exercise_entries', 'exercise_entries.exercise_id', '=', 'exercises.id')
-            ->join(
-                'unscramble_word_exercises',
-                'exercises.id',
-                '=',
-                'unscramble_word_exercises.exercise_id'
-            )
-            ->select(
-                'exercises.id',
-                'exercises.user_id',
-                'exercises.status',
-                'exercises.exercise_type',
-                'unscramble_word_exercises.word',
-                'unscramble_word_exercises.scrambled_word',
-                'unscramble_word_exercises.context_sentence',
-                'unscramble_word_exercises.word_translation',
-                'unscramble_word_exercises.emoji',
-                'exercise_entries.id as exercise_entry_id',
-                'exercise_entries.last_answer',
-                'exercise_entries.last_answer_correct',
-                'exercise_entries.score',
-                'exercise_entries.answers_count',
-            )
-            ->firstOrFail();
-
-        $entry_id = new ExerciseEntryId($result->exercise_entry_id);
-
-        return new UnscrambleWordsExercise(
-            new ExerciseId($result->id),
-            new UserId($result->user_id),
-            ExerciseStatus::from($result->status),
-            $entry_id,
-            $result->word,
-            $result->context_sentence,
-            $result->word_translation,
-            $result->emoji ? Emoji::fromUnicode($result->emoji) : null,
-            $result->scrambled_word,
-            $result->last_answer ? new UnscrambleWordAnswer($entry_id, $result->last_answer) : null,
-            $result->last_answer_correct,
-            (float) $result->score,
-            $result->answers_count,
-        );
+        $result = $this->getExerciseQuery(null, $id);
+        return $this->map($result);
     }
 
     public function create(UnscrambleWordsExercise $exercise): ExerciseId
@@ -122,12 +39,11 @@ class UnscrambleWordExerciseMapper
             throw new \InvalidArgumentException('Cannot create exercise with already existing id');
         }
 
-        $exercise_id = $this->db::table('exercises')
-            ->insertGetId([
-                'exercise_type' => $exercise->getExerciseType()->toNumber(),
-                'user_id' => $exercise->getUserId(),
-                'status' => $exercise->getStatus()->value,
-            ]);
+        $exercise_id = $this->db::table('exercises')->insertGetId([
+            'exercise_type' => $exercise->getExerciseType()->toNumber(),
+            'user_id' => $exercise->getUserId(),
+            'status' => $exercise->getStatus()->value,
+        ]);
 
         $this->db::table('unscramble_word_exercises')
             ->insert([
@@ -139,22 +55,7 @@ class UnscrambleWordExerciseMapper
                 'emoji' => $exercise->getEmoji()?->toUnicode(),
             ]);
 
-        $data = [];
-
-        /** @var ExerciseEntry $entry */
-        foreach ($exercise->getExerciseEntries() as $entry) {
-            $data[] = [
-                'exercise_id' => $exercise_id,
-                'correct_answer' => $entry->getCorrectAnswer()->toString(),
-                'score' => 0.0,
-                'answers_count' => 0,
-                'last_answer' => null,
-                'last_answer_correct' => null,
-                'order' => 0,
-            ];
-        }
-
-        $this->db::table('exercise_entries')->insert($data);
+        $this->exercise_entry_mapper->insert($exercise_id, $exercise->getExerciseEntries());
 
         return new ExerciseId($exercise_id);
     }
@@ -168,23 +69,58 @@ class UnscrambleWordExerciseMapper
                 'status' => $exercise->getStatus()->value,
             ]);
 
-        $data = [];
+        $this->exercise_entry_mapper->save($exercise->getUpdatedEntries());
+    }
 
-        /** @var ExerciseEntry $entry */
-        foreach ($exercise->getUpdatedEntries() as $entry) {
-            $data[$entry->getId()->getValue()] = [
-                'exercise_id' => $exercise->getId(),
-                'correct_answer' => $entry->getCorrectAnswer()->toString(),
-                'score' => $entry->getScore(),
-                'answers_count' => $entry->getAnswersCount(),
-                'last_answer' => $entry->getLastUserAnswer() ? $entry->getLastUserAnswer()->toString() : null,
-                'last_answer_correct' => $entry->isLastAnswerCorrect(),
-                'order' => 0,
-            ];
-        }
+    private function getExerciseQuery(?ExerciseId $id, ?ExerciseEntryId $entry_id): object
+    {
+        return $this->db::table('exercises')
+            ->when($id!==null, fn($q) => $q->where('exercises.id', $id->getValue()))
+            ->when($entry_id!==null, fn($q) => $q->where('exercise_entries.id', $entry_id->getValue()))
+            ->join('exercise_entries', 'exercise_entries.exercise_id', '=', 'exercises.id')
+            ->join(
+                'unscramble_word_exercises',
+                'exercises.id',
+                '=',
+                'unscramble_word_exercises.exercise_id'
+            )
+            ->select(
+                'exercises.id',
+                'exercises.user_id',
+                'exercises.status',
+                'exercises.exercise_type',
+                'unscramble_word_exercises.word',
+                'unscramble_word_exercises.scrambled_word',
+                'unscramble_word_exercises.context_sentence',
+                'unscramble_word_exercises.word_translation',
+                'unscramble_word_exercises.emoji',
+                'exercise_entries.id as exercise_entry_id',
+                'exercise_entries.last_answer',
+                'exercise_entries.last_answer_correct',
+                'exercise_entries.score',
+                'exercise_entries.answers_count',
+            )
+            ->firstOrFail();
+    }
 
-        foreach ($data as $id => $update_data) {
-            $this->db::table('exercise_entries')->where('id', $id)->update($update_data);
-        }
+    private function map(object $row): UnscrambleWordsExercise
+    {
+        $entry_id = new ExerciseEntryId($row->exercise_entry_id);
+
+        return new UnscrambleWordsExercise(
+            new ExerciseId($row->id),
+            new UserId($row->user_id),
+            ExerciseStatus::from($row->status),
+            $entry_id,
+            $row->word,
+            $row->context_sentence,
+            $row->word_translation,
+            $row->emoji ? Emoji::fromUnicode($row->emoji) : null,
+            $row->scrambled_word,
+            $row->last_answer ? new UnscrambleWordAnswer($entry_id, $row->last_answer) : null,
+            $row->last_answer_correct,
+            (float) $row->score,
+            $row->answers_count,
+        );
     }
 }

@@ -47,6 +47,7 @@ class UnscrambleWordExerciseRepositoryTest extends TestCase
             'isLastAnswerCorrect' => false,
             'getAnswersCount' => 0,
             'getScore' => 0,
+            'getOrder' => 1,
         ]);
         $exercise = \Mockery::mock(UnscrambleWordsExercise::class)->allows([
             'getId' => ExerciseId::noId(),

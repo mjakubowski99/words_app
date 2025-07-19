@@ -16,11 +16,10 @@ class FlashcardExercise implements IFlashcardExercise
 
     public static function newCollection(ISessionFlashcardSummaries $summaries, Exercise $exercise): array
     {
-        $i = 0;
         $items = [];
-        foreach ($summaries as $summary) {
+        foreach ($summaries->getSummaries() as $summary) {
             foreach ($exercise->getExerciseEntries() as $entry) {
-                if ($i === $entry->getOrder()) {
+                if ($summary->getOrder() === $entry->getOrder()) {
                     $items[] = new self(
                         $entry->getId(),
                         $summary->getFlashcardId(),
@@ -28,7 +27,6 @@ class FlashcardExercise implements IFlashcardExercise
                     break;
                 }
             }
-            $i++;
         }
 
         return $items;

@@ -10,4 +10,6 @@ interface IWordMatchExerciseReadEntry
     public function getWord(): string;
     public function getWordTranslation(): string;
     public function getSentence(): string;
+    public function getSentencePartBeforeWord(): string;
+    public function getSentencePartAfterWord(): string;
 }

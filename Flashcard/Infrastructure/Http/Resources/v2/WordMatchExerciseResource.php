@@ -55,6 +55,18 @@ use Shared\Exercise\Exercises\IWordMatchExerciseReadEntry;
                         type: 'string',
                         example: 'The cat sits on the mat.'
                     ),
+                    new OAT\Property(
+                        property: 'sentence_part_before_word',
+                        description: 'Part of the sentence before the word',
+                        type: 'string',
+                        example: 'The '
+                    ),
+                    new OAT\Property(
+                        property: 'sentence_part_after_word',
+                        description: 'Part of the sentence after the word',
+                        type: 'string',
+                        example: ' sits on the mat.'
+                    ),
                 ]
             )
         ),
@@ -78,6 +90,8 @@ class WordMatchExerciseResource extends JsonResource
                 'word' => $entry->getWord(),
                 'word_translation' => $entry->getWordTranslation(),
                 'sentence' => $entry->getSentence(),
+                'sentence_part_before_word' => $entry->getSentencePartBeforeWord(),
+                'sentence_part_after_word' => $entry->getSentencePartAfterWord(),
             ], $this->resource->getEntries()),
         ];
     }

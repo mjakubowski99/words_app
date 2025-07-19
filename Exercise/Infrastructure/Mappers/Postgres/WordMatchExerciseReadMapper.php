@@ -4,6 +4,8 @@ namespace Exercise\Infrastructure\Mappers\Postgres;
 
 use Exercise\Application\DTO\WordMatchExerciseRead;
 use Exercise\Application\DTO\WordMatchExerciseReadEntry;
+use Exercise\Infrastructure\Models\WordMatchExerciseJsonProperties;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Shared\Utils\ValueObjects\ExerciseEntryId;
 use Shared\Utils\ValueObjects\ExerciseId;
@@ -18,7 +20,30 @@ class WordMatchExerciseReadMapper
             ->firstOrFail()
             ->exercise_id;
 
-        $entries = DB::table('exercises')
+        $entries = $this->getEntries($exercise_id);
+
+        $properties = new WordMatchExerciseJsonProperties(json_decode($entries[0]->properties, true));
+
+        $exercise_entries = [];
+        foreach ($entries as $entry) {
+            $exercise_entries[] = new WordMatchExerciseReadEntry(
+                exercise_entry_id: new ExerciseEntryId($entry->exercise_entry_id),
+                word: $properties->getWord($entry->order),
+                word_translation: $properties->getTranslation($entry->order),
+                sentence: $properties->getSentence($entry->order),
+            );
+        }
+
+        return new WordMatchExerciseRead(
+            exercise_id: new ExerciseId($entries[0]->id),
+            is_story: $properties->getStoryId() !== null,
+            entries: $exercise_entries
+        );
+    }
+
+    private function getEntries(int $exercise_id): Collection
+    {
+        return DB::table('exercises')
             ->where('exercises.id', $exercise_id)
             ->join('exercise_entries', 'exercises.id', '=', 'exercise_entries.exercise_id')
             ->select(
@@ -35,25 +60,5 @@ class WordMatchExerciseReadMapper
                 'exercise_entries.answers_count',
                 'exercise_entries.order'
             )->get();
-
-        $exercise_entries = [];
-        foreach ($entries as $entry) {
-            $properties = json_decode($entry->properties, true);
-
-            $exercise_entries[] = new WordMatchExerciseReadEntry(
-                exercise_entry_id: new ExerciseEntryId($entry->exercise_entry_id),
-                word: $properties['sentences'][$entry->order]['word'] ?? '',
-                word_translation: $properties['sentences'][$entry->order]['translation'] ?? '',
-                sentence: $properties['sentences'][$entry->order]['sentence'] ?? '',
-            );
-        }
-
-        $properties = json_decode($entries[0]->properties, true);
-
-        return new WordMatchExerciseRead(
-            exercise_id: new ExerciseId($entries[0]->id),
-            is_story: $properties['story_id'] !== null,
-            entries: $exercise_entries
-        );
     }
 }
