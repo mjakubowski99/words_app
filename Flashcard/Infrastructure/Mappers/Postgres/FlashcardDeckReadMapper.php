@@ -61,18 +61,6 @@ class FlashcardDeckReadMapper
     /** @return OwnerCategoryRead[] */
     public function getAdminDecks(UserId $user_id, ?LanguageLevel $level, ?string $search, int $page, int $per_page): array
     {
-        $flashcard_stats = $this->db::table('learning_session_flashcards')
-            ->join('flashcards', 'flashcards.id', '=', 'learning_session_flashcards.flashcard_id')
-            ->join('learning_sessions', 'learning_sessions.id', '=', 'learning_session_flashcards.learning_session_id')
-            ->whereColumn('flashcards.flashcard_deck_id', 'flashcard_decks.id')
-            ->whereNotNull('learning_session_flashcards.rating')
-            ->where('learning_sessions.user_id', $user_id->getValue())
-            ->limit(1)
-            ->selectRaw('
-                MAX(learning_session_flashcards.updated_at) as last_learnt_at,
-                SUM(COALESCE(rating,0)) as rating_sum
-            ');
-
         $activities = $this->db::table('flashcard_deck_activities')->where('user_id', $user_id);
 
         $results = $this->db::table('flashcard_decks')
@@ -83,7 +71,6 @@ class FlashcardDeckReadMapper
             })
             ->take($per_page)
             ->skip(($page - 1) * $per_page)
-            ->leftJoinLateral($flashcard_stats, 'flashcard_stats')
             ->leftJoinSub($activities, 'flashcard_deck_activities', function ($join) {
                 $join->on('flashcard_deck_activities.flashcard_deck_id', '=', 'flashcard_decks.id');
             })
