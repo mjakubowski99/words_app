@@ -26,7 +26,7 @@ class ExerciseEntryFactory extends Factory
             'last_answer_correct' => null,
             'score' => 0,
             'answers_count' => 0,
-            'order' => random_int(0,10),
+            'order' => random_int(0, 10),
         ];
     }
 }

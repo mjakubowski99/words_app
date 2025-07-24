@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Flashcard\Infrastructure\Repositories\Postgres\FlashcardDeckRepository;
 
-use App\Models\Story;
-use App\Models\StoryFlashcard;
 use Carbon\Carbon;
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\Admin;
+use App\Models\Story;
 use App\Models\Flashcard;
 use App\Models\FlashcardDeck;
 use App\Models\SmTwoFlashcard;
+use App\Models\StoryFlashcard;
 use Shared\Enum\LanguageLevel;
 use App\Models\LearningSession;
 use Flashcard\Domain\Models\Deck;

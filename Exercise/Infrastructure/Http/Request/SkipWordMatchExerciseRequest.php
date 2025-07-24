@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Exercise\Infrastructure\Http\Request;
 
 use OpenApi\Attributes as OAT;

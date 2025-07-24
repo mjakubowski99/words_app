@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Exercise\Domain\Models;
 
 use Shared\Enum\ExerciseType;
-use Shared\Flashcard\ISessionFlashcardSummaries;
-use Shared\Utils\ValueObjects\ExerciseId;
-use Shared\Utils\ValueObjects\StoryId;
 use Shared\Utils\ValueObjects\UserId;
+use Shared\Utils\ValueObjects\StoryId;
+use Shared\Utils\ValueObjects\ExerciseId;
+use Shared\Flashcard\ISessionFlashcardSummaries;
 
 class WordMatchExercise extends Exercise
 {
@@ -16,6 +18,7 @@ class WordMatchExercise extends Exercise
         UserId $user_id,
         ExerciseStatus $status,
         array $exercise_entries,
+        private array $options,
     ) {
         parent::__construct($exercise_id, $user_id, $exercise_entries, $status, ExerciseType::WORD_MATCH);
     }
@@ -28,12 +31,18 @@ class WordMatchExercise extends Exercise
             $exercise_entries[] = WordMatchExerciseEntry::newFromSummary($summary);
         }
 
+        $options = [];
+        foreach ($summaries->getAnswerOptions() as $option) {
+            $options[] = $option->getOption();
+        }
+
         return new self(
             $summaries->hasStory() ? $summaries->getStoryId() : null,
             ExerciseId::noId(),
             $user_id,
             ExerciseStatus::NEW,
-            $exercise_entries
+            $exercise_entries,
+            $options
         );
     }
 
@@ -46,5 +55,10 @@ class WordMatchExercise extends Exercise
     public function getExerciseEntries(): array
     {
         return parent::getExerciseEntries();
+    }
+
+    public function getOptions(): array
+    {
+        return $this->options;
     }
 }

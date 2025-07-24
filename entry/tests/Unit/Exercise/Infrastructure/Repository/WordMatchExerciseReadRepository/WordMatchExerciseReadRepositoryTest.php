@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Unit\Exercise\Infrastructure\Repository\WordMatchExerciseReadRepository;
 
-use Exercise\Infrastructure\Repositories\WordMatchExerciseReadRepository;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Shared\Utils\ValueObjects\ExerciseEntryId;
-use Shared\Utils\ValueObjects\StoryId;
 use Tests\TestCase;
+use Shared\Utils\ValueObjects\StoryId;
+use Shared\Utils\ValueObjects\ExerciseEntryId;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Exercise\Infrastructure\Repositories\WordMatchExerciseReadRepository;
 
 class WordMatchExerciseReadRepositoryTest extends TestCase
 {
@@ -94,5 +96,4 @@ class WordMatchExerciseReadRepositoryTest extends TestCase
         // WHEN
         $this->repository->findByEntryId($non_existent_id);
     }
-
 }

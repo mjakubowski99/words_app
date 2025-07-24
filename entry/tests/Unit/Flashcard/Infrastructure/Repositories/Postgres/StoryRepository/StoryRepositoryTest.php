@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Flashcard\Infrastructure\Repositories\Postgres\StoryRepository;
 
-use Flashcard\Domain\Models\Story;
-use Flashcard\Domain\Models\StoryCollection;
-use Flashcard\Infrastructure\Repositories\Postgres\StoryRepository;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Shared\Utils\ValueObjects\StoryId;
 use Tests\TestCase;
+use App\Models\StoryFlashcard;
+use Flashcard\Domain\Models\Story;
+use Shared\Utils\ValueObjects\StoryId;
+use Flashcard\Domain\Models\StoryCollection;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Flashcard\Infrastructure\Repositories\Postgres\StoryRepository;
 
 class StoryRepositoryTest extends TestCase
 {
@@ -24,7 +25,7 @@ class StoryRepositoryTest extends TestCase
         $this->repository = $this->app->make(StoryRepository::class);
     }
 
-    public function test__findStoryByFlashcard_WhenStoryExists_ReturnsStory(): void
+    public function test__findRandomStoryIdByFlashcardId_WhenStoryExists_ReturnsStory(): void
     {
         // GIVEN
         $user = $this->createUser();
@@ -36,7 +37,26 @@ class StoryRepositoryTest extends TestCase
         $this->createStoryWithFlashcard($story, $flashcard, 'Test sentence');
 
         // WHEN
-        $result = $this->repository->findRandomStoryByFlashcard($flashcard->getId(), $user->getId());
+        $result = $this->repository->findRandomStoryIdByFlashcard($flashcard->getId());
+
+        // THEN
+        $this->assertInstanceOf(StoryId::class, $result);
+        $this->assertSame($story->id, $result->getValue());
+    }
+
+    public function test__find_WhenStoryExists_ReturnsStory(): void
+    {
+        // GIVEN
+        $user = $this->createUser();
+        $story = $this->createStory();
+        $flashcard = $this->createFlashcard([
+            'front_word' => 'test',
+            'user_id' => $user->id,
+        ]);
+        $this->createStoryWithFlashcard($story, $flashcard, 'Test sentence');
+
+        // WHEN
+        $result = $this->repository->find(new StoryId($story->id), $user->getId());
 
         // THEN
         $this->assertInstanceOf(Story::class, $result);
@@ -79,12 +99,12 @@ class StoryRepositoryTest extends TestCase
         $stories = \App\Models\Story::all();
         $this->assertCount(2, $stories);
 
-        $story_flashcards = \App\Models\StoryFlashcard::query()->where('story_id', $stories[0]->id)->get();
+        $story_flashcards = StoryFlashcard::query()->where('story_id', $stories[0]->id)->get();
 
         $this->assertSame('word', $story_flashcards[0]->flashcard->front_word);
         $this->assertSame('word 2', $story_flashcards[1]->flashcard->front_word);
 
-        $story_flashcards = \App\Models\StoryFlashcard::query()->where('story_id', $stories[1]->id)->get();
+        $story_flashcards = StoryFlashcard::query()->where('story_id', $stories[1]->id)->get();
 
         $this->assertSame('wx', $story_flashcards[0]->flashcard->front_word);
         $this->assertSame('w2', $story_flashcards[1]->flashcard->front_word);
@@ -113,7 +133,7 @@ class StoryRepositoryTest extends TestCase
         $stories = \App\Models\Story::all();
         $this->assertCount(1, $stories);
 
-        $story_flashcards = \App\Models\StoryFlashcard::query()->where('story_id', $stories[0]->id)->get();
+        $story_flashcards = StoryFlashcard::query()->where('story_id', $stories[0]->id)->get();
 
         $this->assertSame('Override', $story_flashcards[0]->sentence_override);
     }

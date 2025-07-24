@@ -16,7 +16,7 @@ use User\Infrastructure\Http\Resources\TokenUserResource;
 class AuthController
 {
     #[OAT\Post(
-        path: '/api/v2/user/login',
+        path: '/api/v2/login',
         operationId: 'user.login',
         description: 'Endpoint for user login',
         summary: 'Endpoint for user login',

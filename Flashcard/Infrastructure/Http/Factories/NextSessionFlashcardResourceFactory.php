@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Http\Factories;
 
-use Flashcard\Infrastructure\Http\Resources\v2\WordMatchExerciseResource;
 use Shared\Enum\ExerciseType;
 use Flashcard\Domain\ValueObjects\SessionId;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Shared\Exercise\Exercises\IExerciseReadFacade;
 use Flashcard\Application\ReadModels\ExerciseSummary;
 use Flashcard\Application\Query\GetNextSessionFlashcardsHandler;
+use Flashcard\Infrastructure\Http\Resources\v2\WordMatchExerciseResource;
 use Flashcard\Infrastructure\Http\Resources\v2\NextSessionFlashcardsResource;
 use Flashcard\Infrastructure\Http\Resources\v2\UnscrambleWordExerciseResource;
 
@@ -45,7 +45,7 @@ class NextSessionFlashcardResourceFactory
                             'skip' => route('v2.exercises.word-match.skip', ['exercise_id' => $resource->resource->getExerciseId()->getValue()]),
                         ],
                         default => throw new \UnexpectedValueException('Unsupported exercise type'),
-                    }
+                    },
                 ];
             }, $flashcards->getExerciseSummaries()),
         ]);

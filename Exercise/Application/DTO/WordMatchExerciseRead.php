@@ -1,16 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Exercise\Application\DTO;
 
-use Shared\Exercise\Exercises\IWordMatchExerciseRead;
 use Shared\Utils\ValueObjects\ExerciseId;
+use Shared\Exercise\Exercises\IWordMatchExerciseRead;
 
 class WordMatchExerciseRead implements IWordMatchExerciseRead
 {
     public function __construct(
         private ExerciseId $exercise_id,
         private bool $is_story,
-        private array $entries
+        private array $entries,
+        private array $options = []
     ) {}
 
     public function getExerciseId(): ExerciseId
@@ -26,5 +29,10 @@ class WordMatchExerciseRead implements IWordMatchExerciseRead
     public function getEntries(): array
     {
         return $this->entries;
+    }
+
+    public function getAnswerOptions(): array
+    {
+        return $this->options;
     }
 }

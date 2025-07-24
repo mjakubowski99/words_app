@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Exercise\Infrastructure\Models;
 
-use Exercise\Domain\Models\WordMatchExercise;
 use Shared\Utils\ValueObjects\StoryId;
+use Exercise\Domain\Models\WordMatchExercise;
 
 class WordMatchExerciseJsonProperties
 {
@@ -14,6 +16,7 @@ class WordMatchExerciseJsonProperties
         $properties = [
             'story_id' => $exercise->getStoryId()?->getValue(),
             'sentences' => [],
+            'answer_options' => [],
         ];
 
         foreach ($exercise->getExerciseEntries() as $entry) {
@@ -25,12 +28,21 @@ class WordMatchExerciseJsonProperties
             ];
         }
 
+        foreach ($exercise->getOptions() as $option) {
+            $properties['answer_options'][] = $option;
+        }
+
         return new self($properties);
     }
 
     public function getStoryId(): ?StoryId
     {
         return $this->properties['story_id'] ? new StoryId($this->properties['story_id']) : null;
+    }
+
+    public function getAnswerOptions(): array
+    {
+        return $this->properties['answer_options'] ?? [];
     }
 
     public function getSentence(int $order): string

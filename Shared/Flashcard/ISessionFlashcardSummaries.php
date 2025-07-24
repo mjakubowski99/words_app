@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Shared\Flashcard;
 
 use Shared\Utils\ValueObjects\StoryId;
@@ -12,4 +14,6 @@ interface ISessionFlashcardSummaries
 
     /** @return ISessionFlashcardSummary[] */
     public function getSummaries(): array;
+    /** @return IAnswerOption[] */
+    public function getAnswerOptions(): array;
 }

@@ -28,5 +28,6 @@ interface ISessionFlashcardSummary
     public function getIsStoryPart(): bool;
 
     public function getStorySentence(): ?string;
+
     public function getOrder(): int;
 }

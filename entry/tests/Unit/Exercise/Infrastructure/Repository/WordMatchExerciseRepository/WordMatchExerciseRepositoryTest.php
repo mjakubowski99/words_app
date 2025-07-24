@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Exercise\Infrastructure\Repository\WordMatchExerciseRepository;
 
+use Tests\TestCase;
 use App\Models\Exercise;
 use App\Models\ExerciseEntry;
-use Exercise\Domain\Models\ExerciseStatus;
-use Exercise\Infrastructure\Repositories\WordMatchExerciseRepository;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Shared\Utils\ValueObjects\StoryId;
-use Tests\TestCase;
+use Exercise\Domain\Models\ExerciseStatus;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Exercise\Infrastructure\Repositories\WordMatchExerciseRepository;
 
 class WordMatchExerciseRepositoryTest extends TestCase
 {
@@ -76,7 +76,6 @@ class WordMatchExerciseRepositoryTest extends TestCase
         }
     }
 
-
     public function test__create_validExercise_storesExerciseWithEntries(): void
     {
         // GIVEN
@@ -134,11 +133,11 @@ class WordMatchExerciseRepositoryTest extends TestCase
         $this->assertIsArray($properties['sentences']);
         $this->assertCount(3, $properties['sentences']);
 
-        for ($i = 0; $i < 3; $i++) {
+        for ($i = 0; $i < 3; ++$i) {
             $this->assertEquals($i, $properties['sentences'][$i]['order']);
-            $this->assertEquals("word$i", $properties['sentences'][$i]['word']);
-            $this->assertEquals("translation$i", $properties['sentences'][$i]['translation']);
-            $this->assertEquals("sentence$i", $properties['sentences'][$i]['sentence']);
+            $this->assertEquals("word{$i}", $properties['sentences'][$i]['word']);
+            $this->assertEquals("translation{$i}", $properties['sentences'][$i]['translation']);
+            $this->assertEquals("sentence{$i}", $properties['sentences'][$i]['sentence']);
         }
 
         $entries = ExerciseEntry::query()
@@ -149,7 +148,7 @@ class WordMatchExerciseRepositoryTest extends TestCase
         $this->assertCount(3, $entries);
         foreach ($entries as $i => $entry) {
             $this->assertEquals($i, $entry->order);
-            $this->assertEquals("correct$i", $entry->correct_answer);
+            $this->assertEquals("correct{$i}", $entry->correct_answer);
         }
     }
 
@@ -242,10 +241,10 @@ class WordMatchExerciseRepositoryTest extends TestCase
         $this->assertNotNull($exercise_db);
         $properties = json_decode($exercise_db->properties, true);
 
-        for ($i = 0; $i < 3; $i++) {
-            $this->assertEquals("word$i", $properties['sentences'][$i]['word']);
-            $this->assertEquals("translation$i", $properties['sentences'][$i]['translation']);
-            $this->assertEquals("sentence$i", $properties['sentences'][$i]['sentence']);
+        for ($i = 0; $i < 3; ++$i) {
+            $this->assertEquals("word{$i}", $properties['sentences'][$i]['word']);
+            $this->assertEquals("translation{$i}", $properties['sentences'][$i]['translation']);
+            $this->assertEquals("sentence{$i}", $properties['sentences'][$i]['sentence']);
         }
     }
 }

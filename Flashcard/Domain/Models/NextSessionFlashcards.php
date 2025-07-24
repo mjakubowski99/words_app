@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace Flashcard\Domain\Models;
 
+use Illuminate\Support\Facades\Log;
 use Shared\Enum\SessionType;
 use Shared\Enum\ExerciseType;
-use Shared\Exercise\IFlashcardExercise;
+use Shared\Flashcard\ISessionFlashcardSummaries;
 use Shared\Utils\ValueObjects\UserId;
 use Flashcard\Domain\ValueObjects\SessionId;
 use Flashcard\Domain\ValueObjects\FlashcardId;
@@ -96,7 +97,21 @@ class NextSessionFlashcards extends SessionFlashcardsBase
         return $this->current_session_flashcards_count + 1 <= $this->max_flashcards_count;
     }
 
-    public function associateExercises(array $entries, ExerciseType $type): void
+    public function addFlashcardsFromSummaries(ISessionFlashcardSummaries $summaries): void
+    {
+        foreach ($summaries->getSummaries() as $summary) {
+            if (!$this->canAddNext()) {
+                return;
+            }
+            if ($summary->getIsAdditional()) {
+                $this->addNextAdditional($summary->getFlashcard());
+            } else {
+                $this->addNext($summary->getFlashcard());
+            }
+        }
+    }
+
+    public function associateExerciseEntries(array $entries, ExerciseType $type): void
     {
         foreach ($entries as $entry) {
             $this->associateExercise(
@@ -149,6 +164,21 @@ class NextSessionFlashcards extends SessionFlashcardsBase
     public function isMixedSessionType(): bool
     {
         return $this->type === SessionType::MIXED;
+    }
+
+    public function resolveExerciseByRating(?Rating $rating): ?ExerciseType
+    {
+        $exercise_type = $this->resolveNextExerciseType();
+
+        if (
+            $this->isMixedSessionType()
+            && $rating
+            && $rating->value < Rating::GOOD->value
+        ) {
+            return null;
+        }
+
+        return $exercise_type;
     }
 
     public function resolveNextExerciseType(): ?ExerciseType

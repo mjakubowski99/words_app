@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Exercise\Application\Services;
 
-use Exercise\Application\Services\ExerciseFactory\UnscrambleWordExerciseFactory;
-use Exercise\Application\Services\ExerciseFactory\WordMatchExerciseFactory;
-use Illuminate\Container\Container;
 use Shared\Enum\ExerciseType;
-use Shared\Flashcard\ISessionFlashcardSummaries;
+use Illuminate\Container\Container;
 use Shared\Utils\ValueObjects\UserId;
+use Shared\Flashcard\ISessionFlashcardSummaries;
+use Exercise\Application\Services\ExerciseFactory\WordMatchExerciseFactory;
+use Exercise\Application\Services\ExerciseFactory\UnscrambleWordExerciseFactory;
 
 class FlashcardExerciseFactory
 {

@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace Tests\Integration\Flashcards\Application\Services\FlashcardDuplicateService;
 
-use Flashcard\Domain\Models\Story;
-use Flashcard\Domain\Models\StoryCollection;
-use Flashcard\Domain\Models\StoryFlashcard;
 use Mockery\MockInterface;
 use App\Models\FlashcardDeck;
 use Shared\Enum\LanguageLevel;
 use Flashcard\Domain\Models\Deck;
-use Shared\Utils\ValueObjects\StoryId;
 use Tests\Base\FlashcardTestCase;
+use Flashcard\Domain\Models\Story;
 use Flashcard\Domain\Models\Flashcard;
+use Shared\Utils\ValueObjects\StoryId;
 use Shared\Utils\ValueObjects\Language;
+use Flashcard\Domain\Models\StoryFlashcard;
+use Flashcard\Domain\Models\StoryCollection;
 use Flashcard\Domain\ValueObjects\FlashcardId;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Flashcard\Domain\Services\FlashcardDuplicateService;
@@ -52,7 +52,7 @@ class FlashcardDuplicateServiceTest extends FlashcardTestCase
 
         // WHEN
         $flashcards = $this->service->removeDuplicates($deck, new StoryCollection([
-            new Story(StoryId::noId(), $flashcards)
+            new Story(StoryId::noId(), $flashcards),
         ]));
 
         // THEN

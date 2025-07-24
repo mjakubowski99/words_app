@@ -7,7 +7,6 @@ namespace Exercise\Infrastructure\Mappers\Postgres;
 use Shared\Models\Emoji;
 use Illuminate\Support\Facades\DB;
 use Shared\Utils\ValueObjects\UserId;
-use Exercise\Domain\Models\ExerciseEntry;
 use Shared\Utils\ValueObjects\ExerciseId;
 use Exercise\Domain\Models\ExerciseStatus;
 use Shared\Utils\ValueObjects\ExerciseEntryId;
@@ -24,12 +23,14 @@ class UnscrambleWordExerciseMapper
     public function find(ExerciseId $id): UnscrambleWordsExercise
     {
         $result = $this->getExerciseQuery($id, null);
+
         return $this->map($result);
     }
 
     public function findByEntryId(ExerciseEntryId $id): UnscrambleWordsExercise
     {
         $result = $this->getExerciseQuery(null, $id);
+
         return $this->map($result);
     }
 
@@ -75,8 +76,8 @@ class UnscrambleWordExerciseMapper
     private function getExerciseQuery(?ExerciseId $id, ?ExerciseEntryId $entry_id): object
     {
         return $this->db::table('exercises')
-            ->when($id!==null, fn($q) => $q->where('exercises.id', $id->getValue()))
-            ->when($entry_id!==null, fn($q) => $q->where('exercise_entries.id', $entry_id->getValue()))
+            ->when($id !== null, fn ($q) => $q->where('exercises.id', $id->getValue()))
+            ->when($entry_id !== null, fn ($q) => $q->where('exercise_entries.id', $entry_id->getValue()))
             ->join('exercise_entries', 'exercise_entries.exercise_id', '=', 'exercises.id')
             ->join(
                 'unscramble_word_exercises',

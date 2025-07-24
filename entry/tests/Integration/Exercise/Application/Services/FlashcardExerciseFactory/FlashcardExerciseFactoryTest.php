@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Tests\Integration\Exercise\Application\Services\FlashcardExerciseFactory;
 
-use Exercise\Application\Services\FlashcardExerciseFactory;
-use Shared\Enum\ExerciseType;
-use Shared\Flashcard\ISessionFlashcardSummaries;
-use Shared\Flashcard\ISessionFlashcardSummary;
-use Shared\Models\Emoji;
 use Tests\TestCase;
+use Shared\Models\Emoji;
+use Shared\Enum\ExerciseType;
+use Shared\Flashcard\ISessionFlashcardSummary;
+use Shared\Flashcard\ISessionFlashcardSummaries;
+use Exercise\Application\Services\FlashcardExerciseFactory;
 
 class FlashcardExerciseFactoryTest extends TestCase
 {

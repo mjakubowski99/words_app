@@ -5,18 +5,18 @@ declare(strict_types=1);
 namespace Exercise\Infrastructure\Http\Controllers;
 
 use App\Http\OpenApi\Tags;
-use Exercise\Application\Command\AnswerExercise\WordMatchExerciseAnswerHandler;
-use Exercise\Application\Command\SkipExercise\SkipWordMatchExerciseHandler;
-use Exercise\Infrastructure\Http\Request\SkipWordMatchExerciseRequest;
-use Exercise\Infrastructure\Http\Request\WordMatchExerciseAnswerRequest;
-use Exercise\Infrastructure\Http\Resources\WordMatchExerciseAnswerResource;
 use OpenApi\Attributes as OAT;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Exercise\Domain\Models\AnswerAssessment;
+use Exercise\Infrastructure\Http\Request\SkipWordMatchExerciseRequest;
+use Exercise\Infrastructure\Http\Request\WordMatchExerciseAnswerRequest;
+use Exercise\Application\Command\SkipExercise\SkipWordMatchExerciseHandler;
 use Exercise\Infrastructure\Http\Request\SkipUnscrambleWordExerciseRequest;
+use Exercise\Infrastructure\Http\Resources\WordMatchExerciseAnswerResource;
 use Exercise\Infrastructure\Http\Request\UnscrambleWordExerciseAnswerRequest;
+use Exercise\Application\Command\AnswerExercise\WordMatchExerciseAnswerHandler;
 use Exercise\Application\Command\SkipExercise\SkipUnscrambleWordExerciseHandler;
 use Exercise\Application\Command\AnswerExercise\UnscrambleWordExerciseAnswerHandler;
 use Exercise\Infrastructure\Http\Resources\UnscrambleWordExerciseAssessmentResource;
@@ -62,6 +62,7 @@ class ExerciseController extends Controller
         /** @var AnswerAssessment $assessment */
         $assessments = DB::transaction(function () use ($request, $handler) {
             $exercise_id = $handler->findExerciseId($request->getExerciseEntryId());
+
             return $handler->handle($exercise_id, $request->currentId(), [$request->getAnswer()]);
         });
 
@@ -149,7 +150,6 @@ class ExerciseController extends Controller
 
         return new WordMatchExerciseAnswerResource($assessments);
     }
-
 
     #[OAT\Put(
         path: '/api/v2/exercises/word-match/{exercise_id}/skip',

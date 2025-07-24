@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace Exercise\Application\Command\AnswerExercise;
 
+use Exercise\Domain\Exceptions\InvalidExerciseTypeException;
 use Exercise\Domain\Models\Exercise;
 use Shared\Flashcard\IFlashcardFacade;
+use Shared\Utils\ValueObjects\ExerciseId;
 use Shared\Utils\ValueObjects\ExerciseEntryId;
 use Exercise\Domain\Models\UnscrambleWordsExercise;
 use Exercise\Application\Repositories\IUnscrambleWordExerciseRepository;
-use Shared\Utils\ValueObjects\ExerciseId;
 
 class UnscrambleWordExerciseAnswerHandler extends AbstractExerciseAnswerHandler
 {
@@ -33,7 +34,7 @@ class UnscrambleWordExerciseAnswerHandler extends AbstractExerciseAnswerHandler
     protected function save(Exercise $exercise): void
     {
         if (!$exercise instanceof UnscrambleWordsExercise) {
-            throw new \InvalidArgumentException('Invalid exercise type');
+            throw new InvalidExerciseTypeException();
         }
         $this->repository->save($exercise);
     }

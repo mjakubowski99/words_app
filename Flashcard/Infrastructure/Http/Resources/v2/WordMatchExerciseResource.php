@@ -70,12 +70,19 @@ use Shared\Exercise\Exercises\IWordMatchExerciseReadEntry;
                 ]
             )
         ),
+        new OAT\Property(
+            property: 'answer_options',
+            description: 'Array of possible answers for the exercise',
+            type: 'array',
+            items: new OAT\Items(
+                type: 'string',
+                example: 'option1'
+            )
+        ),
     ],
     type: 'object'
 )]
 /**
- *
- *
  * @property IWordMatchExerciseRead $resource
  */
 class WordMatchExerciseResource extends JsonResource
@@ -85,7 +92,7 @@ class WordMatchExerciseResource extends JsonResource
         return [
             'exercise_id' => $this->resource->getExerciseId()->getValue(),
             'is_story' => $this->resource->isStory(),
-            'entries' => array_map(fn(IWordMatchExerciseReadEntry $entry) => [
+            'entries' => array_map(fn (IWordMatchExerciseReadEntry $entry) => [
                 'id' => $entry->getExerciseEntryId()->getValue(),
                 'word' => $entry->getWord(),
                 'word_translation' => $entry->getWordTranslation(),
@@ -93,6 +100,7 @@ class WordMatchExerciseResource extends JsonResource
                 'sentence_part_before_word' => $entry->getSentencePartBeforeWord(),
                 'sentence_part_after_word' => $entry->getSentencePartAfterWord(),
             ], $this->resource->getEntries()),
+            'answer_options' => $this->resource->getAnswerOptions(),
         ];
     }
 }

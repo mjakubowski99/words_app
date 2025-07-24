@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Exercise\Application\Services\ExerciseFactory;
 
-use Exercise\Application\DTO\FlashcardExercise;
-use Exercise\Application\Repositories\IWordMatchExerciseRepository;
-use Exercise\Domain\Models\WordMatchExercise;
-use Shared\Flashcard\ISessionFlashcardSummaries;
 use Shared\Utils\ValueObjects\UserId;
+use Exercise\Domain\Models\WordMatchExercise;
+use Exercise\Application\DTO\FlashcardExercise;
+use Shared\Flashcard\ISessionFlashcardSummaries;
+use Exercise\Application\Repositories\IWordMatchExerciseRepository;
 
 class WordMatchExerciseFactory implements IExerciseFactory
 {
@@ -22,6 +24,6 @@ class WordMatchExerciseFactory implements IExerciseFactory
 
         $exercise = $this->word_match_exercise_repository->find($exercise_id);
 
-        return FlashcardExercise::newCollection($summaries, $exercise);
+        return FlashcardExercise::fromFlashcardSummaries($summaries, $exercise);
     }
 }

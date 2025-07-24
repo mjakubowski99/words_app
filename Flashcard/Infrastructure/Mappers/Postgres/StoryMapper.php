@@ -1,21 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Flashcard\Infrastructure\Mappers\Postgres;
 
-use Flashcard\Domain\Models\Flashcard;
-use Flashcard\Domain\Models\Rating;
+use Illuminate\Support\Arr;
 use Flashcard\Domain\Models\Story;
-use Flashcard\Domain\Models\StoryCollection;
+use Illuminate\Support\Facades\DB;
+use Shared\Utils\ValueObjects\UserId;
+use Flashcard\Domain\Models\Flashcard;
+use Shared\Utils\ValueObjects\StoryId;
 use Flashcard\Domain\Models\StoryFlashcard;
+use Flashcard\Domain\Models\StoryCollection;
 use Flashcard\Domain\ValueObjects\FlashcardId;
 use Flashcard\Infrastructure\Mappers\Traits\HasOwnerBuilder;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\DB;
-use Shared\Enum\LanguageLevel;
-use Shared\Models\Emoji;
-use Shared\Utils\ValueObjects\Language;
-use Shared\Utils\ValueObjects\StoryId;
-use Shared\Utils\ValueObjects\UserId;
 
 class StoryMapper
 {
@@ -25,7 +23,7 @@ class StoryMapper
         private FlashcardMapper $mapper
     ) {}
 
-    public function findRandomStoryByFlashcardId(FlashcardId $id, UserId $user_id): ?Story
+    public function findRandomStoryIdByFlashcardId(FlashcardId $id): ?StoryId
     {
         $story = DB::table('story_flashcards')
             ->where('flashcard_id', $id->getValue())
@@ -33,14 +31,13 @@ class StoryMapper
             ->select('story_id')
             ->first();
 
-        if (!$story) {
-            return null;
-        }
+        return $story ? new StoryId($story->story_id) : null;
+    }
 
-        $story_id = new StoryId($story->story_id);
-
+    public function find(StoryId $id, UserId $user_id): ?Story
+    {
         $rows = DB::table('story_flashcards')
-            ->where('story_id', $story->story_id)
+            ->where('story_id', $id->getValue())
             ->select(
                 'story_flashcards.flashcard_id',
                 'story_flashcards.story_id',
@@ -59,12 +56,12 @@ class StoryMapper
                 new StoryId($row->story_id),
                 $row->story_id,
                 $row->sentence_override,
-                Arr::first($flashcards, fn(Flashcard $flashcard) => $flashcard->getId()->getValue() === $row->flashcard_id)
+                Arr::first($flashcards, fn (Flashcard $flashcard) => $flashcard->getId()->getValue() === $row->flashcard_id)
             );
         }
 
         return new Story(
-            $story_id,
+            $id,
             $story_flashcards
         );
     }
@@ -81,7 +78,7 @@ class StoryMapper
                 'created_at' => (clone $now)->addSeconds($i),
                 'updated_at' => (clone $now)->addSeconds($i),
             ];
-            $i++;
+            ++$i;
         }
 
         $story_ids = DB::table('stories')
@@ -94,7 +91,7 @@ class StoryMapper
             foreach ($story->getStoryFlashcards() as $story_flashcard) {
                 $story_flashcard->setStoryId(new StoryId($story_ids[$i]->id));
             }
-            $i++;
+            ++$i;
         }
 
         $stories = $this->mapper->createManyFromStoryFlashcards($stories);
@@ -115,7 +112,7 @@ class StoryMapper
     public function bulkDelete(array $story_ids): void
     {
         DB::table('stories')
-            ->whereIn('id', array_map(fn(StoryId $id) => $id->getValue(), $story_ids))
+            ->whereIn('id', array_map(fn (StoryId $id) => $id->getValue(), $story_ids))
             ->delete();
     }
 }

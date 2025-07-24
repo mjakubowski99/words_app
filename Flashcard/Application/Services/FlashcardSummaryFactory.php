@@ -1,25 +1,29 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Flashcard\Application\Services;
 
-use Flashcard\Application\DTO\SessionFlashcardSummaries;
-use Flashcard\Domain\Models\Flashcard;
-use Flashcard\Domain\Models\NextSessionFlashcards;
+use Flashcard\Application\Services\ExerciseFlashcardFactory\IExerciseFlashcardFactory;
+use Flashcard\Application\Services\ExerciseFlashcardFactory\UnscrambleWordExerciseFlashcardFactory;
+use Flashcard\Application\Services\ExerciseFlashcardFactory\WordMatchExerciseFlashcardFactory;
 use Shared\Enum\ExerciseType;
 
 class FlashcardSummaryFactory
 {
     public function __construct(
-        private StoryFlashcardFactory $factory,
+        private UnscrambleWordExerciseFlashcardFactory $unscramble_factory,
+        private WordMatchExerciseFlashcardFactory $word_match_factory,
     ) {}
 
-    public function make(NextSessionFlashcards $flashcards, ExerciseType $type, Flashcard $base_flashcard): SessionFlashcardSummaries
+    public function make(ExerciseType $type): IExerciseFlashcardFactory
     {
         switch ($type) {
             case ExerciseType::UNSCRAMBLE_WORDS:
-                return SessionFlashcardSummaries::fromFlashcards([$base_flashcard], $base_flashcard);
+                return $this->unscramble_factory;
             case ExerciseType::WORD_MATCH:
-                return $this->factory->make($flashcards, $base_flashcard);
+                return $this->word_match_factory;
         }
+        throw new \InvalidArgumentException('Unsupported exercise type: ' . $type->value);
     }
 }

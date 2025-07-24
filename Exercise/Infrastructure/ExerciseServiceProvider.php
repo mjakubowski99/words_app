@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace Exercise\Infrastructure;
 
-use Exercise\Application\Repositories\IWordMatchExerciseReadRepository;
-use Exercise\Application\Repositories\IWordMatchExerciseRepository;
-use Exercise\Infrastructure\Repositories\WordMatchExerciseReadRepository;
-use Exercise\Infrastructure\Repositories\WordMatchExerciseRepository;
 use Illuminate\Support\ServiceProvider;
 use Shared\Exercise\IFlashcardExerciseFacade;
 use Shared\Exercise\Exercises\IExerciseReadFacade;
 use Exercise\Application\Facades\ExerciseReadFacade;
 use Exercise\Application\Facades\FlashcardExerciseFacade;
+use Exercise\Application\Repositories\IWordMatchExerciseRepository;
+use Exercise\Infrastructure\Repositories\WordMatchExerciseRepository;
+use Exercise\Application\Repositories\IWordMatchExerciseReadRepository;
 use Exercise\Application\Repositories\IUnscrambleWordExerciseRepository;
+use Exercise\Infrastructure\Repositories\WordMatchExerciseReadRepository;
 use Exercise\Infrastructure\Repositories\UnscrambleWordExerciseRepository;
 use Exercise\Application\Repositories\IUnscrambleWordExerciseReadRepository;
 use Exercise\Infrastructure\Repositories\UnscrambleWordExerciseReadRepository;

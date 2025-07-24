@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
+use Faker\Factory;
+use App\Models\Story;
 use App\Models\Exercise;
 use App\Models\ExerciseEntry;
-use App\Models\Story;
-use Faker\Factory;
 use Shared\Enum\ExerciseType;
 
 class WordMatchExerciseFactory extends ExerciseFactory
@@ -16,7 +18,7 @@ class WordMatchExerciseFactory extends ExerciseFactory
             'story_id' => $with_story ? Story::factory()->create()->id : null,
             'sentences' => [],
         ];
-        for ($i=0; $i<$entries_count; $i++) {
+        for ($i = 0; $i < $entries_count; ++$i) {
             $word = Factory::create()->word;
             $properties['sentences'][] = [
                 'word' => $word,
@@ -29,7 +31,7 @@ class WordMatchExerciseFactory extends ExerciseFactory
             'exercise_type' => ExerciseType::WORD_MATCH->toNumber(),
         ]));
 
-        for ($i=0; $i<$entries_count; $i++) {
+        for ($i = 0; $i < $entries_count; ++$i) {
             ExerciseEntry::factory()->create([
                 'exercise_id' => $exercise->id,
                 'order' => $i,

@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Shared\Providers;
 
-use Shared\Utils\Cache\Cache;
-use Shared\Utils\Cache\ICache;
 use Shared\Utils\Str\Str;
 use Shared\Utils\Str\IStr;
 use Shared\Utils\Hash\Hash;
 use Shared\Utils\Hash\IHash;
+use Shared\Utils\Cache\Cache;
+use Shared\Utils\Cache\ICache;
 use Shared\Utils\Config\Config;
 use Shared\Utils\Config\IConfig;
 use Shared\Utils\Storage\Storage;

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Tests\Integration\Exercise\Application\Command\AnswerUnscrambleWordExerciseHandler;
 
-use Shared\Utils\ValueObjects\ExerciseId;
 use Tests\TestCase;
 use App\Models\Exercise;
 use App\Models\ExerciseEntry;
@@ -13,6 +12,7 @@ use App\Models\LearningSession;
 use Flashcard\Domain\Models\Rating;
 use App\Models\UnscrambleWordExercise;
 use App\Models\LearningSessionFlashcard;
+use Shared\Utils\ValueObjects\ExerciseId;
 use Exercise\Domain\Models\ExerciseStatus;
 use Shared\Utils\ValueObjects\ExerciseEntryId;
 use Exercise\Domain\Models\UnscrambleWordAnswer;

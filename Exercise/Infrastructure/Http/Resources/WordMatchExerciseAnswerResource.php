@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Exercise\Infrastructure\Http\Resources;
 
 use Exercise\Domain\Models\AnswerAssessment;

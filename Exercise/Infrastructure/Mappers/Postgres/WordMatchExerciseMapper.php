@@ -1,20 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Exercise\Infrastructure\Mappers\Postgres;
 
-use Exercise\Domain\Models\ExerciseEntry;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
+use Shared\Utils\ValueObjects\UserId;
+use Shared\Utils\ValueObjects\ExerciseId;
 use Exercise\Domain\Models\ExerciseStatus;
 use Exercise\Domain\Models\WordMatchAnswer;
 use Exercise\Domain\Models\WordMatchExercise;
+use Shared\Utils\ValueObjects\ExerciseEntryId;
 use Exercise\Domain\Models\WordMatchExerciseEntry;
 use Exercise\Infrastructure\Models\WordMatchExerciseJsonProperties;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
-use Shared\Utils\ValueObjects\ExerciseEntryId;
-use Shared\Utils\ValueObjects\ExerciseId;
-use Shared\Utils\ValueObjects\StoryId;
-use Shared\Utils\ValueObjects\UserId;
-use Spatie\Regex\Helpers\Arr;
 
 class WordMatchExerciseMapper
 {
@@ -28,7 +27,7 @@ class WordMatchExerciseMapper
         $rows = $this->getExerciseWithEntries($id);
 
         if ($rows->isEmpty()) {
-            throw new \Exception("No Word Match Exercise found for entry ID: " . $id->getValue());
+            throw new \Exception('No Word Match Exercise found for entry ID: ' . $id->getValue());
         }
 
         $properties = new WordMatchExerciseJsonProperties(json_decode($rows[0]->properties, true));
@@ -43,7 +42,6 @@ class WordMatchExerciseMapper
 
     public function create(WordMatchExercise $exercise): ExerciseId
     {
-
         $exercise_id = DB::table('exercises')
             ->insertGetId([
                 'exercise_type' => $exercise->getExerciseType()->toNumber(),
@@ -59,7 +57,6 @@ class WordMatchExerciseMapper
 
     public function save(WordMatchExercise $exercise): void
     {
-
         DB::table('exercises')
             ->where('id', $exercise->getId()->getValue())
             ->update([
@@ -119,7 +116,8 @@ class WordMatchExerciseMapper
             new ExerciseId($row->exercise_id),
             new UserId($row->user_id),
             ExerciseStatus::from($row->status),
-            $entries
+            $entries,
+            $properties->getAnswerOptions()
         );
     }
 }

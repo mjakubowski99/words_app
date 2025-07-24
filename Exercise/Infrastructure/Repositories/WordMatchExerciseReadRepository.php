@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Exercise\Infrastructure\Repositories;
 
+use Shared\Utils\ValueObjects\ExerciseEntryId;
+use Shared\Exercise\Exercises\IWordMatchExerciseRead;
 use Exercise\Application\Repositories\IWordMatchExerciseReadRepository;
 use Exercise\Infrastructure\Mappers\Postgres\WordMatchExerciseReadMapper;
-use Shared\Exercise\Exercises\IWordMatchExerciseRead;
-use Shared\Utils\ValueObjects\ExerciseEntryId;
 
 class WordMatchExerciseReadRepository implements IWordMatchExerciseReadRepository
 {

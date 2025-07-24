@@ -1,14 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Exercise\Infrastructure\Mappers\Postgres;
 
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
+use Shared\Utils\ValueObjects\ExerciseId;
+use Shared\Utils\ValueObjects\ExerciseEntryId;
 use Exercise\Application\DTO\WordMatchExerciseRead;
 use Exercise\Application\DTO\WordMatchExerciseReadEntry;
 use Exercise\Infrastructure\Models\WordMatchExerciseJsonProperties;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
-use Shared\Utils\ValueObjects\ExerciseEntryId;
-use Shared\Utils\ValueObjects\ExerciseId;
 
 class WordMatchExerciseReadMapper
 {
@@ -37,7 +39,8 @@ class WordMatchExerciseReadMapper
         return new WordMatchExerciseRead(
             exercise_id: new ExerciseId($entries[0]->id),
             is_story: $properties->getStoryId() !== null,
-            entries: $exercise_entries
+            entries: $exercise_entries,
+            options: $properties->getAnswerOptions(),
         );
     }
 

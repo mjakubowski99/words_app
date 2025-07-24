@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Integration\Exercise\Infrastructure\Http\Controllers\ExerciseController;
 
+use Tests\TestCase;
 use App\Models\Exercise;
 use App\Models\ExerciseEntry;
 use App\Models\UnscrambleWordExercise;
-use Database\Factories\WordMatchExerciseFactory;
 use Exercise\Domain\Models\ExerciseStatus;
+use Database\Factories\WordMatchExerciseFactory;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Tests\TestCase;
 
 class ExerciseControllerTest extends TestCase
 {
@@ -109,7 +109,6 @@ class ExerciseControllerTest extends TestCase
         $response->assertStatus(403);
     }
 
-
     public function test__answerWordMatchExercise_WhenExerciseExistsAndValidAnswer_success(): void
     {
         // GIVEN
@@ -128,7 +127,7 @@ class ExerciseControllerTest extends TestCase
                     'exercise_entry_id' => $exercise->entries[0]->id,
                     'answer' => $exercise->entries[0]->correct_answer,
                 ],
-            ]
+            ],
         ]);
 
         // THEN
@@ -160,9 +159,9 @@ class ExerciseControllerTest extends TestCase
                 ],
                 [
                     'exercise_entry_id' => $exercise->entries[1]->id,
-                    'answer' => $exercise->entries[1]->correct_answer . 'invalid'
+                    'answer' => $exercise->entries[1]->correct_answer . 'invalid',
                 ],
-            ]
+            ],
         ]);
 
         // THEN
@@ -197,7 +196,7 @@ class ExerciseControllerTest extends TestCase
                     'exercise_entry_id' => $exercise->entries[1]->id,
                     'answer' => $exercise->entries[1]->correct_answer,
                 ],
-            ]
+            ],
         ]);
 
         // THEN
@@ -228,7 +227,7 @@ class ExerciseControllerTest extends TestCase
                     'exercise_entry_id' => $exercise->entries[0]->id,
                     'answer' => $exercise->entries[0]->correct_answer,
                 ],
-            ]
+            ],
         ]);
 
         // THEN

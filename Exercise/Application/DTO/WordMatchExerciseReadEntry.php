@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Exercise\Application\DTO;
 
-use Shared\Exercise\Exercises\IWordMatchExerciseReadEntry;
 use Shared\Utils\ValueObjects\ExerciseEntryId;
+use Shared\Exercise\Exercises\IWordMatchExerciseReadEntry;
 
 class WordMatchExerciseReadEntry implements IWordMatchExerciseReadEntry
 {
@@ -48,6 +50,7 @@ class WordMatchExerciseReadEntry implements IWordMatchExerciseReadEntry
     public function getSentencePartAfterWord(): string
     {
         $parts = explode($this->word, $this->sentence, 2);
+
         return $parts[1] ?? '';
     }
 }

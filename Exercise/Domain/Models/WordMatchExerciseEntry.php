@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Exercise\Domain\Models;
 
+use Shared\Utils\ValueObjects\ExerciseId;
 use Shared\Flashcard\ISessionFlashcardSummary;
 use Shared\Utils\ValueObjects\ExerciseEntryId;
-use Shared\Utils\ValueObjects\ExerciseId;
 
 class WordMatchExerciseEntry extends ExerciseEntry
 {
@@ -60,6 +62,6 @@ class WordMatchExerciseEntry extends ExerciseEntry
 
     public function getSentence(): string
     {
-       return $this->sentence;
+        return $this->sentence;
     }
 }

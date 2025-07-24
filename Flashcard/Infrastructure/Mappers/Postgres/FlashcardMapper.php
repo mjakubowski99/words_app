@@ -4,18 +4,18 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Mappers\Postgres;
 
-use Flashcard\Domain\Models\Rating;
-use Flashcard\Domain\Models\StoryCollection;
-use Flashcard\Domain\Models\StoryFlashcard;
-use Illuminate\Support\Arr;
 use Shared\Models\Emoji;
+use Illuminate\Support\Arr;
 use Shared\Enum\LanguageLevel;
 use Flashcard\Domain\Models\Deck;
 use Illuminate\Support\Facades\DB;
-use Shared\Utils\ValueObjects\StoryId;
+use Flashcard\Domain\Models\Rating;
 use Shared\Utils\ValueObjects\UserId;
 use Flashcard\Domain\Models\Flashcard;
+use Shared\Utils\ValueObjects\StoryId;
 use Shared\Utils\ValueObjects\Language;
+use Flashcard\Domain\Models\StoryFlashcard;
+use Flashcard\Domain\Models\StoryCollection;
 use Flashcard\Domain\ValueObjects\FlashcardId;
 use Flashcard\Domain\ValueObjects\FlashcardDeckId;
 use Flashcard\Infrastructure\Mappers\Traits\HasOwnerBuilder;
@@ -120,11 +120,14 @@ class FlashcardMapper
             Arr::first($results, function ($result) use ($flashcard) {
                 if ($result->front_word === $flashcard->getFrontWord() && $result->back_word === $flashcard->getBackWord()) {
                     $flashcard->setId(new FlashcardId($result->id));
+
                     return true;
                 }
+
                 return false;
             });
         }
+
         return $flashcards;
     }
 
@@ -160,10 +163,10 @@ class FlashcardMapper
             ->sortBy('updated_at')
             ->values();
 
-        $i=0;
+        $i = 0;
         foreach ($stories->getAllStoryFlashcards() as $flashcard) {
             $flashcard->getFlashcard()->setId(new FlashcardId($results[$i]->id));
-            $i++;
+            ++$i;
         }
 
         return $stories;
@@ -194,7 +197,7 @@ class FlashcardMapper
             ->whereIn('flashcards.id', $flashcard_ids)
             ->leftJoin('flashcard_decks', 'flashcard_decks.id', '=', 'flashcards.flashcard_deck_id')
             ->leftJoin('sm_two_flashcards', 'sm_two_flashcards.flashcard_id', '=', 'flashcards.id')
-            ->where(fn($q) => $q->where('sm_two_flashcards.user_id', '=', $user_id->getValue())->orWhereNull('sm_two_flashcards.user_id'))
+            ->where(fn ($q) => $q->where('sm_two_flashcards.user_id', '=', $user_id->getValue())->orWhereNull('sm_two_flashcards.user_id'))
             ->select(
                 'flashcards.*',
                 'sm_two_flashcards.last_rating',

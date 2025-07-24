@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Tests\Integration\Flashcards\Infrastructure\Http\Controller\v2;
 
-use App\Models\Exercise;
-use Shared\Utils\ValueObjects\ExerciseId;
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\Admin;

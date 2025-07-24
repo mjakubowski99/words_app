@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Exercise\Application\Repositories;
 
-use Shared\Exercise\Exercises\IWordMatchExerciseRead;
 use Shared\Utils\ValueObjects\ExerciseEntryId;
-use Shared\Utils\ValueObjects\ExerciseId;
+use Shared\Exercise\Exercises\IWordMatchExerciseRead;
 
 interface IWordMatchExerciseReadRepository
 {

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Exercise\Application\ReadModels;
 
 class WordMatchExerciseReadEntry

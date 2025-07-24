@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Exercise\Infrastructure\Mappers\Postgres;
 
-use Exercise\Domain\Models\ExerciseEntry;
 use Illuminate\Support\Facades\DB;
+use Exercise\Domain\Models\ExerciseEntry;
 
 class ExerciseEntryMapper
 {

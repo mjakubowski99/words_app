@@ -33,13 +33,13 @@ class StoryDuplicateServiceTest extends TestCase
         $this->mockDuplicateService($stories, 2);
 
         // WHEN
-        $result = $this->service->removeDuplicates($resolved_deck, $stories, 5);
+        $stories = $this->service->removeDuplicates($resolved_deck, $stories, 5);
 
         // THEN
-        $this->assertCount(2, $result);
+        $this->assertCount(2, $stories->getPulledFlashcards());
         $this->assertCount(0, $stories->get());
-        $this->assertSame('word1', $result[0]->getFrontWord());
-        $this->assertSame('word2', $result[1]->getFrontWord());
+        $this->assertSame('word1', $stories->getPulledFlashcards()[0]->getFrontWord());
+        $this->assertSame('word2', $stories->getPulledFlashcards()[1]->getFrontWord());
     }
 
     public function test__removeDuplicates_WhenNoDuplicatesInOneStoryAndDuplicatesInSecondStory_ShouldRemoveStoriesWithDuplicates(): void
@@ -50,13 +50,13 @@ class StoryDuplicateServiceTest extends TestCase
         $this->mockNoDuplicatesAndDuplicate($stories, 2);
 
         // WHEN
-        $result = $this->service->removeDuplicates($resolved_deck, $stories, 5);
+        $stories = $this->service->removeDuplicates($resolved_deck, $stories, 5);
 
         // THEN
-        $this->assertCount(2, $result);
+        $this->assertCount(2, $stories->getPulledFlashcards());
         $this->assertCount(1, $stories->get());
-        $this->assertSame('word4', $result[0]->getFrontWord());
-        $this->assertSame('word3', $result[1]->getFrontWord());
+        $this->assertSame('word4', $stories->getPulledFlashcards()[0]->getFrontWord());
+        $this->assertSame('word3', $stories->getPulledFlashcards()[1]->getFrontWord());
     }
 
     public function test__removeDuplicates_WhenNoChanges_ShouldKeepStoriesIntact(): void
@@ -67,10 +67,10 @@ class StoryDuplicateServiceTest extends TestCase
         $this->mockDuplicateService($stories, 3);
 
         // WHEN
-        $result = $this->service->removeDuplicates($resolved_deck, $stories, 3);
+        $stories = $this->service->removeDuplicates($resolved_deck, $stories, 3);
 
         // THEN
-        $this->assertEmpty($result);
+        $this->assertEmpty($stories->getPulledFlashcards());
         $this->assertCount(1, $stories->get());
         $this->assertCount(3, $stories->get()[0]->getStoryFlashcards());
     }
@@ -83,11 +83,11 @@ class StoryDuplicateServiceTest extends TestCase
         $this->mockDuplicateService($stories, 2);
 
         // WHEN
-        $result = $this->service->removeDuplicates($resolved_deck, $stories, 1);
+        $stories = $this->service->removeDuplicates($resolved_deck, $stories, 1);
 
         // THEN
-        $this->assertCount(1, $result);
+        $this->assertCount(1, $stories->getPulledFlashcards());
         $this->assertCount(0, $stories->get());
-        $this->assertSame('word1', $result[0]->getFrontWord());
+        $this->assertSame('word1', $stories->getPulledFlashcards()[0]->getFrontWord());
     }
 }

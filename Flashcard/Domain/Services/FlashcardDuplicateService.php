@@ -5,10 +5,9 @@ declare(strict_types=1);
 namespace Flashcard\Domain\Services;
 
 use Flashcard\Domain\Models\Deck;
-use Flashcard\Domain\Models\Flashcard;
-use Flashcard\Application\Repository\IFlashcardDuplicateRepository;
-use Flashcard\Domain\Models\StoryCollection;
 use Flashcard\Domain\Models\StoryFlashcard;
+use Flashcard\Domain\Models\StoryCollection;
+use Flashcard\Application\Repository\IFlashcardDuplicateRepository;
 
 class FlashcardDuplicateService
 {
@@ -16,7 +15,6 @@ class FlashcardDuplicateService
         private IFlashcardDuplicateRepository $duplicate_repository,
     ) {}
 
-    /** @param StoryFlashcard[] $flashcards */
     public function removeDuplicates(Deck $deck, StoryCollection $stories): array
     {
         $front_words = [];

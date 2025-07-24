@@ -1,18 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Unit\Exercise\Infrastructure\Repository\WordMatchExerciseReadRepository;
 
+use App\Models\Story;
 use App\Models\Exercise;
 use App\Models\ExerciseEntry;
-use App\Models\Story;
+use Shared\Utils\ValueObjects\UserId;
+use Shared\Utils\ValueObjects\StoryId;
+use Shared\Utils\ValueObjects\ExerciseId;
 use Exercise\Domain\Models\ExerciseStatus;
 use Exercise\Domain\Models\WordMatchAnswer;
 use Exercise\Domain\Models\WordMatchExercise;
-use Exercise\Domain\Models\WordMatchExerciseEntry;
 use Shared\Utils\ValueObjects\ExerciseEntryId;
-use Shared\Utils\ValueObjects\ExerciseId;
-use Shared\Utils\ValueObjects\StoryId;
-use Shared\Utils\ValueObjects\UserId;
+use Exercise\Domain\Models\WordMatchExerciseEntry;
 
 trait WordMatchExerciseReadRepositoryTrait
 {
@@ -41,10 +43,12 @@ trait WordMatchExerciseReadRepositoryTrait
                     new WordMatchAnswer($entry_id, 'correct'),
                     null,
                     null,
+                    1,
                     0.0,
                     0
-                )
-            ]
+                ),
+            ],
+            ['option1', 'option2'],
         );
     }
 
@@ -60,10 +64,10 @@ trait WordMatchExerciseReadRepositoryTrait
                         'order' => 0,
                         'word' => 'word',
                         'translation' => 'translation',
-                        'sentence' => 'sentence'
-                    ]
-                ]
-            ])
+                        'sentence' => 'sentence',
+                    ],
+                ],
+            ]),
         ]);
         $entry = ExerciseEntry::factory()->create([
             'exercise_id' => $exercise->id,
@@ -86,10 +90,12 @@ trait WordMatchExerciseReadRepositoryTrait
                     new WordMatchAnswer(new ExerciseEntryId($entry->id), $entry->correct_answer),
                     null,
                     null,
+                    1,
                     20.0,
                     2
-                )
-            ]
+                ),
+            ],
+            ['option1', 'option2'],
         );
     }
 
@@ -104,41 +110,42 @@ trait WordMatchExerciseReadRepositoryTrait
                         'order' => 0,
                         'word' => 'word0',
                         'translation' => 'translation0',
-                        'sentence' => 'sentence0'
+                        'sentence' => 'sentence0',
                     ],
                     [
                         'order' => 1,
                         'word' => 'word1',
                         'translation' => 'translation1',
-                        'sentence' => 'sentence1'
+                        'sentence' => 'sentence1',
                     ],
                     [
                         'order' => 2,
                         'word' => 'word2',
                         'translation' => 'translation2',
-                        'sentence' => 'sentence2'
-                    ]
-                ]
-            ])
+                        'sentence' => 'sentence2',
+                    ],
+                ],
+            ]),
         ]);
 
         $entries = [];
-        for ($i = 0; $i < 3; $i++) {
+        for ($i = 0; $i < 3; ++$i) {
             $entry = ExerciseEntry::factory()->create([
                 'exercise_id' => $exercise->id,
                 'order' => $i,
-                'correct_answer' => "correct$i",
+                'correct_answer' => "correct{$i}",
             ]);
 
             $entries[] = new WordMatchExerciseEntry(
-                "word$i",
-                "translation$i",
-                "sentence$i",
+                "word{$i}",
+                "translation{$i}",
+                "sentence{$i}",
                 new ExerciseEntryId($entry->id),
                 new ExerciseId($exercise->id),
-                new WordMatchAnswer(new ExerciseEntryId($entry->id), "correct$i"),
+                new WordMatchAnswer(new ExerciseEntryId($entry->id), "correct{$i}"),
                 null,
                 null,
+                1,
                 20.0,
                 2
             );
@@ -149,7 +156,8 @@ trait WordMatchExerciseReadRepositoryTrait
             new ExerciseId($exercise->id),
             $user_id,
             ExerciseStatus::DONE,
-            $entries
+            $entries,
+            ['option1', 'option2'],
         );
     }
 
@@ -158,17 +166,18 @@ trait WordMatchExerciseReadRepositoryTrait
         $exercise_id = ExerciseId::noId();
         $entries = [];
 
-        for ($i = 0; $i < 3; $i++) {
+        for ($i = 0; $i < 3; ++$i) {
             $entry_id = ExerciseEntryId::noId();
             $entries[] = new WordMatchExerciseEntry(
-                "word$i",
-                "translation$i",
-                "sentence$i",
+                "word{$i}",
+                "translation{$i}",
+                "sentence{$i}",
                 $entry_id,
                 $exercise_id,
-                new WordMatchAnswer($entry_id, "correct$i"),
+                new WordMatchAnswer($entry_id, "correct{$i}"),
                 null,
                 null,
+                $i,
                 0.0,
                 0
             );
@@ -179,7 +188,8 @@ trait WordMatchExerciseReadRepositoryTrait
             $exercise_id,
             $user_id,
             ExerciseStatus::NEW,
-            $entries
+            $entries,
+            ['option1', 'option2'],
         );
     }
 
@@ -195,10 +205,10 @@ trait WordMatchExerciseReadRepositoryTrait
                         'order' => 0,
                         'word' => 'word',
                         'translation' => 'translation',
-                        'sentence' => 'sentence'
-                    ]
-                ]
-            ])
+                        'sentence' => 'sentence',
+                    ],
+                ],
+            ]),
         ]);
         $entry = ExerciseEntry::factory()->create([
             'exercise_id' => $exercise->id,
@@ -221,10 +231,12 @@ trait WordMatchExerciseReadRepositoryTrait
                     new WordMatchAnswer(new ExerciseEntryId($entry->id), $entry->correct_answer),
                     null,
                     null,
+                    1,
                     20.0,
                     2
-                )
-            ]
+                ),
+            ],
+            ['option1', 'option2'],
         );
     }
 }

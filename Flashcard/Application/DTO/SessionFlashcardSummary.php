@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\DTO;
 
-use Flashcard\Domain\Models\Flashcard;
 use Shared\Models\Emoji;
+use Flashcard\Domain\Models\Flashcard;
 use Shared\Utils\ValueObjects\Language;
 use Shared\Flashcard\ISessionFlashcardSummary;
 
@@ -17,8 +17,7 @@ class SessionFlashcardSummary implements ISessionFlashcardSummary
         private bool $is_additional,
         private bool $is_story_part,
         private ?string $story_sentence
-    ) {
-    }
+    ) {}
 
     public function getOrder(): int
     {

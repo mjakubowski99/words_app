@@ -1,13 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Flashcard\Infrastructure\Repositories\Postgres;
 
-use Flashcard\Application\Repository\IStoryRepository;
 use Flashcard\Domain\Models\Story;
+use Shared\Utils\ValueObjects\StoryId;
+use Shared\Utils\ValueObjects\UserId;
 use Flashcard\Domain\Models\StoryCollection;
 use Flashcard\Domain\ValueObjects\FlashcardId;
+use Flashcard\Application\Repository\IStoryRepository;
 use Flashcard\Infrastructure\Mappers\Postgres\StoryMapper;
-use Shared\Utils\ValueObjects\UserId;
 
 class StoryRepository implements IStoryRepository
 {
@@ -15,9 +18,14 @@ class StoryRepository implements IStoryRepository
         private StoryMapper $mapper,
     ) {}
 
-    public function findRandomStoryByFlashcard(FlashcardId $id, UserId $user_id): ?Story
+    public function findRandomStoryIdByFlashcard(FlashcardId $id): ?StoryId
     {
-        return $this->mapper->findRandomStoryByFlashcardId($id, $user_id);
+        return $this->mapper->findRandomStoryIdByFlashcardId($id);
+    }
+
+    public function find(StoryId $id, UserId $user_id): ?Story
+    {
+        return $this->mapper->find($id, $user_id);
     }
 
     public function saveMany(StoryCollection $stories): void

@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\Command;
 
-use Flashcard\Application\Repository\IStoryRepository;
 use Shared\Models\Emoji;
 use Flashcard\Domain\Models\Flashcard;
 use Shared\Exceptions\ForbiddenException;
+use Flashcard\Application\Repository\IStoryRepository;
 use Flashcard\Application\Repository\IFlashcardRepository;
 
 class UpdateFlashcardHandler

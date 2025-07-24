@@ -4,20 +4,20 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\Services\AiGenerators;
 
-use Flashcard\Domain\Models\Story;
-use Flashcard\Domain\Models\StoryCollection;
-use Flashcard\Domain\Models\StoryFlashcard;
 use Shared\Models\Emoji;
 use Flashcard\Domain\Models\Deck;
 use Flashcard\Domain\Models\Owner;
+use Flashcard\Domain\Models\Story;
 use Illuminate\Support\Facades\Log;
 use Flashcard\Domain\Models\Flashcard;
+use Shared\Utils\ValueObjects\StoryId;
+use Flashcard\Domain\Models\StoryFlashcard;
 use Flashcard\Domain\Models\FlashcardPrompt;
+use Flashcard\Domain\Models\StoryCollection;
 use Flashcard\Domain\ValueObjects\FlashcardId;
 use Shared\Integrations\Gemini\IGeminiApiClient;
 use Flashcard\Application\Exceptions\AiResponseFailedException;
 use Flashcard\Application\Exceptions\AiResponseProcessingFailException;
-use Shared\Utils\ValueObjects\StoryId;
 
 class GeminiGenerator implements IFlashcardGenerator
 {

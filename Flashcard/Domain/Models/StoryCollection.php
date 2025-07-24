@@ -1,11 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Flashcard\Domain\Models;
 
 class StoryCollection
 {
     public function __construct(
         private array $stories,
+        private array $pulled_flashcards = [],
     ) {}
 
     public function get(): array
@@ -40,8 +43,6 @@ class StoryCollection
     /** @param StoryFlashcard[] $stories_without_duplicates */
     public function pullStoriesWithDuplicates(array $stories_without_duplicates): array
     {
-        $flashcards_not_in_story = [];
-
         $stories_to_remove = [];
 
         foreach ($this->get() as $index => $story) {
@@ -55,9 +56,9 @@ class StoryCollection
 
             if (count($new_story_flashcards) !== count($story->getStoryFlashcards())) {
                 $stories_to_remove[] = $index;
-                $flashcards_not_in_story = array_merge(
-                    $flashcards_not_in_story,
-                    array_map(fn(StoryFlashcard $flashcard) => $flashcard->getFlashcard(), $new_story_flashcards)
+                $this->pulled_flashcards = array_merge(
+                    $this->pulled_flashcards,
+                    array_map(fn (StoryFlashcard $flashcard) => $flashcard->getFlashcard(), $new_story_flashcards)
                 );
             } else {
                 $story->setStoryFlashcards($new_story_flashcards);
@@ -66,6 +67,12 @@ class StoryCollection
 
         $this->unset($stories_to_remove);
 
-        return $flashcards_not_in_story;
+        return $this->pulled_flashcards;
+    }
+
+    /** @return Flashcard[] */
+    public function getPulledFlashcards(): array
+    {
+        return $this->pulled_flashcards;
     }
 }

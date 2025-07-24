@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Repositories\Postgres;
 
-use Shared\Utils\ValueObjects\StoryId;
 use Shared\Utils\ValueObjects\UserId;
 use Flashcard\Domain\Models\Flashcard;
+use Shared\Utils\ValueObjects\StoryId;
 use Shared\Exceptions\NotFoundException;
 use Flashcard\Domain\ValueObjects\SessionId;
 use Flashcard\Domain\ValueObjects\FlashcardId;
@@ -72,7 +72,7 @@ class FlashcardRepository implements IFlashcardRepository
     }
 
     /**
-     * @param FlashcardId[] $flashcard_ids
+     * @param  FlashcardId[] $flashcard_ids
      * @return StoryId[]
      */
     public function getStoryIdForFlashcards(array $flashcard_ids): array

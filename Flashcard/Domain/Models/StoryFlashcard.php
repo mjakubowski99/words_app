@@ -1,11 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Flashcard\Domain\Models;
 
-use Flashcard\Domain\ValueObjects\FlashcardId;
-use Shared\Enum\LanguageLevel;
-use Shared\Models\Emoji;
-use Shared\Utils\ValueObjects\Language;
 use Shared\Utils\ValueObjects\StoryId;
 
 class StoryFlashcard

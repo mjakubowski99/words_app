@@ -5,11 +5,10 @@ declare(strict_types=1);
 namespace Exercise\Application\Facades;
 
 use Shared\Enum\ExerciseType;
-use Shared\Flashcard\ISessionFlashcardSummaries;
 use Shared\Utils\ValueObjects\UserId;
 use Shared\Exercise\IFlashcardExercise;
 use Shared\Exercise\IFlashcardExerciseFacade;
-use Shared\Flashcard\ISessionFlashcardSummary;
+use Shared\Flashcard\ISessionFlashcardSummaries;
 use Exercise\Application\Services\FlashcardExerciseFactory;
 
 class FlashcardExerciseFacade implements IFlashcardExerciseFacade

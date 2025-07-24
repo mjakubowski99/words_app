@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Exercise\Application\Services\ExerciseFactory;
 
-use Exercise\Application\DTO\FlashcardExercise;
-use Exercise\Application\Repositories\IUnscrambleWordExerciseRepository;
-use Exercise\Domain\Models\UnscrambleWordsExercise;
-use Shared\Flashcard\ISessionFlashcardSummaries;
 use Shared\Utils\ValueObjects\UserId;
+use Exercise\Application\DTO\FlashcardExercise;
+use Shared\Flashcard\ISessionFlashcardSummaries;
+use Exercise\Domain\Models\UnscrambleWordsExercise;
+use Exercise\Application\Repositories\IUnscrambleWordExerciseRepository;
 
 class UnscrambleWordExerciseFactory implements IExerciseFactory
 {
@@ -28,6 +30,6 @@ class UnscrambleWordExerciseFactory implements IExerciseFactory
 
         $exercise = $this->unscramble_word_repository->find($exercise_id);
 
-        return FlashcardExercise::newCollection($summaries, $exercise);
+        return FlashcardExercise::fromFlashcardSummaries($summaries, $exercise);
     }
 }

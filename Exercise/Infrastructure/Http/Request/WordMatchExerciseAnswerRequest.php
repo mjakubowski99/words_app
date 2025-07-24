@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Exercise\Infrastructure\Http\Request;
 
-use Exercise\Domain\Models\WordMatchAnswer;
-use Shared\Http\Request\Request;
-use Shared\Utils\ValueObjects\ExerciseEntryId;
-use Shared\Utils\ValueObjects\ExerciseId;
 use OpenApi\Attributes as OAT;
+use Shared\Http\Request\Request;
+use Shared\Utils\ValueObjects\ExerciseId;
+use Exercise\Domain\Models\WordMatchAnswer;
+use Shared\Utils\ValueObjects\ExerciseEntryId;
 
 #[OAT\Schema(
     schema: 'Requests\Exercise\WordMatchExerciseAnswerRequest',
@@ -65,6 +67,7 @@ class WordMatchExerciseAnswerRequest extends Request
                 $request_answer['answer']
             );
         }
+
         return $answers;
     }
 }

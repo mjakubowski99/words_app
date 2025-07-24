@@ -140,12 +140,12 @@ class Flashcard
     public function hash(): string
     {
         return md5(
-            $this->front_word .
-            $this->front_lang->getValue() .
-            $this->back_word .
-            $this->back_lang->getValue() .
-            $this->front_context .
-            $this->back_context
+            $this->front_word
+            . $this->front_lang->getValue()
+            . $this->back_word
+            . $this->back_lang->getValue()
+            . $this->front_context
+            . $this->back_context
         );
     }
 }

@@ -7,7 +7,6 @@ namespace Flashcard\Application\Services\AiGenerators;
 use Flashcard\Domain\Models\Deck;
 use Flashcard\Domain\Models\Owner;
 use Flashcard\Domain\Models\FlashcardPrompt;
-use Flashcard\Domain\Models\Story;
 use Flashcard\Domain\Models\StoryCollection;
 
 interface IFlashcardGenerator

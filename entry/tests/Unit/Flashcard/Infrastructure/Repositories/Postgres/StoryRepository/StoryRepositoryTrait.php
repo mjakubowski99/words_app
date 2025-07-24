@@ -4,15 +4,16 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Flashcard\Infrastructure\Repositories\Postgres\StoryRepository;
 
+use App\Models\User;
+use App\Models\Story;
+use Shared\Models\Emoji;
 use App\Models\Flashcard;
 use App\Models\FlashcardDeck;
-use App\Models\User;
+use Shared\Enum\LanguageLevel;
+use Shared\Utils\ValueObjects\StoryId;
+use Shared\Utils\ValueObjects\Language;
 use Flashcard\Domain\Models\StoryFlashcard;
 use Flashcard\Domain\ValueObjects\FlashcardId;
-use Shared\Enum\LanguageLevel;
-use Shared\Models\Emoji;
-use Shared\Utils\ValueObjects\Language;
-use Shared\Utils\ValueObjects\StoryId;
 
 trait StoryRepositoryTrait
 {
@@ -26,9 +27,9 @@ trait StoryRepositoryTrait
         return FlashcardDeck::factory()->create($attributes);
     }
 
-    private function createStory(array $attributes = []): \App\Models\Story
+    private function createStory(array $attributes = []): Story
     {
-        return \App\Models\Story::factory()->create($attributes);
+        return Story::factory()->create($attributes);
     }
 
     private function createNewStoryFlashcard(User $user, FlashcardDeck $deck, string $word, string $word_translation, string $sentence, ?string $sentence_override = null): StoryFlashcard
@@ -53,7 +54,7 @@ trait StoryRepositoryTrait
         );
     }
 
-    private function createStoryWithFlashcard(\App\Models\Story $story, Flashcard $flashcard, ?string $sentence_override = null): \App\Models\StoryFlashcard
+    private function createStoryWithFlashcard(Story $story, Flashcard $flashcard, ?string $sentence_override = null): \App\Models\StoryFlashcard
     {
         return \App\Models\StoryFlashcard::factory()->create([
             'story_id' => $story->id,

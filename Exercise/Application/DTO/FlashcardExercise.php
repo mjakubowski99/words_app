@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Exercise\Application\DTO;
 
 use Exercise\Domain\Models\Exercise;
 use Shared\Exercise\IFlashcardExercise;
-use Shared\Flashcard\ISessionFlashcardSummaries;
 use Shared\Utils\ValueObjects\ExerciseEntryId;
+use Shared\Flashcard\ISessionFlashcardSummaries;
 
 class FlashcardExercise implements IFlashcardExercise
 {
@@ -14,7 +16,7 @@ class FlashcardExercise implements IFlashcardExercise
         private readonly int $flashcard_id,
     ) {}
 
-    public static function newCollection(ISessionFlashcardSummaries $summaries, Exercise $exercise): array
+    public static function fromFlashcardSummaries(ISessionFlashcardSummaries $summaries, Exercise $exercise): array
     {
         $items = [];
         foreach ($summaries->getSummaries() as $summary) {
@@ -24,6 +26,7 @@ class FlashcardExercise implements IFlashcardExercise
                         $entry->getId(),
                         $summary->getFlashcardId(),
                     );
+
                     break;
                 }
             }

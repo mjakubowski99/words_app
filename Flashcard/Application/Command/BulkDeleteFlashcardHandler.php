@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\Command;
 
-use Flashcard\Application\Repository\IStoryRepository;
 use Shared\Utils\ValueObjects\UserId;
 use Flashcard\Domain\ValueObjects\FlashcardId;
+use Flashcard\Application\Repository\IStoryRepository;
 use Flashcard\Application\Repository\IFlashcardRepository;
 
 class BulkDeleteFlashcardHandler
