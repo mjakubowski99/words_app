@@ -38,10 +38,6 @@ class WordMatchExerciseReadEntry implements IWordMatchExerciseReadEntry
 
     public function getSentencePartBeforeWord(): string
     {
-        if ($this->getSentencePartAfterWord()) {
-            return $this->getSentence();
-        }
-
         $parts = explode($this->word, $this->sentence, 2);
 
         return $parts[0] ?? '';

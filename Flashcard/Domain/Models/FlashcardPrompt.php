@@ -18,7 +18,8 @@ class FlashcardPrompt
         Wygeneruj ${{words_count}} słów.
         Słowa muszą bezpośrednio nawiązywać do tematu narzuconego przez użytkownika. Przedstaw słowa po polsku jak i po angielsku.
         Dodaj takze emoji kontekstowe do slowka. Zdania po angielsku powinny formować się w angażujące historie, które powinny być podzielone
-        na równe części, historie powinny być spójne, sprzyjać zapamiętywaniu i bezpośrednio nawiązywać do tematu podanego przez usera, gdzie każde będzie używać słowa z maks 3 lub 4 fiszek. Każda wygenerowana fiszka powinna dostać swoje story_id
+        na równe części, historie powinny być spójne, sprzyjać zapamiętywaniu i bezpośrednio nawiązywać do tematu podanego przez usera, gdzie każde będzie używać słowa z maks 3 lub 4 fiszek. Każda wygenerowana fiszka powinna dostać swoje story_id.
+        Zdania kontekstowe w translacji muszą zawierać słowo w formie, która jest podana w fiszce.
         Zapisz je w formie prostego kodu.
         Wzór:
         [{

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Integration\Flashcards\Infrastructure\Http\Controller\v2;
 
+use App\Models\Story;
+use App\Models\StoryFlashcard;
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\Admin;
@@ -114,6 +116,47 @@ class SessionControllerTest extends TestCase
             'type' => SessionType::WORD_MATCH->value,
         ]);
     }
+
+    /**
+     * @test
+     */
+    public function store_word_match_exercise_with_story_success(): void
+    {
+        // GIVEN
+        $user = User::factory()->create();
+        $deck = FlashcardDeck::factory()->create([
+            'user_id' => $user->id,
+        ]);
+        $flashcards = Flashcard::factory(3)->create([
+            'flashcard_deck_id' => $deck->id,
+            'emoji' => null,
+        ]);
+        $story = Story::factory()->create();
+        foreach ($flashcards as $flashcard) {
+            StoryFlashcard::factory()->create([
+                'flashcard_id' => $flashcard->id,
+                'story_id' => $story->id,
+            ]);
+        }
+
+        // WHEN
+        $response = $this
+            ->actingAs($user, 'sanctum')
+            ->postJson(route('v2.flashcards.session.store'), [
+                'cards_per_session' => 10,
+                'flashcard_deck_id' => $deck->id,
+                'session_type' => SessionType::WORD_MATCH->value,
+            ]);
+
+        // THEN
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('learning_sessions', [
+            'id' => $response->json('data.session.id'),
+            'user_id' => $user->id,
+            'type' => SessionType::WORD_MATCH->value,
+        ]);
+    }
+
 
     /**
      * @test
