@@ -26,7 +26,7 @@ use Shared\Exercise\Exercises\IUnscrambleWordExerciseRead;
         ),
         new OAT\Property(
             property: 'front_word',
-            description: 'The correct word to be unscrambled',
+            description: "The correct word in user's language",
             type: 'string',
             example: 'Polska'
         ),
@@ -35,6 +35,12 @@ use Shared\Exercise\Exercises\IUnscrambleWordExerciseRead;
             description: 'Context sentence in which the word is used',
             type: 'string',
             example: 'This country is located in central Europe.'
+        ),
+        new OAT\Property(
+            property: 'back_word',
+            description: 'The correct word to be unscrambled',
+            type: 'string',
+            example: 'Poland'
         ),
         new OAT\Property(
             property: 'emoji',
@@ -62,6 +68,7 @@ class UnscrambleWordExerciseResource extends JsonResource
             'exercise_entry_id' => $this->resource->getExerciseEntryId(),
             'front_word' => $this->resource->getFrontWord(),
             'context_sentence' => $this->resource->getContextSentence(),
+            'back_word' => $this->resource->getBackWord(),
             'emoji' => $this->resource->getEmoji(),
             'keyboard' => $this->resource->getKeyboard(),
         ];

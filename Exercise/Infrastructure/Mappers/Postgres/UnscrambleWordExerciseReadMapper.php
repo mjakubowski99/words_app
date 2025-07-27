@@ -36,6 +36,7 @@ class UnscrambleWordExerciseReadMapper
             $data->scrambled_word,
             $data->word_translation,
             $data->context_sentence,
+            $data->word,
             $data->emoji ? Emoji::fromUnicode($data->emoji) : null,
             $data->exercise_entry_id,
         );
