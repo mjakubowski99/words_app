@@ -34,7 +34,7 @@ class FlashcardExerciseFactory
         $exercise = UnscrambleWordsExercise::newExercise(
             $user_id,
             $session_flashcards_summary[0]->getBackWord(),
-            $session_flashcards_summary[0]->getFrontContext(),
+            $session_flashcards_summary[0]->getBackContext(),
             $session_flashcards_summary[0]->getFrontWord(),
             $session_flashcards_summary[0]->getEmoji(),
         );
