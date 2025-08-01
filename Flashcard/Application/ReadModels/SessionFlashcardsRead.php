@@ -18,7 +18,8 @@ class SessionFlashcardsRead
         private readonly int $cards_per_session,
         private readonly bool $is_finished,
         private array $session_flashcards,
-        private array $exercise_summaries
+        private array $exercise_summaries,
+        private bool $exercise_mode
     ) {}
 
     public function getSessionId(): SessionId
@@ -51,5 +52,10 @@ class SessionFlashcardsRead
     public function getExerciseSummaries(): array
     {
         return $this->exercise_summaries;
+    }
+
+    public function isExerciseMode(): bool
+    {
+        return $this->exercise_mode;
     }
 }
