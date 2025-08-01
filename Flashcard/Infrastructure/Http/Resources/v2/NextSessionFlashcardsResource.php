@@ -160,7 +160,7 @@ class NextSessionFlashcardsResource extends JsonResource
                 'cards_per_session' => $resource->getCardsPerSession(),
                 'is_finished' => $resource->getIsFinished(),
                 'progress' => $resource->getProgress(),
-                'is_exercise_mode' => empty($resource->getSessionFlashcards()) && !empty($exercises),
+                'is_exercise_mode' => $resource->isExerciseMode(),
                 'next_flashcards' => array_map(function (SessionFlashcardRead $flashcard) use ($session_id) {
                     return [
                         'id' => $flashcard->getId()->getValue(),

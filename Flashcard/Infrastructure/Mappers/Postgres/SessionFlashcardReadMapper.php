@@ -121,6 +121,18 @@ class SessionFlashcardReadMapper
             return $result->id !== null && $result->exercise_entry_id !== null;
         });
 
+        if (empty($session_flashcards) && empty($exercise_entry_ids)) {
+            $latest_entry_id = $this->db::table('learning_session_flashcards')
+                ->where('learning_session_id', $session_id)
+                ->latest()
+                ->value('exercise_entry_id');
+            $exercise_mode = !empty($latest_entry_id);
+        } elseif (!empty($exercise_entry_ids)) {
+            $exercise_mode = true;
+        } else {
+            $exercise_mode = false;
+        }
+
         return new SessionFlashcardsRead(
             $session_id,
             $results[0]->progress,
@@ -131,6 +143,7 @@ class SessionFlashcardReadMapper
                 fn ($result) => new ExerciseSummary(new ExerciseEntryId($result->exercise_entry_id), ExerciseType::fromNumber($result->exercise_type)),
                 $exercise_entry_ids
             ),
+            $exercise_mode
         );
     }
 
