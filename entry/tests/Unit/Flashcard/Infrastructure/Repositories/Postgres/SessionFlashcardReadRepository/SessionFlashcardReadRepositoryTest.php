@@ -57,6 +57,25 @@ class SessionFlashcardReadRepositoryTest extends TestCase
         $this->assertSame(FlashcardOwnerType::USER, $session_flashcards[0]->getOwnerType());
     }
 
+    public function test__findUnratedById_WhenNoUnratedFlashcard_correctExerciseMode(): void
+    {
+        // GIVEN
+        $session = LearningSession::factory()->create();
+        LearningSessionFlashcard::factory()->create([
+            'learning_session_id' => $session->id,
+            'rating' => Rating::GOOD->value,
+            'exercise_entry_id' => 1,
+        ]);
+
+        // WHEN
+        $result = $this->repository->findUnratedById($session->getId(), 5);
+
+        // THEN
+        $this->assertCount(0, $result->getSessionFlashcards());
+        $this->assertCount(0, $result->getExerciseSummaries());
+        $this->assertTrue($result->isExerciseMode());
+    }
+
     public function test__findUnratedById_AdminIsOwner(): void
     {
         // GIVEN

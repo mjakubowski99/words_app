@@ -15,6 +15,7 @@ class UnscrambleWordExerciseRead implements IUnscrambleWordExerciseRead
         private string $scrambled_word,
         private string $front_word,
         private string $context_sentence,
+        private string $back_word,
         private ?Emoji $emoji,
         private int $exercise_entry_id,
     ) {}
@@ -32,6 +33,11 @@ class UnscrambleWordExerciseRead implements IUnscrambleWordExerciseRead
     public function getFrontWord(): string
     {
         return $this->front_word;
+    }
+
+    public function getBackWord(): string
+    {
+        return $this->back_word;
     }
 
     public function getContextSentence(): string

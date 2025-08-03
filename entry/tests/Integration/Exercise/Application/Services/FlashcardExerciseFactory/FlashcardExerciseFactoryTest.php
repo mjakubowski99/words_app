@@ -50,7 +50,7 @@ class FlashcardExerciseFactoryTest extends TestCase
         ]);
         $this->assertDatabaseHas('unscramble_word_exercises', [
             'word' => 'apple',
-            'context_sentence' => 'context',
+            'context_sentence' => 'back context',
             'word_translation' => 'jablko',
             'emoji' => $flashcard_summaries->getSummaries()[0]->getEmoji()->toUnicode(),
         ]);
