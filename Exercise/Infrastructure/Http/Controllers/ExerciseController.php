@@ -33,6 +33,14 @@ class ExerciseController extends Controller
             content: new OAT\JsonContent(ref: '#/components/schemas/Requests\Exercise\UnscrambleWordExerciseAnswerRequest')
         ),
         tags: [Tags::V2, Tags::EXERCISE],
+        parameters: [
+            new OAT\Parameter(
+                name: 'exercise_entry_id',
+                description: 'Exercise entry id',
+                in: 'path',
+                example: 1,
+            ),
+        ],
         responses: [
             new OAT\Response(
                 response: 204,
@@ -85,6 +93,14 @@ class ExerciseController extends Controller
             content: new OAT\JsonContent(ref: '#/components/schemas/Requests\Exercise\SkipUnscrambleWordExerciseRequest')
         ),
         tags: [Tags::V2, Tags::EXERCISE],
+        parameters: [
+            new OAT\Parameter(
+                name: 'exercise_id',
+                description: 'Exercise id',
+                in: 'path',
+                example: 1,
+            ),
+        ],
         responses: [
             new OAT\Response(
                 response: 204,
@@ -117,6 +133,14 @@ class ExerciseController extends Controller
             content: new OAT\JsonContent(ref: '#/components/schemas/Requests\Exercise\WordMatchExerciseAnswerRequest')
         ),
         tags: [Tags::V2, Tags::EXERCISE],
+        parameters: [
+            new OAT\Parameter(
+                name: 'exercise_id',
+                description: 'Exercise id',
+                in: 'path',
+                example: 1,
+            ),
+        ],
         responses: [
             new OAT\Response(
                 response: 204,
@@ -161,6 +185,14 @@ class ExerciseController extends Controller
             content: new OAT\JsonContent(ref: '#/components/schemas/Requests\Exercise\SkipWordMatchExerciseRequest')
         ),
         tags: [Tags::V2, Tags::EXERCISE],
+        parameters: [
+            new OAT\Parameter(
+                name: 'exercise_id',
+                description: 'Exercise id',
+                in: 'path',
+                example: 1,
+            ),
+        ],
         responses: [
             new OAT\Response(
                 response: 204,

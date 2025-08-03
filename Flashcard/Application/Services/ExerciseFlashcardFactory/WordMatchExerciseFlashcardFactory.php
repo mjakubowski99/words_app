@@ -65,9 +65,9 @@ class WordMatchExerciseFlashcardFactory implements IExerciseFlashcardFactory
         $flashcards = array_merge([$base_flashcard], $flashcards);
 
         return SessionFlashcardSummaries::fromFlashcards(
-            array_slice($flashcards, 0, self::FLASHCARDS_COUNT_TO_ADD),
+            array_slice($flashcards, 0, self::FLASHCARDS_COUNT_TO_ADD+1),
             $base_flashcard,
-            array_slice($flashcards, self::FLASHCARDS_COUNT_TO_ADD),
+            array_slice($flashcards, self::FLASHCARDS_COUNT_TO_ADD+1),
         );
     }
 

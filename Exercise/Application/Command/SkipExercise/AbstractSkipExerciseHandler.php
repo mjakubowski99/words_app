@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Exercise\Application\Command\SkipExercise;
 
+use Exercise\Application\DTO\ExerciseScore;
 use Exercise\Domain\Models\Exercise;
 use Shared\Utils\ValueObjects\UserId;
 use Shared\Flashcard\IFlashcardFacade;
@@ -29,12 +30,15 @@ abstract class AbstractSkipExerciseHandler
 
         $this->saveExercise($exercise);
 
-        $entry_ids = array_map(
-            fn (ExerciseEntry $entry) => $entry->getId()->getValue(),
+        $exercise_scores = array_map(
+            fn (ExerciseEntry $entry) => new ExerciseScore(
+                $entry->getId(),
+                0.0
+            ),
             $exercise->getExerciseEntries()
         );
 
-        $this->facade->updateRatingsByPreviousRates($entry_ids);
+        $this->facade->updateRatings($exercise_scores);
     }
 
     abstract protected function findExercise(ExerciseId $id): Exercise;

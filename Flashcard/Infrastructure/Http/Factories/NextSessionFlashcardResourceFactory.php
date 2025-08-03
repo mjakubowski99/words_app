@@ -33,6 +33,7 @@ class NextSessionFlashcardResourceFactory
                 return [
                     'type' => $summary->getExerciseType()->value,
                     'resource' => $resource,
+                    //@TODO organize this better
                     'links' => match ($summary->getExerciseType()) {
                         ExerciseType::UNSCRAMBLE_WORDS => [
                             'next' => route('v2.flashcards.session.get', ['session_id' => $id]),

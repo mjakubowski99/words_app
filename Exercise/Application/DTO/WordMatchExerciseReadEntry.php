@@ -38,14 +38,18 @@ class WordMatchExerciseReadEntry implements IWordMatchExerciseReadEntry
 
     public function getSentencePartBeforeWord(): string
     {
-        $parts = explode($this->word, $this->sentence, 2);
+        $word = preg_quote($this->word, '/');
+
+        $parts = preg_split("/{$word}/i", $this->sentence);
 
         return $parts[0] ?? '';
     }
 
     public function getSentencePartAfterWord(): string
     {
-        $parts = explode($this->word, $this->sentence, 2);
+        $word = preg_quote($this->word, '/');
+
+        $parts = preg_split("/{$word}/i", $this->sentence);
 
         return $parts[1] ?? '';
     }

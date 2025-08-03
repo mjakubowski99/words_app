@@ -55,14 +55,11 @@ class SkipUnscrambleWordExerciseHandlerTest extends TestCase
         ]);
     }
 
-    public function test_handle_AssignLatestRatingForFlashcard(): void
+    public function test_handle_UpdatesToHardRating(): void
     {
         // GIVEN
         $user = $this->createUser();
-        $flashcard = LearningSessionFlashcard::factory()->create(['rating' => Rating::WEAK, 'updated_at' => now()->subDay()]);
-        LearningSessionFlashcard::factory()->create(['rating' => Rating::GOOD, 'updated_at' => now()->subDay()]);
-        $latest_flashcard = LearningSessionFlashcard::factory()->create(['flashcard_id' => $flashcard->flashcard_id, 'rating' => Rating::VERY_GOOD, 'updated_at' => now()]);
-
+        $flashcard = LearningSessionFlashcard::factory()->create(['rating' => null, 'updated_at' => now()->subDay()]);
         $exercise = Exercise::factory()->create([
             'status' => ExerciseStatus::IN_PROGRESS,
             'user_id' => $user->getId(),
@@ -77,7 +74,7 @@ class SkipUnscrambleWordExerciseHandlerTest extends TestCase
         // THEN
         $this->assertDatabaseHas('learning_session_flashcards', [
             'id' => $flashcard->id,
-            'rating' => $latest_flashcard->rating,
+            'rating' => Rating::UNKNOWN->value,
             'exercise_entry_id' => $entry->id,
         ]);
     }

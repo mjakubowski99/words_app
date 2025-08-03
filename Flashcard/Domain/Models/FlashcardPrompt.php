@@ -14,31 +14,43 @@ class FlashcardPrompt
     private readonly Language $translation_lang;
 
     private string $prompt = '
-        Jesteś algorytmem ai generującym słowa do nauki angielskiego.
-        Wygeneruj ${{words_count}} słów.
-        Słowa muszą bezpośrednio nawiązywać do tematu narzuconego przez użytkownika. Przedstaw słowa po polsku jak i po angielsku.
-        Dodaj takze emoji kontekstowe do slowka. Zdania po angielsku powinny formować się w angażujące historie, które powinny być podzielone
-        na równe części, historie powinny być spójne, sprzyjać zapamiętywaniu i bezpośrednio nawiązywać do tematu podanego przez usera, gdzie każde będzie używać słowa z maks 3 lub 4 fiszek. Każda wygenerowana fiszka powinna dostać swoje story_id.
-        Zdania kontekstowe w translacji muszą zawierać słowo w formie, która jest podana w fiszce.
-        Zapisz je w formie prostego kodu.
-        Wzór:
+        Jesteś algorytmem AI generującym słowa do nauki języka angielskiego.
+        Na podstawie tematu podanego przez użytkownika utwórz historię składającą się łącznie z ${{words_count}} zdań po angielsku. 
+        Podziel historię na części, które muszą mieć po 3–4 zdania każda — każda część to osobna mini-historia, 
+        która w obrębie tych zdań musi tworzyć spójną, logiczną całość (czyli krótkie zdarzenie z początkiem, środkiem i końcem).
+        Dla każdego zdania wygeneruj jego tłumaczenie na język polski.
+        Następnie z wygenerowanych zdań wyodrębnij słowa do fiszek (flashcards). Wybrane słowa muszą:
+        – występować w zdaniu w swojej podstawowej (nieodmienionej) formie,
+        – bezpośrednio odnosić się do tematu,
+        – nie powtarzać się w innych historiach.
+        Story: rozmowa z kasjerem
+            - Emma walked into the store and picked up a bottle of water.
+            - She went to the counter where the cashier was waiting.
+            - The cashier said, "That will be two dollars, please."
+        Wynik zapisz w formie prostego kodu JSON:
         [{
         "word": "kasjer",
         "trans": "cashier",
-        "sentence":"Kasjer przywitał mnie z uśmiechem.",
-        "sentence_trans":"Cashier greeted me with a smile",
+        "sentence":"Poszła do lady, gdzie czekał kasjer.",
+        "sentence_trans":"She went to the counter where the cashier was waiting.",
         "emoji":"😀",
         "story_id": 1
         },...]
+        Opis pól:
+         - word: słowo po polsku
+         - trans: jego tłumaczenie na angielski
+         - sentence: zdanie po polsku, w którym występuje słowo
+         - sentence_trans: tłumacznie zdania na angielski
+         – story_id: numer historii, z której pochodzi (story_id).
         Wygeneruj odpowiedź w formacie JSON zawierającą ${{words_count}} rekordów.
-        Ton odpowiedzi: Jasne i zrozumiałe zdania, przydatne do praktycznej komunikacji w danej sytuacji.
         Uwzględnij również specyfikację poziomu języka. Wybrany poziom to: ${{level}}
         ${{letters_condition}}
         Zastosuj:
             - kreatywność w tworzeniu przykładów
             - losowe ziarno generowania: ${{seed}}
         Prompt użytkownika to: ${{category}}.
-        Warunek błedu: Jeśli z jakiegoś powodu nie jesteś w stanie wygenerować rekordów dla danej sytuacji, zamiast rekordów odpowiedz w formacie {"error":"prompt"}
+        Warunek błedu: Jeśli z jakiegoś powodu nie jesteś w stanie wygenerować rekordów dla danej sytuacji, zamiast rekordów odpowiedz w formacie 
+        {"error":"prompt"}
         Twoja odpowiedź ma zawierać tylko i wyłącznie dane w formacie JSON i nic więcej.
     ';
 
