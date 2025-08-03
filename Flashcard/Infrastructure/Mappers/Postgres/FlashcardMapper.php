@@ -89,7 +89,7 @@ class FlashcardMapper
             })->toArray();
     }
 
-    public function createMany(array $flashcards): array
+    public function createMany(array $flashcards): void
     {
         $insert_data = [];
         $now = now();
@@ -113,22 +113,7 @@ class FlashcardMapper
             ];
         }
 
-        $results = $this->db::table('flashcards')
-            ->insertReturning($insert_data, ['id', 'front_word', 'back_word']);
-
-        foreach ($flashcards as $flashcard) {
-            Arr::first($results, function ($result) use ($flashcard) {
-                if ($result->front_word === $flashcard->getFrontWord() && $result->back_word === $flashcard->getBackWord()) {
-                    $flashcard->setId(new FlashcardId($result->id));
-
-                    return true;
-                }
-
-                return false;
-            });
-        }
-
-        return $flashcards;
+        $this->db::table('flashcards')->insert($insert_data);
     }
 
     public function createManyFromStoryFlashcards(StoryCollection $stories): StoryCollection
@@ -160,7 +145,7 @@ class FlashcardMapper
 
         $results = $this->db::table('flashcards')
             ->insertReturning($insert_data, ['id', 'front_word', 'back_word', 'updated_at'])
-            ->sortBy('updated_at')
+            ->sortBy('updated_at') //ensures correct insert order
             ->values();
 
         $i = 0;

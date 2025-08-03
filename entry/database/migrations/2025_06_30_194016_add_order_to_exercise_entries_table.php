@@ -10,7 +10,7 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::table('exercise_entries', function (Blueprint $table) {
-            $table->unsignedSmallInteger('order');
+            $table->unsignedSmallInteger('order')->default(0);
         });
     }
 
