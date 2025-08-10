@@ -23,7 +23,7 @@ class FlashcardPrompt
         – występować w zdaniu w swojej podstawowej (nieodmienionej) formie,
         – bezpośrednio odnosić się do tematu,
         – nie powtarzać się w innych historiach.
-        Story: rozmowa z kasjerem
+        Przkładowe story: rozmowa z kasjerem
             - Emma walked into the store and picked up a bottle of water.
             - She went to the counter where the cashier was waiting.
             - The cashier said, "That will be two dollars, please."
