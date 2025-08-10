@@ -70,6 +70,20 @@ class StoryCollection
         return $this->pulled_flashcards;
     }
 
+    public function pullStoriesWithOnlyOneSentence(): void
+    {
+        $stories_to_remove = [];
+
+        foreach ($this->get() as $index => $story) {
+            if (count($story->getStoryFlashcards()) === 1) {
+                $stories_to_remove[] = $index;
+                $this->pulled_flashcards[] = $story->getStoryFlashcards()[0]->getFlashcard();
+            }
+        }
+
+        $this->unset($stories_to_remove);
+    }
+
     /** @return Flashcard[] */
     public function getPulledFlashcards(): array
     {

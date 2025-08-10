@@ -40,7 +40,7 @@ class WordMatchExerciseReadEntry implements IWordMatchExerciseReadEntry
     {
         $word = preg_quote($this->word, '/');
 
-        $parts = preg_split("/{$word}/i", $this->sentence);
+        $parts = preg_split("/\\b{$word}\\b/ui", $this->sentence, 2);
 
         return $parts[0] ?? '';
     }
@@ -49,7 +49,7 @@ class WordMatchExerciseReadEntry implements IWordMatchExerciseReadEntry
     {
         $word = preg_quote($this->word, '/');
 
-        $parts = preg_split("/{$word}/i", $this->sentence);
+        $parts = preg_split("/\\b{$word}\\b/ui", $this->sentence, 2);
 
         return $parts[1] ?? '';
     }
