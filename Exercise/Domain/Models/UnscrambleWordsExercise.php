@@ -33,7 +33,7 @@ class UnscrambleWordsExercise extends Exercise
             new UnscrambleWordAnswer($answer_entry_id, $word),
             $last_answer,
             $last_answer_correct,
-            1,
+            0,
             $score,
             $answers_count,
         );
