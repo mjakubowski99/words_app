@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Exercise\Application\DTO\WordMatchExerciseReadEntry;
 
-use Exercise\Application\DTO\WordMatchExerciseReadEntry;
-use Shared\Utils\ValueObjects\ExerciseEntryId;
 use Tests\TestCase;
+use Shared\Utils\ValueObjects\ExerciseEntryId;
+use Exercise\Application\DTO\WordMatchExerciseReadEntry;
 
 class WordMatchExerciseReadEntryTest extends TestCase
 {
@@ -23,24 +23,6 @@ class WordMatchExerciseReadEntryTest extends TestCase
 
         // WHEN
         $result = $entry->getSentencePartBeforeWord();
-
-        // THEN
-        $this->assertSame($expected, $result);
-    }
-
-    /** @dataProvider sentencePartAfterWordProvider */
-    public function test__getSentencePartAfterWord_ShouldReturnCorrectPart(string $sentence, string $word, string $expected): void
-    {
-        // GIVEN
-        $entry = new WordMatchExerciseReadEntry(
-            new ExerciseEntryId(1),
-            $word,
-            'translation',
-            $sentence
-        );
-
-        // WHEN
-        $result = $entry->getSentencePartAfterWord();
 
         // THEN
         $this->assertSame($expected, $result);
@@ -85,6 +67,24 @@ class WordMatchExerciseReadEntryTest extends TestCase
                 'expected' => 'The ',
             ],
         ];
+    }
+
+    /** @dataProvider sentencePartAfterWordProvider */
+    public function test__getSentencePartAfterWord_ShouldReturnCorrectPart(string $sentence, string $word, string $expected): void
+    {
+        // GIVEN
+        $entry = new WordMatchExerciseReadEntry(
+            new ExerciseEntryId(1),
+            $word,
+            'translation',
+            $sentence
+        );
+
+        // WHEN
+        $result = $entry->getSentencePartAfterWord();
+
+        // THEN
+        $this->assertSame($expected, $result);
     }
 
     public static function sentencePartAfterWordProvider(): array
