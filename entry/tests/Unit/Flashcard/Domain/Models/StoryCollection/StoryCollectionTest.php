@@ -7,8 +7,8 @@ namespace Tests\Unit\Flashcard\Domain\Models\StoryCollection;
 use Tests\TestCase;
 use Flashcard\Domain\Models\Story;
 use Flashcard\Domain\Models\Flashcard;
-use Flashcard\Domain\Models\StoryCollection;
 use Flashcard\Domain\Models\StoryFlashcard;
+use Flashcard\Domain\Models\StoryCollection;
 
 class StoryCollectionTest extends TestCase
 {
