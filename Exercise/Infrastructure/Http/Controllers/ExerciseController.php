@@ -67,7 +67,7 @@ class ExerciseController extends Controller
         UnscrambleWordExerciseAnswerRequest $request,
         UnscrambleWordExerciseAnswerHandler $handler
     ): JsonResponse {
-        /** @var AnswerAssessment $assessment */
+        /** @var AnswerAssessment $assessments */
         $assessments = DB::transaction(function () use ($request, $handler) {
             $exercise_id = $handler->findExerciseId($request->getExerciseEntryId());
 
@@ -167,7 +167,7 @@ class ExerciseController extends Controller
         WordMatchExerciseAnswerRequest $request,
         WordMatchExerciseAnswerHandler $handler
     ): WordMatchExerciseAnswerResource {
-        /** @var AnswerAssessment[] $assessment */
+        /** @var AnswerAssessment[] $assessments */
         $assessments = DB::transaction(function () use ($request, $handler) {
             return $handler->handle($request->getExerciseId(), $request->currentId(), $request->getAnswers());
         });

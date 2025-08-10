@@ -20,8 +20,8 @@ class FlashcardExerciseFactory
     public function makeExercise(ISessionFlashcardSummaries $summaries, UserId $user_id, ExerciseType $type): array
     {
         $factory = match ($type) {
-            /* @phpstan-ignore-next-line */
             ExerciseType::UNSCRAMBLE_WORDS => $this->app->make(UnscrambleWordExerciseFactory::class),
+            /* @phpstan-ignore-next-line */
             ExerciseType::WORD_MATCH => $this->app->make(WordMatchExerciseFactory::class),
             default => throw new \InvalidArgumentException('Invalid exercise type'),
         };

@@ -4,14 +4,13 @@ declare(strict_types=1);
 
 namespace Flashcard\Domain\Models;
 
-use Illuminate\Support\Facades\Log;
 use Shared\Enum\SessionType;
 use Shared\Enum\ExerciseType;
-use Shared\Flashcard\ISessionFlashcardSummaries;
 use Shared\Utils\ValueObjects\UserId;
 use Flashcard\Domain\ValueObjects\SessionId;
 use Flashcard\Domain\ValueObjects\FlashcardId;
 use Shared\Utils\ValueObjects\ExerciseEntryId;
+use Flashcard\Application\DTO\SessionFlashcardSummaries;
 use Flashcard\Domain\Exceptions\InvalidNextSessionFlashcards;
 use Flashcard\Domain\Exceptions\TooManySessionFlashcardsException;
 
@@ -97,7 +96,7 @@ class NextSessionFlashcards extends SessionFlashcardsBase
         return $this->current_session_flashcards_count + 1 <= $this->max_flashcards_count;
     }
 
-    public function addFlashcardsFromSummaries(ISessionFlashcardSummaries $summaries): void
+    public function addFlashcardsFromSummaries(SessionFlashcardSummaries $summaries): void
     {
         foreach ($summaries->getSummaries() as $summary) {
             if (!$this->canAddNext()) {

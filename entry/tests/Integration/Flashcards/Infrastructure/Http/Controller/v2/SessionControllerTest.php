@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace Tests\Integration\Flashcards\Infrastructure\Http\Controller\v2;
 
-use App\Models\Story;
-use App\Models\StoryFlashcard;
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\Admin;
+use App\Models\Story;
 use App\Models\Flashcard;
 use Shared\Enum\SessionType;
 use App\Models\FlashcardDeck;
 use App\Models\SmTwoFlashcard;
+use App\Models\StoryFlashcard;
 use App\Models\LearningSession;
 use App\Models\FlashcardPollItem;
 use Flashcard\Domain\Models\Rating;
@@ -156,7 +156,6 @@ class SessionControllerTest extends TestCase
             'type' => SessionType::WORD_MATCH->value,
         ]);
     }
-
 
     /**
      * @test

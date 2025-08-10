@@ -66,7 +66,6 @@ class StoryMapper
         );
     }
 
-    /** @param Story[] $stories */
     public function saveMany(StoryCollection $stories): void
     {
         $now = now();
@@ -81,6 +80,7 @@ class StoryMapper
             ++$i;
         }
 
+        /** @phpstan-ignore-next-line  */
         $story_ids = DB::table('stories')
             ->insertReturning($insert_data)
             ->sortBy('created_at')

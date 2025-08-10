@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Flashcard\Infrastructure\Mappers\Postgres;
 
 use Shared\Models\Emoji;
-use Illuminate\Support\Arr;
 use Shared\Enum\LanguageLevel;
 use Flashcard\Domain\Models\Deck;
 use Illuminate\Support\Facades\DB;
@@ -143,9 +142,10 @@ class FlashcardMapper
             ];
         }
 
+        /* @phpstan-ignore-next-line */
         $results = $this->db::table('flashcards')
             ->insertReturning($insert_data, ['id', 'front_word', 'back_word', 'updated_at'])
-            ->sortBy('updated_at') //ensures correct insert order
+            ->sortBy('updated_at') // ensures correct insert order
             ->values();
 
         $i = 0;

@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Exercise\Application\Command\AnswerExercise;
 
-use Exercise\Domain\Exceptions\InvalidExerciseTypeException;
 use Exercise\Domain\Models\Exercise;
 use Shared\Flashcard\IFlashcardFacade;
 use Shared\Utils\ValueObjects\ExerciseId;
 use Shared\Utils\ValueObjects\ExerciseEntryId;
 use Exercise\Domain\Models\UnscrambleWordsExercise;
+use Exercise\Domain\Exceptions\InvalidExerciseTypeException;
 use Exercise\Application\Repositories\IUnscrambleWordExerciseRepository;
 
 class UnscrambleWordExerciseAnswerHandler extends AbstractExerciseAnswerHandler

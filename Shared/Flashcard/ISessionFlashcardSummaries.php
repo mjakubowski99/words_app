@@ -14,6 +14,7 @@ interface ISessionFlashcardSummaries
 
     /** @return ISessionFlashcardSummary[] */
     public function getSummaries(): array;
+
     /** @return IAnswerOption[] */
     public function getAnswerOptions(): array;
 }

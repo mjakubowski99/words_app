@@ -11,6 +11,8 @@ class ExerciseEntryMapper
 {
     public function insert(int $exercise_id, array $entries): void
     {
+        $data = [];
+
         /** @var ExerciseEntry $entry */
         foreach ($entries as $entry) {
             $data[] = [

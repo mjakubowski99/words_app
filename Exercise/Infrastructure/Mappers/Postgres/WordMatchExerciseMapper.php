@@ -57,7 +57,7 @@ class WordMatchExerciseMapper
 
     public function save(WordMatchExercise $exercise): void
     {
-        DB::table('exercises')
+        $this->db::table('exercises')
             ->where('id', $exercise->getId()->getValue())
             ->update([
                 'exercise_type' => $exercise->getExerciseType()->toNumber(),
@@ -71,7 +71,7 @@ class WordMatchExerciseMapper
 
     private function getExerciseWithEntries(ExerciseId $id): Collection
     {
-        return DB::table('exercises')
+        return $this->db::table('exercises')
             ->where('exercises.id', $id->getValue())
             ->join('exercise_entries', 'exercise_entries.exercise_id', '=', 'exercises.id')
             ->select(

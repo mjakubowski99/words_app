@@ -14,6 +14,7 @@ interface IWordMatchExerciseRead
 
     /** @return IWordMatchExerciseReadEntry[] */
     public function getEntries(): array;
+
     /** @return string[] */
     public function getAnswerOptions(): array;
 }

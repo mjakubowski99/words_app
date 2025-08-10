@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Exercise\Application\Command\SkipExercise;
 
-use Exercise\Domain\Exceptions\InvalidExerciseTypeException;
 use Exercise\Domain\Models\Exercise;
 use Shared\Flashcard\IFlashcardFacade;
 use Shared\Utils\ValueObjects\ExerciseId;
 use Exercise\Domain\Models\UnscrambleWordsExercise;
+use Exercise\Domain\Exceptions\InvalidExerciseTypeException;
 use Exercise\Application\Repositories\IUnscrambleWordExerciseRepository;
 
 class SkipUnscrambleWordExerciseHandler extends AbstractSkipExerciseHandler

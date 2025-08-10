@@ -5,10 +5,8 @@ declare(strict_types=1);
 namespace Flashcard\Application\DTO;
 
 use Flashcard\Domain\Models\Story;
-use Flashcard\Domain\Models\Flashcard;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Log;
 use Shared\Flashcard\IAnswerOption;
+use Flashcard\Domain\Models\Flashcard;
 use Shared\Utils\ValueObjects\StoryId;
 use Flashcard\Domain\Models\StoryFlashcard;
 use Shared\Flashcard\ISessionFlashcardSummaries;
@@ -45,7 +43,7 @@ class SessionFlashcardSummaries implements ISessionFlashcardSummaries
                 return new SessionFlashcardSummary(
                     $i,
                     $story_flashcard->getFlashcard(),
-                    !($story_flashcard->getFlashcard()->getId()->equals($base_story_flashcard->getId())),
+                    !$story_flashcard->getFlashcard()->getId()->equals($base_story_flashcard->getId()),
                     true,
                     $story_flashcard->getSentenceOverride(),
                 );
@@ -77,7 +75,7 @@ class SessionFlashcardSummaries implements ISessionFlashcardSummaries
                 return new SessionFlashcardSummary(
                     $i,
                     $flashcard,
-                    !($flashcard->getId()->equals($base_flashcard->getId())),
+                    !$flashcard->getId()->equals($base_flashcard->getId()),
                     false,
                     null,
                 );

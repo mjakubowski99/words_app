@@ -4,15 +4,10 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\Command;
 
-use Flashcard\Application\Services\FlashcardSummaryFactory;
-use Shared\Enum\ExerciseType;
-use Flashcard\Domain\Models\Rating;
-use Flashcard\Domain\Models\Flashcard;
 use Shared\Exercise\IFlashcardExerciseFacade;
-use Shared\Flashcard\ISessionFlashcardSummaries;
-use Flashcard\Domain\Models\NextSessionFlashcards;
 use Flashcard\Application\Services\IFlashcardSelector;
 use Flashcard\Domain\Services\SessionFlashcardsService;
+use Flashcard\Application\Services\FlashcardSummaryFactory;
 use Flashcard\Application\Repository\INextSessionFlashcardsRepository;
 
 class AddSessionFlashcardsHandler

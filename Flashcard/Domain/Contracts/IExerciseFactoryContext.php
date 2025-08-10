@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Flashcard\Domain\Contracts;
 
 use Shared\Utils\ValueObjects\UserId;

@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\Services\ExerciseFlashcardFactory;
 
-use Flashcard\Application\DTO\SessionFlashcardSummaries;
-use Flashcard\Application\Repository\IStoryRepository;
-use Flashcard\Application\Services\IFlashcardSelector;
-use Flashcard\Domain\Models\Flashcard;
-use Flashcard\Domain\Models\NextSessionFlashcards;
-use Flashcard\Domain\Models\StoryFlashcard;
 use Shared\Utils\Cache\ICache;
 use Shared\Utils\ValueObjects\UserId;
+use Flashcard\Domain\Models\Flashcard;
+use Flashcard\Domain\Models\StoryFlashcard;
+use Flashcard\Domain\Models\NextSessionFlashcards;
+use Flashcard\Application\Repository\IStoryRepository;
+use Flashcard\Application\Services\IFlashcardSelector;
+use Flashcard\Application\DTO\SessionFlashcardSummaries;
 
 class WordMatchExerciseFlashcardFactory implements IExerciseFlashcardFactory
 {
@@ -39,7 +39,7 @@ class WordMatchExerciseFlashcardFactory implements IExerciseFlashcardFactory
             $story = $this->repository->find($story_id, $next_session_flashcards->getUserId());
 
             $exclude_ids = array_map(
-                fn(StoryFlashcard $flashcard) => $flashcard->getFlashcard()->getId(),
+                fn (StoryFlashcard $flashcard) => $flashcard->getFlashcard()->getId(),
                 $story->getStoryFlashcards()
             );
 
@@ -65,9 +65,9 @@ class WordMatchExerciseFlashcardFactory implements IExerciseFlashcardFactory
         $flashcards = array_merge([$base_flashcard], $flashcards);
 
         return SessionFlashcardSummaries::fromFlashcards(
-            array_slice($flashcards, 0, self::FLASHCARDS_COUNT_TO_ADD+1),
+            array_slice($flashcards, 0, self::FLASHCARDS_COUNT_TO_ADD + 1),
             $base_flashcard,
-            array_slice($flashcards, self::FLASHCARDS_COUNT_TO_ADD+1),
+            array_slice($flashcards, self::FLASHCARDS_COUNT_TO_ADD + 1),
         );
     }
 

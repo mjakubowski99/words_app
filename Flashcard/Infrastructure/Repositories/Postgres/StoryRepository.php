@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Flashcard\Infrastructure\Repositories\Postgres;
 
 use Flashcard\Domain\Models\Story;
-use Shared\Utils\ValueObjects\StoryId;
 use Shared\Utils\ValueObjects\UserId;
+use Shared\Utils\ValueObjects\StoryId;
 use Flashcard\Domain\Models\StoryCollection;
 use Flashcard\Domain\ValueObjects\FlashcardId;
 use Flashcard\Application\Repository\IStoryRepository;

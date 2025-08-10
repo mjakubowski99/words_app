@@ -12,6 +12,8 @@ use Shared\Flashcard\ISessionFlashcardSummaries;
 
 class WordMatchExercise extends Exercise
 {
+    private array $word_match_entries;
+
     public function __construct(
         private ?StoryId $story_id,
         ExerciseId $exercise_id,
@@ -21,6 +23,7 @@ class WordMatchExercise extends Exercise
         private array $options,
     ) {
         parent::__construct($exercise_id, $user_id, $exercise_entries, $status, ExerciseType::WORD_MATCH);
+        $this->word_match_entries = $exercise_entries;
     }
 
     public static function newFromSummaries(ISessionFlashcardSummaries $summaries, UserId $user_id): self
@@ -54,7 +57,7 @@ class WordMatchExercise extends Exercise
     /** @return WordMatchExerciseEntry[] */
     public function getExerciseEntries(): array
     {
-        return parent::getExerciseEntries();
+        return $this->word_match_entries;
     }
 
     public function getOptions(): array

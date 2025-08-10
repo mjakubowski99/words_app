@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\Services;
 
-use Flashcard\Application\Services\ExerciseFlashcardFactory\IExerciseFlashcardFactory;
-use Flashcard\Application\Services\ExerciseFlashcardFactory\UnscrambleWordExerciseFlashcardFactory;
-use Flashcard\Application\Services\ExerciseFlashcardFactory\WordMatchExerciseFlashcardFactory;
 use Shared\Enum\ExerciseType;
+use Flashcard\Application\Services\ExerciseFlashcardFactory\IExerciseFlashcardFactory;
+use Flashcard\Application\Services\ExerciseFlashcardFactory\WordMatchExerciseFlashcardFactory;
+use Flashcard\Application\Services\ExerciseFlashcardFactory\UnscrambleWordExerciseFlashcardFactory;
 
 class FlashcardSummaryFactory
 {
@@ -21,9 +21,12 @@ class FlashcardSummaryFactory
         switch ($type) {
             case ExerciseType::UNSCRAMBLE_WORDS:
                 return $this->unscramble_factory;
+
             case ExerciseType::WORD_MATCH:
                 return $this->word_match_factory;
         }
+
+        /* @phpstan-ignore-next-line */
         throw new \InvalidArgumentException('Unsupported exercise type: ' . $type->value);
     }
 }
