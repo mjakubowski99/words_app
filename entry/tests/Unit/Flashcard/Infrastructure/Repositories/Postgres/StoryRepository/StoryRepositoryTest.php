@@ -137,4 +137,24 @@ class StoryRepositoryTest extends TestCase
 
         $this->assertSame('Override', $story_flashcards[0]->sentence_override);
     }
+
+    public function test__bulkDelete_deleteStories(): void
+    {
+        // GIVEN
+        $to_delete = [
+            StoryFlashcard::factory()->create(),
+            StoryFlashcard::factory()->create(),
+        ];
+        $to_keep = StoryFlashcard::factory()->create();
+
+        // WHEN
+        $this->repository->bulkDelete([new StoryId($to_delete[0]->story_id), new StoryId($to_delete[1]->story_id)]);
+
+        // THEN
+        $this->assertDatabaseMissing('story_flashcards', ['story_id' => $to_delete[0]->story_id]);
+        $this->assertDatabaseMissing('story_flashcards', ['story_id' => $to_delete[1]->story_id]);
+        $this->assertDatabaseHas('stories', ['id' => $to_keep->story_id]);
+        $this->assertDatabaseHas('flashcards', ['id' => $to_delete[0]->flashcard_id]);
+        $this->assertDatabaseHas('flashcards', ['id' => $to_delete[1]->flashcard_id]);
+    }
 }
