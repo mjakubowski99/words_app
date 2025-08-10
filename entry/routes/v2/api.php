@@ -60,4 +60,9 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         ->name('v2.exercises.unscramble-words.answer');
     Route::put('/exercises/unscramble-words/{exercise_id}/skip', [ExerciseController::class, 'skipUnscrambleWordExercise'])
         ->name('v2.exercises.unscramble-words.skip');
+
+    Route::put('/exercises/word-match/{exercise_id}/answer', [ExerciseController::class, 'answerWordMatchExercise'])
+        ->name('v2.exercises.word-match.answer');
+    Route::put('/exercises/word-match/{exercise_id}/skip', [ExerciseController::class, 'skipWordMatchExercise'])
+        ->name('v2.exercises.word-match.skip');
 });

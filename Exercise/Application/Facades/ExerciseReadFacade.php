@@ -6,17 +6,25 @@ namespace Exercise\Application\Facades;
 
 use Shared\Utils\ValueObjects\ExerciseEntryId;
 use Shared\Exercise\Exercises\IExerciseReadFacade;
+use Shared\Exercise\Exercises\IWordMatchExerciseRead;
 use Shared\Exercise\Exercises\IUnscrambleWordExerciseRead;
+use Exercise\Application\Repositories\IWordMatchExerciseReadRepository;
 use Exercise\Application\Repositories\IUnscrambleWordExerciseReadRepository;
 
 class ExerciseReadFacade implements IExerciseReadFacade
 {
     public function __construct(
-        private IUnscrambleWordExerciseReadRepository $repository,
+        private IUnscrambleWordExerciseReadRepository $unscramble_word_repository,
+        private IWordMatchExerciseReadRepository $word_match_repository,
     ) {}
 
     public function getUnscrambleWordExercise(ExerciseEntryId $id): IUnscrambleWordExerciseRead
     {
-        return $this->repository->findByEntryId($id);
+        return $this->unscramble_word_repository->findByEntryId($id);
+    }
+
+    public function getWordMatchExercise(ExerciseEntryId $id): IWordMatchExerciseRead
+    {
+        return $this->word_match_repository->findByEntryId($id);
     }
 }

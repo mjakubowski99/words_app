@@ -8,6 +8,7 @@ use Exercise\Domain\Models\Exercise;
 use Shared\Flashcard\IFlashcardFacade;
 use Shared\Utils\ValueObjects\ExerciseId;
 use Exercise\Domain\Models\UnscrambleWordsExercise;
+use Exercise\Domain\Exceptions\InvalidExerciseTypeException;
 use Exercise\Application\Repositories\IUnscrambleWordExerciseRepository;
 
 class SkipUnscrambleWordExerciseHandler extends AbstractSkipExerciseHandler
@@ -27,7 +28,7 @@ class SkipUnscrambleWordExerciseHandler extends AbstractSkipExerciseHandler
     protected function saveExercise(Exercise $exercise): void
     {
         if (!$exercise instanceof UnscrambleWordsExercise) {
-            throw new \InvalidArgumentException('Invalid exercise type');
+            throw new InvalidExerciseTypeException();
         }
         $this->repository->save($exercise);
     }

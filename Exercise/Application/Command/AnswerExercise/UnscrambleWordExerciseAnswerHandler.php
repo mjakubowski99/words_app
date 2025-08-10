@@ -6,8 +6,10 @@ namespace Exercise\Application\Command\AnswerExercise;
 
 use Exercise\Domain\Models\Exercise;
 use Shared\Flashcard\IFlashcardFacade;
+use Shared\Utils\ValueObjects\ExerciseId;
 use Shared\Utils\ValueObjects\ExerciseEntryId;
 use Exercise\Domain\Models\UnscrambleWordsExercise;
+use Exercise\Domain\Exceptions\InvalidExerciseTypeException;
 use Exercise\Application\Repositories\IUnscrambleWordExerciseRepository;
 
 class UnscrambleWordExerciseAnswerHandler extends AbstractExerciseAnswerHandler
@@ -19,15 +21,20 @@ class UnscrambleWordExerciseAnswerHandler extends AbstractExerciseAnswerHandler
         parent::__construct($this->facade);
     }
 
-    protected function resolveExercise(ExerciseEntryId $id): Exercise
+    public function findExerciseId(ExerciseEntryId $id): ExerciseId
     {
-        return $this->repository->findByEntryId($id);
+        return $this->repository->findByEntryId($id)->getId();
+    }
+
+    protected function resolveExercise(ExerciseId $exercise_id): Exercise
+    {
+        return $this->repository->find($exercise_id);
     }
 
     protected function save(Exercise $exercise): void
     {
         if (!$exercise instanceof UnscrambleWordsExercise) {
-            throw new \InvalidArgumentException('Invalid exercise type');
+            throw new InvalidExerciseTypeException();
         }
         $this->repository->save($exercise);
     }

@@ -4,10 +4,35 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
+/**
+ * @property        int                                                             $id
+ * @property        string                                                          $user_id
+ * @property        int                                                             $flashcard_id
+ * @property        int                                                             $easy_ratings_count
+ * @property        int                                                             $easy_ratings_count_to_purge
+ * @property        int                                                             $leitner_level
+ * @property        null|Carbon                                                     $created_at
+ * @property        null|Carbon                                                     $updated_at
+ * @property        Flashcard                                                       $flashcard
+ * @method   static \Database\Factories\FlashcardPollItemFactory                    factory($count = null, $state = [])
+ * @method   static \Illuminate\Database\Eloquent\Builder<static>|FlashcardPollItem newModelQuery()
+ * @method   static \Illuminate\Database\Eloquent\Builder<static>|FlashcardPollItem newQuery()
+ * @method   static \Illuminate\Database\Eloquent\Builder<static>|FlashcardPollItem query()
+ * @method   static \Illuminate\Database\Eloquent\Builder<static>|FlashcardPollItem whereCreatedAt($value)
+ * @method   static \Illuminate\Database\Eloquent\Builder<static>|FlashcardPollItem whereEasyRatingsCount($value)
+ * @method   static \Illuminate\Database\Eloquent\Builder<static>|FlashcardPollItem whereEasyRatingsCountToPurge($value)
+ * @method   static \Illuminate\Database\Eloquent\Builder<static>|FlashcardPollItem whereFlashcardId($value)
+ * @method   static \Illuminate\Database\Eloquent\Builder<static>|FlashcardPollItem whereId($value)
+ * @method   static \Illuminate\Database\Eloquent\Builder<static>|FlashcardPollItem whereLeitnerLevel($value)
+ * @method   static \Illuminate\Database\Eloquent\Builder<static>|FlashcardPollItem whereUpdatedAt($value)
+ * @method   static \Illuminate\Database\Eloquent\Builder<static>|FlashcardPollItem whereUserId($value)
+ * @mixin \Eloquent
+ */
 class FlashcardPollItem extends Model
 {
     use HasFactory;

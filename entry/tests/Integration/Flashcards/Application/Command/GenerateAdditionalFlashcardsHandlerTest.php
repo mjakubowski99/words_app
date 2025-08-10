@@ -26,6 +26,7 @@ class GenerateAdditionalFlashcardsHandlerTest extends FlashcardTestCase
     protected function setUp(): void
     {
         parent::setUp();
+        Flashcard::query()->forceDelete();
         Http::preventStrayRequests();
         $this->response = '{
                "candidates":[

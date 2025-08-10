@@ -5,77 +5,82 @@ declare(strict_types=1);
 namespace Flashcard\Application\DTO;
 
 use Shared\Models\Emoji;
+use Flashcard\Domain\Models\Flashcard;
 use Shared\Utils\ValueObjects\Language;
 use Shared\Flashcard\ISessionFlashcardSummary;
 
 class SessionFlashcardSummary implements ISessionFlashcardSummary
 {
-    private int $flashcard_id;
-    private string $front_word;
-    private string $back_word;
-    private string $front_context;
-    private string $back_context;
-    private Language $front_lang;
-    private Language $back_lang;
-    private ?Emoji $emoji;
-
     public function __construct(
-        int $flashcard_id,
-        string $front_word,
-        string $back_word,
-        string $front_context,
-        string $back_context,
-        Language $frontLang,
-        Language $backLang,
-        ?Emoji $emoji
-    ) {
-        $this->flashcard_id = $flashcard_id;
-        $this->front_word = $front_word;
-        $this->back_word = $back_word;
-        $this->front_context = $front_context;
-        $this->back_context = $back_context;
-        $this->front_lang = $frontLang;
-        $this->back_lang = $backLang;
-        $this->emoji = $emoji;
+        private int $order,
+        private Flashcard $flashcard,
+        private bool $is_additional,
+        private bool $is_story_part,
+        private ?string $story_sentence
+    ) {}
+
+    public function getOrder(): int
+    {
+        return $this->order;
+    }
+
+    public function getFlashcard(): Flashcard
+    {
+        return $this->flashcard;
     }
 
     public function getFlashcardId(): int
     {
-        return $this->flashcard_id;
+        return $this->flashcard->getId()->getValue();
     }
 
     public function getFrontWord(): string
     {
-        return $this->front_word;
+        return $this->flashcard->getFrontWord();
     }
 
     public function getBackWord(): string
     {
-        return $this->back_word;
+        return $this->flashcard->getBackWord();
     }
 
     public function getFrontContext(): string
     {
-        return $this->front_context;
+        return $this->flashcard->getFrontContext();
     }
 
     public function getBackContext(): string
     {
-        return $this->back_context;
+        return $this->flashcard->getBackContext();
     }
 
     public function getFrontLang(): Language
     {
-        return $this->front_lang;
+        return $this->flashcard->getFrontLang();
     }
 
     public function getBackLang(): Language
     {
-        return $this->back_lang;
+        return $this->flashcard->getBackLang();
     }
 
     public function getEmoji(): ?Emoji
     {
-        return $this->emoji;
+        return $this->flashcard->getEmoji();
+    }
+
+    public function getIsAdditional(): bool
+    {
+        return $this->is_additional;
+    }
+
+    public function getIsStoryPart(): bool
+    {
+        return $this->is_story_part;
+    }
+
+    public function getStorySentence(): ?string
+    {
+        return $this->story_sentence;
     }
 }

@@ -59,7 +59,7 @@ class ActiveSession implements IRepetitionAlgorithmDTO
         }
     }
 
-    public function rateByExerciseScore(SessionFlashcardId $id, float $score): void
+    public function rateFlashcardsByExerciseScore(SessionFlashcardId $id, float $score): void
     {
         $flashcard = $this->get($id);
 

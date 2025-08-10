@@ -9,10 +9,10 @@ use Exercise\Domain\Models\Exercise;
 use Shared\Utils\ValueObjects\UserId;
 use Shared\Flashcard\IFlashcardFacade;
 use Exercise\Domain\Models\ExerciseEntry;
+use Shared\Utils\ValueObjects\ExerciseId;
 use Exercise\Application\DTO\ExerciseScore;
 use Exercise\Domain\Models\AnswerAssessment;
 use Shared\Exceptions\UnauthorizedException;
-use Shared\Utils\ValueObjects\ExerciseEntryId;
 
 abstract class AbstractExerciseAnswerHandler
 {
@@ -20,22 +20,26 @@ abstract class AbstractExerciseAnswerHandler
         private IFlashcardFacade $facade,
     ) {}
 
-    public function handle(ExerciseEntryId $id, UserId $user_id, Answer $answer): AnswerAssessment
+    /** @return AnswerAssessment[] */
+    public function handle(ExerciseId $exercise_id, UserId $user_id, array $answers): array
     {
-        $exercise = $this->resolveExercise($id);
+        $exercise = $this->resolveExercise($exercise_id);
 
         if (!$exercise->getUserId()->equals($user_id)) {
             throw new UnauthorizedException();
         }
 
-        $assessment = $this->assessesAnswer($exercise, $answer);
+        $assessments = [];
+        foreach ($answers as $answer) {
+            $assessments[] = $this->assessesAnswer($exercise, $answer);
+        }
 
         $this->save($exercise);
 
-        return $assessment;
+        return $assessments;
     }
 
-    abstract protected function resolveExercise(ExerciseEntryId $id): Exercise;
+    abstract protected function resolveExercise(ExerciseId $exercise_id): Exercise;
 
     abstract protected function save(Exercise $exercise): void;
 

@@ -8,9 +8,13 @@ use Shared\Models\Emoji;
 use Shared\Enum\LanguageLevel;
 use Flashcard\Domain\Models\Deck;
 use Illuminate\Support\Facades\DB;
+use Flashcard\Domain\Models\Rating;
 use Shared\Utils\ValueObjects\UserId;
 use Flashcard\Domain\Models\Flashcard;
+use Shared\Utils\ValueObjects\StoryId;
 use Shared\Utils\ValueObjects\Language;
+use Flashcard\Domain\Models\StoryFlashcard;
+use Flashcard\Domain\Models\StoryCollection;
 use Flashcard\Domain\ValueObjects\FlashcardId;
 use Flashcard\Domain\ValueObjects\FlashcardDeckId;
 use Flashcard\Infrastructure\Mappers\Traits\HasOwnerBuilder;
@@ -107,7 +111,50 @@ class FlashcardMapper
                 'updated_at' => $now,
             ];
         }
+
         $this->db::table('flashcards')->insert($insert_data);
+    }
+
+    public function createManyFromStoryFlashcards(StoryCollection $stories): StoryCollection
+    {
+        $insert_data = [];
+        $created_at = now();
+        $updated_at = now();
+
+        /** @var StoryFlashcard $story_flashcard */
+        foreach ($stories->getAllStoryFlashcards() as $story_flashcard) {
+            $flashcard = $story_flashcard->getFlashcard();
+
+            $insert_data[] = [
+                'user_id' => $flashcard->getOwner()->isUser() ? $flashcard->getOwner()->getId() : null,
+                'admin_id' => $flashcard->getOwner()->isAdmin() ? $flashcard->getOwner()->getId() : null,
+                'flashcard_deck_id' => $flashcard->getDeck()->getId(),
+                'front_word' => $flashcard->getFrontWord(),
+                'front_lang' => $flashcard->getFrontLang()->getValue(),
+                'back_word' => $flashcard->getBackWord(),
+                'back_lang' => $flashcard->getBackLang()->getValue(),
+                'front_context' => $flashcard->getFrontContext(),
+                'back_context' => $flashcard->getBackContext(),
+                'language_level' => $flashcard->getLanguageLevel()->value,
+                'emoji' => $flashcard->getEmoji()?->toUnicode(),
+                'created_at' => $created_at,
+                'updated_at' => $updated_at->addSecond(),
+            ];
+        }
+
+        /* @phpstan-ignore-next-line */
+        $results = $this->db::table('flashcards')
+            ->insertReturning($insert_data, ['id', 'front_word', 'back_word', 'updated_at'])
+            ->sortBy('updated_at') // ensures correct insert order
+            ->values();
+
+        $i = 0;
+        foreach ($stories->getAllStoryFlashcards() as $flashcard) {
+            $flashcard->getFlashcard()->setId(new FlashcardId($results[$i]->id));
+            ++$i;
+        }
+
+        return $stories;
     }
 
     public function findMany(array $flashcard_ids): array
@@ -117,6 +164,28 @@ class FlashcardMapper
             ->leftJoin('flashcard_decks', 'flashcard_decks.id', '=', 'flashcards.flashcard_deck_id')
             ->select(
                 'flashcards.*',
+                'flashcard_decks.user_id as deck_user_id',
+                'flashcard_decks.admin_id as deck_admin_id',
+                'flashcard_decks.tag as deck_tag',
+                'flashcard_decks.name as deck_name',
+                'flashcard_decks.default_language_level as deck_default_language_level',
+            )
+            ->get()
+            ->map(function (object $data) {
+                return $this->map($data);
+            })->all();
+    }
+
+    public function findManyForUser(array $flashcard_ids, UserId $user_id): array
+    {
+        return $this->db::table('flashcards')
+            ->whereIn('flashcards.id', $flashcard_ids)
+            ->leftJoin('flashcard_decks', 'flashcard_decks.id', '=', 'flashcards.flashcard_deck_id')
+            ->leftJoin('sm_two_flashcards', 'sm_two_flashcards.flashcard_id', '=', 'flashcards.id')
+            ->where(fn ($q) => $q->where('sm_two_flashcards.user_id', '=', $user_id->getValue())->orWhereNull('sm_two_flashcards.user_id'))
+            ->select(
+                'flashcards.*',
+                'sm_two_flashcards.last_rating',
                 'flashcard_decks.user_id as deck_user_id',
                 'flashcard_decks.admin_id as deck_admin_id',
                 'flashcard_decks.tag as deck_tag',
@@ -143,6 +212,18 @@ class FlashcardMapper
             ->where('user_id', $user_id)
             ->whereIn('id', $flashcard_ids)
             ->delete();
+    }
+
+    public function getStoryIdForFlashcards(array $flashcard_ids): array
+    {
+        $story_ids = $this->db::table('story_flashcards')
+            ->whereIn('flashcard_id', $flashcard_ids)
+            ->selectRaw('DISTINCT story_id')
+            ->pluck('story_id');
+
+        return $story_ids->map(function ($story_id) {
+            return new StoryId($story_id);
+        })->toArray();
     }
 
     public function deleteAllForUser(UserId $user_id): void
@@ -226,6 +307,7 @@ class FlashcardMapper
             $deck,
             LanguageLevel::from($data->language_level),
             $data->emoji ? Emoji::fromUnicode($data->emoji) : null,
+            isset($data->last_rating) ? Rating::from($data->last_rating) : null,
         );
     }
 }

@@ -7,9 +7,13 @@ namespace Flashcard\Application\Services\AiGenerators;
 use Shared\Models\Emoji;
 use Flashcard\Domain\Models\Deck;
 use Flashcard\Domain\Models\Owner;
+use Flashcard\Domain\Models\Story;
 use Illuminate\Support\Facades\Log;
 use Flashcard\Domain\Models\Flashcard;
+use Shared\Utils\ValueObjects\StoryId;
+use Flashcard\Domain\Models\StoryFlashcard;
 use Flashcard\Domain\Models\FlashcardPrompt;
+use Flashcard\Domain\Models\StoryCollection;
 use Flashcard\Domain\ValueObjects\FlashcardId;
 use Shared\Integrations\Gemini\IGeminiApiClient;
 use Flashcard\Application\Exceptions\AiResponseFailedException;
@@ -21,7 +25,7 @@ class GeminiGenerator implements IFlashcardGenerator
         private IGeminiApiClient $client
     ) {}
 
-    public function generate(Owner $owner, Deck $deck, FlashcardPrompt $prompt): array
+    public function generate(Owner $owner, Deck $deck, FlashcardPrompt $prompt): StoryCollection
     {
         $response = $this->client->generateText($prompt->getPrompt());
 
@@ -39,25 +43,44 @@ class GeminiGenerator implements IFlashcardGenerator
 
         $text = $response->getGeneratedText();
 
-        $flashcards = [];
+        $stories = [];
 
         foreach ($this->parseChatResponse($text) as $row) {
-            $flashcards[] = new Flashcard(
-                new FlashcardId(0),
-                (string) $row['word'],
-                $prompt->getWordLang(),
-                (string) $row['trans'],
-                $prompt->getTranslationLang(),
-                (string) $row['sentence'],
-                (string) $row['sentence_trans'],
-                $owner,
-                $deck,
-                $deck->getDefaultLanguageLevel(),
-                array_key_exists('emoji', $row) ? new Emoji($row['emoji']) : null,
+            $story_index = $row['story_id'] ?? 0;
+
+            if (!array_key_exists($story_index, $stories)) {
+                $stories[$story_index] = [];
+            }
+
+            $stories[$story_index][] = new StoryFlashcard(
+                StoryId::noId(),
+                $story_index,
+                null,
+                new Flashcard(
+                    FlashcardId::noId(),
+                    (string) $row['word'],
+                    $prompt->getWordLang(),
+                    (string) $row['trans'],
+                    $prompt->getTranslationLang(),
+                    (string) $row['sentence'],
+                    (string) $row['sentence_trans'],
+                    $owner,
+                    $deck,
+                    $deck->getDefaultLanguageLevel(),
+                    array_key_exists('emoji', $row) ? new Emoji($row['emoji']) : null,
+                ),
             );
         }
 
-        return $flashcards;
+        $results = [];
+        foreach ($stories as $key => $flashcards) {
+            $results[$key] = new Story(
+                StoryId::noId(),
+                $flashcards
+            );
+        }
+
+        return new StoryCollection($results);
     }
 
     private function parseChatResponse(string $text): array

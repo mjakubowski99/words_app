@@ -6,7 +6,7 @@ namespace Flashcard\Application\Services;
 
 use Flashcard\Application\DTO\ResolvedDeck;
 use Flashcard\Domain\Models\FlashcardPrompt;
-use Flashcard\Domain\Services\FlashcardDuplicateService;
+use Flashcard\Application\Repository\IStoryRepository;
 use Flashcard\Application\Repository\IFlashcardRepository;
 use Flashcard\Application\Repository\IFlashcardDeckRepository;
 use Flashcard\Application\Repository\IFlashcardDuplicateRepository;
@@ -16,41 +16,37 @@ class FlashcardGeneratorService
 {
     public function __construct(
         private IFlashcardDeckRepository $deck_repository,
-        private IFlashcardRepository $repository,
+        private IFlashcardRepository $flashcard_repository,
+        private IStoryRepository $repository,
         private IFlashcardGenerator $generator,
         private IFlashcardDuplicateRepository $duplicate_repository,
-        private FlashcardDuplicateService $duplicate_service,
+        private StoryDuplicateService $story_duplicate_service,
     ) {}
 
-    public function generate(
-        ResolvedDeck $deck,
-        string $deck_name,
-        int $words_count,
-        int $words_count_to_save,
-    ): array {
+    public function generate(ResolvedDeck $deck, string $deck_name, int $words_count, int $words_count_to_save): int
+    {
         $initial_letters_to_avoid = $this->duplicate_repository->getRandomFrontWordInitialLetters($deck->getDeck()->getId(), 5);
 
-        $prompt = new FlashcardPrompt(
-            $deck_name,
-            $deck->getDeck()->getDefaultLanguageLevel(),
-            $words_count,
-            $initial_letters_to_avoid
-        );
+        $default_language_level = $deck->getDeck()->getDefaultLanguageLevel();
+
+        $prompt = new FlashcardPrompt($deck_name, $default_language_level, $words_count, $initial_letters_to_avoid);
 
         try {
-            $flashcards = $this->generator->generate($deck->getDeck()->getOwner(), $deck->getDeck(), $prompt);
+            $stories = $this->generator->generate($deck->getDeck()->getOwner(), $deck->getDeck(), $prompt);
 
             if ($words_count > $words_count_to_save) {
-                $flashcards = $this->duplicate_service->removeDuplicates($deck->getDeck(), $flashcards);
+                $stories = $this->story_duplicate_service->removeDuplicates($deck, $stories, $words_count_to_save);
+
+                if (count($stories->getPulledFlashcards()) > 0) {
+                    $this->flashcard_repository->createMany($stories->getPulledFlashcards());
+                }
             }
 
-            if (count($flashcards) > $words_count_to_save) {
-                $flashcards = array_slice($flashcards, 0, $words_count_to_save);
+            if (count($stories->get()) > 0) {
+                $this->repository->saveMany($stories);
             }
 
-            $this->repository->createMany($flashcards);
-
-            return $flashcards;
+            return $stories->getAllFlashcardsCount();
         } catch (\Throwable $exception) {
             if (!$deck->isExistingDeck()) {
                 $this->deck_repository->remove($deck->getDeck());

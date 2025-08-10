@@ -23,7 +23,7 @@ final readonly class GenerateFlashcardsHandler
             $command->getLanguageLevel(),
         );
 
-        $flashcards = $this->flashcard_generator_service->generate(
+        $flashcards_count = $this->flashcard_generator_service->generate(
             $resolved_deck,
             $command->getDeckName(),
             $flashcards_limit,
@@ -32,7 +32,7 @@ final readonly class GenerateFlashcardsHandler
 
         return new GenerateFlashcardsResult(
             $resolved_deck->getDeck()->getId(),
-            count($flashcards),
+            $flashcards_count,
             $resolved_deck->isExistingDeck()
         );
     }

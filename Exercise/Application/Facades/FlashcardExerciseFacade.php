@@ -8,7 +8,7 @@ use Shared\Enum\ExerciseType;
 use Shared\Utils\ValueObjects\UserId;
 use Shared\Exercise\IFlashcardExercise;
 use Shared\Exercise\IFlashcardExerciseFacade;
-use Shared\Flashcard\ISessionFlashcardSummary;
+use Shared\Flashcard\ISessionFlashcardSummaries;
 use Exercise\Application\Services\FlashcardExerciseFactory;
 
 class FlashcardExerciseFacade implements IFlashcardExerciseFacade
@@ -18,11 +18,10 @@ class FlashcardExerciseFacade implements IFlashcardExerciseFacade
     ) {}
 
     /**
-     * @param  ISessionFlashcardSummary[] $session_flashcard_summaries
      * @return IFlashcardExercise[]
      * */
-    public function buildExercise(array $session_flashcard_summaries, UserId $user_id, ExerciseType $type): array
+    public function buildExercise(ISessionFlashcardSummaries $summaries, UserId $user_id, ExerciseType $type): array
     {
-        return $this->exercise_factory->makeExercise($session_flashcard_summaries, $user_id, $type);
+        return $this->exercise_factory->makeExercise($summaries, $user_id, $type);
     }
 }

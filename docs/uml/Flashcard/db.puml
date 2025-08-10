@@ -1,0 +1,51 @@
+@startuml
+!define Table(name,desc) class name as "name\n<desc>" << (T,#FFAAAA) >>
+!define PK(x) <u><b>x</b></u>
+!define FK(x) <i>x</i>
+
+' Tabela Story
+entity Story {
+  PK(id): int
+  FK(user_id): int
+}
+
+' Tabela StoryParts
+entity StoryParts {
+  PK(id): int
+  FK(story_id): int
+  FK(flashcard_id): int
+  sentence: text
+}
+
+' Tabela Exercise (klasa bazowa)
+entity Exercise {
+  PK(id): int
+}
+
+' Tabela StoryExercise (dziedziczy z Exercise)
+entity StoryExercise {
+  PK(id): int
+  FK(story_id): int
+}
+
+' Tabela ExerciseEntry
+entity ExerciseEntry {
+  PK(id): int
+  FK(exercise_id): int
+  answer: text
+  user_answer: text
+}
+
+' Nowa tabela LearningSessionFlashcards
+entity LearningSessionFlashcards {
+  PK(id): int
+  FK(exercise_entry_id): int
+}
+
+' Relacje
+Story ||--o{ StoryParts : contains
+Story ||--o{ StoryExercise : generates
+Exercise <|-- StoryExercise
+ExerciseEntry *-- Exercise : belongs to
+LearningSessionFlashcards *-- ExerciseEntry : references
+@enduml

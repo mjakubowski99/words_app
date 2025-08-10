@@ -4,12 +4,10 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\Command;
 
-use Flashcard\Domain\Models\Rating;
 use Shared\Exercise\IFlashcardExerciseFacade;
-use Flashcard\Domain\ValueObjects\FlashcardId;
-use Flashcard\Application\DTO\SessionFlashcardSummary;
 use Flashcard\Application\Services\IFlashcardSelector;
 use Flashcard\Domain\Services\SessionFlashcardsService;
+use Flashcard\Application\Services\FlashcardSummaryFactory;
 use Flashcard\Application\Repository\INextSessionFlashcardsRepository;
 
 class AddSessionFlashcardsHandler
@@ -19,6 +17,7 @@ class AddSessionFlashcardsHandler
         private readonly IFlashcardSelector $selector,
         private readonly SessionFlashcardsService $service,
         private IFlashcardExerciseFacade $facade,
+        private FlashcardSummaryFactory $flashcard_summary_factory,
     ) {}
 
     public function handle(AddSessionFlashcards $command, int $display_limit = 1): void
@@ -31,69 +30,22 @@ class AddSessionFlashcardsHandler
 
         $flashcards = $this->selector->select($next_session_flashcards, $command->getLimit());
 
-        $exercise_type = $next_session_flashcards->resolveNextExerciseType();
-
-        if ($next_session_flashcards->isMixedSessionType() && $flashcards[0]->getLastUserRating() && $flashcards[0]->getLastUserRating()->value < Rating::GOOD->value) {
-            $exercise_type = null;
-        }
+        $exercise_type = $next_session_flashcards->resolveExerciseByRating($flashcards[0]->getLastUserRating());
 
         if ($exercise_type) {
-            $required_flashcards_count_for_exercise = 1;
+            $summary_factory = $this->flashcard_summary_factory->make($exercise_type);
 
-            $additional_flashcards = $this->selector->select(
-                $next_session_flashcards,
-                $required_flashcards_count_for_exercise - 1,
-                [$flashcards[0]->getId()]
-            );
+            $flashcard_summaries = $summary_factory->make($next_session_flashcards, $flashcards[0]);
 
-            $next_session_flashcards = $this->service->add($next_session_flashcards, [$flashcards[0]]);
+            $next_session_flashcards->addFlashcardsFromSummaries($flashcard_summaries);
 
-            foreach ($additional_flashcards as $additional_flashcard) {
-                $next_session_flashcards->addNextAdditional($additional_flashcard);
-            }
+            $exercise_entries = $this->facade->buildExercise($flashcard_summaries, $command->getUserId(), $exercise_type);
 
-            $all_flashcards = array_merge([$flashcards[0]], $additional_flashcards);
-
-            $exercise_entries = $this->facade->buildExercise(
-                $this->buildFlashcardSummaryObjects($all_flashcards),
-                $command->getUserId(),
-                $exercise_type
-            );
-
-            foreach ($exercise_entries as $entry) {
-                $next_session_flashcards->associateExercise(
-                    new FlashcardId($entry->getFlashcardId()),
-                    $entry->getExerciseEntryId(),
-                    $exercise_type
-                );
-            }
-
-            $this->next_session_flashcards_repository->save($next_session_flashcards);
-
-            return;
+            $next_session_flashcards->associateExerciseEntries($exercise_entries, $exercise_type);
+        } else {
+            $next_session_flashcards = $this->service->add($next_session_flashcards, $flashcards);
         }
-        $next_session_flashcards = $this->service->add($next_session_flashcards, $flashcards);
 
         $this->next_session_flashcards_repository->save($next_session_flashcards);
-    }
-
-    private function buildFlashcardSummaryObjects(array $flashcards): array
-    {
-        $flashcard_summaries = [];
-
-        foreach ($flashcards as $flashcard) {
-            $flashcard_summaries[] = new SessionFlashcardSummary(
-                $flashcard->getId()->getValue(),
-                $flashcard->getFrontWord(),
-                $flashcard->getBackWord(),
-                $flashcard->getFrontContext(),
-                $flashcard->getBackContext(),
-                $flashcard->getFrontLang(),
-                $flashcard->getBackLang(),
-                $flashcard->getEmoji(),
-            );
-        }
-
-        return $flashcard_summaries;
     }
 }

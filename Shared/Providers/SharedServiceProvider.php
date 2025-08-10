@@ -8,6 +8,8 @@ use Shared\Utils\Str\Str;
 use Shared\Utils\Str\IStr;
 use Shared\Utils\Hash\Hash;
 use Shared\Utils\Hash\IHash;
+use Shared\Utils\Cache\Cache;
+use Shared\Utils\Cache\ICache;
 use Shared\Utils\Config\Config;
 use Shared\Utils\Config\IConfig;
 use Shared\Utils\Storage\Storage;
@@ -28,5 +30,6 @@ class SharedServiceProvider extends ServiceProvider
         $this->app->bind(IStr::class, Str::class);
         $this->app->bind(IContainer::class, Container::class);
         $this->app->bind(ITransactionManager::class, LaravelTransactionManager::class);
+        $this->app->bind(ICache::class, Cache::class);
     }
 }

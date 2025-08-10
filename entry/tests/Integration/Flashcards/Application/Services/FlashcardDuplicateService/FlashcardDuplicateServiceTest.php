@@ -9,8 +9,12 @@ use App\Models\FlashcardDeck;
 use Shared\Enum\LanguageLevel;
 use Flashcard\Domain\Models\Deck;
 use Tests\Base\FlashcardTestCase;
+use Flashcard\Domain\Models\Story;
 use Flashcard\Domain\Models\Flashcard;
+use Shared\Utils\ValueObjects\StoryId;
 use Shared\Utils\ValueObjects\Language;
+use Flashcard\Domain\Models\StoryFlashcard;
+use Flashcard\Domain\Models\StoryCollection;
 use Flashcard\Domain\ValueObjects\FlashcardId;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Flashcard\Domain\Services\FlashcardDuplicateService;
@@ -47,10 +51,12 @@ class FlashcardDuplicateServiceTest extends FlashcardTestCase
         $flashcards = $this->makeFlashcards($deck, $new_words);
 
         // WHEN
-        $flashcards = $this->service->removeDuplicates($deck, $flashcards);
+        $flashcards = $this->service->removeDuplicates($deck, new StoryCollection([
+            new Story(StoryId::noId(), $flashcards),
+        ]));
 
         // THEN
-        $front_words = array_map(fn (Flashcard $flashcard) => $flashcard->getFrontWord(), $flashcards);
+        $front_words = array_map(fn (StoryFlashcard $flashcard) => $flashcard->getFlashcard()->getFrontWord(), $flashcards);
         $this->assertArraysAreTheSame($expected, $front_words);
     }
 
@@ -86,23 +92,28 @@ class FlashcardDuplicateServiceTest extends FlashcardTestCase
         $this->repository->shouldReceive('getAlreadySavedFrontWords')->andReturn($saved_words);
     }
 
-    /** @return Flashcard[] */
+    /** @return StoryFlashcard[] */
     private function makeFlashcards(Deck $deck, array $front_words): array
     {
         $flashcards = [];
         foreach ($front_words as $front_word) {
-            $flashcards[] = new Flashcard(
-                FlashcardId::noId(),
-                $front_word,
-                Language::pl(),
-                'back',
-                Language::en(),
-                'context',
-                'back context',
-                $deck->getOwner(),
-                $deck,
-                LanguageLevel::B2,
+            $flashcards[] = new StoryFlashcard(
+                StoryId::noId(),
+                1,
                 null,
+                new Flashcard(
+                    FlashcardId::noId(),
+                    $front_word,
+                    Language::pl(),
+                    'back',
+                    Language::en(),
+                    'context',
+                    'back context',
+                    $deck->getOwner(),
+                    $deck,
+                    LanguageLevel::B2,
+                    null,
+                ),
             );
         }
 

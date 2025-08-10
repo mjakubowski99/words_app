@@ -24,4 +24,10 @@ interface ISessionFlashcardSummary
     public function getBackLang(): Language;
 
     public function getEmoji(): ?Emoji;
+
+    public function getIsStoryPart(): bool;
+
+    public function getStorySentence(): ?string;
+
+    public function getOrder(): int;
 }

@@ -10,6 +10,7 @@ use Shared\Utils\ValueObjects\UserId;
 use Flashcard\Domain\ValueObjects\SessionId;
 use Flashcard\Domain\ValueObjects\FlashcardId;
 use Shared\Utils\ValueObjects\ExerciseEntryId;
+use Flashcard\Application\DTO\SessionFlashcardSummaries;
 use Flashcard\Domain\Exceptions\InvalidNextSessionFlashcards;
 use Flashcard\Domain\Exceptions\TooManySessionFlashcardsException;
 
@@ -95,9 +96,41 @@ class NextSessionFlashcards extends SessionFlashcardsBase
         return $this->current_session_flashcards_count + 1 <= $this->max_flashcards_count;
     }
 
+    public function addFlashcardsFromSummaries(SessionFlashcardSummaries $summaries): void
+    {
+        foreach ($summaries->getSummaries() as $summary) {
+            if (!$this->canAddNext()) {
+                return;
+            }
+            if ($summary->getIsAdditional()) {
+                $this->addNextAdditional($summary->getFlashcard());
+            } else {
+                $this->addNext($summary->getFlashcard());
+            }
+        }
+    }
+
+    public function associateExerciseEntries(array $entries, ExerciseType $type): void
+    {
+        foreach ($entries as $entry) {
+            $this->associateExercise(
+                new FlashcardId($entry->getFlashcardId()),
+                $entry->getExerciseEntryId(),
+                $type
+            );
+        }
+    }
+
     public function associateExercise(FlashcardId $flashcard_id, ExerciseEntryId $exercise_entry_id, ExerciseType $type): void
     {
         foreach ($this->next_session_flashcards as $flashcard) {
+            if ($flashcard_id->equals($flashcard->getFlashcardId())) {
+                $flashcard->setExercise($exercise_entry_id, $type);
+
+                return;
+            }
+        }
+        foreach ($this->additional_flashcards as $flashcard) {
             if ($flashcard_id->equals($flashcard->getFlashcardId())) {
                 $flashcard->setExercise($exercise_entry_id, $type);
 
@@ -132,6 +165,21 @@ class NextSessionFlashcards extends SessionFlashcardsBase
         return $this->type === SessionType::MIXED;
     }
 
+    public function resolveExerciseByRating(?Rating $rating): ?ExerciseType
+    {
+        $exercise_type = $this->resolveNextExerciseType();
+
+        if (
+            $this->isMixedSessionType()
+            && $rating
+            && $rating->value < Rating::GOOD->value
+        ) {
+            return null;
+        }
+
+        return $exercise_type;
+    }
+
     public function resolveNextExerciseType(): ?ExerciseType
     {
         $type = $this->type;
@@ -142,6 +190,9 @@ class NextSessionFlashcards extends SessionFlashcardsBase
 
         if ($type === SessionType::UNSCRAMBLE_WORDS) {
             return ExerciseType::UNSCRAMBLE_WORDS;
+        }
+        if ($type === SessionType::WORD_MATCH) {
+            return ExerciseType::WORD_MATCH;
         }
 
         return null;

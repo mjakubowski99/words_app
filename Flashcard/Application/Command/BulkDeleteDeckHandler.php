@@ -11,7 +11,7 @@ use Flashcard\Application\Repository\IFlashcardDeckRepository;
 class BulkDeleteDeckHandler
 {
     public function __construct(
-        private IFlashcardDeckRepository $repository
+        private IFlashcardDeckRepository $repository,
     ) {}
 
     /** @param FlashcardDeckId[] $flashcard_deck_ids */

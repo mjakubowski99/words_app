@@ -6,13 +6,12 @@ namespace Shared\Exercise;
 
 use Shared\Enum\ExerciseType;
 use Shared\Utils\ValueObjects\UserId;
-use Shared\Flashcard\ISessionFlashcardSummary;
+use Shared\Flashcard\ISessionFlashcardSummaries;
 
 interface IFlashcardExerciseFacade
 {
     /**
-     * @param  ISessionFlashcardSummary[] $session_flashcard_summaries
      * @return IFlashcardExercise[]
      */
-    public function buildExercise(array $session_flashcard_summaries, UserId $user_id, ExerciseType $type): array;
+    public function buildExercise(ISessionFlashcardSummaries $summaries, UserId $user_id, ExerciseType $type): array;
 }

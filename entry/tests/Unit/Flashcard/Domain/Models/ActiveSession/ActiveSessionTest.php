@@ -48,7 +48,7 @@ class ActiveSessionTest extends TestCase
         $session_flashcard_id = $session_flashcard->getSessionFlashcardId();
 
         // WHEN
-        $session->rateByExerciseScore($session_flashcard_id, $score);
+        $session->rateFlashcardsByExerciseScore($session_flashcard_id, $score);
 
         // THEN
         $this->assertEquals($expected_rating, $session->get($session_flashcard_id)->getRating());

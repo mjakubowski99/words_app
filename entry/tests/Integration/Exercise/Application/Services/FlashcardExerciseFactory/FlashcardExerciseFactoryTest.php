@@ -8,6 +8,7 @@ use Tests\TestCase;
 use Shared\Models\Emoji;
 use Shared\Enum\ExerciseType;
 use Shared\Flashcard\ISessionFlashcardSummary;
+use Shared\Flashcard\ISessionFlashcardSummaries;
 use Exercise\Application\Services\FlashcardExerciseFactory;
 
 class FlashcardExerciseFactoryTest extends TestCase
@@ -32,8 +33,15 @@ class FlashcardExerciseFactoryTest extends TestCase
                 'getBackWord' => 'apple',
                 'getFrontContext' => 'context',
                 'getBackContext' => 'back context',
+                'getOrder' => 1,
             ]),
         ];
+        $flashcard_summaries = \Mockery::mock(ISessionFlashcardSummaries::class)
+            ->allows([
+                'getSummaries' => $flashcard_summaries,
+                'getStoryId' => null,
+                'hasStory' => null,
+            ]);
 
         $this->factory->makeExercise($flashcard_summaries, $user_id, ExerciseType::UNSCRAMBLE_WORDS);
 
@@ -44,7 +52,7 @@ class FlashcardExerciseFactoryTest extends TestCase
             'word' => 'apple',
             'context_sentence' => 'back context',
             'word_translation' => 'jablko',
-            'emoji' => $flashcard_summaries[0]->getEmoji()->toUnicode(),
+            'emoji' => $flashcard_summaries->getSummaries()[0]->getEmoji()->toUnicode(),
         ]);
         $this->assertDatabaseHas('exercise_entries', [
             'score' => 0.0,

@@ -8,13 +8,14 @@ use Shared\Exercise\IExerciseScore;
 use Flashcard\Application\Services\IRepetitionAlgorithm;
 use Flashcard\Application\Repository\IActiveSessionRepository;
 
-class UpdateRatingsHandler
+final readonly class UpdateRatingsHandler
 {
     public function __construct(
-        private readonly IActiveSessionRepository $active_session_repository,
-        private readonly IRepetitionAlgorithm $repetition_algorithm,
+        private IActiveSessionRepository $active_session_repository,
+        private IRepetitionAlgorithm $repetition_algorithm,
     ) {}
 
+    /** @param IExerciseScore[] $exercise_scores */
     public function handle(array $exercise_scores): void
     {
         $ratings = $this->indexData($exercise_scores);
@@ -28,7 +29,7 @@ class UpdateRatingsHandler
                 if (!$session_flashcard->hasExercise()) {
                     continue;
                 }
-                $session->rateByExerciseScore(
+                $session->rateFlashcardsByExerciseScore(
                     $session_flashcard->getSessionFlashcardId(),
                     $ratings[$session_flashcard->getExerciseEntryId()]->getScore(),
                 );

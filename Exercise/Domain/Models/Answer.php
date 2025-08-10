@@ -32,6 +32,7 @@ abstract class Answer
         }
 
         return new AnswerAssessment(
+            $this->getExerciseEntryId(),
             $this->getCompareScore($answer),
             $this->toString(),
             $answer->toString(),

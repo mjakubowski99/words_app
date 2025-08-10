@@ -8,9 +8,11 @@ use Carbon\Carbon;
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\Admin;
+use App\Models\Story;
 use App\Models\Flashcard;
 use App\Models\FlashcardDeck;
 use App\Models\SmTwoFlashcard;
+use App\Models\StoryFlashcard;
 use Shared\Enum\LanguageLevel;
 use App\Models\LearningSession;
 use Flashcard\Domain\Models\Deck;
@@ -329,6 +331,10 @@ class FlashcardDeckRepositoryTest extends TestCase
         ]);
         $learning_session_flashcard = LearningSessionFlashcard::factory()->create([
             'flashcard_id' => $flashcard->id,
+        ]);
+        StoryFlashcard::factory()->create([
+            'flashcard_id' => $flashcard->id,
+            'story_id' => Story::factory()->create()->id,
         ]);
 
         // WHEN
