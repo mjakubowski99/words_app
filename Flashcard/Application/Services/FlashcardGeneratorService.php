@@ -37,6 +37,8 @@ class FlashcardGeneratorService
             if ($words_count > $words_count_to_save) {
                 $stories = $this->story_duplicate_service->removeDuplicates($deck, $stories, $words_count_to_save);
 
+                $stories->pullStoriesWithOnlyOneSentence();
+
                 if (count($stories->getPulledFlashcards()) > 0) {
                     $this->flashcard_repository->createMany($stories->getPulledFlashcards());
                 }
