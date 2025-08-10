@@ -130,6 +130,7 @@ use Flashcard\Application\ReadModels\SessionFlashcardsRead;
                                     propertyName: 'exercise_type',
                                     mapping: [
                                         ExerciseType::UNSCRAMBLE_WORDS->value => '#/components/schemas/UnscrambleWordExerciseResource',
+                                        ExerciseType::WORD_MATCH->value => '#/components/schemas/WordMatchExerciseResource',
                                     ]
                                 )
                             ),
