@@ -33,4 +33,9 @@ class WordMatchAnswer extends Answer
 
         return 0.0;
     }
+
+    protected function getHintsScore(Answer $answer): float
+    {
+        return 0.0;
+    }
 }

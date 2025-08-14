@@ -84,7 +84,7 @@ class ExerciseEntry
 
     private function recalculateScoreBasedOnAssessment(AnswerAssessment $assessment): void
     {
-        $score = $this->score + $assessment->getScore();
+        $score = $this->score + $assessment->getRealScore();
         $this->score = $score / $this->answers_count;
     }
 }

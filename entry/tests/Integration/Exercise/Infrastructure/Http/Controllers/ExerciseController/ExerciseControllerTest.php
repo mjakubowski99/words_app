@@ -21,16 +21,26 @@ class ExerciseControllerTest extends TestCase
         // GIVEN
         $user = $this->createUser();
         $exercise = Exercise::factory()->create(['user_id' => $user->id]);
-        $u_exercise = UnscrambleWordExercise::factory()->create(['exercise_id' => $exercise->id]);
+        $u_exercise = UnscrambleWordExercise::factory()->create([
+            'exercise_id' => $exercise->id,
+            'word' => 'applepie',
+        ]);
         $entry = ExerciseEntry::factory()->create(['exercise_id' => $exercise->id]);
 
         // WHEN
         $response = $this->actingAs($user)->putJson(route('v2.exercises.unscramble-words.answer', [
             'exercise_entry_id' => $entry->id,
-        ]), ['answer' => $u_exercise->word]);
+        ]), [
+            'answer' => $u_exercise->word,
+            'hints_count' => 2,
+        ]);
 
         // THEN
         $response->assertStatus(204);
+        $this->assertDatabaseHas('exercise_entries', [
+            'id' => $entry->id,
+            'score' => 75.0,
+        ]);
     }
 
     public function test__answerUnscrambleWordExercise_WhenExerciseExistsAndInvalidAnswer_success(): void
@@ -47,7 +57,9 @@ class ExerciseControllerTest extends TestCase
         // WHEN
         $response = $this->actingAs($user)->putJson(route('v2.exercises.unscramble-words.answer', [
             'exercise_entry_id' => $entry->id,
-        ]), ['answer' => 'tralalal']);
+        ]), [
+            'answer' => 'tralalal',
+        ]);
 
         // THEN
         $response->assertStatus(400);
