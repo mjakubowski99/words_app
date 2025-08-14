@@ -27,7 +27,7 @@ class ExerciseTest extends TestCase
         // GIVEN
         $entry_id = new ExerciseEntryId(1);
         $answer_assessment = \Mockery::mock(AnswerAssessment::class)->allows([
-            'getScore' => 0.5,
+            'getRealScore' => 0.5,
             'isCorrect' => false,
         ]);
         $answer = \Mockery::mock(Answer::class)->allows([
@@ -68,7 +68,7 @@ class ExerciseTest extends TestCase
 
         // THEN
         $this->assertSame($answer_assessment->isCorrect(), $result->isCorrect());
-        $this->assertSame($answer_assessment->getScore(), $result->getScore());
+        $this->assertSame($answer_assessment->getRealScore(), $result->getRealScore());
     }
 
     public function test__getUpdatedEntries_returnOnlyEntriesWithUpdatedStatusSetToTrue(): void

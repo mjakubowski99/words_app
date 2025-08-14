@@ -38,7 +38,7 @@ class UnscrambleWordAnswerTest extends TestCase
 
         // THEN
         $this->assertTrue($assessment->isCorrect());
-        $this->assertSame(100.0, $assessment->getScore());
+        $this->assertSame(100.0, $assessment->getRealScore());
     }
 
     public function test__compare_WhenExerciseEntryIdMismatch_fail(): void

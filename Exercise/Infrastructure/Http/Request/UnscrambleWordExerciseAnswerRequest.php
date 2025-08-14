@@ -20,6 +20,11 @@ use Exercise\Domain\Models\UnscrambleWordAnswer;
             type: 'string',
             maxLength: 255
         ),
+        new OAT\Property(
+            property: 'hints_count',
+            description: 'The number of hints used for the unscramble word exercise.',
+            type: 'integer'
+        ),
     ],
     type: 'object'
 )]
@@ -29,6 +34,7 @@ class UnscrambleWordExerciseAnswerRequest extends Request
     {
         return [
             'answer' => ['required', 'string', 'max:255'],
+            'hints_count' => ['nullable', 'integer', 'min:0'],
         ];
     }
 
@@ -39,6 +45,10 @@ class UnscrambleWordExerciseAnswerRequest extends Request
 
     public function getAnswer(): UnscrambleWordAnswer
     {
-        return new UnscrambleWordAnswer($this->getExerciseEntryId(), $this->input('answer'));
+        return UnscrambleWordAnswer::fromStringWithHints(
+            $this->getExerciseEntryId(),
+            $this->input('answer'),
+            (int) $this->input('hints_count', 0)
+        );
     }
 }

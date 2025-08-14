@@ -11,6 +11,7 @@ class AnswerAssessment
     public function __construct(
         private ExerciseEntryId $exercise_entry_id,
         private float $score,
+        private float $hints_score,
         private string $correct_answer,
         private string $user_answer,
     ) {}
@@ -25,9 +26,9 @@ class AnswerAssessment
         return $this->score >= 100;
     }
 
-    public function getScore(): float
+    public function getRealScore(): float
     {
-        return $this->score;
+        return $this->score > $this->hints_score ? $this->score - $this->hints_score : 0.0;
     }
 
     public function getUserAnswer(): string

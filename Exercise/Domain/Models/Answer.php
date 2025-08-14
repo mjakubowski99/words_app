@@ -34,6 +34,7 @@ abstract class Answer
         return new AnswerAssessment(
             $this->getExerciseEntryId(),
             $this->getCompareScore($answer),
+            $this->getHintsScore($answer),
             $this->toString(),
             $answer->toString(),
         );
@@ -42,4 +43,6 @@ abstract class Answer
     abstract public function toString(): string;
 
     abstract protected function getCompareScore(Answer $answer): float;
+
+    abstract protected function getHintsScore(Answer $answer): float;
 }
