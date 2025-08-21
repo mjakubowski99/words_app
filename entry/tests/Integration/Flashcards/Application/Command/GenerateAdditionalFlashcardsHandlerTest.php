@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Integration\Flashcards\Application\Command;
+namespace Tests\Integration\Flashcards\Application\Command;
 
 use App\Models\User;
 use App\Models\Flashcard;

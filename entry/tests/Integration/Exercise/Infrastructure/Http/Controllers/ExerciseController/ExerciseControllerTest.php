@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Integration\Exercise\Infrastructure\Http\Controllers\ExerciseController;
+namespace Tests\Integration\Exercise\Infrastructure\Http\Controllers\ExerciseController;
 
 use Tests\TestCase;
 use App\Models\Exercise;

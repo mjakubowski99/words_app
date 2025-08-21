@@ -55,7 +55,7 @@ class UnscrambleWordExerciseAssessmentResource extends JsonResource
 {
     public function toArray($request): array
     {
-        $correct_answer = mb_str_split(trim($this->resource->getCorrectAnswer()));
+        $correct_answer = mb_str_split(mb_trim($this->resource->getCorrectAnswer()));
 
         $i = -1;
 
@@ -67,7 +67,7 @@ class UnscrambleWordExerciseAssessmentResource extends JsonResource
                     'character' => $character,
                     'correct' => ($correct_answer[$i] ?? null) === $character,
                 ];
-            }, mb_str_split(trim($this->resource->getUserAnswer()))),
+            }, mb_str_split(mb_trim($this->resource->getUserAnswer()))),
             'user_answer' => $this->resource->getUserAnswer(),
             'correct_answer' => $this->resource->getCorrectAnswer(),
         ];

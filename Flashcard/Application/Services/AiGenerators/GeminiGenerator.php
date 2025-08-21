@@ -99,7 +99,7 @@ class GeminiGenerator implements IFlashcardGenerator
         }
 
         $json = $matches[1];
-        $json = trim($json);
+        $json = mb_trim($json);
         $rows = json_decode($json, true);
 
         if (!$rows) {

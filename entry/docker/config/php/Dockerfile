@@ -1,4 +1,4 @@
-FROM php:8.3-fpm
+FROM php:8.4-fpm
 
 #Args defined in docker-compose.yml
 ARG USER
@@ -38,7 +38,7 @@ RUN apt-get update && apt-get install -y \
     gnupg
 
 # Get latest Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+COPY --from=composer:2.8 /usr/bin/composer /usr/bin/composer
 
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
@@ -59,7 +59,7 @@ RUN docker-php-ext-install \
     zip
 
 # Install XDebug
-RUN pecl install xdebug-3.3.0  && docker-php-ext-enable xdebug
+RUN pecl install xdebug-3.4.0  && docker-php-ext-enable xdebug
 
 COPY xdebug.ini /usr/local/etc/php/conf.d/xdebug-dev.ini
 
