@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Smoke\Flashcard\Infrastructure\Http\v1;
+namespace Tests\Smoke\Flashcard\Infrastructure\Http\v1;
 
 use Tests\Traits\GeminiApiFaker;
 use Tests\Base\FlashcardTestCase;

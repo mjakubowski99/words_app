@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Integration\Flashcards\Application\Services\FlashcardDuplicateService;
+namespace Tests\Integration\Flashcards\Application\Services\FlashcardDuplicateService;
 
 use Shared\Enum\LanguageLevel;
 use Flashcard\Domain\Models\Flashcard;

@@ -183,11 +183,11 @@ class DependencySearcher
             foreach ($parts as $part) {
                 if (mb_strpos($part, ' as ') !== false) {
                     list($class, $alias) = explode(' as ', $part);
-                    $class = trim($class);
-                    $alias = trim($alias);
+                    $class = mb_trim($class);
+                    $alias = mb_trim($alias);
                     $shortName = $alias;
                 } else {
-                    $class = trim($part);
+                    $class = mb_trim($part);
                     $segments = explode('\\', $class);
                     $shortName = end($segments);
                 }
@@ -219,7 +219,7 @@ class DependencySearcher
                 foreach ($matches[1] as $match) {
                     $types = preg_split('/[\|&]/', str_replace(['?', '[', ']'], '', $match));
                     foreach ($types as $type) {
-                        $type = trim($type);
+                        $type = mb_trim($type);
                         if (empty($type) || in_array(mb_strtolower($type), ['string', 'int', 'bool', 'float', 'array', 'object', 'null', 'mixed', 'void', 'callable', 'iterable', 'self', 'parent', 'static'])) {
                             continue;
                         }
@@ -246,7 +246,7 @@ class DependencySearcher
         if (!empty($implementsMatch[1])) {
             $interfaces = array_map('trim', explode(',', $implementsMatch[1]));
             foreach ($interfaces as $interface) {
-                $interface = trim($interface);
+                $interface = mb_trim($interface);
                 $fullyQualifiedInterface = $this->resolveFullyQualifiedName($interface, $importMap, $targetNamespace);
 
                 if ($this->validateAndAddClass($fullyQualifiedInterface, $dependencies, $targetNamespace)) {
@@ -269,7 +269,7 @@ class DependencySearcher
     {
         // If class name is already fully qualified (starts with \)
         if (mb_strpos($className, '\\') === 0) {
-            return ltrim($className, '\\');
+            return mb_ltrim($className, '\\');
         }
 
         // If class name contains namespace separators
@@ -300,7 +300,7 @@ class DependencySearcher
         if (mb_strpos($class, '\\') !== 0 && mb_strpos($class, '\\') === false && !empty($currentNamespace)) {
             $class = $currentNamespace . '\\' . $class;
         } else {
-            $class = ltrim($class, '\\');
+            $class = mb_ltrim($class, '\\');
         }
 
         try {
@@ -335,7 +335,7 @@ class DependencySearcher
         // Normalize ignored directories to absolute paths
         $normalizedIgnoredDirs = [];
         foreach ($ignoredDirs as $dir) {
-            $normalizedIgnoredDirs[] = rtrim(realpath($dir), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+            $normalizedIgnoredDirs[] = mb_rtrim(realpath($dir), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
         }
 
         // Process each directory

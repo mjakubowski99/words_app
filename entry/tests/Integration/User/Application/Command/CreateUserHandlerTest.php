@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Integration\User\Application\Command;
+namespace Tests\Integration\User\Application\Command;
 
 use Tests\TestCase;
 use App\Models\User;

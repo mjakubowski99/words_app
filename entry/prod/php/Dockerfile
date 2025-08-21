@@ -1,4 +1,4 @@
-FROM php:8.3-fpm
+FROM php:8.4-fpm
 
 ARG USER
 ARG GID
@@ -57,7 +57,7 @@ RUN docker-php-ext-install opcache;
 COPY entry/prod/php/memory-limit-php.ini /usr/local/etc/php/conf.d/memory-limit-php.ini
 COPY entry/prod/php/opcache.ini /usr/local/etc/php/conf.d/opcache.ini
 
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+COPY --from=composer:2.8 /usr/bin/composer /usr/bin/composer
 
 RUN chown -R $USER:$USER /usr/bin/composer
 
