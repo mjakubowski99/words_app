@@ -87,7 +87,7 @@ class UnscrambleWordExerciseResource extends JsonResource
             'back_word' => $this->resource->getBackWord(),
             'emoji' => $this->resource->getEmoji(),
             'keyboard' => $this->resource->getKeyboard(),
-            'index_keyboard' => array_map(function(string $character) use (&$i) {
+            'index_keyboard' => array_map(function (string $character) use (&$i) {
                 return ['c' => $character, 'i' => $i++];
             }, $this->resource->getKeyboard()),
         ];
