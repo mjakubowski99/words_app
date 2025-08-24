@@ -56,7 +56,7 @@ use Shared\Exercise\Exercises\IUnscrambleWordExerciseRead;
             example: ['o', 'l', 's', 'p', 'k', 'a']
         ),
         new OAT\Property(
-            property: 'index_keyboard',
+            property: 'indexed_keyboard',
             description: 'Indexed keyboard characters which should be used to match the word',
             type: 'array',
             items: new OAT\Items(type: 'string'),
@@ -87,7 +87,7 @@ class UnscrambleWordExerciseResource extends JsonResource
             'back_word' => $this->resource->getBackWord(),
             'emoji' => $this->resource->getEmoji(),
             'keyboard' => $this->resource->getKeyboard(),
-            'index_keyboard' => array_map(function (string $character) use (&$i) {
+            'indexed_keyboard' => array_map(function (string $character) use (&$i) {
                 return ['c' => $character, 'i' => $i++];
             }, $this->resource->getKeyboard()),
         ];
