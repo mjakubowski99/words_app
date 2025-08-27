@@ -1,143 +1,106 @@
 <?php
 
 declare(strict_types=1);
-
-namespace Tests\Smoke\User\Infrastructure\Http\Controllers\UserController\v2;
-
-use Tests\TestCase;
 use App\Models\Flashcard;
 use Shared\Enum\ReportType;
 use Shared\Enum\ReportableType;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
-class UserControllerTest extends TestCase
-{
-    use DatabaseTransactions;
+uses(DatabaseTransactions::class);
 
-    /**
-     * @test
-     */
-    public function delete_WhenUserAuthenticatedAndValidEmail_success(): void
-    {
-        // GIVEN
-        $email = 'email@email.com';
-        $user = $this->createUser([
+test('delete when user authenticated and valid email success', function () {
+    // GIVEN
+    $email = 'email@email.com';
+    $user = $this->createUser([
+        'email' => $email,
+    ]);
+
+    // WHEN
+    $response = $this->actingAs($user)
+        ->deleteJson(route('user.me.delete'), [
             'email' => $email,
         ]);
 
-        // WHEN
-        $response = $this->actingAs($user)
-            ->deleteJson(route('user.me.delete'), [
-                'email' => $email,
-            ]);
+    // THEN
+    $response->assertStatus(204);
+});
+test('delete when user authenticated and invalid email fail', function () {
+    // GIVEN
+    $email = 'email@email.com';
+    $user = $this->createUser([
+        'email' => $email,
+    ]);
 
-        // THEN
-        $response->assertStatus(204);
-    }
-
-    /**
-     * @test
-     */
-    public function delete_WhenUserAuthenticatedAndInvalidEmail_fail(): void
-    {
-        // GIVEN
-        $email = 'email@email.com';
-        $user = $this->createUser([
-            'email' => $email,
+    // WHEN
+    $response = $this->actingAs($user)
+        ->deleteJson(route('user.me.delete'), [
+            'email' => 'other@email.com',
         ]);
 
-        // WHEN
-        $response = $this->actingAs($user)
-            ->deleteJson(route('user.me.delete'), [
-                'email' => 'other@email.com',
-            ]);
+    // THEN
+    $response->assertStatus(400);
+});
+test('delete when user not authenticated unauthenticated', function () {
+    // GIVEN
+    // WHEN
+    $response = $this->deleteJson(route('user.me.delete'));
 
-        // THEN
-        $response->assertStatus(400);
-    }
+    // THEN
+    $response->assertStatus(401);
+});
+test('store report when user not authenticated success', function () {
+    // GIVEN
+    $email = 'email@email.com';
+    $user = $this->createUser([
+        'email' => $email,
+    ]);
 
-    /**
-     * @test
-     */
-    public function delete_WhenUserNotAuthenticated_unauthenticated()
-    {
-        // GIVEN
-
-        // WHEN
-        $response = $this->deleteJson(route('user.me.delete'));
-
-        // THEN
-        $response->assertStatus(401);
-    }
-
-    /**
-     * @test
-     */
-    public function storeReport_WhenUserNotAuthenticated_success(): void
-    {
-        // GIVEN
-        $email = 'email@email.com';
-        $user = $this->createUser([
+    // WHEN
+    $response = $this
+        ->postJson(route('reports.store'), [
             'email' => $email,
+            'type' => ReportType::DELETE_ACCOUNT,
+            'description' => 'Desc 5',
         ]);
 
-        // WHEN
-        $response = $this
-            ->postJson(route('reports.store'), [
-                'email' => $email,
-                'type' => ReportType::DELETE_ACCOUNT,
-                'description' => 'Desc 5',
-            ]);
+    // THEN
+    $response->assertStatus(204);
+});
+test('store report when user authenticated success', function () {
+    // GIVEN
+    $email = 'email@email.com';
+    $user = $this->createUser([
+        'email' => $email,
+    ]);
+    $flashcard = Flashcard::factory()->create();
 
-        // THEN
-        $response->assertStatus(204);
-    }
-
-    /**
-     * @test
-     */
-    public function storeReport_WhenUserAuthenticated_success(): void
-    {
-        // GIVEN
-        $email = 'email@email.com';
-        $user = $this->createUser([
-            'email' => $email,
-        ]);
-        $flashcard = Flashcard::factory()->create();
-
-        // WHEN
-        $response = $this->actingAs($user)
-            ->postJson(route('reports.store'), [
-                'type' => ReportType::INAPPROPRIATE_CONTENT,
-                'description' => 'Inappropriate content',
-                'reportable_id' => $flashcard->id,
-                'reportable_type' => ReportableType::FLASHCARD,
-            ]);
-
-        // THEN
-        $response->assertStatus(204);
-    }
-
-    /**
-     * @test
-     */
-    public function storeReport_WhenDescriptionTooShort_validationError(): void
-    {
-        // GIVEN
-        $email = 'email@email.com';
-        $user = $this->createUser([
-            'email' => $email,
+    // WHEN
+    $response = $this->actingAs($user)
+        ->postJson(route('reports.store'), [
+            'type' => ReportType::INAPPROPRIATE_CONTENT,
+            'description' => 'Inappropriate content',
+            'reportable_id' => $flashcard->id,
+            'reportable_type' => ReportableType::FLASHCARD,
         ]);
 
-        // WHEN
-        $response = $this
-            ->postJson(route('reports.store'), [
-                'email' => $email,
-                'type' => ReportType::DELETE_ACCOUNT,
-                'description' => 'd',
-            ]);
+    // THEN
+    $response->assertStatus(204);
+});
+test('store report when description too short validation error', function () {
+    // GIVEN
+    $email = 'email@email.com';
+    $user = $this->createUser([
+        'email' => $email,
+    ]);
 
-        // THEN
-        $response->assertStatus(422);
-    }
-}
+    // WHEN
+    $response = $this
+        ->postJson(route('reports.store'), [
+            'email' => $email,
+            'type' => ReportType::DELETE_ACCOUNT,
+            'description' => 'd',
+        ]);
+
+    // THEN
+    $response->assertStatus(422);
+});

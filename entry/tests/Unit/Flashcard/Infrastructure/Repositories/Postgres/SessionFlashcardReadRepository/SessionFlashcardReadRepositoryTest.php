@@ -1,10 +1,6 @@
 <?php
 
 declare(strict_types=1);
-
-namespace Tests\Unit\Flashcard\Infrastructure\Repositories\Postgres\SessionFlashcardReadRepository;
-
-use Tests\TestCase;
 use App\Models\Admin;
 use App\Models\Flashcard;
 use App\Models\LearningSession;
@@ -14,85 +10,72 @@ use App\Models\LearningSessionFlashcard;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Flashcard\Infrastructure\Repositories\Postgres\SessionFlashcardReadRepository;
 
-class SessionFlashcardReadRepositoryTest extends TestCase
-{
-    use DatabaseTransactions;
+uses(DatabaseTransactions::class);
 
-    private SessionFlashcardReadRepository $repository;
+beforeEach(function () {
+    $this->repository = $this->app->make(SessionFlashcardReadRepository::class);
+});
+test('find unrated by id should return only unrated flashcards', function () {
+    // GIVEN
+    $session = LearningSession::factory()->create();
+    LearningSessionFlashcard::factory()->create([
+        'learning_session_id' => $session->id,
+        'rating' => Rating::GOOD->value,
+    ]);
+    $expected = LearningSessionFlashcard::factory()->create([
+        'learning_session_id' => $session->id,
+        'rating' => null,
+    ]);
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->repository = $this->app->make(SessionFlashcardReadRepository::class);
-    }
+    // WHEN
+    $result = $this->repository->findUnratedById($session->getId(), 5);
+    $session_flashcards = $result->getSessionFlashcards();
 
-    public function test__findUnratedById_ShouldReturnOnlyUnratedFlashcards(): void
-    {
-        // GIVEN
-        $session = LearningSession::factory()->create();
-        LearningSessionFlashcard::factory()->create([
-            'learning_session_id' => $session->id,
-            'rating' => Rating::GOOD->value,
-        ]);
-        $expected = LearningSessionFlashcard::factory()->create([
-            'learning_session_id' => $session->id,
-            'rating' => null,
-        ]);
+    // THEN
+    expect($result->getSessionFlashcards())->toHaveCount(1);
+    expect($session_flashcards[0]->getId()->getValue())->toBe($expected->id);
+    expect($session_flashcards[0]->getFrontWord())->toBe($expected->flashcard->front_word);
+    expect($session_flashcards[0]->getFrontLang()->getValue())->toBe($expected->flashcard->front_lang);
+    expect($session_flashcards[0]->getBackLang()->getValue())->toBe($expected->flashcard->back_lang);
+    expect($session_flashcards[0]->getBackWord())->toBe($expected->flashcard->back_word);
+    expect($session_flashcards[0]->getFrontContext())->toBe($expected->flashcard->front_context);
+    expect($session_flashcards[0]->getBackContext())->toBe($expected->flashcard->back_context);
+    expect($session_flashcards[0]->getLanguageLevel()->value)->toBe($expected->flashcard->language_level);
+    expect($session_flashcards[0]->getEmoji()->toUnicode())->toBe($expected->flashcard->emoji);
+    expect($session_flashcards[0]->getOwnerType())->toBe(FlashcardOwnerType::USER);
+});
+test('find unrated by id when no unrated flashcard correct exercise mode', function () {
+    // GIVEN
+    $session = LearningSession::factory()->create();
+    LearningSessionFlashcard::factory()->create([
+        'learning_session_id' => $session->id,
+        'rating' => Rating::GOOD->value,
+        'exercise_entry_id' => 1,
+    ]);
 
-        // WHEN
-        $result = $this->repository->findUnratedById($session->getId(), 5);
-        $session_flashcards = $result->getSessionFlashcards();
+    // WHEN
+    $result = $this->repository->findUnratedById($session->getId(), 5);
 
-        // THEN
-        $this->assertCount(1, $result->getSessionFlashcards());
-        $this->assertSame($expected->id, $session_flashcards[0]->getId()->getValue());
-        $this->assertSame($expected->flashcard->front_word, $session_flashcards[0]->getFrontWord());
-        $this->assertSame($expected->flashcard->front_lang, $session_flashcards[0]->getFrontLang()->getValue());
-        $this->assertSame($expected->flashcard->back_lang, $session_flashcards[0]->getBackLang()->getValue());
-        $this->assertSame($expected->flashcard->back_word, $session_flashcards[0]->getBackWord());
-        $this->assertSame($expected->flashcard->front_context, $session_flashcards[0]->getFrontContext());
-        $this->assertSame($expected->flashcard->back_context, $session_flashcards[0]->getBackContext());
-        $this->assertSame($expected->flashcard->language_level, $session_flashcards[0]->getLanguageLevel()->value);
-        $this->assertSame($expected->flashcard->emoji, $session_flashcards[0]->getEmoji()->toUnicode());
-        $this->assertSame(FlashcardOwnerType::USER, $session_flashcards[0]->getOwnerType());
-    }
+    // THEN
+    expect($result->getSessionFlashcards())->toHaveCount(0);
+    expect($result->getExerciseSummaries())->toHaveCount(0);
+    expect($result->isExerciseMode())->toBeTrue();
+});
+test('find unrated by id admin is owner', function () {
+    // GIVEN
+    $session = LearningSession::factory()->create();
+    $flashcard = Flashcard::factory()->byAdmin(Admin::factory()->create())->create();
+    LearningSessionFlashcard::factory()->create([
+        'learning_session_id' => $session->id,
+        'flashcard_id' => $flashcard->id,
+        'rating' => null,
+    ]);
 
-    public function test__findUnratedById_WhenNoUnratedFlashcard_correctExerciseMode(): void
-    {
-        // GIVEN
-        $session = LearningSession::factory()->create();
-        LearningSessionFlashcard::factory()->create([
-            'learning_session_id' => $session->id,
-            'rating' => Rating::GOOD->value,
-            'exercise_entry_id' => 1,
-        ]);
+    // WHEN
+    $result = $this->repository->findUnratedById($session->getId(), 5);
+    $session_flashcards = $result->getSessionFlashcards();
 
-        // WHEN
-        $result = $this->repository->findUnratedById($session->getId(), 5);
-
-        // THEN
-        $this->assertCount(0, $result->getSessionFlashcards());
-        $this->assertCount(0, $result->getExerciseSummaries());
-        $this->assertTrue($result->isExerciseMode());
-    }
-
-    public function test__findUnratedById_AdminIsOwner(): void
-    {
-        // GIVEN
-        $session = LearningSession::factory()->create();
-        $flashcard = Flashcard::factory()->byAdmin(Admin::factory()->create())->create();
-        LearningSessionFlashcard::factory()->create([
-            'learning_session_id' => $session->id,
-            'flashcard_id' => $flashcard->id,
-            'rating' => null,
-        ]);
-
-        // WHEN
-        $result = $this->repository->findUnratedById($session->getId(), 5);
-        $session_flashcards = $result->getSessionFlashcards();
-
-        // THEN
-        $this->assertCount(1, $result->getSessionFlashcards());
-        $this->assertSame(FlashcardOwnerType::ADMIN, $session_flashcards[0]->getOwnerType());
-    }
-}
+    // THEN
+    expect($result->getSessionFlashcards())->toHaveCount(1);
+    expect($session_flashcards[0]->getOwnerType())->toBe(FlashcardOwnerType::ADMIN);
+});

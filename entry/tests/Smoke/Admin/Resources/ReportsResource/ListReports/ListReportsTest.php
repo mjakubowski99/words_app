@@ -1,26 +1,18 @@
 <?php
 
 declare(strict_types=1);
-
-namespace Tests\Smoke\Admin\Resources\ReportsResource\ListReports;
-
-use Tests\TestCase;
 use App\Models\Report;
 use Livewire\Livewire;
-use Admin\Resources\ReportResource;
+use Admin\Resources\ReportResource\Pages\ListReports;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
-class ListReportsTest extends TestCase
-{
-    use DatabaseTransactions;
+uses(DatabaseTransactions::class);
 
-    public function test__success(): void
-    {
-        // GIVEN
-        $reports = [Report::factory()->create(), Report::factory()->create()];
+test('success', function () {
+    // GIVEN
+    $reports = [Report::factory()->create(), Report::factory()->create()];
 
-        // WHEN
-        Livewire::test(ReportResource\Pages\ListReports::class)
-            ->assertCanSeeTableRecords($reports);
-    }
-}
+    // WHEN
+    Livewire::test(ListReports::class)
+        ->assertCanSeeTableRecords($reports);
+});

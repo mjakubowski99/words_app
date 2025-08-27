@@ -2,33 +2,21 @@
 
 declare(strict_types=1);
 
-namespace Tests\Integration\Flashcards\Application\Command;
-
 use App\Models\User;
 use App\Models\Flashcard;
 use App\Models\FlashcardDeck;
 use Tests\Base\FlashcardTestCase;
 use Illuminate\Support\Facades\Http;
-use Integrations\Gemini\GeminiApiClient;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Flashcard\Application\Command\RegenerateAdditionalFlashcardsHandler;
 
-class GenerateAdditionalFlashcardsHandlerTest extends FlashcardTestCase
-{
-    use DatabaseTransactions;
+uses(FlashcardTestCase::class);
+uses(DatabaseTransactions::class);
 
-    private RegenerateAdditionalFlashcardsHandler $handler;
-
-    private GeminiApiClient $client;
-
-    private string $response;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        Flashcard::query()->forceDelete();
-        Http::preventStrayRequests();
-        $this->response = '{
+beforeEach(function () {
+    Flashcard::query()->forceDelete();
+    Http::preventStrayRequests();
+    $this->response = '{
                "candidates":[
                   {
                      "content":{
@@ -67,61 +55,56 @@ class GenerateAdditionalFlashcardsHandlerTest extends FlashcardTestCase
                   "totalTokenCount":842
                }
             }';
-        $this->handler = $this->app->make(RegenerateAdditionalFlashcardsHandler::class);
-    }
+    $this->handler = $this->app->make(RegenerateAdditionalFlashcardsHandler::class);
+});
+test('handle should generate flashcards', function () {
+    // GIVEN
+    Http::fake([
+        '*' => Http::response(json_decode($this->response, true)),
+    ]);
+    $user = User::factory()->create();
+    $deck = FlashcardDeck::factory()->create([
+        'user_id' => $user->id,
+    ]);
 
-    public function test__handle_ShouldGenerateFlashcards(): void
-    {
-        // GIVEN
-        Http::fake([
-            '*' => Http::response(json_decode($this->response, true)),
-        ]);
-        $user = User::factory()->create();
-        $deck = FlashcardDeck::factory()->create([
-            'user_id' => $user->id,
-        ]);
+    // WHEN
+    $this->handler->handle($user->toOwner(), $deck->getId(), 3, 3);
 
-        // WHEN
-        $this->handler->handle($user->toOwner(), $deck->getId(), 3, 3);
+    // THEN
+    $this->assertDatabaseHas('flashcards', [
+        'flashcard_deck_id' => $deck->getId(),
+    ]);
+});
+test('handle should eliminate duplicates', function () {
+    // GIVEN
+    Flashcard::query()->forceDelete();
+    Http::fake([
+        '*' => Http::response(json_decode($this->response, true)),
+    ]);
+    $user = $this->createUser();
+    $deck = FlashcardDeck::factory()->byUser($user)->create();
+    $flashcard = Flashcard::factory()->byUser($user)->create([
+        'flashcard_deck_id' => $deck->id,
+        'front_word' => 'Gatunek',
+    ]);
 
-        // THEN
-        $this->assertDatabaseHas('flashcards', [
-            'flashcard_deck_id' => $deck->getId(),
-        ]);
-    }
+    // WHEN
+    $this->handler->handle($user->toOwner(), $deck->getId(), 4, 2);
 
-    public function test__handle_ShouldEliminateDuplicates(): void
-    {
-        // GIVEN
-        Flashcard::query()->forceDelete();
-        Http::fake([
-            '*' => Http::response(json_decode($this->response, true)),
-        ]);
-        $user = $this->createUser();
-        $deck = FlashcardDeck::factory()->byUser($user)->create();
-        $flashcard = Flashcard::factory()->byUser($user)->create([
-            'flashcard_deck_id' => $deck->id,
-            'front_word' => 'Gatunek',
-        ]);
+    // THEN
+    $this->assertDatabaseHas('flashcards', [
+        'flashcard_deck_id' => $deck->getId(),
+    ]);
 
-        // WHEN
-        $this->handler->handle($user->toOwner(), $deck->getId(), 4, 2);
+    $flashcard_not_duplicated = Flashcard::query()
+        ->where('flashcard_deck_id', $deck->id)
+        ->whereRaw('LOWER(front_word) = ?', ['gatunek'])
+        ->count();
 
-        // THEN
-        $this->assertDatabaseHas('flashcards', [
-            'flashcard_deck_id' => $deck->getId(),
-        ]);
+    $flashcard_count = Flashcard::query()
+        ->where('flashcard_deck_id', $deck->id)
+        ->count();
 
-        $flashcard_not_duplicated = Flashcard::query()
-            ->where('flashcard_deck_id', $deck->id)
-            ->whereRaw('LOWER(front_word) = ?', ['gatunek'])
-            ->count();
-
-        $flashcard_count = Flashcard::query()
-            ->where('flashcard_deck_id', $deck->id)
-            ->count();
-
-        $this->assertSame(1, $flashcard_not_duplicated);
-        $this->assertSame(3, $flashcard_count);
-    }
-}
+    expect($flashcard_not_duplicated)->toBe(1);
+    expect($flashcard_count)->toBe(3);
+});

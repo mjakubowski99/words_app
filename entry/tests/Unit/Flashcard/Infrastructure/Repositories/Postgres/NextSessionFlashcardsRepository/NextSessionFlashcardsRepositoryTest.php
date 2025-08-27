@@ -1,10 +1,6 @@
 <?php
 
 declare(strict_types=1);
-
-namespace Tests\Unit\Flashcard\Infrastructure\Repositories\Postgres\NextSessionFlashcardsRepository;
-
-use Tests\TestCase;
 use App\Models\Admin;
 use App\Models\Flashcard;
 use Shared\Enum\SessionType;
@@ -16,180 +12,159 @@ use Flashcard\Domain\Models\NextSessionFlashcards;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Flashcard\Infrastructure\Repositories\Postgres\NextSessionFlashcardsRepository;
 
-class NextSessionFlashcardsRepositoryTest extends TestCase
-{
-    use DatabaseTransactions;
+uses(DatabaseTransactions::class);
 
-    private NextSessionFlashcardsRepository $repository;
+beforeEach(function () {
+    $this->repository = $this->app->make(NextSessionFlashcardsRepository::class);
+});
+test('find no flashcards should find correct object', function () {
+    // GIVEN
+    $user = $this->createUser();
+    $deck = FlashcardDeck::factory()->create([
+        'user_id' => $user->id,
+    ]);
+    $session = LearningSession::factory()->create([
+        'user_id' => $user->id,
+        'flashcard_deck_id' => $deck->id,
+    ]);
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->repository = $this->app->make(NextSessionFlashcardsRepository::class);
-    }
+    // WHEN
+    $result = $this->repository->find($session->getId());
 
-    public function test__find_NoFlashcards_ShouldFindCorrectObject(): void
-    {
-        // GIVEN
-        $user = $this->createUser();
-        $deck = FlashcardDeck::factory()->create([
-            'user_id' => $user->id,
-        ]);
-        $session = LearningSession::factory()->create([
-            'user_id' => $user->id,
-            'flashcard_deck_id' => $deck->id,
-        ]);
+    // THEN
+    expect($result->getSessionId()->getValue())->toBe($session->id);
+    expect($result->getUnratedCount())->toBe(0);
+    expect($result->getCurrentSessionFlashcardsCount())->toBe(0);
+});
+test('find has flashcards should find correct object', function () {
+    // GIVEN
+    $session = LearningSession::factory()->create([
+        'flashcard_deck_id' => null,
+    ]);
+    LearningSessionFlashcard::factory()->create([
+        'learning_session_id' => $session->id,
+        'rating' => null,
+    ]);
+    LearningSessionFlashcard::factory()->create([
+        'learning_session_id' => $session->id,
+        'rating' => Rating::GOOD,
+    ]);
 
-        // WHEN
-        $result = $this->repository->find($session->getId());
+    // WHEN
+    $result = $this->repository->find($session->getId());
 
-        // THEN
-        $this->assertSame($session->id, $result->getSessionId()->getValue());
-        $this->assertSame(0, $result->getUnratedCount());
-        $this->assertSame(0, $result->getCurrentSessionFlashcardsCount());
-    }
+    // THEN
+    expect($result->getSessionId()->getValue())->toBe($session->id);
+    expect($result->getSessionId()->getValue())->toBe($session->id);
+    expect($result->getUnratedCount())->toBe(1);
+    expect($result->getCurrentSessionFlashcardsCount())->toBe(2);
+});
+test('find when no deck should find correct object', function () {
+    // GIVEN
+    $session = LearningSession::factory()->create([
+        'flashcard_deck_id' => null,
+    ]);
+    LearningSessionFlashcard::factory()->create([
+        'learning_session_id' => $session->id,
+        'rating' => null,
+    ]);
 
-    public function test__find_HasFlashcards_ShouldFindCorrectObject(): void
-    {
-        // GIVEN
-        $session = LearningSession::factory()->create([
-            'flashcard_deck_id' => null,
-        ]);
-        LearningSessionFlashcard::factory()->create([
-            'learning_session_id' => $session->id,
-            'rating' => null,
-        ]);
-        LearningSessionFlashcard::factory()->create([
-            'learning_session_id' => $session->id,
-            'rating' => Rating::GOOD,
-        ]);
+    // WHEN
+    $result = $this->repository->find($session->getId());
 
-        // WHEN
-        $result = $this->repository->find($session->getId());
+    // THEN
+    expect($result->getSessionId()->getValue())->toBe($session->id);
+    expect($result->getUserId()->getValue())->toBe($session->user_id);
+    expect($result->hasDeck())->toBeFalse();
+});
+test('find multiple decks should find correct object', function () {
+    // GIVEN
+    $user = $this->createUser();
+    $decks = FlashcardDeck::factory(2)->create([
+        'user_id' => $user->id,
+    ]);
+    $session = LearningSession::factory()->create([
+        'user_id' => $user->id,
+        'flashcard_deck_id' => $decks[1]->id,
+    ]);
 
-        // THEN
-        $this->assertSame($session->id, $result->getSessionId()->getValue());
-        $this->assertSame($session->id, $result->getSessionId()->getValue());
-        $this->assertSame(1, $result->getUnratedCount());
-        $this->assertSame(2, $result->getCurrentSessionFlashcardsCount());
-    }
+    // WHEN
+    $result = $this->repository->find($session->getId());
 
-    public function test__find_WhenNoDeck_ShouldFindCorrectObject(): void
-    {
-        // GIVEN
-        $session = LearningSession::factory()->create([
-            'flashcard_deck_id' => null,
-        ]);
-        LearningSessionFlashcard::factory()->create([
-            'learning_session_id' => $session->id,
-            'rating' => null,
-        ]);
+    // THEN
+    expect($result->getSessionId()->getValue())->toBe($session->id);
+    expect($result->getDeck()->getId()->getValue())->toBe($decks[1]->id);
+    expect($result->getDeck()->getName())->toBe($decks[1]->name);
+    expect($result->getDeck()->getTag())->toBe($decks[1]->tag);
+});
+test('find admin flashcard should find correct object', function () {
+    // GIVEN
+    $user = $this->createUser();
+    $deck = FlashcardDeck::factory()->create([
+        'user_id' => null,
+        'admin_id' => Admin::factory()->create()->id,
+    ]);
+    $session = LearningSession::factory()->create([
+        'user_id' => $user->id,
+        'flashcard_deck_id' => $deck->id,
+    ]);
 
-        // WHEN
-        $result = $this->repository->find($session->getId());
+    // WHEN
+    $result = $this->repository->find($session->getId());
 
-        // THEN
-        $this->assertSame($session->id, $result->getSessionId()->getValue());
-        $this->assertSame($session->user_id, $result->getUserId()->getValue());
-        $this->assertFalse($result->hasDeck());
-    }
+    // THEN
+    expect($result->getDeck()->getOwner()->isAdmin())->toBeTrue();
+    expect($result->getDeck()->getOwner()->getId()->getValue())->toBe($deck->admin_id);
+});
+test('save should save object', function () {
+    // GIVEN
+    $session = LearningSession::factory()->create();
+    $flashcard = Flashcard::factory()->create();
+    $object = new NextSessionFlashcards(
+        $session->getId(),
+        SessionType::FLASHCARD,
+        $session->user->getId(),
+        $session->deck->toDomainModel(),
+        8,
+        2,
+        10
+    );
+    $object->addNext($flashcard->toDomainModel());
 
-    public function test__find_MultipleDecks_ShouldFindCorrectObject(): void
-    {
-        // GIVEN
-        $user = $this->createUser();
-        $decks = FlashcardDeck::factory(2)->create([
-            'user_id' => $user->id,
-        ]);
-        $session = LearningSession::factory()->create([
-            'user_id' => $user->id,
-            'flashcard_deck_id' => $decks[1]->id,
-        ]);
+    // WHEN
+    $this->repository->save($object);
 
-        // WHEN
-        $result = $this->repository->find($session->getId());
+    // THEN
+    $this->assertDatabaseHas('learning_session_flashcards', [
+        'learning_session_id' => $session->id,
+        'flashcard_id' => $flashcard->id,
+        'rating' => null,
+        'is_additional' => false,
+    ]);
+});
+test('save when additional flashcards should save object', function () {
+    // GIVEN
+    $session = LearningSession::factory()->create();
+    $flashcard = Flashcard::factory()->create();
+    $object = new NextSessionFlashcards(
+        $session->getId(),
+        SessionType::FLASHCARD,
+        $session->user->getId(),
+        $session->deck->toDomainModel(),
+        8,
+        2,
+        10
+    );
+    $object->addNextAdditional($flashcard->toDomainModel());
 
-        // THEN
-        $this->assertSame($session->id, $result->getSessionId()->getValue());
-        $this->assertSame($decks[1]->id, $result->getDeck()->getId()->getValue());
-        $this->assertSame($decks[1]->name, $result->getDeck()->getName());
-        $this->assertSame($decks[1]->tag, $result->getDeck()->getTag());
-    }
+    // WHEN
+    $this->repository->save($object);
 
-    public function test__find_AdminFlashcard_ShouldFindCorrectObject(): void
-    {
-        // GIVEN
-        $user = $this->createUser();
-        $deck = FlashcardDeck::factory()->create([
-            'user_id' => null,
-            'admin_id' => Admin::factory()->create()->id,
-        ]);
-        $session = LearningSession::factory()->create([
-            'user_id' => $user->id,
-            'flashcard_deck_id' => $deck->id,
-        ]);
-
-        // WHEN
-        $result = $this->repository->find($session->getId());
-
-        // THEN
-        $this->assertTrue($result->getDeck()->getOwner()->isAdmin());
-        $this->assertSame($deck->admin_id, $result->getDeck()->getOwner()->getId()->getValue());
-    }
-
-    public function test__save_ShouldSaveObject(): void
-    {
-        // GIVEN
-        $session = LearningSession::factory()->create();
-        $flashcard = Flashcard::factory()->create();
-        $object = new NextSessionFlashcards(
-            $session->getId(),
-            SessionType::FLASHCARD,
-            $session->user->getId(),
-            $session->deck->toDomainModel(),
-            8,
-            2,
-            10
-        );
-        $object->addNext($flashcard->toDomainModel());
-
-        // WHEN
-        $this->repository->save($object);
-
-        // THEN
-        $this->assertDatabaseHas('learning_session_flashcards', [
-            'learning_session_id' => $session->id,
-            'flashcard_id' => $flashcard->id,
-            'rating' => null,
-            'is_additional' => false,
-        ]);
-    }
-
-    public function test__save_WhenAdditionalFlashcards_ShouldSaveObject(): void
-    {
-        // GIVEN
-        $session = LearningSession::factory()->create();
-        $flashcard = Flashcard::factory()->create();
-        $object = new NextSessionFlashcards(
-            $session->getId(),
-            SessionType::FLASHCARD,
-            $session->user->getId(),
-            $session->deck->toDomainModel(),
-            8,
-            2,
-            10
-        );
-        $object->addNextAdditional($flashcard->toDomainModel());
-
-        // WHEN
-        $this->repository->save($object);
-
-        // THEN
-        $this->assertDatabaseHas('learning_session_flashcards', [
-            'learning_session_id' => $session->id,
-            'flashcard_id' => $flashcard->id,
-            'rating' => null,
-            'is_additional' => true,
-        ]);
-    }
-}
+    // THEN
+    $this->assertDatabaseHas('learning_session_flashcards', [
+        'learning_session_id' => $session->id,
+        'flashcard_id' => $flashcard->id,
+        'rating' => null,
+        'is_additional' => true,
+    ]);
+});

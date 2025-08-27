@@ -2,51 +2,39 @@
 
 declare(strict_types=1);
 
-namespace Tests\Unit\Flashcard\Infrastructure\Repositories\Postgres\FlashcardRepository\ReplaceDeck;
-
 use Tests\Base\FlashcardTestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Flashcard\Infrastructure\Repositories\Postgres\FlashcardRepository;
 
-class FlashcardRepositoryTest extends FlashcardTestCase
-{
-    use DatabaseTransactions;
+uses(FlashcardTestCase::class);
+uses(DatabaseTransactions::class);
 
-    private FlashcardRepository $repository;
+beforeEach(function () {
+    $this->repository = $this->app->make(FlashcardRepository::class);
+});
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->repository = $this->app->make(FlashcardRepository::class);
-    }
+test('replace deck replace deck for correct flashcards', function () {
+    // GIVEN
+    $actual_deck = $this->createFlashcardDeck();
+    $flashcards = [
+        $this->createFlashcard(['flashcard_deck_id' => $actual_deck->id]),
+        $this->createFlashcard(['flashcard_deck_id' => $actual_deck->id]),
+    ];
+    $other_flashcard = $this->createFlashcard();
+    $new_deck = $this->createFlashcardDeck();
 
-    /**
-     * @test
-     */
-    public function replaceDeck_replaceDeckForCorrectFlashcards(): void
-    {
-        // GIVEN
-        $actual_deck = $this->createFlashcardDeck();
-        $flashcards = [
-            $this->createFlashcard(['flashcard_deck_id' => $actual_deck->id]),
-            $this->createFlashcard(['flashcard_deck_id' => $actual_deck->id]),
-        ];
-        $other_flashcard = $this->createFlashcard();
-        $new_deck = $this->createFlashcardDeck();
+    // WHEN
+    $this->repository->replaceDeck($actual_deck->getId(), $new_deck->getId());
 
-        // WHEN
-        $this->repository->replaceDeck($actual_deck->getId(), $new_deck->getId());
-
-        // THEN
-        foreach ($flashcards as $flashcard) {
-            $this->assertDatabaseHas('flashcards', [
-                'id' => $flashcard->id,
-                'flashcard_deck_id' => $new_deck->id,
-            ]);
-        }
+    // THEN
+    foreach ($flashcards as $flashcard) {
         $this->assertDatabaseHas('flashcards', [
-            'id' => $other_flashcard->id,
-            'flashcard_deck_id' => $other_flashcard->flashcard_deck_id,
+            'id' => $flashcard->id,
+            'flashcard_deck_id' => $new_deck->id,
         ]);
     }
-}
+    $this->assertDatabaseHas('flashcards', [
+        'id' => $other_flashcard->id,
+        'flashcard_deck_id' => $other_flashcard->flashcard_deck_id,
+    ]);
+});

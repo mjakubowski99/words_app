@@ -2,43 +2,33 @@
 
 declare(strict_types=1);
 
-namespace Tests\Unit\Flashcard\Infrastructure\Repositories\Postgres\FlashcardRepository\Delete;
-
 use Tests\Base\FlashcardTestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Flashcard\Infrastructure\Repositories\Postgres\FlashcardRepository;
 
-class FlashcardRepositoryTest extends FlashcardTestCase
-{
-    use DatabaseTransactions;
+uses(FlashcardTestCase::class);
+uses(DatabaseTransactions::class);
 
-    private FlashcardRepository $repository;
+beforeEach(function () {
+    $this->repository = $this->app->make(FlashcardRepository::class);
+});
+test('delete should delete flashcard', function () {
+    // GIVEN
+    $flashcard = $this->createFlashcard();
+    $this->createSmTwoFlashcard(['flashcard_id' => $flashcard->id]);
+    $this->createLearningSessionFlashcard(['flashcard_id' => $flashcard->id]);
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->repository = $this->app->make(FlashcardRepository::class);
-    }
+    // WHEN
+    $this->repository->delete($flashcard->getId());
 
-    public function test__delete_ShouldDeleteFlashcard(): void
-    {
-        // GIVEN
-        $flashcard = $this->createFlashcard();
-        $this->createSmTwoFlashcard(['flashcard_id' => $flashcard->id]);
-        $this->createLearningSessionFlashcard(['flashcard_id' => $flashcard->id]);
-
-        // WHEN
-        $this->repository->delete($flashcard->getId());
-
-        // THEN
-        $this->assertDatabaseMissing('flashcards', [
-            'id' => $flashcard->id,
-        ]);
-        $this->assertDatabaseMissing('sm_two_flashcards', [
-            'flashcard_id' => $flashcard->id,
-        ]);
-        $this->assertDatabaseMissing('learning_session_flashcards', [
-            'flashcard_id' => $flashcard->id,
-        ]);
-    }
-}
+    // THEN
+    $this->assertDatabaseMissing('flashcards', [
+        'id' => $flashcard->id,
+    ]);
+    $this->assertDatabaseMissing('sm_two_flashcards', [
+        'flashcard_id' => $flashcard->id,
+    ]);
+    $this->assertDatabaseMissing('learning_session_flashcards', [
+        'flashcard_id' => $flashcard->id,
+    ]);
+});

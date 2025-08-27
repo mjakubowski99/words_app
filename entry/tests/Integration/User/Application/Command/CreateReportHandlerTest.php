@@ -2,9 +2,6 @@
 
 declare(strict_types=1);
 
-namespace Tests\Integration\User\Application\Command;
-
-use Tests\TestCase;
 use App\Models\Flashcard;
 use Shared\Enum\ReportType;
 use Shared\Enum\ReportableType;
@@ -13,73 +10,63 @@ use User\Application\Command\CreateReport;
 use User\Application\Command\CreateReportHandler;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
-class CreateReportHandlerTest extends TestCase
-{
-    // use DatabaseTransactions;
+uses(DatabaseTransactions::class);
 
-    private CreateReportHandler $handler;
+beforeEach(function () {
+    $this->handler = $this->app->make(CreateReportHandler::class);
+});
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->handler = $this->app->make(CreateReportHandler::class);
-    }
+test('handle when delete flashcard report success', function () {
+    // GIVEN
+    App\Models\Report::factory()->create();
+    $user = $this->createUser();
+    $command = new CreateReport(
+        null,
+        'email@email.com',
+        ReportType::DELETE_ACCOUNT,
+        'description'
+    );
 
-    public function test__handle_WhenDeleteFlashcardReport_success(): void
-    {
-        // GIVEN
-        \App\Models\Report::factory()->create();
-        $user = $this->createUser();
-        $command = new CreateReport(
-            null,
-            'email@email.com',
-            ReportType::DELETE_ACCOUNT,
-            'description'
-        );
+    // WHEN
+    $this->handler->handle($command);
 
-        // WHEN
-        $this->handler->handle($command);
+    // THEN
+    $ticket = Report::query()
+        ->where([
+            'email' => 'email@email.com',
+            'user_id' => null,
+            'type' => ReportType::DELETE_ACCOUNT,
+        ])->first();
 
-        // THEN
-        $ticket = Report::query()
-            ->where([
-                'email' => 'email@email.com',
-                'user_id' => null,
-                'type' => ReportType::DELETE_ACCOUNT,
-            ])->first();
+    expect($ticket)->not->toBeNull();
+    expect($ticket->context)->toBeNull();
+});
+test('handle when flashcard report success', function () {
+    // GIVEN
+    $user = $this->createUser();
+    $flashcard = Flashcard::factory()->create();
 
-        $this->assertNotNull($ticket);
-        $this->assertNull($ticket->context);
-    }
+    $command = new CreateReport(
+        $user->getId(),
+        'email@email.com',
+        ReportType::INAPPROPRIATE_CONTENT,
+        'description',
+        (string) $flashcard->id,
+        ReportableType::FLASHCARD
+    );
 
-    public function test__handle_WhenFlashcardReport_success(): void
-    {
-        // GIVEN
-        $user = $this->createUser();
-        $flashcard = Flashcard::factory()->create();
+    // WHEN
+    $this->handler->handle($command);
 
-        $command = new CreateReport(
-            $user->getId(),
-            'email@email.com',
-            ReportType::INAPPROPRIATE_CONTENT,
-            'description',
-            (string) $flashcard->id,
-            ReportableType::FLASHCARD
-        );
+    // THEN
+    $ticket = Report::query()
+        ->where([
+            'email' => 'email@email.com',
+            'user_id' => $user->id,
+            'type' => ReportType::INAPPROPRIATE_CONTENT,
+        ])->first();
 
-        // WHEN
-        $this->handler->handle($command);
-
-        // THEN
-        $ticket = Report::query()
-            ->where([
-                'email' => 'email@email.com',
-                'user_id' => $user->id,
-                'type' => ReportType::INAPPROPRIATE_CONTENT,
-            ])->first();
-
-        $this->assertNotNull($ticket);
-        $this->assertSame($ticket->reportable_id, (string) $flashcard->id);
-        $this->assertSame($ticket->reportable_type, ReportableType::FLASHCARD->value);
-    }
-}
+    expect($ticket)->not->toBeNull();
+    expect((string) $flashcard->id)->toBe($ticket->reportable_id);
+    expect(ReportableType::FLASHCARD->value)->toBe($ticket->reportable_type);
+});

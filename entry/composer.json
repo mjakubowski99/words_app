@@ -29,6 +29,8 @@
         "laravel/sail": "^1.18",
         "mockery/mockery": "^1.4.4",
         "nunomaduro/collision": "^8.1",
+        "pestphp/pest": "^3.8",
+        "pestphp/pest-plugin-drift": "^3.0",
         "phpunit/phpunit": "^11.0",
         "spatie/laravel-ignition": "^2.0"
     },
@@ -78,7 +80,13 @@
             "@php artisan l5-swagger:generate"
         ],
         "test": [
-            "XDEBUG_MODE=off ./vendor/bin/phpunit tests/"
+            "XDEBUG_MODE=off ./vendor/bin/pest tests/"
+        ],
+        "test-coverage": [
+            "XDEBUG_MODE=coverage ./vendor/bin/pest tests/ --coverage-html=coverage/"
+        ],
+        "test-mutate": [
+            "XDEBUG_MODE=coverage ./vendor/bin/pest tests/ --mutate --parallel --everything --covered-only"
         ]
     },
     "extra": {

@@ -1,56 +1,42 @@
 <?php
 
 declare(strict_types=1);
-
-namespace Tests\Unit\Exercise\Domain\Model\UnscrambleWordAnswer;
-
-use Tests\TestCase;
 use Shared\Utils\ValueObjects\ExerciseEntryId;
 use Exercise\Domain\Models\UnscrambleWordAnswer;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Exercise\Domain\Exceptions\ExerciseAnswerCompareFailureException;
 
-class UnscrambleWordAnswerTest extends TestCase
-{
-    use DatabaseTransactions;
+uses(DatabaseTransactions::class);
 
-    private UnscrambleWordAnswer $model;
+test('from string success', function () {
+    // GIVEN
+    // WHEN
+    $this->model = UnscrambleWordAnswer::fromString(new ExerciseEntryId(1), 'answer1');
 
-    public function test__fromString_success(): void
-    {
-        // GIVEN
-        // WHEN
-        $this->model = UnscrambleWordAnswer::fromString(new ExerciseEntryId(1), 'answer1');
+    // THEN
+    expect($this->model)->toBeInstanceOf(UnscrambleWordAnswer::class);
+    expect($this->model->toString())->toBe('answer1');
+});
+test('compare when answers are the same success', function () {
+    // GIVEN
+    $this->model = UnscrambleWordAnswer::fromString(new ExerciseEntryId(1), 'answer1');
+    $answer_to_compare = UnscrambleWordAnswer::fromString(new ExerciseEntryId(1), 'answer1');
 
-        // THEN
-        $this->assertInstanceOf(UnscrambleWordAnswer::class, $this->model);
-        $this->assertSame('answer1', $this->model->toString());
-    }
+    // WHEN
+    $assessment = $this->model->compare($answer_to_compare);
 
-    public function test__compare_WhenAnswersAreTheSame_success(): void
-    {
-        // GIVEN
-        $this->model = UnscrambleWordAnswer::fromString(new ExerciseEntryId(1), 'answer1');
-        $answer_to_compare = UnscrambleWordAnswer::fromString(new ExerciseEntryId(1), 'answer1');
+    // THEN
+    expect($assessment->isCorrect())->toBeTrue();
+    expect($assessment->getRealScore())->toBe(100.0);
+});
+test('compare when exercise entry id mismatch fail', function () {
+    // GIVEN
+    $this->model = UnscrambleWordAnswer::fromString(new ExerciseEntryId(1), 'test');
+    $answer_to_compare = UnscrambleWordAnswer::fromString(new ExerciseEntryId(2), 'test');
 
-        // WHEN
-        $assessment = $this->model->compare($answer_to_compare);
+    // THEN
+    $this->expectException(ExerciseAnswerCompareFailureException::class);
 
-        // THEN
-        $this->assertTrue($assessment->isCorrect());
-        $this->assertSame(100.0, $assessment->getRealScore());
-    }
-
-    public function test__compare_WhenExerciseEntryIdMismatch_fail(): void
-    {
-        // GIVEN
-        $this->model = UnscrambleWordAnswer::fromString(new ExerciseEntryId(1), 'test');
-        $answer_to_compare = UnscrambleWordAnswer::fromString(new ExerciseEntryId(2), 'test');
-
-        // THEN
-        $this->expectException(ExerciseAnswerCompareFailureException::class);
-
-        // WHEN
-        $this->model->compare($answer_to_compare);
-    }
-}
+    // WHEN
+    $this->model->compare($answer_to_compare);
+});

@@ -1,10 +1,6 @@
 <?php
 
 declare(strict_types=1);
-
-namespace Tests\Unit\Flashcard\Domain\Models\RateableSessionFlashcards;
-
-use Tests\TestCase;
 use Shared\Enum\SessionStatus;
 use Flashcard\Domain\Models\Rating;
 use Shared\Utils\ValueObjects\Uuid;
@@ -19,120 +15,107 @@ use Flashcard\Domain\Exceptions\SessionFinishedException;
 use Flashcard\Domain\Exceptions\RateableSessionFlashcardNotFound;
 use Flashcard\Domain\Exceptions\SessionFlashcardAlreadyRatedException;
 
-class RateableSessionFlashcardsTest extends TestCase
-{
-    private RateableSessionFlashcards $model;
+test('construct session finished fail', function () {
+    // GIVEN
+    // THEN
+    $this->expectException(SessionFinishedException::class);
 
-    public function test__construct_SessionFinished_fail(): void
-    {
-        // GIVEN
+    // WHEN
+    $this->model = new RateableSessionFlashcards(
+        new SessionId(1),
+        UserId::fromString(Uuid::make()->getValue()),
+        new FlashcardDeckId(1),
+        SessionStatus::FINISHED,
+        9,
+        10,
+        []
+    );
+});
+test('rate should set rating for correct flashcard', function () {
+    // GIVEN
+    $expected_id = new SessionFlashcardId(5);
 
-        // THEN
-        $this->expectException(SessionFinishedException::class);
+    $this->model = new RateableSessionFlashcards(
+        new SessionId(1),
+        UserId::fromString(Uuid::make()->getValue()),
+        new FlashcardDeckId(1),
+        SessionStatus::STARTED,
+        9,
+        10,
+        [
+            new RateableSessionFlashcard(
+                new SessionFlashcardId(4),
+                new FlashcardId(2),
+            ),
+            new RateableSessionFlashcard(
+                $expected_id,
+                new FlashcardId(2),
+            ),
+        ]
+    );
 
-        // WHEN
-        $this->model = new RateableSessionFlashcards(
-            new SessionId(1),
-            UserId::fromString(Uuid::make()->getValue()),
-            new FlashcardDeckId(1),
-            SessionStatus::FINISHED,
-            9,
-            10,
-            []
-        );
-    }
+    // WHEN
+    $this->model->rate($expected_id, Rating::GOOD);
 
-    public function test__rate_ShouldSetRatingForCorrectFlashcard(): void
-    {
-        // GIVEN
-        $expected_id = new SessionFlashcardId(5);
+    // THEN
+    expect($this->model->getRateableSessionFlashcards()[1]->getRating())->toBe(Rating::GOOD);
+});
+test('rate rate not existing id fail', function () {
+    // GIVEN
+    $expected_id = new SessionFlashcardId(5);
 
-        $this->model = new RateableSessionFlashcards(
-            new SessionId(1),
-            UserId::fromString(Uuid::make()->getValue()),
-            new FlashcardDeckId(1),
-            SessionStatus::STARTED,
-            9,
-            10,
-            [
-                new RateableSessionFlashcard(
-                    new SessionFlashcardId(4),
-                    new FlashcardId(2),
-                ),
-                new RateableSessionFlashcard(
-                    $expected_id,
-                    new FlashcardId(2),
-                ),
-            ]
-        );
+    $this->model = new RateableSessionFlashcards(
+        new SessionId(1),
+        UserId::fromString(Uuid::make()->getValue()),
+        new FlashcardDeckId(1),
+        SessionStatus::STARTED,
+        9,
+        10,
+        [
+            new RateableSessionFlashcard(
+                new SessionFlashcardId(4),
+                new FlashcardId(2),
+            ),
+            new RateableSessionFlashcard(
+                $expected_id,
+                new FlashcardId(2),
+            ),
+        ]
+    );
 
-        // WHEN
-        $this->model->rate($expected_id, Rating::GOOD);
+    // THEN
+    $this->expectException(RateableSessionFlashcardNotFound::class);
 
-        // THEN
-        $this->assertSame(Rating::GOOD, $this->model->getRateableSessionFlashcards()[1]->getRating());
-    }
+    // WHEN
+    $this->model->rate(new SessionFlashcardId(123123213132), Rating::GOOD);
+});
+test('rate when flashcard already rated fail', function () {
+    // GIVEN
+    $expected_id = new SessionFlashcardId(5);
 
-    public function test__rate_RateNotExistingId_fail(): void
-    {
-        // GIVEN
-        $expected_id = new SessionFlashcardId(5);
+    $this->model = new RateableSessionFlashcards(
+        new SessionId(1),
+        UserId::fromString(Uuid::make()->getValue()),
+        new FlashcardDeckId(1),
+        SessionStatus::STARTED,
+        9,
+        10,
+        [
+            new RateableSessionFlashcard(
+                new SessionFlashcardId(4),
+                new FlashcardId(2),
+            ),
+            new RateableSessionFlashcard(
+                $expected_id,
+                new FlashcardId(2),
+            ),
+        ]
+    );
+    $this->model->rate($expected_id, Rating::GOOD);
 
-        $this->model = new RateableSessionFlashcards(
-            new SessionId(1),
-            UserId::fromString(Uuid::make()->getValue()),
-            new FlashcardDeckId(1),
-            SessionStatus::STARTED,
-            9,
-            10,
-            [
-                new RateableSessionFlashcard(
-                    new SessionFlashcardId(4),
-                    new FlashcardId(2),
-                ),
-                new RateableSessionFlashcard(
-                    $expected_id,
-                    new FlashcardId(2),
-                ),
-            ]
-        );
+    // THEN
+    $this->expectException(SessionFlashcardAlreadyRatedException::class);
 
-        // THEN
-        $this->expectException(RateableSessionFlashcardNotFound::class);
-
-        // WHEN
-        $this->model->rate(new SessionFlashcardId(123123213132), Rating::GOOD);
-    }
-
-    public function test__rate_WhenFlashcardAlreadyRated_fail(): void
-    {
-        // GIVEN
-        $expected_id = new SessionFlashcardId(5);
-
-        $this->model = new RateableSessionFlashcards(
-            new SessionId(1),
-            UserId::fromString(Uuid::make()->getValue()),
-            new FlashcardDeckId(1),
-            SessionStatus::STARTED,
-            9,
-            10,
-            [
-                new RateableSessionFlashcard(
-                    new SessionFlashcardId(4),
-                    new FlashcardId(2),
-                ),
-                new RateableSessionFlashcard(
-                    $expected_id,
-                    new FlashcardId(2),
-                ),
-            ]
-        );
-        $this->model->rate($expected_id, Rating::GOOD);
-
-        // THEN
-        $this->expectException(SessionFlashcardAlreadyRatedException::class);
-
-        // WHEN
-        $this->model->rate($expected_id, Rating::WEAK);
-    }
-}
+    // WHEN
+    $this->model->rate($expected_id, Rating::WEAK);
+});
