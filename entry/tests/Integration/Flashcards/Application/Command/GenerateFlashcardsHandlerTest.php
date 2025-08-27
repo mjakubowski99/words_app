@@ -1,34 +1,19 @@
 <?php
 
 declare(strict_types=1);
-
-namespace Tests\Integration\Flashcards\Application\Command;
-
-use Tests\TestCase;
 use App\Models\User;
 use App\Models\FlashcardDeck;
 use Shared\Enum\LanguageLevel;
 use Illuminate\Support\Facades\Http;
-use Integrations\Gemini\GeminiApiClient;
 use Flashcard\Application\Command\GenerateFlashcards;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Flashcard\Application\Command\GenerateFlashcardsHandler;
 use Flashcard\Application\Exceptions\AiResponseFailedException;
 
-class GenerateFlashcardsHandlerTest extends TestCase
-{
-    use DatabaseTransactions;
+uses(DatabaseTransactions::class);
 
-    private GenerateFlashcardsHandler $handler;
-
-    private GeminiApiClient $client;
-
-    private string $response;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->response = '{
+beforeEach(function () {
+    $this->response = '{
                "candidates":[
                   {
                      "content":{
@@ -67,111 +52,102 @@ class GenerateFlashcardsHandlerTest extends TestCase
                   "totalTokenCount":842
                }
             }';
-        $this->handler = $this->app->make(GenerateFlashcardsHandler::class);
-    }
+    $this->handler = $this->app->make(GenerateFlashcardsHandler::class);
+});
+test('handle should generate flashcards', function () {
+    // GIVEN
+    Http::fake([
+        '*' => Http::response(json_decode($this->response, true)),
+    ]);
+    $deck_name = 'Category';
+    $user = User::factory()->create();
+    $command = new GenerateFlashcards(
+        $user->getId(),
+        $deck_name,
+        LanguageLevel::A1
+    );
 
-    public function test__handle_ShouldGenerateFlashcards(): void
-    {
-        // GIVEN
-        Http::fake([
-            '*' => Http::response(json_decode($this->response, true)),
-        ]);
-        $deck_name = 'Category';
-        $user = User::factory()->create();
-        $command = new GenerateFlashcards(
-            $user->getId(),
-            $deck_name,
-            LanguageLevel::A1
-        );
+    // WHEN
+    $result = $this->handler->handle($command, 10, 10);
 
-        // WHEN
-        $result = $this->handler->handle($command, 10, 10);
+    // THEN
+    $this->assertDatabaseHas('flashcard_decks', [
+        'name' => $deck_name,
+        'user_id' => $user->getId(),
+    ]);
+    $this->assertDatabaseHas('flashcards', [
+        'flashcard_deck_id' => $result->getDeckId(),
+    ]);
+    expect($result->getMergedToExistingDeck())->toBeFalse();
+});
+test('when category already exists should generate flashcards and assign them to existing category', function () {
+    // GIVEN
+    Http::fake([
+        '*' => Http::response(json_decode($this->response, true)),
+    ]);
+    $deck_name = 'Category';
+    $user = User::factory()->create();
+    FlashcardDeck::factory()->create(['name' => $deck_name, 'user_id' => $user->id]);
+    $command = new GenerateFlashcards(
+        $user->getId(),
+        $deck_name,
+        LanguageLevel::A1
+    );
 
-        // THEN
-        $this->assertDatabaseHas('flashcard_decks', [
-            'name' => $deck_name,
-            'user_id' => $user->getId(),
-        ]);
-        $this->assertDatabaseHas('flashcards', [
-            'flashcard_deck_id' => $result->getDeckId(),
-        ]);
-        $this->assertFalse($result->getMergedToExistingDeck());
-    }
+    // WHEN
+    $result = $this->handler->handle($command, 10, 10);
 
-    public function test__WhenCategoryAlreadyExists_ShouldGenerateFlashcardsAndAssignThemToExistingCategory(): void
-    {
-        // GIVEN
-        Http::fake([
-            '*' => Http::response(json_decode($this->response, true)),
-        ]);
-        $deck_name = 'Category';
-        $user = User::factory()->create();
-        FlashcardDeck::factory()->create(['name' => $deck_name, 'user_id' => $user->id]);
-        $command = new GenerateFlashcards(
-            $user->getId(),
-            $deck_name,
-            LanguageLevel::A1
-        );
+    // THEN
+    $this->assertDatabaseHas('flashcards', [
+        'flashcard_deck_id' => $result->getDeckId(),
+    ]);
+    expect($result->getMergedToExistingDeck())->toBeTrue();
+});
+test('when category already exists and api fail should not remove category', function () {
+    // GIVEN
+    Http::fake([
+        '*' => Http::response(['message' => 'Error'], 400),
+    ]);
+    $deck_name = 'Category';
+    $user = User::factory()->create();
+    $deck = FlashcardDeck::factory()->create(['name' => $deck_name, 'user_id' => $user->id]);
+    $command = new GenerateFlashcards(
+        $user->getId(),
+        $deck_name,
+        LanguageLevel::A1
+    );
 
-        // WHEN
-        $result = $this->handler->handle($command, 10, 10);
+    $this->expectException(AiResponseFailedException::class);
 
-        // THEN
-        $this->assertDatabaseHas('flashcards', [
-            'flashcard_deck_id' => $result->getDeckId(),
-        ]);
-        $this->assertTrue($result->getMergedToExistingDeck());
-    }
+    // WHEN
+    $this->handler->handle($command, 10, 10);
 
-    public function test__WhenCategoryAlreadyExistsAndApiFail_ShouldNotRemoveCategory(): void
-    {
-        // GIVEN
-        Http::fake([
-            '*' => Http::response(['message' => 'Error'], 400),
-        ]);
-        $deck_name = 'Category';
-        $user = User::factory()->create();
-        $deck = FlashcardDeck::factory()->create(['name' => $deck_name, 'user_id' => $user->id]);
-        $command = new GenerateFlashcards(
-            $user->getId(),
-            $deck_name,
-            LanguageLevel::A1
-        );
+    // THEN
+    $this->assertDatabaseHas('flashcard_decks', [
+        'id' => $deck->id,
+    ]);
+});
+test('when new category and api fail should remove category', function () {
+    // GIVEN
+    Http::fake([
+        '*' => Http::response(['message' => 'Error'], 400),
+    ]);
+    $deck_name = 'Category';
+    $user = User::factory()->create();
+    $command = new GenerateFlashcards(
+        $user->getId(),
+        $deck_name,
+        LanguageLevel::A1
+    );
 
-        $this->expectException(AiResponseFailedException::class);
+    $this->expectException(AiResponseFailedException::class);
 
-        // WHEN
-        $this->handler->handle($command, 10, 10);
+    // WHEN
+    $this->handler->handle($command, 10, 10);
 
-        // THEN
-        $this->assertDatabaseHas('flashcard_decks', [
-            'id' => $deck->id,
-        ]);
-    }
-
-    public function test__WhenNewCategoryAndApiFail_ShouldRemoveCategory(): void
-    {
-        // GIVEN
-        Http::fake([
-            '*' => Http::response(['message' => 'Error'], 400),
-        ]);
-        $deck_name = 'Category';
-        $user = User::factory()->create();
-        $command = new GenerateFlashcards(
-            $user->getId(),
-            $deck_name,
-            LanguageLevel::A1
-        );
-
-        $this->expectException(AiResponseFailedException::class);
-
-        // WHEN
-        $this->handler->handle($command, 10, 10);
-
-        // THEN
-        $this->assertDatabaseMissing('flashcard_decks', [
-            'user_id' => $user->id,
-            'name' => $deck_name,
-        ]);
-    }
-}
+    // THEN
+    $this->assertDatabaseMissing('flashcard_decks', [
+        'user_id' => $user->id,
+        'name' => $deck_name,
+    ]);
+});

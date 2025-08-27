@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Tests\Base;
 
-use Tests\TestCase;
 use App\Models\User;
 use App\Models\Admin;
 use App\Models\Flashcard;
@@ -21,7 +20,7 @@ use Flashcard\Domain\ValueObjects\FlashcardId;
 use Flashcard\Domain\ValueObjects\FlashcardDeckId;
 use Flashcard\Domain\ValueObjects\SessionFlashcardId;
 
-abstract class FlashcardTestCase extends TestCase
+trait FlashcardTestCase
 {
     public function createAdmin(array $attributes = []): Admin
     {

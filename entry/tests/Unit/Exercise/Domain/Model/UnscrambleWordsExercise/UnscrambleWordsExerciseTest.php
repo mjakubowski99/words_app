@@ -1,56 +1,46 @@
 <?php
 
 declare(strict_types=1);
-
-namespace Tests\Unit\Exercise\Domain\Model\UnscrambleWordsExercise;
-
-use Tests\TestCase;
 use Shared\Models\Emoji;
 use Shared\Utils\ValueObjects\UserId;
 use Exercise\Domain\Models\UnscrambleWordsExercise;
 
-class UnscrambleWordsExerciseTest extends TestCase
-{
-    public function test__newExercise_ShouldCreateExerciseWithScrambledWord(): void
-    {
-        // GIVEN
-        // WHEN
-        $exercise = UnscrambleWordsExercise::newExercise(
-            UserId::new(),
-            'word',
-            'context sentence',
-            'word translation',
-            Emoji::fromUnicode(';)'),
-        );
+test('new exercise should create exercise with scrambled word', function () {
+    // GIVEN
+    // WHEN
+    $exercise = UnscrambleWordsExercise::newExercise(
+        UserId::new(),
+        'word',
+        'context sentence',
+        'word translation',
+        Emoji::fromUnicode(';)'),
+    );
 
-        // THEN
-        $this->assertNotSame($exercise->getWord(), $exercise->getScrambledWord());
+    // THEN
+    $this->assertNotSame($exercise->getWord(), $exercise->getScrambledWord());
 
-        $sorted_word = mb_str_split($exercise->getWord());
-        sort($sorted_word);
+    $sorted_word = mb_str_split($exercise->getWord());
+    sort($sorted_word);
 
-        $sorted_scrambled_word = mb_str_split($exercise->getScrambledWord());
-        sort($sorted_scrambled_word);
+    $sorted_scrambled_word = mb_str_split($exercise->getScrambledWord());
+    sort($sorted_scrambled_word);
 
-        $this->assertSame(json_encode($sorted_word), json_encode($sorted_scrambled_word));
-    }
+    expect(json_encode($sorted_scrambled_word))->toBe(json_encode($sorted_word));
+});
+test('new exercise should create only one exercise entry with correct properties', function () {
+    // GIVEN
+    // WHEN
+    $exercise = UnscrambleWordsExercise::newExercise(
+        UserId::new(),
+        'word',
+        'context sentence',
+        'word translation',
+        Emoji::fromUnicode(';)'),
+    );
 
-    public function test__newExercise_ShouldCreateOnlyOneExerciseEntryWithCorrectProperties(): void
-    {
-        // GIVEN
-        // WHEN
-        $exercise = UnscrambleWordsExercise::newExercise(
-            UserId::new(),
-            'word',
-            'context sentence',
-            'word translation',
-            Emoji::fromUnicode(';)'),
-        );
-
-        // THEN
-        $this->assertCount(1, $exercise->getExerciseEntries());
-        $this->assertSame(0.0, $exercise->getExerciseEntries()[0]->getScore());
-        $this->assertNull($exercise->getExerciseEntries()[0]->getLastUserAnswer());
-        $this->assertSame('word', $exercise->getExerciseEntries()[0]->getCorrectAnswer()->toString());
-    }
-}
+    // THEN
+    expect($exercise->getExerciseEntries())->toHaveCount(1);
+    expect($exercise->getExerciseEntries()[0]->getScore())->toBe(0.0);
+    expect($exercise->getExerciseEntries()[0]->getLastUserAnswer())->toBeNull();
+    expect($exercise->getExerciseEntries()[0]->getCorrectAnswer()->toString())->toBe('word');
+});

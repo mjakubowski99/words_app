@@ -17,22 +17,22 @@ use Flashcard\Domain\ValueObjects\FlashcardId;
 
 trait StoryRepositoryTrait
 {
-    private function createFlashcard(array $attributes = []): Flashcard
+    public function createFlashcard(array $attributes = []): Flashcard
     {
         return Flashcard::factory()->create($attributes);
     }
 
-    private function createFlashcardDeck(array $attributes = []): FlashcardDeck
+    public function createFlashcardDeck(array $attributes = []): FlashcardDeck
     {
         return FlashcardDeck::factory()->create($attributes);
     }
 
-    private function createStory(array $attributes = []): Story
+    public function createStory(array $attributes = []): Story
     {
         return Story::factory()->create($attributes);
     }
 
-    private function createNewStoryFlashcard(User $user, FlashcardDeck $deck, string $word, string $word_translation, string $sentence, ?string $sentence_override = null): StoryFlashcard
+    public function createNewStoryFlashcard(User $user, FlashcardDeck $deck, string $word, string $word_translation, string $sentence, ?string $sentence_override = null): StoryFlashcard
     {
         return new StoryFlashcard(
             StoryId::noId(),
@@ -54,7 +54,7 @@ trait StoryRepositoryTrait
         );
     }
 
-    private function createStoryWithFlashcard(Story $story, Flashcard $flashcard, ?string $sentence_override = null): \App\Models\StoryFlashcard
+    public function createStoryWithFlashcard(Story $story, Flashcard $flashcard, ?string $sentence_override = null): \App\Models\StoryFlashcard
     {
         return \App\Models\StoryFlashcard::factory()->create([
             'story_id' => $story->id,

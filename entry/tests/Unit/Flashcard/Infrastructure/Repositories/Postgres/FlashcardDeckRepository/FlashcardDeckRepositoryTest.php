@@ -1,11 +1,7 @@
 <?php
 
 declare(strict_types=1);
-
-namespace Tests\Unit\Flashcard\Infrastructure\Repositories\Postgres\FlashcardDeckRepository;
-
 use Carbon\Carbon;
-use Tests\TestCase;
 use App\Models\User;
 use App\Models\Admin;
 use App\Models\Story;
@@ -24,340 +20,303 @@ use Flashcard\Domain\ValueObjects\FlashcardDeckId;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Flashcard\Infrastructure\Repositories\Postgres\FlashcardDeckRepository;
 
-class FlashcardDeckRepositoryTest extends TestCase
-{
-    use DatabaseTransactions;
+uses(DatabaseTransactions::class);
 
-    private FlashcardDeckRepository $repository;
+beforeEach(function () {
+    $this->repository = $this->app->make(FlashcardDeckRepository::class);
+});
+test('find by id when normal deck success', function () {
+    // GIVEN
+    $other_deck = FlashcardDeck::factory()->create();
+    $deck = FlashcardDeck::factory()->create();
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->repository = $this->app->make(FlashcardDeckRepository::class);
-    }
+    // WHEN
+    $result = $this->repository->findById($deck->getId());
 
-    public function test__findById_WhenNormalDeck_success(): void
-    {
-        // GIVEN
-        $other_deck = FlashcardDeck::factory()->create();
-        $deck = FlashcardDeck::factory()->create();
+    // THEN
+    expect($result)->toBeInstanceOf(Deck::class);
+    expect($result->getId()->getValue())->toBe($deck->getId()->getValue());
+    expect($result->getName())->toBe($deck->name);
+    expect($result->getOwner()->getId()->getValue())->toBe($deck->user->getId()->getValue());
+    expect($result->getOwner()->getOwnerType())->toBe(FlashcardOwnerType::USER);
+});
+test('find by id when admin is owner success', function () {
+    // GIVEN
+    $admin = Admin::factory()->create();
+    $deck = FlashcardDeck::factory()->create([
+        'user_id' => null,
+        'admin_id' => $admin->id,
+    ]);
 
-        // WHEN
-        $result = $this->repository->findById($deck->getId());
+    // WHEN
+    $result = $this->repository->findById($deck->getId());
 
-        // THEN
-        $this->assertInstanceOf(Deck::class, $result);
-        $this->assertSame($deck->getId()->getValue(), $result->getId()->getValue());
-        $this->assertSame($deck->name, $result->getName());
-        $this->assertSame($deck->user->getId()->getValue(), $result->getOwner()->getId()->getValue());
-        $this->assertSame(FlashcardOwnerType::USER, $result->getOwner()->getOwnerType());
-    }
+    // THEN
+    expect($result)->toBeInstanceOf(Deck::class);
+    expect($result->getOwner()->equals($admin->toOwner()))->toBeTrue();
+});
+test('create should create deck', function () {
+    // GIVEN
+    $deck = Mockery::mock(Deck::class);
+    $user = User::factory()->create();
+    $deck->allows([
+        'getName' => 'Cat name',
+        'hasOwner' => true,
+        'getOwner' => $user->toOwner(),
+        'getDefaultLanguageLevel' => LanguageLevel::A1,
+    ]);
 
-    public function test__findById_WhenAdminIsOwner_success(): void
-    {
-        // GIVEN
-        $admin = Admin::factory()->create();
-        $deck = FlashcardDeck::factory()->create([
-            'user_id' => null,
-            'admin_id' => $admin->id,
-        ]);
+    // WHEN
+    $this->repository->create($deck);
 
-        // WHEN
-        $result = $this->repository->findById($deck->getId());
+    // THEN
+    $this->assertDatabaseHas('flashcard_decks', [
+        'name' => 'Cat name',
+        'user_id' => $user->id,
+    ]);
+});
+test('create when admin is owner should create deck', function () {
+    // GIVEN
+    $deck = Mockery::mock(Deck::class);
+    $admin = Admin::factory()->create();
+    $deck->allows([
+        'getName' => 'Cat name',
+        'hasOwner' => true,
+        'getOwner' => $admin->toOwner(),
+        'getDefaultLanguageLevel' => LanguageLevel::A1,
+    ]);
 
-        // THEN
-        $this->assertInstanceOf(Deck::class, $result);
-        $this->assertTrue($result->getOwner()->equals($admin->toOwner()));
-    }
+    // WHEN
+    $this->repository->create($deck);
 
-    public function test__create_ShouldCreateDeck(): void
-    {
-        // GIVEN
-        $deck = \Mockery::mock(Deck::class);
-        $user = User::factory()->create();
-        $deck->allows([
-            'getName' => 'Cat name',
-            'hasOwner' => true,
-            'getOwner' => $user->toOwner(),
-            'getDefaultLanguageLevel' => LanguageLevel::A1,
-        ]);
+    // THEN
+    $this->assertDatabaseHas('flashcard_decks', [
+        'name' => 'Cat name',
+        'admin_id' => $admin->id,
+    ]);
+});
+test('update when user is owner should update deck', function () {
+    // GIVEN
+    $deck_model = FlashcardDeck::factory()->create();
 
-        // WHEN
-        $this->repository->create($deck);
+    $deck = Mockery::mock(Deck::class);
+    $user = User::factory()->create();
+    $deck->allows([
+        'getId' => $deck_model->getId(),
+        'getName' => 'Cat',
+        'hasOwner' => true,
+        'getOwner' => $user->toOwner(),
+        'getDefaultLanguageLevel' => LanguageLevel::A1,
+    ]);
 
-        // THEN
-        $this->assertDatabaseHas('flashcard_decks', [
-            'name' => 'Cat name',
-            'user_id' => $user->id,
-        ]);
-    }
+    // WHEN
+    $this->repository->update($deck);
 
-    public function test__create_WhenAdminIsOwner_ShouldCreateDeck(): void
-    {
-        // GIVEN
-        $deck = \Mockery::mock(Deck::class);
-        $admin = Admin::factory()->create();
-        $deck->allows([
-            'getName' => 'Cat name',
-            'hasOwner' => true,
-            'getOwner' => $admin->toOwner(),
-            'getDefaultLanguageLevel' => LanguageLevel::A1,
-        ]);
+    // THEN
+    $this->assertDatabaseHas('flashcard_decks', [
+        'id' => $deck_model->id,
+        'name' => 'Cat',
+        'admin_id' => null,
+        'user_id' => $user->id,
+    ]);
+});
+test('update when admin is owner should update deck', function () {
+    // GIVEN
+    $deck_model = FlashcardDeck::factory()->create();
 
-        // WHEN
-        $this->repository->create($deck);
+    $deck = Mockery::mock(Deck::class);
+    $admin = Admin::factory()->create();
+    $deck->allows([
+        'getId' => $deck_model->getId(),
+        'getName' => 'Cat name',
+        'hasOwner' => true,
+        'getOwner' => $admin->toOwner(),
+        'getDefaultLanguageLevel' => LanguageLevel::A1,
+    ]);
 
-        // THEN
-        $this->assertDatabaseHas('flashcard_decks', [
-            'name' => 'Cat name',
-            'admin_id' => $admin->id,
-        ]);
-    }
+    // WHEN
+    $this->repository->update($deck);
 
-    public function test__update_WhenUserIsOwner_ShouldUpdateDeck(): void
-    {
-        // GIVEN
-        $deck_model = FlashcardDeck::factory()->create();
+    // THEN
+    $this->assertDatabaseHas('flashcard_decks', [
+        'id' => $deck_model->id,
+        'admin_id' => $admin->id,
+        'user_id' => null,
+    ]);
+});
+test('update last viewed at no entry in database', function () {
+    // GIVEN
+    Carbon::setTestNow('2023-10-12 12:00');
+    $deck = FlashcardDeck::factory()->create();
+    $user = User::factory()->create();
 
-        $deck = \Mockery::mock(Deck::class);
-        $user = User::factory()->create();
-        $deck->allows([
-            'getId' => $deck_model->getId(),
-            'getName' => 'Cat',
-            'hasOwner' => true,
-            'getOwner' => $user->toOwner(),
-            'getDefaultLanguageLevel' => LanguageLevel::A1,
-        ]);
+    // WHEN
+    $this->repository->updateLastViewedAt($deck->getId(), $user->getId());
 
-        // WHEN
-        $this->repository->update($deck);
+    // THEN
+    $this->assertDatabaseHas(FlashcardDeckActivity::class, [
+        'flashcard_deck_id' => $deck->getId(),
+        'user_id' => $user->getId(),
+        'last_viewed_at' => '2023-10-12 12:00',
+    ]);
+});
+test('update last viewed at entry in database', function () {
+    // GIVEN
+    $activity = FlashcardDeckActivity::factory()->create();
+    Carbon::setTestNow('2023-10-12 12:00');
 
-        // THEN
-        $this->assertDatabaseHas('flashcard_decks', [
-            'id' => $deck_model->id,
-            'name' => 'Cat',
-            'admin_id' => null,
-            'user_id' => $user->id,
-        ]);
-    }
+    // WHEN
+    $this->repository->updateLastViewedAt(new FlashcardDeckId($activity->flashcard_deck_id), new UserId($activity->user_id));
 
-    public function test__update_WhenAdminIsOwner_ShouldUpdateDeck(): void
-    {
-        // GIVEN
-        $deck_model = FlashcardDeck::factory()->create();
+    // THEN
+    $this->assertDatabaseHas(FlashcardDeckActivity::class, [
+        'id' => $activity->id,
+        'last_viewed_at' => '2023-10-12 12:00',
+    ]);
+});
+test('get by user return only user decks', function () {
+    // GIVEN
+    $user = User::factory()->create();
+    $admin = Admin::factory()->create();
+    $other_deck = FlashcardDeck::factory()->create([
+        'admin_id' => $admin->id,
+        'user_id' => null,
+    ]);
+    $user_deck = FlashcardDeck::factory()->create([
+        'user_id' => $user->id,
+        'admin_id' => null,
+    ]);
 
-        $deck = \Mockery::mock(Deck::class);
-        $admin = Admin::factory()->create();
-        $deck->allows([
-            'getId' => $deck_model->getId(),
-            'getName' => 'Cat name',
-            'hasOwner' => true,
-            'getOwner' => $admin->toOwner(),
-            'getDefaultLanguageLevel' => LanguageLevel::A1,
-        ]);
+    // WHEN
+    $results = $this->repository->getByUser($user->getId(), 1, 15);
 
-        // WHEN
-        $this->repository->update($deck);
+    // THEN
+    expect($results)->toHaveCount(1);
+    expect($results[0])->toBeInstanceOf(Deck::class);
+    expect($results[0]->getId()->getValue())->toBe($user_deck->id);
+    expect($results[0]->getName())->toBe($user_deck->name);
+    expect($results[0]->getOwner()->getId()->getValue())->toBe($user_deck->user_id);
+    expect($results[0]->getOwner()->getOwnerType())->toBe(FlashcardOwnerType::USER);
+});
+test('get by owner pagination works', function () {
+    // GIVEN
+    $user = User::factory()->create();
+    $user_decks = FlashcardDeck::factory(2)->create([
+        'user_id' => $user->id,
+    ]);
 
-        // THEN
-        $this->assertDatabaseHas('flashcard_decks', [
-            'id' => $deck_model->id,
-            'admin_id' => $admin->id,
-            'user_id' => null,
-        ]);
-    }
+    // WHEN
+    $results = $this->repository->getByUser($user->getId(), 2, 1);
 
-    public function test__updateLastViewedAt_NoEntryInDatabase(): void
-    {
-        // GIVEN
-        Carbon::setTestNow('2023-10-12 12:00');
-        $deck = FlashcardDeck::factory()->create();
-        $user = User::factory()->create();
+    // THEN
+    expect($results)->toHaveCount(1);
+    expect($results[0])->toBeInstanceOf(Deck::class);
+    expect($results[0]->getId()->getValue())->toBe($user_decks[1]->id);
+});
+test('search by name should return user deck', function () {
+    // GIVEN
+    $user = User::factory()->create();
+    FlashcardDeck::factory()->create(['name' => 'deck']);
+    $expected_deck = FlashcardDeck::factory()->create(['name' => 'deck', 'user_id' => $user->id]);
 
-        // WHEN
-        $this->repository->updateLastViewedAt($deck->getId(), $user->getId());
+    // WHEN
+    $deck = $this->repository->searchByName($user->getId(), 'deck');
 
-        // THEN
-        $this->assertDatabaseHas(FlashcardDeckActivity::class, [
-            'flashcard_deck_id' => $deck->getId(),
-            'user_id' => $user->getId(),
-            'last_viewed_at' => '2023-10-12 12:00',
-        ]);
-    }
+    // THEN
+    expect($deck->getId()->getValue())->toBe($expected_deck->id);
+    expect($deck->getName())->toBe($expected_deck->name);
+    expect($deck->getOwner()->getId()->getValue())->toBe($user->id);
+});
+test('search by name should correctly search by name', function () {
+    // GIVEN
+    $user = User::factory()->create();
+    FlashcardDeck::factory()->create(['name' => 'deck 1', 'user_id' => $user->id]);
+    $expected_deck = FlashcardDeck::factory()->create(['name' => 'deck', 'user_id' => $user->id]);
 
-    public function test__updateLastViewedAt_EntryInDatabase(): void
-    {
-        // GIVEN
-        $activity = FlashcardDeckActivity::factory()->create();
-        Carbon::setTestNow('2023-10-12 12:00');
+    // WHEN
+    $deck = $this->repository->searchByName($user->getId(), 'deck');
 
-        // WHEN
-        $this->repository->updateLastViewedAt(new FlashcardDeckId($activity->flashcard_deck_id), new UserId($activity->user_id));
+    // THEN
+    expect($deck->getId()->getValue())->toBe($expected_deck->id);
+    expect($deck->getName())->toBe($expected_deck->name);
+});
+test('bulk delete should delete only decks with given ids', function () {
+    // GIVEN
+    $user = User::factory()->create();
+    $decks_to_delete = FlashcardDeck::factory(2)->byUser($user)->create();
+    $decks_to_not_delete = FlashcardDeck::factory()->byUser($user)->create();
+    $deck_ids = $decks_to_delete->map(fn (FlashcardDeck $deck) => $deck->getId())->toArray();
 
-        // THEN
-        $this->assertDatabaseHas(FlashcardDeckActivity::class, [
-            'id' => $activity->id,
-            'last_viewed_at' => '2023-10-12 12:00',
-        ]);
-    }
+    // WHEN
+    $this->repository->bulkDelete($user->getId(), $deck_ids);
 
-    public function test__getByUser_ReturnOnlyUserDecks(): void
-    {
-        // GIVEN
-        $user = User::factory()->create();
-        $admin = Admin::factory()->create();
-        $other_deck = FlashcardDeck::factory()->create([
-            'admin_id' => $admin->id,
-            'user_id' => null,
-        ]);
-        $user_deck = FlashcardDeck::factory()->create([
-            'user_id' => $user->id,
-            'admin_id' => null,
-        ]);
-
-        // WHEN
-        $results = $this->repository->getByUser($user->getId(), 1, 15);
-
-        // THEN
-        $this->assertCount(1, $results);
-        $this->assertInstanceOf(Deck::class, $results[0]);
-        $this->assertSame($user_deck->id, $results[0]->getId()->getValue());
-        $this->assertSame($user_deck->name, $results[0]->getName());
-        $this->assertSame($user_deck->user_id, $results[0]->getOwner()->getId()->getValue());
-        $this->assertSame(FlashcardOwnerType::USER, $results[0]->getOwner()->getOwnerType());
-    }
-
-    public function test__getByOwner_paginationWorks(): void
-    {
-        // GIVEN
-        $user = User::factory()->create();
-        $user_decks = FlashcardDeck::factory(2)->create([
-            'user_id' => $user->id,
-        ]);
-
-        // WHEN
-        $results = $this->repository->getByUser($user->getId(), 2, 1);
-
-        // THEN
-        $this->assertCount(1, $results);
-        $this->assertInstanceOf(Deck::class, $results[0]);
-        $this->assertSame($user_decks[1]->id, $results[0]->getId()->getValue());
-    }
-
-    public function test__searchByName_shouldReturnUserDeck(): void
-    {
-        // GIVEN
-        $user = User::factory()->create();
-        FlashcardDeck::factory()->create(['name' => 'deck']);
-        $expected_deck = FlashcardDeck::factory()->create(['name' => 'deck', 'user_id' => $user->id]);
-
-        // WHEN
-        $deck = $this->repository->searchByName($user->getId(), 'deck');
-
-        // THEN
-        $this->assertSame($expected_deck->id, $deck->getId()->getValue());
-        $this->assertSame($expected_deck->name, $deck->getName());
-        $this->assertSame($user->id, $deck->getOwner()->getId()->getValue());
-    }
-
-    public function test__searchByName_shouldCorrectlySearchByNAME(): void
-    {
-        // GIVEN
-        $user = User::factory()->create();
-        FlashcardDeck::factory()->create(['name' => 'deck 1', 'user_id' => $user->id]);
-        $expected_deck = FlashcardDeck::factory()->create(['name' => 'deck', 'user_id' => $user->id]);
-
-        // WHEN
-        $deck = $this->repository->searchByName($user->getId(), 'deck');
-
-        // THEN
-        $this->assertSame($expected_deck->id, $deck->getId()->getValue());
-        $this->assertSame($expected_deck->name, $deck->getName());
-    }
-
-    public function test__bulkDelete_ShouldDeleteOnlyDecksWithGivenIds(): void
-    {
-        // GIVEN
-        $user = User::factory()->create();
-        $decks_to_delete = FlashcardDeck::factory(2)->byUser($user)->create();
-        $decks_to_not_delete = FlashcardDeck::factory()->byUser($user)->create();
-        $deck_ids = $decks_to_delete->map(fn (FlashcardDeck $deck) => $deck->getId())->toArray();
-
-        // WHEN
-        $this->repository->bulkDelete($user->getId(), $deck_ids);
-
-        // THEN
-        $this->assertDatabaseHas('flashcard_decks', [
-            'id' => $decks_to_not_delete->id,
-        ]);
-        foreach ($decks_to_delete as $deck) {
-            $this->assertDatabaseMissing('flashcard_decks', [
-                'id' => $deck->id,
-            ]);
-        }
-    }
-
-    public function test__bulkDelete_ShouldDeleteOnlyUserDecks(): void
-    {
-        // GIVEN
-        $user = User::factory()->create();
-        $user_deck = FlashcardDeck::factory()->byUser($user)->create();
-        $other_deck = FlashcardDeck::factory()->create();
-
-        // WHEN
-        $this->repository->bulkDelete($user->getId(), [$user_deck->getId(), $other_deck->getId()]);
-
-        // THEN
-        $this->assertDatabaseHas('flashcard_decks', [
-            'id' => $other_deck->id,
-        ]);
+    // THEN
+    $this->assertDatabaseHas('flashcard_decks', [
+        'id' => $decks_to_not_delete->id,
+    ]);
+    foreach ($decks_to_delete as $deck) {
         $this->assertDatabaseMissing('flashcard_decks', [
-            'id' => $user_deck->id,
+            'id' => $deck->id,
         ]);
     }
+});
+test('bulk delete should delete only user decks', function () {
+    // GIVEN
+    $user = User::factory()->create();
+    $user_deck = FlashcardDeck::factory()->byUser($user)->create();
+    $other_deck = FlashcardDeck::factory()->create();
 
-    public function test__bulkDelete_ShouldDeleteDeckWithAllData(): void
-    {
-        // GIVEN
-        $user = User::factory()->create();
-        $user_deck = FlashcardDeck::factory()->byUser($user)->create();
-        $flashcard = Flashcard::factory()->create(['flashcard_deck_id' => $user_deck->id]);
-        $sm_two_flashcard = SmTwoFlashcard::factory()->create([
-            'flashcard_id' => $flashcard->id,
-        ]);
-        $learning_session = LearningSession::factory()->create(['flashcard_deck_id' => $user_deck->id]);
-        $learning_session_flashcard_from_session = LearningSessionFlashcard::factory()->create([
-            'learning_session_id' => $learning_session->id,
-        ]);
-        $learning_session_flashcard = LearningSessionFlashcard::factory()->create([
-            'flashcard_id' => $flashcard->id,
-        ]);
-        StoryFlashcard::factory()->create([
-            'flashcard_id' => $flashcard->id,
-            'story_id' => Story::factory()->create()->id,
-        ]);
+    // WHEN
+    $this->repository->bulkDelete($user->getId(), [$user_deck->getId(), $other_deck->getId()]);
 
-        // WHEN
-        $this->repository->bulkDelete($user->getId(), [$user_deck->getId()]);
+    // THEN
+    $this->assertDatabaseHas('flashcard_decks', [
+        'id' => $other_deck->id,
+    ]);
+    $this->assertDatabaseMissing('flashcard_decks', [
+        'id' => $user_deck->id,
+    ]);
+});
+test('bulk delete should delete deck with all data', function () {
+    // GIVEN
+    $user = User::factory()->create();
+    $user_deck = FlashcardDeck::factory()->byUser($user)->create();
+    $flashcard = Flashcard::factory()->create(['flashcard_deck_id' => $user_deck->id]);
+    $sm_two_flashcard = SmTwoFlashcard::factory()->create([
+        'flashcard_id' => $flashcard->id,
+    ]);
+    $learning_session = LearningSession::factory()->create(['flashcard_deck_id' => $user_deck->id]);
+    $learning_session_flashcard_from_session = LearningSessionFlashcard::factory()->create([
+        'learning_session_id' => $learning_session->id,
+    ]);
+    $learning_session_flashcard = LearningSessionFlashcard::factory()->create([
+        'flashcard_id' => $flashcard->id,
+    ]);
+    StoryFlashcard::factory()->create([
+        'flashcard_id' => $flashcard->id,
+        'story_id' => Story::factory()->create()->id,
+    ]);
 
-        // THEN
-        $this->assertDatabaseMissing('flashcard_decks', [
-            'id' => $user_deck->id,
-        ]);
-        $this->assertDatabaseMissing('sm_two_flashcards', [
-            'flashcard_id' => $flashcard->id,
-        ]);
-        $this->assertDatabaseMissing('flashcards', [
-            'id' => $flashcard->id,
-        ]);
-        $this->assertDatabaseMissing('learning_sessions', [
-            'id' => $learning_session->id,
-        ]);
-        $this->assertDatabaseMissing('learning_session_flashcards', [
-            'id' => $learning_session_flashcard->id,
-        ]);
-        $this->assertDatabaseMissing('learning_session_flashcards', [
-            'id' => $learning_session_flashcard_from_session->id,
-        ]);
-    }
-}
+    // WHEN
+    $this->repository->bulkDelete($user->getId(), [$user_deck->getId()]);
+
+    // THEN
+    $this->assertDatabaseMissing('flashcard_decks', [
+        'id' => $user_deck->id,
+    ]);
+    $this->assertDatabaseMissing('sm_two_flashcards', [
+        'flashcard_id' => $flashcard->id,
+    ]);
+    $this->assertDatabaseMissing('flashcards', [
+        'id' => $flashcard->id,
+    ]);
+    $this->assertDatabaseMissing('learning_sessions', [
+        'id' => $learning_session->id,
+    ]);
+    $this->assertDatabaseMissing('learning_session_flashcards', [
+        'id' => $learning_session_flashcard->id,
+    ]);
+    $this->assertDatabaseMissing('learning_session_flashcards', [
+        'id' => $learning_session_flashcard_from_session->id,
+    ]);
+});

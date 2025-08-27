@@ -2,93 +2,70 @@
 
 declare(strict_types=1);
 
-namespace Tests\Unit\Flashcard\Infrastructure\Repositories\Postgres\FlashcardRepository\GetByDeck;
-
 use App\Models\Admin;
 use Tests\Base\FlashcardTestCase;
 use Flashcard\Domain\Models\Flashcard;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Flashcard\Infrastructure\Repositories\Postgres\FlashcardRepository;
 
-class FlashcardRepositoryTest extends FlashcardTestCase
-{
-    use DatabaseTransactions;
+uses(FlashcardTestCase::class);
+uses(DatabaseTransactions::class);
 
-    private FlashcardRepository $repository;
+beforeEach(function () {
+    $this->repository = $this->app->make(FlashcardRepository::class);
+});
+test('get by deck return correct data', function () {
+    // GIVEN
+    $deck = $this->createFlashcardDeck();
+    $expected_flashcard = $this->createFlashcard(['flashcard_deck_id' => $deck->id]);
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->repository = $this->app->make(FlashcardRepository::class);
-    }
+    // WHEN
+    $flashcards = $this->repository->getByDeck($deck->getId());
 
-    /**
-     * @test
-     */
-    public function getByDeck_returnCorrectData(): void
-    {
-        // GIVEN
-        $deck = $this->createFlashcardDeck();
-        $expected_flashcard = $this->createFlashcard(['flashcard_deck_id' => $deck->id]);
+    // THEN
+    expect($flashcards)->toHaveCount(1);
+    expect($flashcards[0])->toBeInstanceOf(Flashcard::class);
+    $flashcard = $flashcards[0];
+    expect($flashcard->getId()->getValue())->toBe($expected_flashcard->id);
+    expect($flashcard->getFrontWord())->toBe($expected_flashcard->front_word);
+    expect($flashcard->getBackWord())->toBe($expected_flashcard->back_word);
+    expect($flashcard->getBackLang()->getValue())->toBe($expected_flashcard->back_lang);
+    expect($flashcard->getFrontLang()->getValue())->toBe($expected_flashcard->front_lang);
+    expect($flashcard->getBackContext())->toBe($expected_flashcard->back_context);
+    expect($flashcard->getFrontContext())->toBe($expected_flashcard->front_context);
+    expect($flashcard->getEmoji()->toUnicode())->toBe($expected_flashcard->emoji);
+});
+test('get by deck admin is owner', function () {
+    // GIVEN
+    $deck = $this->createFlashcardDeck();
+    $admin = Admin::factory()->create();
+    $expected_flashcard = $this->createFlashcard([
+        'flashcard_deck_id' => $deck->id,
+        'admin_id' => $admin->id,
+        'user_id' => null,
+    ]);
 
-        // WHEN
-        $flashcards = $this->repository->getByDeck($deck->getId());
+    // WHEN
+    $flashcards = $this->repository->getByDeck($deck->getId());
 
-        // THEN
-        $this->assertCount(1, $flashcards);
-        $this->assertInstanceOf(Flashcard::class, $flashcards[0]);
-        $flashcard = $flashcards[0];
-        $this->assertSame($expected_flashcard->id, $flashcard->getId()->getValue());
-        $this->assertSame($expected_flashcard->front_word, $flashcard->getFrontWord());
-        $this->assertSame($expected_flashcard->back_word, $flashcard->getBackWord());
-        $this->assertSame($expected_flashcard->back_lang, $flashcard->getBackLang()->getValue());
-        $this->assertSame($expected_flashcard->front_lang, $flashcard->getFrontLang()->getValue());
-        $this->assertSame($expected_flashcard->back_context, $flashcard->getBackContext());
-        $this->assertSame($expected_flashcard->front_context, $flashcard->getFrontContext());
-        $this->assertSame($expected_flashcard->emoji, $flashcard->getEmoji()->toUnicode());
-    }
+    // THEN
+    expect($flashcards)->toHaveCount(1);
+    expect($flashcards[0])->toBeInstanceOf(Flashcard::class);
+    $flashcard = $flashcards[0];
+    expect($flashcard->getOwner()->isAdmin())->toBeTrue();
+    expect($flashcard->getOwner()->getId()->getValue())->toBe($expected_flashcard->admin_id);
+});
+test('get by deck return only flashcards for given deck', function () {
+    // GIVEN
+    $deck = $this->createFlashcardDeck();
+    $other_flashcard = $this->createFlashcard();
+    $flashcard = $this->createFlashcard(['flashcard_deck_id' => $deck->id]);
 
-    /**
-     * @test
-     */
-    public function getByDeck_adminIsOwner(): void
-    {
-        // GIVEN
-        $deck = $this->createFlashcardDeck();
-        $admin = Admin::factory()->create();
-        $expected_flashcard = $this->createFlashcard([
-            'flashcard_deck_id' => $deck->id,
-            'admin_id' => $admin->id,
-            'user_id' => null,
-        ]);
+    // WHEN
+    $flashcards = $this->repository->getByDeck($deck->getId());
 
-        // WHEN
-        $flashcards = $this->repository->getByDeck($deck->getId());
-
-        // THEN
-        $this->assertCount(1, $flashcards);
-        $this->assertInstanceOf(Flashcard::class, $flashcards[0]);
-        $flashcard = $flashcards[0];
-        $this->assertTrue($flashcard->getOwner()->isAdmin());
-        $this->assertSame($expected_flashcard->admin_id, $flashcard->getOwner()->getId()->getValue());
-    }
-
-    /**
-     * @test
-     */
-    public function getByDeck_returnOnlyFlashcardsForGivenDeck(): void
-    {
-        // GIVEN
-        $deck = $this->createFlashcardDeck();
-        $other_flashcard = $this->createFlashcard();
-        $flashcard = $this->createFlashcard(['flashcard_deck_id' => $deck->id]);
-
-        // WHEN
-        $flashcards = $this->repository->getByDeck($deck->getId());
-
-        // THEN
-        $this->assertCount(1, $flashcards);
-        $this->assertInstanceOf(Flashcard::class, $flashcards[0]);
-        $this->assertSame($flashcard->getId()->getValue(), $flashcards[0]->getId()->getValue());
-    }
-}
+    // THEN
+    expect($flashcards)->toHaveCount(1);
+    expect($flashcards[0])->toBeInstanceOf(Flashcard::class);
+    expect($flashcards[0]->getId()->getValue())->toBe($flashcard->getId()->getValue());
+});

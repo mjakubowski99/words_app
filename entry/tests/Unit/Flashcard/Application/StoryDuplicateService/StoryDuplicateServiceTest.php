@@ -1,93 +1,73 @@
 <?php
 
 declare(strict_types=1);
-
-namespace Tests\Unit\Flashcard\Application\StoryDuplicateService;
-
-use Tests\TestCase;
-use Mockery\MockInterface;
 use Flashcard\Domain\Services\FlashcardDuplicateService;
 use Flashcard\Application\Services\StoryDuplicateService;
+use Tests\Unit\Flashcard\Application\StoryDuplicateService\StoryDuplicateServiceTrait;
 
-class StoryDuplicateServiceTest extends TestCase
-{
-    use StoryDuplicateServiceTrait;
+uses(StoryDuplicateServiceTrait::class);
 
-    private StoryDuplicateService $service;
-    private FlashcardDuplicateService|MockInterface $duplicate_service;
+beforeEach(function () {
+    $this->duplicate_service = $this->mockery(FlashcardDuplicateService::class);
+    $this->service = $this->app->make(StoryDuplicateService::class, [
+        'duplicate_service' => $this->duplicate_service,
+    ]);
+});
+test('remove duplicates when duplicates exist should remove stories with duplicates', function () {
+    // GIVEN
+    $resolved_deck = $this->createResolvedDeck();
+    $stories = $this->createStoriesWithDuplicates();
+    $this->mockDuplicateService($stories, 2);
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->duplicate_service = $this->mockery(FlashcardDuplicateService::class);
-        $this->service = $this->app->make(StoryDuplicateService::class, [
-            'duplicate_service' => $this->duplicate_service,
-        ]);
-    }
+    // WHEN
+    $stories = $this->service->removeDuplicates($resolved_deck, $stories, 5);
 
-    public function test__removeDuplicates_WhenDuplicatesExist_ShouldRemoveStoriesWithDuplicates(): void
-    {
-        // GIVEN
-        $resolved_deck = $this->createResolvedDeck();
-        $stories = $this->createStoriesWithDuplicates();
-        $this->mockDuplicateService($stories, 2);
+    // THEN
+    expect($stories->getPulledFlashcards())->toHaveCount(2);
+    expect($stories->get())->toHaveCount(0);
+    expect($stories->getPulledFlashcards()[0]->getFrontWord())->toBe('word1');
+    expect($stories->getPulledFlashcards()[1]->getFrontWord())->toBe('word2');
+});
+test('remove duplicates when no duplicates in one story and duplicates in second story should remove stories with duplicates', function () {
+    // GIVEN
+    $resolved_deck = $this->createResolvedDeck();
+    $stories = $this->createStoriesWithNoDuplicatesAndDuplicates();
+    $this->mockNoDuplicatesAndDuplicate($stories, 2);
 
-        // WHEN
-        $stories = $this->service->removeDuplicates($resolved_deck, $stories, 5);
+    // WHEN
+    $stories = $this->service->removeDuplicates($resolved_deck, $stories, 5);
 
-        // THEN
-        $this->assertCount(2, $stories->getPulledFlashcards());
-        $this->assertCount(0, $stories->get());
-        $this->assertSame('word1', $stories->getPulledFlashcards()[0]->getFrontWord());
-        $this->assertSame('word2', $stories->getPulledFlashcards()[1]->getFrontWord());
-    }
+    // THEN
+    expect($stories->getPulledFlashcards())->toHaveCount(2);
+    expect($stories->get())->toHaveCount(1);
+    expect($stories->getPulledFlashcards()[0]->getFrontWord())->toBe('word4');
+    expect($stories->getPulledFlashcards()[1]->getFrontWord())->toBe('word3');
+});
+test('remove duplicates when no changes should keep stories intact', function () {
+    // GIVEN
+    $resolved_deck = $this->createResolvedDeck();
+    $stories = $this->createStoriesWithoutDuplicates();
+    $this->mockDuplicateService($stories, 3);
 
-    public function test__removeDuplicates_WhenNoDuplicatesInOneStoryAndDuplicatesInSecondStory_ShouldRemoveStoriesWithDuplicates(): void
-    {
-        // GIVEN
-        $resolved_deck = $this->createResolvedDeck();
-        $stories = $this->createStoriesWithNoDuplicatesAndDuplicates();
-        $this->mockNoDuplicatesAndDuplicate($stories, 2);
+    // WHEN
+    $stories = $this->service->removeDuplicates($resolved_deck, $stories, 3);
 
-        // WHEN
-        $stories = $this->service->removeDuplicates($resolved_deck, $stories, 5);
+    // THEN
+    expect($stories->getPulledFlashcards())->toBeEmpty();
+    expect($stories->get())->toHaveCount(1);
+    expect($stories->get()[0]->getStoryFlashcards())->toHaveCount(3);
+});
+test('remove duplicates when limit reached should truncate results', function () {
+    // GIVEN
+    $resolved_deck = $this->createResolvedDeck();
+    $stories = $this->createStoriesWithDuplicates();
+    $this->mockDuplicateService($stories, 2);
 
-        // THEN
-        $this->assertCount(2, $stories->getPulledFlashcards());
-        $this->assertCount(1, $stories->get());
-        $this->assertSame('word4', $stories->getPulledFlashcards()[0]->getFrontWord());
-        $this->assertSame('word3', $stories->getPulledFlashcards()[1]->getFrontWord());
-    }
+    // WHEN
+    $stories = $this->service->removeDuplicates($resolved_deck, $stories, 1);
 
-    public function test__removeDuplicates_WhenNoChanges_ShouldKeepStoriesIntact(): void
-    {
-        // GIVEN
-        $resolved_deck = $this->createResolvedDeck();
-        $stories = $this->createStoriesWithoutDuplicates();
-        $this->mockDuplicateService($stories, 3);
-
-        // WHEN
-        $stories = $this->service->removeDuplicates($resolved_deck, $stories, 3);
-
-        // THEN
-        $this->assertEmpty($stories->getPulledFlashcards());
-        $this->assertCount(1, $stories->get());
-        $this->assertCount(3, $stories->get()[0]->getStoryFlashcards());
-    }
-
-    public function test__removeDuplicates_WhenLimitReached_ShouldTruncateResults(): void
-    {
-        // GIVEN
-        $resolved_deck = $this->createResolvedDeck();
-        $stories = $this->createStoriesWithDuplicates();
-        $this->mockDuplicateService($stories, 2);
-
-        // WHEN
-        $stories = $this->service->removeDuplicates($resolved_deck, $stories, 1);
-
-        // THEN
-        $this->assertCount(1, $stories->getPulledFlashcards());
-        $this->assertCount(0, $stories->get());
-        $this->assertSame('word1', $stories->getPulledFlashcards()[0]->getFrontWord());
-    }
-}
+    // THEN
+    expect($stories->getPulledFlashcards())->toHaveCount(1);
+    expect($stories->get())->toHaveCount(0);
+    expect($stories->getPulledFlashcards()[0]->getFrontWord())->toBe('word1');
+});

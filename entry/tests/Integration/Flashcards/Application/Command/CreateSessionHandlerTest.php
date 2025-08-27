@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-namespace Tests\Integration\Flashcards\Application\Command;
-
 use App\Models\User;
 use Shared\Enum\SessionType;
 use App\Models\FlashcardDeck;
@@ -13,67 +11,51 @@ use Flashcard\Application\Command\CreateSession;
 use Flashcard\Application\Command\CreateSessionHandler;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
-class CreateSessionHandlerTest extends FlashcardTestCase
-{
-    use DatabaseTransactions;
+uses(FlashcardTestCase::class);
+uses(DatabaseTransactions::class);
 
-    private CreateSessionHandler $command_handler;
+beforeEach(function () {
+    $this->command_handler = $this->app->make(CreateSessionHandler::class);
+});
+test('create session handler should create session', function () {
+    // GIVEN
+    $user_id = User::factory()->create()->getId();
+    $deck_id = $this->createDeckId(FlashcardDeck::factory()->create([
+        'user_id' => $user_id->getValue(),
+    ]));
+    $cards_per_session = 5;
+    $device = 'Mozilla/Firefox';
+    $command = new CreateSession(
+        $user_id,
+        $cards_per_session,
+        $device,
+        $deck_id,
+        SessionType::FLASHCARD,
+    );
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->command_handler = $this->app->make(CreateSessionHandler::class);
-    }
+    // WHEN
+    $result = $this->command_handler->handle($command);
 
-    /**
-     * @test
-     */
-    public function createSessionHandler_ShouldCreateSession(): void
-    {
-        // GIVEN
-        $user_id = User::factory()->create()->getId();
-        $deck_id = $this->createDeckId(FlashcardDeck::factory()->create([
-            'user_id' => $user_id->getValue(),
-        ]));
-        $cards_per_session = 5;
-        $device = 'Mozilla/Firefox';
-        $command = new CreateSession(
-            $user_id,
-            $cards_per_session,
-            $device,
-            $deck_id,
-            SessionType::FLASHCARD,
-        );
+    // THEN
+    expect($result->success())->toBeTrue();
+});
+test('create session handler user is not deck owner fail', function () {
+    // GIVEN
+    $user_id = User::factory()->create()->getId();
+    $deck_id = $this->createDeckId(FlashcardDeck::factory()->create());
+    $cards_per_session = 5;
+    $device = 'Mozilla/Firefox';
+    $command = new CreateSession(
+        $user_id,
+        $cards_per_session,
+        $device,
+        $deck_id,
+        SessionType::FLASHCARD,
+    );
 
-        // WHEN
-        $result = $this->command_handler->handle($command);
+    // THEN
+    $this->expectException(ForbiddenException::class);
 
-        // THEN
-        $this->assertTrue($result->success());
-    }
-
-    /**
-     * @test
-     */
-    public function createSessionHandler_UserIsNotDeckOwner_fail(): void
-    {
-        // GIVEN
-        $user_id = User::factory()->create()->getId();
-        $deck_id = $this->createDeckId(FlashcardDeck::factory()->create());
-        $cards_per_session = 5;
-        $device = 'Mozilla/Firefox';
-        $command = new CreateSession(
-            $user_id,
-            $cards_per_session,
-            $device,
-            $deck_id,
-            SessionType::FLASHCARD,
-        );
-
-        // THEN
-        $this->expectException(ForbiddenException::class);
-
-        // WHEN
-        $result = $this->command_handler->handle($command);
-    }
-}
+    // WHEN
+    $result = $this->command_handler->handle($command);
+});

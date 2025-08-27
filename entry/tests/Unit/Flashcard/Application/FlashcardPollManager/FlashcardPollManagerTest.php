@@ -1,12 +1,7 @@
 <?php
 
 declare(strict_types=1);
-
-namespace Tests\Unit\Flashcard\Application\FlashcardPollManager;
-
-use Tests\TestCase;
 use Ramsey\Uuid\Uuid;
-use Mockery\MockInterface;
 use Shared\Utils\ValueObjects\UserId;
 use Flashcard\Domain\Models\Flashcard;
 use Flashcard\Domain\Models\FlashcardPoll;
@@ -17,132 +12,106 @@ use Flashcard\Application\Services\FlashcardPollManager;
 use Flashcard\Application\Services\FlashcardPollResolver;
 use Flashcard\Application\Repository\IFlashcardPollRepository;
 
-class FlashcardPollManagerTest extends TestCase
-{
-    private FlashcardPollManager $service;
+beforeEach(function () {
+    $this->flashcard_poll_resolver = Mockery::mock(FlashcardPollResolver::class);
+    $this->repository = Mockery::mock(IFlashcardPollRepository::class);
+    $this->selector = Mockery::mock(IFlashcardSelector::class);
+    $this->service = $this->app->make(FlashcardPollManager::class, [
+        'resolver' => $this->flashcard_poll_resolver,
+        'repository' => $this->repository,
+        'selector' => $this->selector,
+    ]);
+    $this->repository->shouldReceive('save')->andReturn();
+    $this->repository->shouldReceive('resetLeitnerLevelIfMaxLevelExceeded')->andReturn();
+});
+test('refresh when new poll add flashcards from selector to poll', function () {
+    // GIVEN
+    $user_id = new UserId(Uuid::uuid4()->toString());
+    $flashcards = [
+        Mockery::mock(Flashcard::class),
+        Mockery::mock(Flashcard::class),
+    ];
 
-    private FlashcardPollResolver $flashcard_poll_resolver;
-    private IFlashcardPollRepository|MockInterface $repository;
-    private IFlashcardSelector|MockInterface $selector;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->flashcard_poll_resolver = \Mockery::mock(FlashcardPollResolver::class);
-        $this->repository = \Mockery::mock(IFlashcardPollRepository::class);
-        $this->selector = \Mockery::mock(IFlashcardSelector::class);
-        $this->service = $this->app->make(FlashcardPollManager::class, [
-            'resolver' => $this->flashcard_poll_resolver,
-            'repository' => $this->repository,
-            'selector' => $this->selector,
-        ]);
-        $this->repository->shouldReceive('save')->andReturn();
-        $this->repository->shouldReceive('resetLeitnerLevelIfMaxLevelExceeded')->andReturn();
+    $i = 1;
+    foreach ($flashcards as $flashcard) {
+        $flashcard->shouldReceive('getId')->andReturn(new FlashcardId($i));
+        ++$i;
     }
 
-    /**
-     * @test
-     */
-    public function refresh_WhenNewPoll_AddFlashcardsFromSelectorToPoll(): void
-    {
-        // GIVEN
-        $user_id = new UserId(Uuid::uuid4()->toString());
-        $flashcards = [
-            \Mockery::mock(Flashcard::class),
-            \Mockery::mock(Flashcard::class),
-        ];
+    $poll = new FlashcardPoll($user_id, 0);
+    $this->flashcard_poll_resolver->shouldReceive('resolve')->andReturn($poll);
+    $this->selector->shouldReceive('selectToPoll')->andReturn($flashcards);
 
-        $i = 1;
-        foreach ($flashcards as $flashcard) {
-            $flashcard->shouldReceive('getId')->andReturn(new FlashcardId($i));
-            ++$i;
-        }
+    // WHEN
+    $poll = $this->service->refresh($user_id);
 
-        $poll = new FlashcardPoll($user_id, 0);
-        $this->flashcard_poll_resolver->shouldReceive('resolve')->andReturn($poll);
-        $this->selector->shouldReceive('selectToPoll')->andReturn($flashcards);
+    // THEN
+    expect(count($poll->getFlashcardIdsToAdd()))->toBe(2);
+    expect($poll->getFlashcardIdsToAdd()[0]->getValue())->toBe($flashcards[0]->getId()->getValue());
+    expect($poll->getFlashcardIdsToAdd()[1]->getValue())->toBe($flashcards[1]->getId()->getValue());
+});
+test('refresh when are flashcards to replace replace flashcards correctly', function () {
+    // GIVEN
+    $user_id = new UserId(Uuid::uuid4()->toString());
+    $to_purge = new FlashcardIdCollection([
+        new FlashcardId(9),
+        new FlashcardId(10),
+    ]);
 
-        // WHEN
-        $poll = $this->service->refresh($user_id);
+    $to_add = [
+        Mockery::mock(Flashcard::class),
+        Mockery::mock(Flashcard::class),
+    ];
 
-        // THEN
-        $this->assertSame(2, count($poll->getFlashcardIdsToAdd()));
-        $this->assertSame($flashcards[0]->getId()->getValue(), $poll->getFlashcardIdsToAdd()[0]->getValue());
-        $this->assertSame($flashcards[1]->getId()->getValue(), $poll->getFlashcardIdsToAdd()[1]->getValue());
+    $i = 1;
+    foreach ($to_add as $flashcard) {
+        $flashcard->shouldReceive('getId')->andReturn(new FlashcardId($i));
+        ++$i;
     }
 
-    /**
-     * @test
-     */
-    public function refresh_WhenAreFlashcardsToReplace_ReplaceFlashcardsCorrectly(): void
-    {
-        // GIVEN
-        $user_id = new UserId(Uuid::uuid4()->toString());
-        $to_purge = new FlashcardIdCollection([
-            new FlashcardId(9),
-            new FlashcardId(10),
-        ]);
+    $poll = new FlashcardPoll($user_id, 2, $to_purge, new FlashcardIdCollection(), 2);
+    $this->flashcard_poll_resolver->shouldReceive('resolve')->andReturn($poll);
+    $this->selector->shouldReceive('selectToPoll')->andReturn($to_add);
 
-        $to_add = [
-            \Mockery::mock(Flashcard::class),
-            \Mockery::mock(Flashcard::class),
-        ];
+    // WHEN
+    $poll = $this->service->refresh($user_id);
 
-        $i = 1;
-        foreach ($to_add as $flashcard) {
-            $flashcard->shouldReceive('getId')->andReturn(new FlashcardId($i));
-            ++$i;
-        }
+    // THEN
+    expect(count($poll->getFlashcardIdsToAdd()))->toBe(2);
+    expect($poll->getFlashcardIdsToAdd()[0]->getValue())->toBe($to_add[0]->getId()->getValue());
+    expect($poll->getFlashcardIdsToAdd()[1]->getValue())->toBe($to_add[1]->getId()->getValue());
+    expect($poll->getFlashcardIdsToPurge()[0]->getValue())->toBe($to_purge[0]->getValue());
+    expect($poll->getFlashcardIdsToPurge()[1]->getValue())->toBe($to_purge[1]->getValue());
+});
+test('refresh when no flashcards to replace should not replace flashcards', function () {
+    // GIVEN
+    $user_id = new UserId(Uuid::uuid4()->toString());
+    $to_purge = new FlashcardIdCollection([
+        new FlashcardId(9),
+        new FlashcardId(10),
+    ]);
 
-        $poll = new FlashcardPoll($user_id, 2, $to_purge, new FlashcardIdCollection(), 2);
-        $this->flashcard_poll_resolver->shouldReceive('resolve')->andReturn($poll);
-        $this->selector->shouldReceive('selectToPoll')->andReturn($to_add);
+    $to_add = [
+        Mockery::mock(Flashcard::class),
+        Mockery::mock(Flashcard::class),
+    ];
 
-        // WHEN
-        $poll = $this->service->refresh($user_id);
-
-        // THEN
-        $this->assertSame(2, count($poll->getFlashcardIdsToAdd()));
-        $this->assertSame($to_add[0]->getId()->getValue(), $poll->getFlashcardIdsToAdd()[0]->getValue());
-        $this->assertSame($to_add[1]->getId()->getValue(), $poll->getFlashcardIdsToAdd()[1]->getValue());
-        $this->assertSame($to_purge[0]->getValue(), $poll->getFlashcardIdsToPurge()[0]->getValue());
-        $this->assertSame($to_purge[1]->getValue(), $poll->getFlashcardIdsToPurge()[1]->getValue());
+    $i = 1;
+    foreach ($to_add as $flashcard) {
+        $flashcard->shouldReceive('getId')->andReturn(new FlashcardId($i));
+        ++$i;
     }
 
-    /**
-     * @test
-     */
-    public function refresh_WhenNoFlashcardsToReplace_ShouldNotReplaceFlashcards(): void
-    {
-        // GIVEN
-        $user_id = new UserId(Uuid::uuid4()->toString());
-        $to_purge = new FlashcardIdCollection([
-            new FlashcardId(9),
-            new FlashcardId(10),
-        ]);
+    $poll = new FlashcardPoll($user_id, 2, $to_purge, new FlashcardIdCollection(), 4);
+    $this->flashcard_poll_resolver->shouldReceive('resolve')->andReturn($poll);
+    $this->selector->shouldReceive('selectToPoll')->andReturn($to_add);
 
-        $to_add = [
-            \Mockery::mock(Flashcard::class),
-            \Mockery::mock(Flashcard::class),
-        ];
+    // WHEN
+    $poll = $this->service->refresh($user_id);
 
-        $i = 1;
-        foreach ($to_add as $flashcard) {
-            $flashcard->shouldReceive('getId')->andReturn(new FlashcardId($i));
-            ++$i;
-        }
-
-        $poll = new FlashcardPoll($user_id, 2, $to_purge, new FlashcardIdCollection(), 4);
-        $this->flashcard_poll_resolver->shouldReceive('resolve')->andReturn($poll);
-        $this->selector->shouldReceive('selectToPoll')->andReturn($to_add);
-
-        // WHEN
-        $poll = $this->service->refresh($user_id);
-
-        // THEN
-        $this->assertSame(2, count($poll->getFlashcardIdsToAdd()));
-        $this->assertSame($to_add[0]->getId()->getValue(), $poll->getFlashcardIdsToAdd()[0]->getValue());
-        $this->assertSame($to_add[1]->getId()->getValue(), $poll->getFlashcardIdsToAdd()[1]->getValue());
-        $this->assertCount(0, $poll->getFlashcardIdsToPurge());
-    }
-}
+    // THEN
+    expect(count($poll->getFlashcardIdsToAdd()))->toBe(2);
+    expect($poll->getFlashcardIdsToAdd()[0]->getValue())->toBe($to_add[0]->getId()->getValue());
+    expect($poll->getFlashcardIdsToAdd()[1]->getValue())->toBe($to_add[1]->getId()->getValue());
+    expect($poll->getFlashcardIdsToPurge())->toHaveCount(0);
+});
