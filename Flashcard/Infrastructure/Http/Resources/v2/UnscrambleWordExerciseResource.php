@@ -57,14 +57,14 @@ use Shared\Exercise\Exercises\IUnscrambleWordExerciseRead;
         ),
         new OAT\Property(
             property: 'indexed_keyboard',
-            description: 'Indexed keyboard characters which should be used to match the word',
+            description: 'Indexed version of the word',
             type: 'array',
             items: new OAT\Items(type: 'string'),
             example: [
-                ['c' => 'o', 'i' => 0],
-                ['c' => 'l', 'i' => 1],
-                ['c' => 's', 'i' => 2],
-                ['c' => 'p', 'i' => 3],
+                ['c' => 'p', 'i' => 0],
+                ['c' => 'o', 'i' => 1],
+                ['c' => 'l', 'i' => 2],
+                ['c' => 's', 'i' => 3],
                 ['c' => 'k', 'i' => 4],
                 ['c' => 'a', 'i' => 5],
             ]
