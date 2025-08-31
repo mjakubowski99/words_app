@@ -39,7 +39,7 @@ test('store success', function () {
     // THEN
     $response->assertStatus(200);
 });
-test('store scramble word exercise success', function () {
+test('store unscramble word exercise success', function () {
     // GIVEN
     $user = User::factory()->create();
     $deck = FlashcardDeck::factory()->create([
@@ -59,6 +59,8 @@ test('store scramble word exercise success', function () {
             'session_type' => SessionType::UNSCRAMBLE_WORDS->value,
         ]);
 
+    $response->dump();
+
     // THEN
     $response->assertStatus(200);
 
@@ -68,6 +70,7 @@ test('store scramble word exercise success', function () {
         'type' => SessionType::UNSCRAMBLE_WORDS->value,
     ]);
 });
+
 test('store word match exercise success', function () {
     // GIVEN
     $user = User::factory()->create();
@@ -96,6 +99,7 @@ test('store word match exercise success', function () {
         'type' => SessionType::WORD_MATCH->value,
     ]);
 });
+
 test('store word match exercise with story success', function () {
     // GIVEN
     $user = User::factory()->create();
