@@ -131,6 +131,6 @@ class ActiveSession implements IRepetitionAlgorithmDTO
 
     public function updatePoll(SessionFlashcardId $id): bool
     {
-        return !$this->has_deck;
+        return !$this->hasDeck();
     }
 }

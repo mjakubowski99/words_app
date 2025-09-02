@@ -37,6 +37,12 @@ use Shared\Exercise\Exercises\IUnscrambleWordExerciseRead;
             example: 'This country is located in central Europe.'
         ),
         new OAT\Property(
+            property: 'context_sentence_translation',
+            description: 'Context sentence translation in which the word is used',
+            type: 'string',
+            example: 'Polska to kraj położony w Europie Środkowej.'
+        ),
+        new OAT\Property(
             property: 'back_word',
             description: 'The correct word to be unscrambled',
             type: 'string',
@@ -84,6 +90,7 @@ class UnscrambleWordExerciseResource extends JsonResource
             'exercise_entry_id' => $this->resource->getExerciseEntryId(),
             'front_word' => $this->resource->getFrontWord(),
             'context_sentence' => $this->resource->getContextSentence(),
+            'context_sentence_translation' => $this->resource->getContextSentenceTranslation(),
             'back_word' => $this->resource->getBackWord(),
             'emoji' => $this->resource->getEmoji(),
             'keyboard' => $this->resource->getKeyboard(),
