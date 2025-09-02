@@ -85,6 +85,9 @@
         "test-coverage": [
             "XDEBUG_MODE=coverage ./vendor/bin/pest tests/ --coverage-html=coverage/"
         ],
+        "test-parallel": [
+            "XDEBUG_MODE=coverage ./vendor/bin/pest tests/ --compact --parallel"
+        ],
         "test-mutate": [
             "XDEBUG_MODE=coverage ./vendor/bin/pest tests/ --mutate --parallel --everything --covered-only"
         ]

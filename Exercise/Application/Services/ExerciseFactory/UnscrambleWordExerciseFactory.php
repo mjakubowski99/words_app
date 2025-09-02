@@ -23,6 +23,7 @@ class UnscrambleWordExerciseFactory implements IExerciseFactory
             $summaries->getSummaries()[0]->getBackWord(),
             $summaries->getSummaries()[0]->getBackContext(),
             $summaries->getSummaries()[0]->getFrontWord(),
+            $summaries->getSummaries()[0]->getFrontContext(),
             $summaries->getSummaries()[0]->getEmoji(),
         );
 

@@ -44,6 +44,7 @@ test('create should create correct exercise', function () {
         'getWord' => 'word',
         'getStatus' => ExerciseStatus::NEW,
         'getContextSentence' => 'context sentence',
+        'getContextSentenceTranslation' => 'transaltion',
         'getExerciseType' => ExerciseType::UNSCRAMBLE_WORDS,
         'getScrambledWord' => 'rdow',
         'getWordTranslation' => 'slowo',

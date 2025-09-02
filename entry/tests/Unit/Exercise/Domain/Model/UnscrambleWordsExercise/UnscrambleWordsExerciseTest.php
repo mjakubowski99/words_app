@@ -13,6 +13,7 @@ test('new exercise should create exercise with scrambled word', function () {
         'word',
         'context sentence',
         'word translation',
+        'context sentence translation',
         Emoji::fromUnicode(';)'),
     );
 
@@ -35,12 +36,13 @@ test('new exercise should create only one exercise entry with correct properties
         'word',
         'context sentence',
         'word translation',
+        'context sentence translation',
         Emoji::fromUnicode(';)'),
     );
 
     // THEN
-    expect($exercise->getExerciseEntries())->toHaveCount(1);
-    expect($exercise->getExerciseEntries()[0]->getScore())->toBe(0.0);
-    expect($exercise->getExerciseEntries()[0]->getLastUserAnswer())->toBeNull();
-    expect($exercise->getExerciseEntries()[0]->getCorrectAnswer()->toString())->toBe('word');
+    expect($exercise->getExerciseEntries())->toHaveCount(1)
+        ->and($exercise->getExerciseEntries()[0]->getScore())->toBe(0.0)
+        ->and($exercise->getExerciseEntries()[0]->getLastUserAnswer())->toBeNull()
+        ->and($exercise->getExerciseEntries()[0]->getCorrectAnswer()->toString())->toBe('word');
 });

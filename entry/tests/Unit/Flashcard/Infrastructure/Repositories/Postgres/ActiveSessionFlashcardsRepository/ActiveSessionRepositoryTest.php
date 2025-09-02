@@ -20,6 +20,7 @@ uses(ActiveSessionRepositoryTrait::class);
 beforeEach(function () {
     $this->repository = $this->app->make(ActiveSessionRepository::class);
 });
+
 test('find by exercise entry ids should find correct flashcards', function () {
     // GIVEN
     $exercise_entry_ids = [1, 2];
@@ -38,16 +39,42 @@ test('find by exercise entry ids should find correct flashcards', function () {
     ];
 
     // WHEN
+    /** @var ActiveSession[] $sessions */
     $sessions = $this->repository->findByExerciseEntryIds($exercise_entry_ids);
 
     // THEN
-    expect($sessions)->toHaveCount(2);
-    expect($sessions[0]->getSessionFlashcards())->toHaveCount(1);
-    expect($sessions[1]->getSessionFlashcards())->toHaveCount(1);
-
-    expect($sessions[0]->getSessionFlashcards()[0]->getSessionFlashcardId()->getValue())->toBe($session_flashcards_to_find[0]->id);
-    expect($sessions[1]->getSessionFlashcards()[0]->getSessionFlashcardId()->getValue())->toBe($session_flashcards_to_find[1]->id);
+    expect($sessions)->toHaveCount(2)
+        ->and($sessions[0]->getSessionFlashcards())->toHaveCount(1)
+        ->and($sessions[1]->getSessionFlashcards())->toHaveCount(1)
+        ->and($sessions[0])->toBeInstanceOf(ActiveSession::class)
+        ->and($sessions[0])->toBeInstanceOf(ActiveSession::class)
+        ->and($sessions[0]->getSessionFlashcards()[0]->getSessionFlashcardId()->getValue())->toBe($session_flashcards_to_find[0]->id)
+        ->and($sessions[1]->getSessionFlashcards()[0]->getSessionFlashcardId()->getValue())->toBe($session_flashcards_to_find[1]->id);
 });
+
+test('correct update poll status', function () {
+    // GIVEN
+    $exercise_entry_ids = [1];
+    $learning_session = $this->createLearningSession([
+        'status' => SessionStatus::IN_PROGRESS,
+        'flashcard_deck_id' => null,
+    ]);
+    $flashcard = $this->createSessionFlashcard([
+        'rating' => null,
+        'exercise_entry_id' => $exercise_entry_ids[0],
+        'learning_session_id' => $learning_session->id,
+    ]);
+
+    // WHEN
+    /** @var ActiveSession[] $sessions */
+    $sessions = $this->repository->findByExerciseEntryIds($exercise_entry_ids);
+
+    // THEN
+    expect($sessions)->toHaveCount(1)
+        ->and($sessions[0]->updatePoll(new SessionFlashcardId($flashcard->id)))
+        ->toBeTrue();
+});
+
 test('find by exercise entry ids returns correct ratings', function () {
     // GIVEN
     $exercise_entry_ids = [1, 2];
@@ -61,16 +88,19 @@ test('find by exercise entry ids returns correct ratings', function () {
     $sessions = $this->repository->findByExerciseEntryIds($exercise_entry_ids);
 
     // THEN
-    expect($sessions)->toHaveCount(1);
-    expect($sessions[0]->getSessionFlashcards())->toHaveCount(2);
+    expect($sessions)->toHaveCount(1)
+        ->and($sessions[0]->getSessionFlashcards())->toHaveCount(2);
 
     foreach ($sessions[0]->getSessionFlashcards() as $flashcard) {
         $expected_flashcard = $this->findBySessionFlashcardId($flashcard->getSessionFlashcardId(), $session_flashcards);
 
-        expect($expected_flashcard)->not->toBeNull();
-        expect($flashcard->getRating()->value)->toBe($expected_flashcard->rating->value);
+        expect($expected_flashcard)
+            ->not->toBeNull()
+            ->and($flashcard->getRating()->value)
+            ->toBe($expected_flashcard->rating->value);
     }
 });
+
 test('find by exercise entry ids returns correct session data', function () {
     // GIVEN
     $exercise_entry_ids = [1, 2];
@@ -95,15 +125,13 @@ test('find by exercise entry ids returns correct session data', function () {
     $sessions = $this->repository->findByExerciseEntryIds($exercise_entry_ids);
 
     // THEN
-    expect($sessions)->toHaveCount(2);
-    expect($sessions[0]->getSessionFlashcards())->toHaveCount(1);
-    expect($sessions[1]->getSessionFlashcards())->toHaveCount(1);
-
-    expect($sessions[0]->getSessionId()->getValue())->toBe($session_flashcards[0]->learning_session_id);
-    expect($sessions[0]->getMaxCount())->toBe($session_flashcards[0]->session->cards_per_session);
-
-    expect($sessions[1]->getSessionId()->getValue())->toBe($session_flashcards[1]->learning_session_id);
-    expect($sessions[1]->getMaxCount())->toBe($session_flashcards[1]->session->cards_per_session);
+    expect($sessions)->toHaveCount(2)
+        ->and($sessions[0]->getSessionFlashcards())->toHaveCount(1)
+        ->and($sessions[1]->getSessionFlashcards())->toHaveCount(1)
+        ->and($sessions[0]->getSessionId()->getValue())->toBe($session_flashcards[0]->learning_session_id)
+        ->and($sessions[0]->getMaxCount())->toBe($session_flashcards[0]->session->cards_per_session)
+        ->and($sessions[1]->getSessionId()->getValue())->toBe($session_flashcards[1]->learning_session_id)
+        ->and($sessions[1]->getMaxCount())->toBe($session_flashcards[1]->session->cards_per_session);
 });
 test('find by exercise entry ids filters out finished sessions', function () {
     // GIVEN

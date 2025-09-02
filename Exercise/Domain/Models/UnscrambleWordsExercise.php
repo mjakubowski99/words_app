@@ -20,6 +20,7 @@ class UnscrambleWordsExercise extends Exercise
         private string $word,
         private string $context_sentence,
         private string $word_translation,
+        private ?string $context_sentence_translation,
         private ?Emoji $emoji,
         private string $scrambled_word,
         ?UnscrambleWordAnswer $last_answer,
@@ -46,6 +47,7 @@ class UnscrambleWordsExercise extends Exercise
         string $word,
         string $context_sentence,
         string $word_translation,
+        string $context_sentence_translation,
         ?Emoji $emoji,
     ): self {
         $word_arr = mb_str_split($word);
@@ -60,6 +62,7 @@ class UnscrambleWordsExercise extends Exercise
             $word,
             $context_sentence,
             $word_translation,
+            $context_sentence_translation,
             $emoji,
             $scrambled_word,
             null,
@@ -80,6 +83,11 @@ class UnscrambleWordsExercise extends Exercise
     public function getContextSentence(): string
     {
         return $this->context_sentence;
+    }
+
+    public function getContextSentenceTranslation(): ?string
+    {
+        return $this->context_sentence_translation;
     }
 
     public function getEmoji(): ?Emoji

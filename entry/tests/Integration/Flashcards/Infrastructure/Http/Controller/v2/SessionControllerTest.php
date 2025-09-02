@@ -59,8 +59,6 @@ test('store unscramble word exercise success', function () {
             'session_type' => SessionType::UNSCRAMBLE_WORDS->value,
         ]);
 
-    $response->dump();
-
     // THEN
     $response->assertStatus(200);
 

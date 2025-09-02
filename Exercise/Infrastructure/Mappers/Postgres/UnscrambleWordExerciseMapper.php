@@ -52,6 +52,7 @@ class UnscrambleWordExerciseMapper
                 'word' => $exercise->getWord(),
                 'context_sentence' => $exercise->getContextSentence(),
                 'word_translation' => $exercise->getWordTranslation(),
+                'context_sentence_translation' => $exercise->getContextSentenceTranslation(),
                 'scrambled_word' => $exercise->getScrambledWord(),
                 'emoji' => $exercise->getEmoji()?->toUnicode(),
             ]);
@@ -95,6 +96,7 @@ class UnscrambleWordExerciseMapper
                 'unscramble_word_exercises.context_sentence',
                 'unscramble_word_exercises.word_translation',
                 'unscramble_word_exercises.emoji',
+                'unscramble_word_exercises.context_sentence_translation',
                 'exercise_entries.id as exercise_entry_id',
                 'exercise_entries.last_answer',
                 'exercise_entries.last_answer_correct',
@@ -116,6 +118,7 @@ class UnscrambleWordExerciseMapper
             $row->word,
             $row->context_sentence,
             $row->word_translation,
+            $row->context_sentence_translation,
             $row->emoji ? Emoji::fromUnicode($row->emoji) : null,
             $row->scrambled_word,
             $row->last_answer ? new UnscrambleWordAnswer($entry_id, $row->last_answer) : null,
