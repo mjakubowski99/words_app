@@ -9,6 +9,7 @@ use Flashcard\Domain\ValueObjects\SessionId;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Shared\Exercise\Exercises\IExerciseReadFacade;
 use Flashcard\Application\ReadModels\ExerciseSummary;
+use Flashcard\Application\Command\GetSessionScoreHandler;
 use Flashcard\Application\Query\GetNextSessionFlashcardsHandler;
 use Flashcard\Infrastructure\Http\Resources\v2\WordMatchExerciseResource;
 use Flashcard\Infrastructure\Http\Resources\v2\NextSessionFlashcardsResource;
@@ -19,14 +20,22 @@ class NextSessionFlashcardResourceFactory
     public function __construct(
         private GetNextSessionFlashcardsHandler $query,
         private IExerciseReadFacade $exercise_read_facade,
+        private GetSessionScoreHandler $get_session_score,
     ) {}
 
     public function make(SessionId $id, int $limit): NextSessionFlashcardsResource
     {
         $flashcards = $this->query->handle($id, $limit);
 
+        if ($flashcards->getIsFinished()) {
+            $score = $this->get_session_score->handle($id);
+        } else {
+            $score = null;
+        }
+
         return new NextSessionFlashcardsResource([
             'flashcards' => $flashcards,
+            'score' => $score,
             'exercises' => array_map(function (ExerciseSummary $summary) use ($id) {
                 $resource = $this->resolveExerciseResource($summary);
 

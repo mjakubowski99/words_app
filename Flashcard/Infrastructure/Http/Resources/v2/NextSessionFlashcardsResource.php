@@ -50,6 +50,11 @@ use Flashcard\Application\ReadModels\SessionFlashcardsRead;
                     type: 'boolean'
                 ),
                 new OAT\Property(
+                    property: 'score',
+                    description: 'Score achieved in the session. Null if session is not finished yet.',
+                    type: 'boolean'
+                ),
+                new OAT\Property(
                     property: 'next_flashcards',
                     description: 'List of flashcards in the session',
                     type: 'array',
@@ -186,6 +191,7 @@ class NextSessionFlashcardsResource extends JsonResource
                         'data' => $exercise['resource'],
                     ];
                 }, $exercises),
+                'score' => $this->resource['score'],
             ],
         ];
     }

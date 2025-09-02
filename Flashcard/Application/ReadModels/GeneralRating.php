@@ -31,4 +31,15 @@ class GeneralRating
     {
         return $this->value;
     }
+
+    public function toScore(): float
+    {
+        return match ($this->value) {
+            GeneralRatingType::NEW => 0.0,
+            GeneralRatingType::WEAK => 25.0,
+            GeneralRatingType::UNKNOWN => 50.0,
+            GeneralRatingType::GOOD => 75.0,
+            GeneralRatingType::VERY_GOOD => 100.0,
+        };
+    }
 }

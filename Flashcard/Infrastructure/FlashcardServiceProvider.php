@@ -31,6 +31,7 @@ use Flashcard\Application\Repository\ISessionFlashcardReadRepository;
 use Flashcard\Infrastructure\Repositories\Postgres\SessionRepository;
 use Flashcard\Application\Repository\INextSessionFlashcardsRepository;
 use Flashcard\Infrastructure\Repositories\Postgres\FlashcardRepository;
+use Flashcard\Application\Repository\ILearningSessionFlashcardRepository;
 use Flashcard\Infrastructure\Repositories\Postgres\SessionReadRepository;
 use Flashcard\Application\Repository\IRateableSessionFlashcardsRepository;
 use Flashcard\Infrastructure\Repositories\Postgres\ActiveSessionRepository;
@@ -42,6 +43,7 @@ use Flashcard\Infrastructure\Repositories\Postgres\FlashcardDeckReadRepository;
 use Flashcard\Infrastructure\Repositories\Postgres\FlashcardDuplicateRepository;
 use Flashcard\Infrastructure\Repositories\Postgres\SessionFlashcardReadRepository;
 use Flashcard\Infrastructure\Repositories\Postgres\NextSessionFlashcardsRepository;
+use Flashcard\Infrastructure\Repositories\Postgres\LearningSessionFlashcardRepository;
 use Flashcard\Infrastructure\Repositories\Postgres\RateableSessionFlashcardsRepository;
 
 class FlashcardServiceProvider extends ServiceProvider
@@ -68,5 +70,6 @@ class FlashcardServiceProvider extends ServiceProvider
         $this->app->bind(IFlashcardPollRepository::class, FlashcardPollRepository::class);
         $this->app->bind(IActiveSessionRepository::class, ActiveSessionRepository::class);
         $this->app->bind(IStoryRepository::class, StoryRepository::class);
+        $this->app->bind(ILearningSessionFlashcardRepository::class, LearningSessionFlashcardRepository::class);
     }
 }
