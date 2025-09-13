@@ -11,6 +11,7 @@ class WordMatchExerciseReadEntry implements IWordMatchExerciseReadEntry
 {
     public function __construct(
         private ExerciseEntryId $exercise_entry_id,
+        private bool $answered,
         private string $word,
         private string $word_translation,
         private string $sentence
@@ -19,6 +20,11 @@ class WordMatchExerciseReadEntry implements IWordMatchExerciseReadEntry
     public function getExerciseEntryId(): ExerciseEntryId
     {
         return $this->exercise_entry_id;
+    }
+
+    public function isAnswered(): bool
+    {
+        return $this->answered;
     }
 
     public function getWord(): string

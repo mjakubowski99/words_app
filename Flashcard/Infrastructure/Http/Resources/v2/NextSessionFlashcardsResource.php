@@ -134,12 +134,11 @@ use Flashcard\Application\ReadModels\SessionFlashcardsRead;
                                 discriminator: new OAT\Discriminator(
                                     propertyName: 'exercise_type',
                                     mapping: [
-                                        ExerciseType::UNSCRAMBLE_WORDS->value => '#/components/schemas/UnscrambleWordExerciseResource',
-                                        ExerciseType::WORD_MATCH->value => '#/components/schemas/WordMatchExerciseResource',
+                                        ExerciseType::UNSCRAMBLE_WORDS->value => '#/components/schemas/Resources\Flashcard\v2\UnscrambleWordExerciseResource',
+                                        ExerciseType::WORD_MATCH->value => '#/components/schemas/Resources\Flashcard\v2\WordMatchExerciseResource',
                                     ]
                                 )
                             ),
-                            // new OAT\Schema(ref: '#/components/schemas/NextType')
                         ]
                     )
                 ),

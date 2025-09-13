@@ -9,6 +9,7 @@ test('get sentence part before word should return correct part', function (strin
     // GIVEN
     $entry = new WordMatchExerciseReadEntry(
         new ExerciseEntryId(1),
+        false,
         $word,
         'translation',
         $sentence
@@ -25,6 +26,7 @@ test('get sentence part after word should return correct part', function (string
     // GIVEN
     $entry = new WordMatchExerciseReadEntry(
         new ExerciseEntryId(1),
+        false,
         $word,
         'translation',
         $sentence

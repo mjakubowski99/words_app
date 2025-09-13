@@ -35,6 +35,8 @@ class StoryFlashcard extends Model
 
     protected $table = 'story_flashcards';
 
+    protected $guarded = [];
+
     public function flashcard(): BelongsTo
     {
         return $this->belongsTo(Flashcard::class);

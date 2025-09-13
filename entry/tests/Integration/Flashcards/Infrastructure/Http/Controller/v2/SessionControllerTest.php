@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 use App\Models\User;
 use App\Models\Admin;
 use App\Models\Story;
@@ -39,6 +40,7 @@ test('store success', function () {
     // THEN
     $response->assertStatus(200);
 });
+
 test('store unscramble word exercise success', function () {
     // GIVEN
     $user = User::factory()->create();
@@ -88,6 +90,7 @@ test('store word match exercise success', function () {
             'flashcard_deck_id' => $deck->id,
             'session_type' => SessionType::WORD_MATCH->value,
         ]);
+    $response->dump();
 
     // THEN
     $response->assertStatus(200);
@@ -133,6 +136,7 @@ test('store word match exercise with story success', function () {
         'type' => SessionType::WORD_MATCH->value,
     ]);
 });
+
 test('store when admin deck success', function () {
     // GIVEN
     $user = $this->createUser();
@@ -162,6 +166,7 @@ test('store when admin deck success', function () {
         'user_id' => $user->id,
     ]);
 });
+
 test('rate success', function () {
     // GIVEN
     $user = User::factory()->create();
@@ -187,6 +192,7 @@ test('rate success', function () {
     // THEN
     $response->assertStatus(200);
 });
+
 test('rate when flashcard from poll', function () {
     // GIVEN
     $user = User::factory()->create();
@@ -215,6 +221,7 @@ test('rate when flashcard from poll', function () {
     $response->assertStatus(200);
     expect($response->json('data.session.next_flashcards.0.front_word'))->toBe($flashcard_poll->flashcard->front_word);
 });
+
 test('rate when admin flashcard success', function () {
     // GIVEN
     Flashcard::query()->forceDelete();
@@ -254,6 +261,7 @@ test('rate when admin flashcard success', function () {
     $response->assertStatus(200);
     expect($response->json()['data']['session']['next_flashcards'][0]['front_word'])->toBe($sm_two_flashcard->flashcard->front_word);
 });
+
 test('rate when flashcard already rated bad request', function () {
     // GIVEN
     $user = User::factory()->create();
