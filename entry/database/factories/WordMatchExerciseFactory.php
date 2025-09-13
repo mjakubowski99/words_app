@@ -17,6 +17,7 @@ class WordMatchExerciseFactory extends ExerciseFactory
         $properties = [
             'story_id' => $with_story ? Story::factory()->create()->id : null,
             'sentences' => [],
+            'answer_options' => [],
         ];
         for ($i = 0; $i < $entries_count; ++$i) {
             $word = Factory::create()->word;
@@ -25,6 +26,7 @@ class WordMatchExerciseFactory extends ExerciseFactory
                 'sentence' => Factory::create()->word . $word . Factory::create()->word,
                 'translation' => Factory::create()->word,
             ];
+            $properties['answer_options'][] = $word;
         }
         $exercise = Exercise::factory()->create(array_merge($attributes, [
             'properties' => json_encode($properties),
@@ -39,6 +41,7 @@ class WordMatchExerciseFactory extends ExerciseFactory
                 'last_answer_correct' => null,
                 'score' => 0.0,
                 'answers_count' => 0,
+                'correct_answer' => $properties['sentences'][$i]['word'],
             ]);
         }
 

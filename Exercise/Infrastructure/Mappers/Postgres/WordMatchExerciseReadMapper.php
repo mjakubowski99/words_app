@@ -30,6 +30,7 @@ class WordMatchExerciseReadMapper
         foreach ($entries as $entry) {
             $exercise_entries[] = new WordMatchExerciseReadEntry(
                 exercise_entry_id: new ExerciseEntryId($entry->exercise_entry_id),
+                answered: $entry->last_answer !== null,
                 word: $properties->getWord($entry->order),
                 word_translation: $properties->getTranslation($entry->order),
                 sentence: $properties->getSentence($entry->order),

@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 use App\Models\Exercise;
 use App\Models\ExerciseEntry;
 use App\Models\UnscrambleWordExercise;
@@ -35,6 +36,7 @@ test('answer unscramble word exercise when exercise exists and valid answer succ
         'score' => 75.0,
     ]);
 });
+
 test('answer unscramble word exercise when exercise exists and invalid answer success', function () {
     // GIVEN
     $user = $this->createUser();
@@ -68,15 +70,16 @@ test('answer unscramble word exercise when exercise exists and invalid answer su
     ]);
 
     // comaprsion trxll vs tralalal
-    expect($response->json('data.assessment.0.correct'))->toBe(true);
-    expect($response->json('data.assessment.1.correct'))->toBe(true);
-    expect($response->json('data.assessment.2.correct'))->toBe(false);
-    expect($response->json('data.assessment.3.correct'))->toBe(true);
-    expect($response->json('data.assessment.4.correct'))->toBe(false);
-    expect($response->json('data.assessment.5.correct'))->toBe(false);
-    expect($response->json('data.assessment.6.correct'))->toBe(false);
-    expect($response->json('data.assessment.7.correct'))->toBe(false);
+    expect($response->json('data.assessment.0.correct'))->toBe(true)
+        ->and($response->json('data.assessment.1.correct'))->toBe(true)
+        ->and($response->json('data.assessment.2.correct'))->toBe(false)
+        ->and($response->json('data.assessment.3.correct'))->toBe(true)
+        ->and($response->json('data.assessment.4.correct'))->toBe(false)
+        ->and($response->json('data.assessment.5.correct'))->toBe(false)
+        ->and($response->json('data.assessment.6.correct'))->toBe(false)
+        ->and($response->json('data.assessment.7.correct'))->toBe(false);
 });
+
 test('skip unscramble word exercise when exercise exists success', function () {
     // GIVEN
     $user = $this->createUser();
@@ -92,6 +95,7 @@ test('skip unscramble word exercise when exercise exists success', function () {
     // THEN
     $response->assertStatus(204);
 });
+
 test('skip unscramble word exercise when exercise already done success', function () {
     // GIVEN
     $user = $this->createUser();
@@ -107,6 +111,7 @@ test('skip unscramble word exercise when exercise already done success', functio
     // THEN
     $response->assertStatus(403);
 });
+
 test('answer word match exercise when exercise exists and valid answer success', function () {
     // GIVEN
     $user = $this->createUser();
@@ -135,6 +140,7 @@ test('answer word match exercise when exercise exists and valid answer success',
         'status' => ExerciseStatus::IN_PROGRESS,
     ]);
 });
+
 test('answer word match exercise when one valid answer and one invalid success', function () {
     // GIVEN
     $user = $this->createUser();
@@ -161,13 +167,43 @@ test('answer word match exercise when one valid answer and one invalid success',
 
     // THEN
     $response->assertOk();
-    expect($response->json('data.assessments.0.is_correct'))->toBeTrue();
-    expect($response->json('data.assessments.1.is_correct'))->toBeFalse();
+    expect($response->json('data.assessments.0.is_correct'))->toBeTrue()
+        ->and($response->json('data.assessments.1.is_correct'))->toBeFalse();
     $this->assertDatabaseHas('exercises', [
         'id' => $exercise->id,
         'status' => ExerciseStatus::IN_PROGRESS,
     ]);
 });
+
+test('answer word match exercise remove options', function () {
+    // GIVEN
+    $user = $this->createUser();
+    $exercise = WordMatchExerciseFactory::createNew([
+        'user_id' => $user->id,
+        'status' => ExerciseStatus::NEW,
+    ], 1, false);
+
+    // WHEN
+    $response = $this->actingAs($user)->putJson(route('v2.exercises.word-match.answer', [
+        'exercise_id' => $exercise->id,
+    ]), [
+        'answers' => [
+            [
+                'exercise_entry_id' => $exercise->entries[0]->id,
+                'answer' => $exercise->entries[0]->correct_answer,
+            ],
+        ],
+    ]);
+
+    // THEN
+    $response->assertOk();
+    $exercise = Exercise::findOrFail($exercise->id);
+
+    expect(json_decode($exercise->properties)->answer_options)
+        ->toBeArray()
+        ->toHaveCount(0);
+});
+
 test('answer word match exercise when two valid answers success', function () {
     // GIVEN
     $user = $this->createUser();
@@ -194,13 +230,14 @@ test('answer word match exercise when two valid answers success', function () {
 
     // THEN
     $response->assertOk();
-    expect($response->json('data.assessments.0.is_correct'))->toBeTrue();
-    expect($response->json('data.assessments.1.is_correct'))->toBeTrue();
+    expect($response->json('data.assessments.0.is_correct'))->toBeTrue()
+        ->and($response->json('data.assessments.1.is_correct'))->toBeTrue();
     $this->assertDatabaseHas('exercises', [
         'id' => $exercise->id,
         'status' => ExerciseStatus::DONE,
     ]);
 });
+
 test('answer word match exercise when exercise with story success', function () {
     // GIVEN
     $user = $this->createUser();
@@ -229,6 +266,7 @@ test('answer word match exercise when exercise with story success', function () 
         'status' => ExerciseStatus::DONE,
     ]);
 });
+
 test('skip word match exercise skip exercise', function () {
     // GIVEN
     $user = $this->createUser();
@@ -249,6 +287,7 @@ test('skip word match exercise skip exercise', function () {
         'status' => ExerciseStatus::SKIPPED,
     ]);
 });
+
 test('skip word match exercise not owner fail', function () {
     // GIVEN
     $user = $this->createUser();

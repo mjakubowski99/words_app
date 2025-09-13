@@ -26,6 +26,20 @@ class WordMatchExercise extends Exercise
         $this->word_match_entries = $exercise_entries;
     }
 
+    public function assessAnswer(Answer $answer): AnswerAssessment
+    {
+        $assessment = parent::assessAnswer($answer);
+
+        if ($assessment->isCorrect()) {
+            $this->options = array_filter(
+                $this->options,
+                fn ($option) => mb_strtolower($option) !== mb_strtolower($answer->toString())
+            );
+        }
+
+        return $assessment;
+    }
+
     public static function newFromSummaries(ISessionFlashcardSummaries $summaries, UserId $user_id): self
     {
         $exercise_entries = [];

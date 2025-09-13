@@ -42,6 +42,14 @@ class UnscrambleWordsExercise extends Exercise
         parent::__construct($id, $user_id, [$entry], $status, ExerciseType::UNSCRAMBLE_WORDS);
     }
 
+    public static function scramble(string $word): string
+    {
+        $word_arr = mb_str_split($word);
+        shuffle($word_arr);
+
+        return implode('', $word_arr);
+    }
+
     public static function newExercise(
         UserId $user_id,
         string $word,
@@ -50,9 +58,11 @@ class UnscrambleWordsExercise extends Exercise
         string $context_sentence_translation,
         ?Emoji $emoji,
     ): self {
-        $word_arr = mb_str_split($word);
-        shuffle($word_arr);
-        $scrambled_word = implode('', $word_arr);
+        $scrambled_word = self::scramble($word);
+
+        if ($word === $scrambled_word) {
+            $scrambled_word = self::scramble($word);
+        }
 
         return new self(
             ExerciseId::noId(),

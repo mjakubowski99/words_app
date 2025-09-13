@@ -30,6 +30,7 @@ class WordMatchExerciseAnswerHandler extends AbstractExerciseAnswerHandler
         if (!$exercise instanceof WordMatchExercise) {
             throw new InvalidExerciseTypeException();
         }
+
         $this->repository->save($exercise);
     }
 }

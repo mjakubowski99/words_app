@@ -10,6 +10,8 @@ interface IWordMatchExerciseReadEntry
 {
     public function getExerciseEntryId(): ExerciseEntryId;
 
+    public function isAnswered(): bool;
+
     public function getWord(): string;
 
     public function getWordTranslation(): string;

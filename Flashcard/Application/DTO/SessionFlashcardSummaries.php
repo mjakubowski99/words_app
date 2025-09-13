@@ -37,13 +37,13 @@ class SessionFlashcardSummaries implements ISessionFlashcardSummaries
 
         return new self(
             $story->getId(),
-            array_map(function (StoryFlashcard $story_flashcard) use (&$i, $base_story_flashcard) {
+            array_map(function (StoryFlashcard $story_flashcard) use (&$i) {
                 ++$i;
 
                 return new SessionFlashcardSummary(
                     $i,
                     $story_flashcard->getFlashcard(),
-                    !$story_flashcard->getFlashcard()->getId()->equals($base_story_flashcard->getId()),
+                    false,
                     true,
                     $story_flashcard->getSentenceOverride(),
                 );
@@ -69,13 +69,13 @@ class SessionFlashcardSummaries implements ISessionFlashcardSummaries
 
         return new self(
             null,
-            array_map(function (Flashcard $flashcard) use (&$i, $base_flashcard) {
+            array_map(function (Flashcard $flashcard) use (&$i) {
                 ++$i;
 
                 return new SessionFlashcardSummary(
                     $i,
                     $flashcard,
-                    !$flashcard->getId()->equals($base_flashcard->getId()),
+                    false,
                     false,
                     null,
                 );
