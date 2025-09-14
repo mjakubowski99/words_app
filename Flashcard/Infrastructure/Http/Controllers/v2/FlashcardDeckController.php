@@ -251,8 +251,12 @@ class FlashcardDeckController
         RegenerateAdditionalFlashcardsHandler $regenerate_flashcards,
         GetDeckDetails $get_deck_details,
     ): DeckDetailsResource {
+        $user = $request->current();
+
         $regenerate_flashcards->handle(
             $request->getOwner(),
+            $user->getUserLanguage(),
+            $user->getLearningLanguage(),
             $request->getDeckId(),
             self::FLASHCARDS_LIMIT,
             self::FLASHCARDS_SAVE_LIMIT,

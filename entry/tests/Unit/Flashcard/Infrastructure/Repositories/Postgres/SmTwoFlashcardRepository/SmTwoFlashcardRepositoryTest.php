@@ -8,6 +8,7 @@ use App\Models\Flashcard;
 use App\Models\FlashcardDeck;
 use App\Models\SmTwoFlashcard;
 use App\Models\FlashcardPollItem;
+use Shared\Enum\Language;
 use Tests\Base\FlashcardTestCase;
 use Flashcard\Domain\Models\SmTwoFlashcards;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -34,8 +35,8 @@ test('find many should return correct sm two flashcards', function () {
     $results = $this->repository->findMany($user->getId(), $flashcard_ids);
 
     // THEN
-    expect(count($results))->toBe(2);
-    expect($results->all()[0]->getMinRating())->toBe(3);
+    expect(count($results))->toBe(2)
+        ->and($results->all()[0]->getMinRating())->toBe(3);
 });
 test('reset repetitions in session success', function () {
     // GIVEN
@@ -134,9 +135,9 @@ test('get next flashcards by deck should return flashcards', function () {
         FlashcardSortCriteria::RANDOMIZE_LATEST_FLASHCARDS_ORDER,
         FlashcardSortCriteria::PLANNED_FLASHCARDS_FOR_CURRENT_DATE_FIRST,
         FlashcardSortCriteria::LOWEST_REPETITION_INTERVAL_FIRST,
-    ], 2, true);
+    ], 2, true, Language::PL, Language::EN);
 
     // THEN
-    expect($results)->toHaveCount(1);
-    expect($results[0]->getId()->getValue())->toBe($flashcard_poll->flashcard_id);
+    expect($results)->toHaveCount(1)
+        ->and($results[0]->getId()->getValue())->toBe($flashcard_poll->flashcard_id);
 });

@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Flashcard\Infrastructure\Mappers\Postgres;
+namespace Flashcard\Infrastructure\Http;
 
-use Shared\Enum\LanguageLevel;
-use Flashcard\Domain\Models\Deck;
-use Illuminate\Support\Facades\DB;
-use Shared\Utils\ValueObjects\UserId;
-use Flashcard\Domain\ValueObjects\FlashcardDeckId;
 use Flashcard\Domain\Exceptions\ModelNotFoundException;
+use Flashcard\Domain\Models\Deck;
+use Flashcard\Domain\ValueObjects\FlashcardDeckId;
 use Flashcard\Infrastructure\Mappers\Traits\HasOwnerBuilder;
+use Illuminate\Support\Facades\DB;
+use Shared\Enum\LanguageLevel;
+use Shared\Utils\ValueObjects\UserId;
 
 class FlashcardDeckMapper
 {

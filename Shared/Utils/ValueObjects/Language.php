@@ -9,23 +9,24 @@ use Shared\Enum\Language as LanguageEnum;
 
 class Language
 {
+    public const DEFAULT_LEVELS = [
+        LanguageLevel::A1,
+        LanguageLevel::A2,
+        LanguageLevel::B1,
+        LanguageLevel::B2,
+        LanguageLevel::C1,
+        LanguageLevel::C2,
+    ];
+
     public const LANGUAGE_LEVELS = [
-        LanguageEnum::EN->value => [
-            LanguageLevel::A1,
-            LanguageLevel::A2,
-            LanguageLevel::B1,
-            LanguageLevel::B2,
-            LanguageLevel::C1,
-            LanguageLevel::C2,
-        ],
-        LanguageEnum::PL->value => [
-            LanguageLevel::A1,
-            LanguageLevel::A2,
-            LanguageLevel::B1,
-            LanguageLevel::B2,
-            LanguageLevel::C1,
-            LanguageLevel::C2,
-        ],
+        LanguageEnum::PL->value => self::DEFAULT_LEVELS,
+        LanguageEnum::EN->value => self::DEFAULT_LEVELS,
+        LanguageEnum::IT->value => self::DEFAULT_LEVELS,
+        LanguageEnum::ES->value => self::DEFAULT_LEVELS,
+        LanguageEnum::FR->value => self::DEFAULT_LEVELS,
+        LanguageEnum::DE->value => self::DEFAULT_LEVELS,
+        LanguageEnum::ZH->value => self::DEFAULT_LEVELS,
+        LanguageEnum::CS->value => self::DEFAULT_LEVELS,
     ];
 
     private LanguageEnum $value;
@@ -48,6 +49,41 @@ class Language
     public static function en(): self
     {
         return self::from(LanguageEnum::EN->value);
+    }
+
+    public static function it(): self
+    {
+        return self::from(LanguageEnum::IT->value);
+    }
+
+    public static function es(): self
+    {
+        return self::from(LanguageEnum::ES->value);
+    }
+
+    public static function fr(): self
+    {
+        return self::from(LanguageEnum::FR->value);
+    }
+
+    public static function de(): self
+    {
+        return self::from(LanguageEnum::DE->value);
+    }
+
+    public static function zh(): self
+    {
+        return self::from(LanguageEnum::ZH->value);
+    }
+
+    public static function cs(): self
+    {
+        return self::from(LanguageEnum::CS->value);
+    }
+
+    public function getEnum(): LanguageEnum
+    {
+        return $this->value;
     }
 
     public function getValue(): string

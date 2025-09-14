@@ -28,7 +28,7 @@ class AddSessionFlashcardsHandler
             return;
         }
 
-        $flashcards = $this->selector->select($next_session_flashcards, $command->getLimit());
+        $flashcards = $this->selector->select($next_session_flashcards, $command->getLimit(), $command->getFront(), $command->getBack());
 
         $exercise_type = $next_session_flashcards->resolveExerciseByRating($flashcards[0]->getLastUserRating());
 

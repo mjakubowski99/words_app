@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Repositories\Postgres;
 
+use Shared\Enum\Language;
 use Shared\Utils\ValueObjects\UserId;
 use Flashcard\Domain\Models\SmTwoFlashcards;
 use Flashcard\Domain\ValueObjects\FlashcardDeckId;
@@ -37,14 +38,14 @@ class SmTwoFlashcardRepository implements ISmTwoFlashcardRepository
         $this->mapper->saveMany($sm_two_flashcards);
     }
 
-    public function getNextFlashcardsByUser(UserId $user_id, int $limit, array $exclude_flashcard_ids, array $sort_criteria, int $cards_per_session, bool $from_poll, bool $exclude_from_poll): array
+    public function getNextFlashcardsByUser(UserId $user_id, int $limit, array $exclude_flashcard_ids, array $sort_criteria, int $cards_per_session, bool $from_poll, bool $exclude_from_poll, Language $front, Language $back): array
     {
-        return $this->flashcard_mapper->getNextFlashcards($user_id, $limit, $exclude_flashcard_ids, $this->buildCriteria($sort_criteria), $cards_per_session, $from_poll, $exclude_from_poll);
+        return $this->flashcard_mapper->getNextFlashcards($user_id, $limit, $exclude_flashcard_ids, $this->buildCriteria($sort_criteria), $cards_per_session, $from_poll, $exclude_from_poll, $front, $back);
     }
 
-    public function getNextFlashcardsByDeck(UserId $user_id, FlashcardDeckId $deck_id, int $limit, array $exclude_flashcard_ids, array $sort_criteria, int $cards_per_session, bool $from_poll): array
+    public function getNextFlashcardsByDeck(UserId $user_id, FlashcardDeckId $deck_id, int $limit, array $exclude_flashcard_ids, array $sort_criteria, int $cards_per_session, bool $from_poll, Language $front, Language $back): array
     {
-        return $this->flashcard_mapper->getNextFlashcardsByDeck($user_id, $deck_id, $limit, $exclude_flashcard_ids, $this->buildCriteria($sort_criteria), $cards_per_session, $from_poll);
+        return $this->flashcard_mapper->getNextFlashcardsByDeck($user_id, $deck_id, $limit, $exclude_flashcard_ids, $this->buildCriteria($sort_criteria), $cards_per_session, $from_poll, $front, $back);
     }
 
     /**

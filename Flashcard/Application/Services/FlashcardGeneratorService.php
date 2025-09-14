@@ -11,6 +11,7 @@ use Flashcard\Application\Repository\IFlashcardRepository;
 use Flashcard\Application\Repository\IFlashcardDeckRepository;
 use Flashcard\Application\Repository\IFlashcardDuplicateRepository;
 use Flashcard\Application\Services\AiGenerators\IFlashcardGenerator;
+use Shared\Utils\ValueObjects\Language;
 
 class FlashcardGeneratorService
 {
@@ -23,13 +24,13 @@ class FlashcardGeneratorService
         private StoryDuplicateService $story_duplicate_service,
     ) {}
 
-    public function generate(ResolvedDeck $deck, string $deck_name, int $words_count, int $words_count_to_save): int
+    public function generate(ResolvedDeck $deck, Language $front, Language $back, string $deck_name, int $words_count, int $words_count_to_save): int
     {
         $initial_letters_to_avoid = $this->duplicate_repository->getRandomFrontWordInitialLetters($deck->getDeck()->getId(), 5);
 
         $default_language_level = $deck->getDeck()->getDefaultLanguageLevel();
 
-        $prompt = new FlashcardPrompt($deck_name, $default_language_level, $words_count, $initial_letters_to_avoid);
+        $prompt = new FlashcardPrompt($deck_name, $default_language_level, $front, $back, $words_count, $initial_letters_to_avoid);
 
         try {
             $stories = $this->generator->generate($deck->getDeck()->getOwner(), $deck->getDeck(), $prompt);

@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Shared\Enum\Language;
 use Shared\Enum\LanguageLevel;
 use Tests\Base\FlashcardTestCase;
 use Flashcard\Domain\Models\Rating;
@@ -141,3 +142,22 @@ test('rating stats read when user authorized success', function () {
         ],
     ]);
 });
+
+test('test polish user and german language', function () {
+    // GIVEN
+    $user = $this->createUser([
+        'user_language' => Language::PL,
+        'learning_language' => Language::IT,
+    ]);
+
+    // WHEN
+    $response = $this->actingAs($user)
+        ->json('POST', route('v2.flashcards.decks.generate-flashcards'), [
+            'category_name' => 'Wypożyczanie samochodu',
+            'language_level' => LanguageLevel::A1,
+        ]);
+
+    // THEN
+    $response->assertStatus(200);
+    $response->dump();
+});//->skip('Test uses real api(shouldnt be run on CI)');

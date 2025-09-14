@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Repositories\Postgres;
 
-use Flashcard\Domain\Models\Deck;
-use Shared\Utils\ValueObjects\UserId;
-use Flashcard\Domain\ValueObjects\FlashcardDeckId;
 use Flashcard\Application\Repository\IFlashcardDeckRepository;
-use Flashcard\Infrastructure\Mappers\Postgres\FlashcardDeckMapper;
+use Flashcard\Domain\Models\Deck;
+use Flashcard\Domain\ValueObjects\FlashcardDeckId;
+use Flashcard\Infrastructure\Http\FlashcardDeckMapper;
+use Shared\Utils\ValueObjects\UserId;
 
 class FlashcardDeckRepository implements IFlashcardDeckRepository
 {

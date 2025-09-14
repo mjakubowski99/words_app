@@ -46,7 +46,9 @@ class WordMatchExerciseFlashcardFactory implements IExerciseFlashcardFactory
             $flashcards = $this->selector->select(
                 $next_session_flashcards,
                 3,
-                array_merge([$base_flashcard->getId()], $exclude_ids)
+                $base_flashcard->getFrontLang()->getEnum(),
+                $base_flashcard->getBackLang()->getEnum(),
+                array_merge([$base_flashcard->getId()], $exclude_ids),
             );
 
             return SessionFlashcardSummaries::fromStory(
@@ -59,6 +61,8 @@ class WordMatchExerciseFlashcardFactory implements IExerciseFlashcardFactory
         $flashcards = $this->selector->select(
             $next_session_flashcards,
             self::FLASHCARDS_COUNT_TO_ADD + 3,
+            $base_flashcard->getFrontLang()->getEnum(),
+            $base_flashcard->getBackLang()->getEnum(),
             [$base_flashcard->getId()]
         );
 

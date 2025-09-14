@@ -58,10 +58,14 @@ class GenerateFlashcardsRequest extends Request
 
     public function toCommand(): GenerateFlashcards
     {
+        $user = $this->current();
+
         return new GenerateFlashcards(
-            $this->currentId(),
+            $user->getId(),
             $this->getCategoryName(),
-            $this->getLanguageLevel()
+            $this->getLanguageLevel(),
+            $user->getUserLanguage(),
+            $user->getLearningLanguage(),
         );
     }
 }

@@ -8,7 +8,6 @@ use OpenApi\Attributes as OAT;
 use Shared\Enum\LanguageLevel;
 use Shared\Http\Request\Request;
 use Flashcard\Domain\Models\Owner;
-use Shared\Utils\ValueObjects\Language;
 use Flashcard\Application\Command\CreateFlashcard;
 use Flashcard\Domain\ValueObjects\FlashcardDeckId;
 
@@ -80,10 +79,10 @@ class StoreFlashcardRequest extends Request
         return new CreateFlashcard(
             Owner::fromUser($user->getId()),
             new FlashcardDeckId($this->input('flashcard_deck_id')),
-            Language::pl(),
+            $user->getUserLanguage(),
             $this->input('front_word'),
             $this->input('front_context'),
-            Language::en(),
+            $user->getLearningLanguage(),
             $this->input('back_word'),
             $this->input('back_context'),
             $this->input('language_level') ? LanguageLevel::from($this->input('language_level')) : LanguageLevel::default(),

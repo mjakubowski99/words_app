@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Story;
 use App\Models\Exercise;
 use App\Models\Flashcard;
+use Shared\Enum\Language;
 use Shared\Enum\SessionType;
 use App\Models\FlashcardDeck;
 use App\Models\StoryFlashcard;
@@ -38,7 +39,7 @@ test('handle should add new flashcards to session', function () {
         'user_id' => $user->id,
         'type' => SessionType::FLASHCARD->value,
     ]);
-    $command = new AddSessionFlashcards($session->getId(), $user->getId(), 2);
+    $command = new AddSessionFlashcards($session->getId(), $user->getId(), Language::PL, Language::EN, 2);
 
     // WHEN
     $this->handler->handle($command);
@@ -67,7 +68,7 @@ test('handle when unscramble words session should add new flashcards to session'
         'user_id' => $user->id,
         'type' => SessionType::UNSCRAMBLE_WORDS->value,
     ]);
-    $command = new AddSessionFlashcards($session->getId(), $user->getId(), 1);
+    $command = new AddSessionFlashcards($session->getId(), $user->getId(), Language::PL, Language::EN, 1);
 
     // WHEN
     $this->handler->handle($command);
@@ -107,7 +108,7 @@ test('handle when word match exercise session should add new flashcards to sessi
         'user_id' => $user->id,
         'type' => SessionType::WORD_MATCH->value,
     ]);
-    $command = new AddSessionFlashcards($session->getId(), $user->getId(), 1);
+    $command = new AddSessionFlashcards($session->getId(), $user->getId(), Language::PL, Language::EN, 1);
 
     // WHEN
     $this->handler->handle($command);

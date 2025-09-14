@@ -9,6 +9,7 @@ use Flashcard\Application\Command\GenerateFlashcards;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Flashcard\Application\Command\GenerateFlashcardsHandler;
 use Flashcard\Application\Exceptions\AiResponseFailedException;
+use Shared\Utils\ValueObjects\Language;
 
 uses(DatabaseTransactions::class);
 
@@ -64,7 +65,9 @@ test('handle should generate flashcards', function () {
     $command = new GenerateFlashcards(
         $user->getId(),
         $deck_name,
-        LanguageLevel::A1
+        LanguageLevel::A1,
+        Language::pl(),
+        Language::en()
     );
 
     // WHEN
@@ -91,7 +94,9 @@ test('when category already exists should generate flashcards and assign them to
     $command = new GenerateFlashcards(
         $user->getId(),
         $deck_name,
-        LanguageLevel::A1
+        LanguageLevel::A1,
+        Language::pl(),
+        Language::en()
     );
 
     // WHEN
@@ -114,7 +119,9 @@ test('when category already exists and api fail should not remove category', fun
     $command = new GenerateFlashcards(
         $user->getId(),
         $deck_name,
-        LanguageLevel::A1
+        LanguageLevel::A1,
+        Language::pl(),
+        Language::en()
     );
 
     $this->expectException(AiResponseFailedException::class);
@@ -137,7 +144,9 @@ test('when new category and api fail should remove category', function () {
     $command = new GenerateFlashcards(
         $user->getId(),
         $deck_name,
-        LanguageLevel::A1
+        LanguageLevel::A1,
+        Language::pl(),
+        Language::en()
     );
 
     $this->expectException(AiResponseFailedException::class);

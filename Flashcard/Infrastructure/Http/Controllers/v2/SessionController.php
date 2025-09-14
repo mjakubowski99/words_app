@@ -72,8 +72,10 @@ class SessionController extends Controller
         NextSessionFlashcardResourceFactory $factory,
     ): JsonResponse|NextSessionFlashcardsResource {
         DB::transaction(function () use ($request, $add_session_flashcards) {
+            $user = $request->current();
+
             $add_session_flashcards->handle(
-                new AddSessionFlashcards($request->getSessionId(), $request->currentId(), self::FLASHCARDS_LIMIT)
+                new AddSessionFlashcards($request->getSessionId(), $user->getId(), $user->getUserLanguage()->getEnum(), $user->getLearningLanguage()->getEnum(), self::FLASHCARDS_LIMIT)
             );
         });
 
@@ -122,19 +124,21 @@ class SessionController extends Controller
         RefreshFlashcardPoll $refresh_flashcard_poll,
         NextSessionFlashcardResourceFactory $factory,
     ): JsonResponse|NextSessionFlashcardsResource {
+        $user = $request->current();
+
         $result = $create_session->handle($request->toCommand());
 
         if (!$request->toCommand()->hasDeckId()) {
-            $refresh_flashcard_poll->refresh($request->currentId());
+            $refresh_flashcard_poll->refresh($user->getId(), $user->getUserLanguage(), $user->getLearningLanguage());
         }
 
         if (!$result->success()) {
             return new JsonResponse(['message' => $result->getFailReason()], 400);
         }
 
-        DB::transaction(function () use ($add_session_flashcards, $request, $result) {
+        DB::transaction(function () use ($add_session_flashcards, $request, $result, $user) {
             $add_session_flashcards->handle(
-                new AddSessionFlashcards($result->getId(), $request->currentId(), self::FLASHCARDS_LIMIT)
+                new AddSessionFlashcards($result->getId(), $user->getId(), $user->getUserLanguage()->getEnum(), $user->getLearningLanguage()->getEnum(), self::FLASHCARDS_LIMIT)
             );
         });
 
@@ -190,11 +194,19 @@ class SessionController extends Controller
         AddSessionFlashcardsHandler $add_session_flashcards,
         NextSessionFlashcardResourceFactory $factory,
     ): NextSessionFlashcardsResource {
+        $user = $request->current();
+
         $rate_command = new RateFlashcards($request->currentId(), $request->getSessionId(), $request->getRatings());
 
         $rate->handle($rate_command);
 
-        $add_session_flashcards_command = new AddSessionFlashcards($request->getSessionId(), $request->currentId(), self::FLASHCARDS_LIMIT);
+        $add_session_flashcards_command = new AddSessionFlashcards(
+            $request->getSessionId(),
+            $user->getId(),
+            $user->getUserLanguage()->getEnum(),
+            $user->getLearningLanguage()->getEnum(),
+            self::FLASHCARDS_LIMIT
+        );
 
         DB::transaction(function () use ($add_session_flashcards, $add_session_flashcards_command) {
             $add_session_flashcards->handle($add_session_flashcards_command, self::DISPLAY_LIMIT);

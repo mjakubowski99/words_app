@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace User\Infrastructure\Entities;
 
 use App\Models\User as BaseModel;
+use Shared\Utils\ValueObjects\Language;
 use Shared\Utils\ValueObjects\UserId;
 use User\Domain\Models\Entities\IUser;
 use Illuminate\Database\Eloquent\Builder;
@@ -37,5 +38,15 @@ class User extends BaseModel implements IUser
     public function getEmail(): string
     {
         return $this->email;
+    }
+
+    public function getUserLanguage(): Language
+    {
+        return Language::from($this->user_language);
+    }
+
+    public function getLearningLanguage(): Language
+    {
+        return new Language($this->learning_language);
     }
 }

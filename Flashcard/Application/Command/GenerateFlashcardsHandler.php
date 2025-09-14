@@ -25,6 +25,8 @@ final readonly class GenerateFlashcardsHandler
 
         $flashcards_count = $this->flashcard_generator_service->generate(
             $resolved_deck,
+            $command->getFront(),
+            $command->getBack(),
             $command->getDeckName(),
             $flashcards_limit,
             $flashcards_save_limit
