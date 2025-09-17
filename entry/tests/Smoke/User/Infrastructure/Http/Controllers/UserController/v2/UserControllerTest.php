@@ -5,6 +5,7 @@ use App\Models\Flashcard;
 use Shared\Enum\ReportType;
 use Shared\Enum\ReportableType;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Shared\Utils\ValueObjects\Language;
 
 uses(DatabaseTransactions::class);
 
@@ -103,4 +104,20 @@ test('store report when description too short validation error', function () {
 
     // THEN
     $response->assertStatus(422);
+});
+
+test('update language updates user language', function () {
+    // GIVEN
+    $user = $this->createUser();
+
+    // WHEN
+    $response = $this
+        ->actingAs($user)
+        ->putJson(route('user.me.language.update'), [
+            'user_language' => Language::es()->getValue(),
+            'learning_language' => Language::it()->getValue(),
+        ]);
+
+    // THEN
+    $response->assertStatus(204);
 });

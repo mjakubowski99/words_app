@@ -39,6 +39,11 @@ class User extends BaseModel implements IUser
     {
         return $this->email;
     }
+    
+    public function profileCompleted(): bool
+    {
+        return $this->profile_completed;
+    }
 
     public function getUserLanguage(): Language
     {
@@ -48,5 +53,20 @@ class User extends BaseModel implements IUser
     public function getLearningLanguage(): Language
     {
         return new Language($this->learning_language);
+    }
+
+    public function setUserLanguage(Language $language): void
+    {
+        $this->user_language = $language->getValue();
+    }
+
+    public function setLearningLanguage(Language $language): void
+    {
+        $this->learning_language = $language->getValue();
+    }
+
+    public function setProfileCompleted(): void
+    {
+        $this->profile_completed = true;
     }
 }

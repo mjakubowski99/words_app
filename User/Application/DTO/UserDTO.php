@@ -43,4 +43,9 @@ readonly class UserDTO implements IUser
     {
         return $this->domain_user->getLearningLanguage();
     }
+
+    public function profileCompleted(): bool
+    {
+        return $this->domain_user->profileCompleted();
+    }
 }

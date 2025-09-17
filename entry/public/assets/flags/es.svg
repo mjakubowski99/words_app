@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3 2" width="300" height="200" role="img" aria-label="Flag of Spain">
+    <!-- Spain: red - yellow (double) - red -->
+    <rect width="3" height="2" fill="#aa151b" />
+    <rect y="0.5" width="3" height="1" fill="#f1bf00" />
+    <!-- Optional simple coat-of-arms placeholder (small) -->
+    <g transform="translate(0.35,0.5) scale(0.08)" aria-hidden="true">
+        <rect width="6" height="8" rx="0.8" fill="#aa151b" stroke="#000"/>
+        <rect x="0.5" y="0.8" width="5" height="3.2" fill="#f1bf00"/>
+    </g>
+</svg>

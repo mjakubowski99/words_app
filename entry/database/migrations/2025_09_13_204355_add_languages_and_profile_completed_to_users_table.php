@@ -11,6 +11,7 @@ return new class extends Migration
         Schema::table('users', function (Blueprint $table) {
             $table->string('user_language', 3)->default('pl');
             $table->string('learning_language', 3)->default('en');
+            $table->boolean('profile_completed')->default(false);
         });
     }
 
@@ -19,6 +20,7 @@ return new class extends Migration
         Schema::table('users', function (Blueprint $table) {
             $table->dropColumn('user_language');
             $table->dropColumn('learning_language');
+            $table->dropColumn('profile_completed');
         });
     }
 };

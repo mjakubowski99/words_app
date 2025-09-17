@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3 2" width="300" height="200" role="img" aria-label="Flag of the Czech Republic">
+    <!-- White over red with blue triangle at hoist -->
+    <rect width="3" height="1" y="0" fill="#ffffff" />
+    <rect width="3" height="1" y="1" fill="#d7141a" />
+    <polygon points="0,0 1.2,1 0,2" fill="#11457e" />
+</svg>

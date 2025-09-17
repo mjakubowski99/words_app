@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
 use User\Infrastructure\Http\Controllers\v2\AuthController;
+use User\Infrastructure\Http\Controllers\v2\LanguageController;
 use User\Infrastructure\Http\Controllers\v2\UserController;
 use Exercise\Infrastructure\Http\Controllers\ExerciseController;
 use Flashcard\Infrastructure\Http\Controllers\v2\SessionController;
 use Flashcard\Infrastructure\Http\Controllers\v2\FlashcardController;
 use Flashcard\Infrastructure\Http\Controllers\v2\FlashcardDeckController;
+
+Route::get('/languages', [LanguageController::class, 'get'])->name('languages.get');
 
 Route::post('/login', [AuthController::class, 'login'])
     ->name('user.login')
@@ -18,6 +21,7 @@ Route::post('/reports', [UserController::class, 'storeReport'])->name('reports.s
 
 Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::delete('/user/me', [UserController::class, 'delete'])->name('user.me.delete');
+    Route::put('/user/me/language', [UserController::class, 'updateLanguage'])->name('user.me.language.update');
 
     Route::post('/flashcards', [FlashcardController::class, 'store'])->name('v2.flashcards.store');
     Route::put('/flashcards/{flashcard_id}', [FlashcardController::class, 'update'])->name('v2.flashcards.update');

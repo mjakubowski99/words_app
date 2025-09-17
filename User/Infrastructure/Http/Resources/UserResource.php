@@ -46,6 +46,7 @@ class UserResource extends JsonResource
             'name' => $user->getName(),
             'email' => $user->getEmail(),
             'has_any_session' => $has_any_session,
+            'profile_completed' => $user->profileCompleted(),
         ];
     }
 }

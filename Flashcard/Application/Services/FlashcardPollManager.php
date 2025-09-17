@@ -47,4 +47,9 @@ class FlashcardPollManager
 
         return $poll;
     }
+
+    public function clear(UserId $user_id): void
+    {
+        $this->repository->deleteAllByUserId($user_id);
+    }
 }

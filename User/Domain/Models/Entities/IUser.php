@@ -19,4 +19,8 @@ interface IUser
 
     public function getUserLanguage(): Language;
     public function getLearningLanguage(): Language;
+    public function profileCompleted(): bool;
+    public function setUserLanguage(Language $language): void;
+    public function setLearningLanguage(Language $language): void;
+    public function setProfileCompleted(): void;
 }

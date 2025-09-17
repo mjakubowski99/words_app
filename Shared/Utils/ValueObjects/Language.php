@@ -31,6 +31,11 @@ class Language
 
     private LanguageEnum $value;
 
+    public static function all(): array
+    {
+        return array_map(fn($lang) => new self($lang->value), LanguageEnum::cases());
+    }
+
     public function __construct(string $value)
     {
         $this->value = LanguageEnum::from($value);
