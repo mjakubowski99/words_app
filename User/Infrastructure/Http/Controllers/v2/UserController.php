@@ -85,7 +85,7 @@ class UserController extends Controller
         requestBody: new OAT\RequestBody(
             content: new OAT\JsonContent(ref: '#/components/schemas/Requests\User\UpdateLanguageRequest')
         ),
-        tags: [Tags::USER, Tags::V2],
+        tags: [Tags::USER, Tags::V2, Tags::LANGUAGE],
         responses: [
             new OAT\Response(ref: '#/components/responses/no_content', response: 204),
             new OAT\Response(ref: '#/components/responses/unauthenticated', response: 401),

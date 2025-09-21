@@ -160,4 +160,4 @@ test('test polish user and german language', function () {
     // THEN
     $response->assertStatus(200);
     $response->dump();
-});//->skip('Test uses real api(shouldnt be run on CI)');
+})->skip('Test uses real api(shouldnt be run on CI)');

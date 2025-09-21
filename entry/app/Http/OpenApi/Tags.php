@@ -18,10 +18,15 @@ use OpenApi\Attributes as OAT;
     name: Tags::V2,
     description: 'V2 version of the api'
 )]
+#[OAT\Tag(
+    name: Tags::LANGUAGE,
+    description: 'Language management endpoints'
+)]
 class Tags
 {
     public const USER = 'User';
     public const FLASHCARD = 'Flashcard';
     public const V2 = 'V2';
     public const EXERCISE = 'Exercise';
+    public const LANGUAGE = 'Language';
 }

@@ -108,7 +108,9 @@ test('store report when description too short validation error', function () {
 
 test('update language updates user language', function () {
     // GIVEN
-    $user = $this->createUser();
+    $user = $this->createUser([
+        'profile_completed' => false,
+    ]);
 
     // WHEN
     $response = $this
@@ -120,4 +122,10 @@ test('update language updates user language', function () {
 
     // THEN
     $response->assertStatus(204);
+    $this->assertDatabaseHas('users', [
+        'id' => $user->id,
+        'user_language' => Language::es()->getValue(),
+        'learning_language' => Language::it()->getValue(),
+        'profile_completed' => true,
+    ]);
 });

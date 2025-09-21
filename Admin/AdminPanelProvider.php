@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Admin;
 
+use Filament\Enums\ThemeMode;
 use Filament\Pages;
 use Filament\Panel;
 use Filament\Widgets;
@@ -43,6 +44,7 @@ class AdminPanelProvider extends PanelProvider
             ->colors([
                 'primary' => Color::Amber,
             ])
+            ->defaultThemeMode(ThemeMode::Dark)
             ->discoverResources(in: base_path('../Admin/Resources'), for: 'Admin\Resources')
             ->discoverPages(in: base_path('../Admin/Pages'), for: 'Admin\Pages')
             ->pages([

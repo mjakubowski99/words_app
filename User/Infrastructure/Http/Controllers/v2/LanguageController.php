@@ -14,7 +14,7 @@ class LanguageController
         operationId: 'languages.get',
         description: 'Retrieve a list of available languages',
         summary: 'Get available languages',
-        tags: [Tags::USER, Tags::V2],
+        tags: [Tags::USER, Tags::V2, Tags::LANGUAGE],
         responses: [
             new OAT\Response(
                 response: 200,

@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Admin;
 use App\Models\Story;
 use App\Models\Flashcard;
+use Shared\Enum\Language;
 use Shared\Enum\SessionType;
 use App\Models\FlashcardDeck;
 use App\Models\SmTwoFlashcard;
@@ -41,6 +42,45 @@ test('store success', function () {
     $response->assertStatus(200);
 });
 
+test('store in user language', function () {
+    // GIVEN
+    $user = User::factory()->create([
+        'user_language' => Language::ES,
+        'learning_language' => Language::PL,
+    ]);
+    $deck = FlashcardDeck::factory()->create([
+        'user_id' => $user->id,
+    ]);
+    Flashcard::factory()->create([
+        'flashcard_deck_id' => $deck->id,
+        'front_lang' => Language::PL,
+        'back_lang' => Language::ES,
+    ]);
+    $expected_flashcard = Flashcard::factory()->create([
+        'flashcard_deck_id' => $deck->id,
+        'front_lang' => Language::ES,
+        'back_lang' => Language::PL,
+    ]);
+
+    // WHEN
+    $response = $this
+        ->actingAs($user, 'sanctum')
+        ->postJson(route('v2.flashcards.session.store'), [
+            'cards_per_session' => 10,
+            'flashcard_deck_id' => $deck->id,
+            'flashcards_limit' => 5,
+        ]);
+
+    // THEN
+    $response->assertStatus(200);
+    $response->assertJsonCount(1, 'data.session.next_flashcards');
+
+    expect($response->json('data.session.next_flashcards.0.front_lang'))
+        ->toBe($user->user_language->value)
+        ->and($response->json('data.session.next_flashcards.0.back_lang'))
+        ->toBe($user->learning_language->value);
+});
+
 test('store unscramble word exercise success', function () {
     // GIVEN
     $user = User::factory()->create();
@@ -71,15 +111,24 @@ test('store unscramble word exercise success', function () {
     ]);
 });
 
-test('store word match exercise success', function () {
+test('store unscramble word exercise in correct language', function () {
     // GIVEN
-    $user = User::factory()->create();
+    $user = User::factory()->create([
+        'user_language' => Language::IT,
+        'learning_language' => Language::FR,
+    ]);
     $deck = FlashcardDeck::factory()->create([
         'user_id' => $user->id,
     ]);
-    $flashcards = Flashcard::factory(3)->create([
+    Flashcard::factory()->create([
         'flashcard_deck_id' => $deck->id,
-        'emoji' => null,
+        'front_lang' => Language::DE,
+        'back_lang' => Language::ZH,
+    ]);
+    $expected_flashcard = Flashcard::factory()->create([
+        'flashcard_deck_id' => $deck->id,
+        'front_lang' => Language::IT,
+        'back_lang' => Language::FR,
     ]);
 
     // WHEN
@@ -88,36 +137,34 @@ test('store word match exercise success', function () {
         ->postJson(route('v2.flashcards.session.store'), [
             'cards_per_session' => 10,
             'flashcard_deck_id' => $deck->id,
-            'session_type' => SessionType::WORD_MATCH->value,
+            'session_type' => SessionType::UNSCRAMBLE_WORDS->value,
         ]);
-    $response->dump();
 
     // THEN
     $response->assertStatus(200);
-    $this->assertDatabaseHas('learning_sessions', [
-        'id' => $response->json('data.session.id'),
-        'user_id' => $user->id,
-        'type' => SessionType::WORD_MATCH->value,
-    ]);
+    $this->assertSame($expected_flashcard->front_word, $response->json('data.session.next_exercises.0.data.front_word'));
 });
 
-test('store word match exercise with story success', function () {
+test('store word match exercise in correct language', function () {
     // GIVEN
-    $user = User::factory()->create();
+    Flashcard::query()->forceDelete();
+    $user = User::factory()->create([
+        'user_language' => Language::IT,
+        'learning_language' => Language::FR,
+    ]);
     $deck = FlashcardDeck::factory()->create([
         'user_id' => $user->id,
     ]);
-    $flashcards = Flashcard::factory(3)->create([
+    Flashcard::factory()->create([
         'flashcard_deck_id' => $deck->id,
-        'emoji' => null,
+        'front_lang' => Language::DE,
+        'back_lang' => Language::ZH,
     ]);
-    $story = Story::factory()->create();
-    foreach ($flashcards as $flashcard) {
-        StoryFlashcard::factory()->create([
-            'flashcard_id' => $flashcard->id,
-            'story_id' => $story->id,
-        ]);
-    }
+    $expected_flashcards = Flashcard::factory(4)->create([
+        'flashcard_deck_id' => $deck->id,
+        'front_lang' => Language::IT,
+        'back_lang' => Language::FR,
+    ]);
 
     // WHEN
     $response = $this
@@ -130,11 +177,15 @@ test('store word match exercise with story success', function () {
 
     // THEN
     $response->assertStatus(200);
-    $this->assertDatabaseHas('learning_sessions', [
-        'id' => $response->json('data.session.id'),
-        'user_id' => $user->id,
-        'type' => SessionType::WORD_MATCH->value,
-    ]);
+
+    $answer_options = $response->json('data.session.next_exercises.0.data.answer_options');
+    $flashcards = $expected_flashcards->pluck('back_word')->toArray();
+
+    sort($answer_options);
+    sort($flashcards);
+
+    expect(json_encode($answer_options))
+        ->toBe(json_encode($flashcards));
 });
 
 test('store when admin deck success', function () {
