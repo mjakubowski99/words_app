@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Exercise\Infrastructure\Http\Request;
 
+use Exercise\Domain\Models\Answer\UnscrambleWordAnswer;
 use OpenApi\Attributes as OAT;
 use Shared\Http\Request\Request;
 use Shared\Utils\ValueObjects\ExerciseEntryId;
-use Exercise\Domain\Models\UnscrambleWordAnswer;
 
 #[OAT\Schema(
     schema: 'Requests\Exercise\UnscrambleWordExerciseAnswerRequest',

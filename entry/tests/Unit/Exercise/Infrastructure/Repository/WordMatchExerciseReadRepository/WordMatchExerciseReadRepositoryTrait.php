@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Exercise\Infrastructure\Repository\WordMatchExerciseReadRepository;
 
-use App\Models\Story;
 use App\Models\Exercise;
 use App\Models\ExerciseEntry;
-use Shared\Utils\ValueObjects\UserId;
-use Shared\Utils\ValueObjects\StoryId;
-use Shared\Utils\ValueObjects\ExerciseId;
+use App\Models\Story;
+use Exercise\Domain\Models\Answer\WordMatchAnswer;
+use Exercise\Domain\Models\Exercise\WordMatchExercise;
+use Exercise\Domain\Models\ExerciseEntry\WordMatchExerciseEntry;
 use Exercise\Domain\Models\ExerciseStatus;
-use Exercise\Domain\Models\WordMatchAnswer;
-use Exercise\Domain\Models\WordMatchExercise;
 use Shared\Utils\ValueObjects\ExerciseEntryId;
-use Exercise\Domain\Models\WordMatchExerciseEntry;
+use Shared\Utils\ValueObjects\ExerciseId;
+use Shared\Utils\ValueObjects\StoryId;
+use Shared\Utils\ValueObjects\UserId;
 
 trait WordMatchExerciseReadRepositoryTrait
 {

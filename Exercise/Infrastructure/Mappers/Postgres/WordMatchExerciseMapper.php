@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace Exercise\Infrastructure\Mappers\Postgres;
 
+use Exercise\Domain\Models\Answer\WordMatchAnswer;
+use Exercise\Domain\Models\Exercise\WordMatchExercise;
+use Exercise\Domain\Models\ExerciseEntry\WordMatchExerciseEntry;
+use Exercise\Domain\Models\ExerciseStatus;
+use Exercise\Infrastructure\Models\WordMatchExerciseJsonProperties;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-use Shared\Utils\ValueObjects\UserId;
-use Shared\Utils\ValueObjects\ExerciseId;
-use Exercise\Domain\Models\ExerciseStatus;
-use Exercise\Domain\Models\WordMatchAnswer;
-use Exercise\Domain\Models\WordMatchExercise;
 use Shared\Utils\ValueObjects\ExerciseEntryId;
-use Exercise\Domain\Models\WordMatchExerciseEntry;
-use Exercise\Infrastructure\Models\WordMatchExerciseJsonProperties;
+use Shared\Utils\ValueObjects\ExerciseId;
+use Shared\Utils\ValueObjects\UserId;
 
 class WordMatchExerciseMapper
 {

@@ -4,22 +4,22 @@ declare(strict_types=1);
 
 namespace Exercise\Infrastructure\Http\Controllers;
 
-use App\Http\OpenApi\Tags;
-use OpenApi\Attributes as OAT;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use Exercise\Domain\Models\AnswerAssessment;
-use Exercise\Infrastructure\Http\Request\SkipWordMatchExerciseRequest;
-use Exercise\Infrastructure\Http\Request\WordMatchExerciseAnswerRequest;
-use Exercise\Application\Command\SkipExercise\SkipWordMatchExerciseHandler;
-use Exercise\Infrastructure\Http\Request\SkipUnscrambleWordExerciseRequest;
-use Exercise\Infrastructure\Http\Resources\WordMatchExerciseAnswerResource;
-use Exercise\Infrastructure\Http\Request\UnscrambleWordExerciseAnswerRequest;
+use App\Http\OpenApi\Tags;
+use Exercise\Application\Command\AnswerExercise\UnscrambleWordExerciseAnswerHandler;
 use Exercise\Application\Command\AnswerExercise\WordMatchExerciseAnswerHandler;
 use Exercise\Application\Command\SkipExercise\SkipUnscrambleWordExerciseHandler;
-use Exercise\Application\Command\AnswerExercise\UnscrambleWordExerciseAnswerHandler;
+use Exercise\Application\Command\SkipExercise\SkipWordMatchExerciseHandler;
+use Exercise\Domain\Models\AnswerAssessment;
+use Exercise\Infrastructure\Http\Request\SkipUnscrambleWordExerciseRequest;
+use Exercise\Infrastructure\Http\Request\SkipWordMatchExerciseRequest;
+use Exercise\Infrastructure\Http\Request\UnscrambleWordExerciseAnswerRequest;
+use Exercise\Infrastructure\Http\Request\WordMatchExerciseAnswerRequest;
 use Exercise\Infrastructure\Http\Resources\UnscrambleWordExerciseAssessmentResource;
+use Exercise\Infrastructure\Http\Resources\WordMatchExerciseAnswerResource;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\DB;
+use OpenApi\Attributes as OAT;
 
 class ExerciseController extends Controller
 {

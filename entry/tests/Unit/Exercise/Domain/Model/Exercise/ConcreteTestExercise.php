@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Exercise\Domain\Model\Exercise;
 
-use Shared\Enum\ExerciseType;
-use Exercise\Domain\Models\Exercise;
-use Shared\Utils\ValueObjects\UserId;
-use Shared\Utils\ValueObjects\ExerciseId;
+use Exercise\Domain\Models\Exercise\Exercise;
 use Exercise\Domain\Models\ExerciseStatus;
+use Shared\Enum\ExerciseType;
+use Shared\Utils\ValueObjects\ExerciseId;
+use Shared\Utils\ValueObjects\UserId;
 
 class ConcreteTestExercise extends Exercise
 {

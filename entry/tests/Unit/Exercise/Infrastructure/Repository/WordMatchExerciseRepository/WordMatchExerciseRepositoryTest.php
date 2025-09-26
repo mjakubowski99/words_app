@@ -1,12 +1,13 @@
 <?php
 
 declare(strict_types=1);
+
 use App\Models\Exercise;
 use App\Models\ExerciseEntry;
-use Shared\Utils\ValueObjects\StoryId;
 use Exercise\Domain\Models\ExerciseStatus;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Exercise\Infrastructure\Repositories\WordMatchExerciseRepository;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Shared\Utils\ValueObjects\StoryId;
 use Tests\Unit\Exercise\Infrastructure\Repository\WordMatchExerciseRepository\WordMatchExerciseRepositoryTrait;
 
 uses(DatabaseTransactions::class);

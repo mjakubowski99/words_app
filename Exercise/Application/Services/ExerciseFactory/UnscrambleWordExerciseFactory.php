@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Exercise\Application\Services\ExerciseFactory;
 
-use Shared\Utils\ValueObjects\UserId;
 use Exercise\Application\DTO\FlashcardExercise;
+use Exercise\Application\Repositories\Exercise\IUnscrambleWordExerciseRepository;
+use Exercise\Domain\Models\Exercise\UnscrambleWordsExercise;
 use Shared\Flashcard\ISessionFlashcardSummaries;
-use Exercise\Domain\Models\UnscrambleWordsExercise;
-use Exercise\Application\Repositories\IUnscrambleWordExerciseRepository;
+use Shared\Utils\ValueObjects\UserId;
 
 class UnscrambleWordExerciseFactory implements IExerciseFactory
 {

@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Exercise\Application\Services\ExerciseFactory;
 
-use Shared\Utils\ValueObjects\UserId;
-use Exercise\Domain\Models\WordMatchExercise;
 use Exercise\Application\DTO\FlashcardExercise;
+use Exercise\Application\Repositories\Exercise\IWordMatchExerciseRepository;
+use Exercise\Domain\Models\Exercise\WordMatchExercise;
 use Shared\Flashcard\ISessionFlashcardSummaries;
-use Exercise\Application\Repositories\IWordMatchExerciseRepository;
+use Shared\Utils\ValueObjects\UserId;
 
 class WordMatchExerciseFactory implements IExerciseFactory
 {

@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Exercise\Infrastructure\Mappers\Postgres;
 
-use Shared\Models\Emoji;
+use Exercise\Application\DTO\Exercise\UnscrambleWordExerciseRead;
 use Illuminate\Support\Facades\DB;
-use Shared\Utils\ValueObjects\ExerciseId;
+use Shared\Models\Emoji;
 use Shared\Utils\ValueObjects\ExerciseEntryId;
-use Exercise\Application\ReadModels\UnscrambleWordExerciseRead;
+use Shared\Utils\ValueObjects\ExerciseId;
 
 class UnscrambleWordExerciseReadMapper
 {
