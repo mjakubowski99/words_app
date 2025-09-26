@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Models\User;
 use App\Models\Admin;
 use App\Models\FlashcardDeck;
+use Flashcard\Application\ReadModels\RatingStatsRead;
 use Shared\Enum\Language;
 use Shared\Enum\LanguageLevel;
 use Tests\Base\FlashcardTestCase;
@@ -218,6 +219,48 @@ test('get by user searching works', function () {
         ->and($results[0]->getId()->getValue())->toBe($expected->id);
 });
 
+test('get by user when flashcard languages match return flashcard', function () {
+    // GIVEN
+    $user = $this->createUser();
+    $expected = $this->createFlashcardDeck([
+        'user_id' => $user->id,
+        'name' => 'Alan',
+    ]);
+    $this->createFlashcard([
+        'flashcard_deck_id' => $expected->id,
+        'front_lang' => Language::EN,
+        'back_lang' => Language::PL,
+    ]);
+
+    // WHEN
+    $results = $this->repository->getByUser($user->getId(), Language::EN, Language::PL, 'LAn', 1, 15);
+
+    // THEN
+    expect($results)->toHaveCount(1)
+        ->and($results[0])->toBeInstanceOf(OwnerCategoryRead::class)
+        ->and($results[0]->getId()->getValue())->toBe($expected->id);
+});
+
+test('get by user when flashcard languages doesnt match return empty', function () {
+    // GIVEN
+    $user = $this->createUser();
+    $expected = $this->createFlashcardDeck([
+        'user_id' => $user->id,
+        'name' => 'Alan',
+    ]);
+    $this->createFlashcard([
+        'flashcard_deck_id' => $expected->id,
+        'front_lang' => Language::DE,
+        'back_lang' => Language::FR,
+    ]);
+
+    // WHEN
+    $results = $this->repository->getByUser($user->getId(), Language::EN, Language::PL, 'LAn', 1, 15);
+
+    // THEN
+    expect($results)->toHaveCount(0);
+});
+
 test('get admin decks searching works', function () {
     // GIVEN
     $user = $this->createUser();
@@ -245,6 +288,51 @@ test('get admin decks searching works', function () {
         ->and($results[0])->toBeInstanceOf(OwnerCategoryRead::class)
         ->and($results[0]->getId()->getValue())->toBe($expected->id)
         ->and($results[0]->getOwnerType())->toBe(FlashcardOwnerType::ADMIN);
+});
+
+test('get admin decks when language matches return flashcard', function () {
+    // GIVEN
+    $user = $this->createUser();
+    $expected = $this->createFlashcardDeck([
+        'user_id' => null,
+        'admin_id' => Admin::factory()->create(),
+        'name' => 'Alan',
+    ]);
+    $this->createFlashcard([
+        'flashcard_deck_id' => $expected->id,
+        'front_lang' => Language::IT,
+        'back_lang' => Language::FR,
+    ]);
+
+    // WHEN
+    $results = $this->repository->getAdminDecks($user->getId(), Language::IT, Language::FR, null, 'LAn', 1, 15);
+
+    // THEN
+    expect($results)->toHaveCount(1)
+        ->and($results[0])->toBeInstanceOf(OwnerCategoryRead::class)
+        ->and($results[0]->getId()->getValue())->toBe($expected->id)
+        ->and($results[0]->getOwnerType())->toBe(FlashcardOwnerType::ADMIN);
+});
+
+test('get admin decks when language doesnt matche return empty', function () {
+    // GIVEN
+    $user = $this->createUser();
+    $expected = $this->createFlashcardDeck([
+        'user_id' => null,
+        'admin_id' => Admin::factory()->create(),
+        'name' => 'Alan',
+    ]);
+    $this->createFlashcard([
+        'flashcard_deck_id' => $expected->id,
+        'front_lang' => Language::DE,
+        'back_lang' => Language::FR,
+    ]);
+
+    // WHEN
+    $results = $this->repository->getAdminDecks($user->getId(), Language::IT, Language::FR, null, 'LAn', 1, 15);
+
+    // THEN
+    expect($results)->toHaveCount(0);
 });
 
 test('get admin decks language level filter works', function () {
@@ -423,6 +511,46 @@ test('find rating stats return correct values', function (array $flashcards, arr
         ++$i;
     }
 })->with('ratedFlashcardsRatingProvider');
+
+test('find rating stats counts only in given language', function () {
+    // GIVEN
+    $user = User::factory()->create();
+    $deck = FlashcardDeck::factory()->create([
+        'user_id' => $user->id,
+    ]);
+    $session = $this->createLearningSession([
+        'flashcard_deck_id' => $deck->id,
+    ]);
+    $this->createLearningSessionFlashcard([
+        'learning_session_id' => $session->id,
+        'rating' => Rating::UNKNOWN,
+        'flashcard_id' => $this->createFlashcard([
+            'flashcard_deck_id' => $deck->id,
+            'front_lang' => Language::FR,
+            'back_lang' => Language::IT,
+        ])->id,
+    ]);
+    $expected = $this->createLearningSessionFlashcard([
+        'learning_session_id' => $session->id,
+        'rating' => Rating::VERY_GOOD,
+        'flashcard_id' => $this->createFlashcard([
+            'flashcard_deck_id' => $deck->id,
+            'front_lang' => Language::PL,
+            'back_lang' => Language::EN,
+        ])->id,
+    ]);
+
+    // WHEN
+    $results = $this->repository->findRatingStats($deck->getId(), Language::PL, Language::EN);
+
+    // THEN
+    expect(
+        collect($results->getRatingStats())
+            ->where(fn(RatingStatsRead $read) => $read->getRating()->getValue() === GeneralRatingType::VERY_GOOD)
+            ->firstOrFail()
+            ->getRatingPercentage()
+    )->toBe(100.0);
+});
 
 dataset('ratedFlashcardsRatingProvider', function () {
     return [

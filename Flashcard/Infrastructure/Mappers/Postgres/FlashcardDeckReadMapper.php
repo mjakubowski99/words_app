@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace Flashcard\Infrastructure\Mappers\Postgres;
 
 use Carbon\Carbon;
+use Flashcard\Infrastructure\Mappers\Postgres\Builders\FlashcardQueryBuilder;
+use Flashcard\Infrastructure\Mappers\Postgres\Builders\FlashcardDeckQueryBuilder;
+use Flashcard\Infrastructure\Mappers\Postgres\Builders\LearningSessionFlashcardQueryBuilder;
 use Shared\Enum\Language;
 use Shared\Enum\LanguageLevel;
 use Illuminate\Support\Collection;
@@ -30,20 +33,100 @@ class FlashcardDeckReadMapper
     public function findDetails(UserId $user_id, FlashcardDeckId $id, ?string $search, int $page, int $per_page): DeckDetailsRead
     {
         $deck = $this->findDeck($id, $user_id);
-
         if (!$deck) {
             throw new ModelNotFoundException('Category not found');
         }
 
         $flashcards = $this->flashcard_mapper->search($user_id, null, null, $id, null, $search, $page, $per_page);
 
-        $flashcards_count = $this->db::table('flashcards')
-            ->where('flashcards.flashcard_deck_id', $id->getValue())
-            ->count();
+        $flashcards_count = FlashcardQueryBuilder::new()->byDeckIds([$id->getValue()])->count();
 
-        $total_avg_rating = $this->getRatingStats(collect([$id->getValue()]), $user_id)->first()->total_avg_rating ?? 0.0;
+        return $this->mapToDetails($deck, $flashcards, $page, $per_page, $flashcards_count, $user_id);
+    }
 
-        $avg_rating = $this->calculateAvgRating((float) $total_avg_rating, $flashcards_count);
+    /** @return OwnerCategoryRead[] */
+    public function getAdminDecks(UserId $user_id, Language $front_lang, Language $back_lang, ?LanguageLevel $level, ?string $search, int $page, int $per_page): array
+    {
+        $results = FlashcardDeckQueryBuilder::new()
+            ->byLanguage($front_lang, $back_lang)
+            ->byLanguageLevel($level)
+            ->byAdmin()
+            ->searchByName($search)
+            ->setPage($page, $per_page)
+            ->joinActivities($user_id)
+            ->addSelectAll(['*'])
+            ->addSelectFlashcardsCount('flashcards_count')
+            ->addSelectLastLearntAt($user_id, 'last_learnt_at')
+            ->addSelectMostFrequentLanguageLevel('most_frequent_language_level')
+            ->orderByActivitiesAndName()
+            ->get();
+
+        return $this->mapResults($results, $user_id, FlashcardOwnerType::ADMIN);
+    }
+
+    /** @return OwnerCategoryRead[] */
+    public function getByUser(UserId $user_id, Language $front_lang, Language $back_lang, ?string $search, int $page, int $per_page): array
+    {
+        $results = FlashcardDeckQueryBuilder::new()
+            ->byLanguage($front_lang, $back_lang)
+            ->byUser($user_id)
+            ->searchByName($search)
+            ->setPage($page, $per_page)
+            ->joinActivities($user_id)
+            ->addSelectAll(['*'])
+            ->addSelectFlashcardsCount('flashcards_count')
+            ->addSelectMostFrequentLanguageLevel('most_frequent_language_level')
+            ->addSelectLastLearntAt($user_id, 'last_learnt_at')
+            ->orderByLastActivity()
+            ->get();
+
+        return $this->mapResults($results, $user_id, FlashcardOwnerType::USER);
+    }
+
+    private function findDeck(FlashcardDeckId $id, UserId $user_id): ?object
+    {
+        return FlashcardDeckQueryBuilder::new()
+            ->addSelectAll(['*'])
+            ->addSelectMostFrequentLanguageLevel('most_frequent_language_level')
+            ->addSelectLastLearntAt($user_id, 'last_learnt_at')
+            ->find($id->getValue());
+    }
+
+    /** @return OwnerCategoryRead[] */
+    private function mapResults(Collection $results, UserId $user_id, FlashcardOwnerType $owner_type): array
+    {
+        $rating_stats = $this->getRatingStats($results->pluck('id'), $user_id);
+
+        return $results->map(function (object $data) use ($rating_stats, $owner_type) {
+            $rating_sum = $rating_stats->where('flashcard_deck_id', $data->id)->first()->total_avg_rating ?? 0.0;
+
+            $avg_rating = $this->calculateAvgRating((float) $rating_sum, $data->flashcards_count);
+
+            return new OwnerCategoryRead(
+                new FlashcardDeckId($data->id),
+                $data->name,
+                LanguageLevel::from($data->most_frequent_language_level ?? $data->default_language_level),
+                $data->flashcards_count,
+                $avg_rating,
+                $data->last_learnt_at ? Carbon::parse($data->last_learnt_at) : null,
+                $owner_type
+            );
+        })->toArray();
+    }
+
+    private function mapToDetails(
+        object $deck,
+        mixed $flashcards,
+        int $page,
+        int $per_page,
+        int $flashcards_count,
+        UserId $user_id
+    ): DeckDetailsRead {
+        $total_avg_rating = $this->getRatingStats(
+            collect([$deck->id]), $user_id
+        )->first()->toal_avg_rating ?? 0.0;
+
+        $avg_rating = $this->calculateAvgRating($total_avg_rating, $flashcards_count);
 
         return new DeckDetailsRead(
             new FlashcardDeckId($deck->id),
@@ -59,195 +142,13 @@ class FlashcardDeckReadMapper
         );
     }
 
-    /** @return OwnerCategoryRead[] */
-    public function getAdminDecks(UserId $user_id, Language $front_lang, Language $back_lang, ?LanguageLevel $level, ?string $search, int $page, int $per_page): array
-    {
-        $activities = $this->db::table('flashcard_deck_activities')->where('user_id', $user_id);
-
-        $results = $this->db::table('flashcard_decks')
-            ->whereExists(function ($query) use ($front_lang, $back_lang) {
-                $query->select('flashcards.id')
-                    ->from('flashcards')
-                    ->whereColumn('flashcards.flashcard_deck_id', 'flashcard_decks.id')
-                    ->where('flashcards.front_lang', $front_lang->value)
-                    ->where('flashcards.back_lang', $back_lang->value);
-            })
-            ->when($level !== null, fn ($q) => $q->where('flashcard_decks.default_language_level', '=', $level->value))
-            ->whereNotNull('flashcard_decks.admin_id')
-            ->when(!is_null($search), function ($query) use ($search) {
-                return $query->where(DB::raw('LOWER(flashcard_decks.name)'), 'LIKE', '%' . mb_strtolower($search) . '%');
-            })
-            ->take($per_page)
-            ->skip(($page - 1) * $per_page)
-            ->leftJoinSub($activities, 'flashcard_deck_activities', function ($join) {
-                $join->on('flashcard_deck_activities.flashcard_deck_id', '=', 'flashcard_decks.id');
-            })
-            ->select(
-                'flashcard_decks.*',
-                DB::raw('(SELECT language_level
-                    FROM flashcards
-                    WHERE flashcards.flashcard_deck_id = flashcard_decks.id
-                    GROUP BY language_level
-                    ORDER BY COUNT(*) DESC
-                LIMIT 1) as most_frequent_language_level'),
-                DB::raw('(
-                    SELECT COUNT(flashcards.id)
-                    FROM flashcards
-                    WHERE flashcards.flashcard_deck_id = flashcard_decks.id
-                    ) as flashcards_count'),
-                DB::raw("(
-                    SELECT MAX(lsf.updated_at)
-                    FROM learning_session_flashcards as lsf
-                    LEFT JOIN flashcards ON lsf.flashcard_id = flashcards.id
-                    LEFT JOIN learning_sessions as ls on ls.id = lsf.learning_session_id
-                    WHERE flashcards.flashcard_deck_id = flashcard_decks.id
-                    AND ls.user_id = '{$user_id->getValue()}'
-                    ) as last_learnt_at"),
-            )
-            ->orderByRaw('
-                flashcard_deck_activities.last_viewed_at DESC NULLS LAST,
-                flashcard_decks.name ASC
-            ')
-            ->get();
-
-        $rating_stats = $this->getRatingStats($results->pluck('id'), $user_id);
-
-        return $results->map(function (object $data) use ($rating_stats) {
-            $rating_sum = $rating_stats->where('flashcard_deck_id', $data->id)->first()->total_avg_rating ?? 0.0;
-
-            $avg_rating = $this->calculateAvgRating((float) $rating_sum, $data->flashcards_count);
-
-            return new OwnerCategoryRead(
-                new FlashcardDeckId($data->id),
-                $data->name,
-                LanguageLevel::from($data->most_frequent_language_level ?? $data->default_language_level),
-                $data->flashcards_count,
-                $avg_rating,
-                $data->last_learnt_at ? Carbon::parse($data->last_learnt_at) : null,
-                FlashcardOwnerType::ADMIN,
-            );
-        })->toArray();
-    }
-
-    /** @return OwnerCategoryRead[] */
-    public function getByUser(UserId $user_id, Language $front_lang, Language $back_lang, ?string $search, int $page, int $per_page): array
-    {
-        $activities = $this->db::table('flashcard_deck_activities')->where('user_id', $user_id);
-
-        $results = $this->db::table('flashcard_decks')
-            ->whereExists(function ($query) use ($front_lang, $back_lang) {
-                $query->select('flashcards.id')
-                    ->from('flashcards')
-                    ->whereColumn('flashcards.flashcard_deck_id', 'flashcard_decks.id')
-                    ->where('flashcards.front_lang', $front_lang->value)
-                    ->where('flashcards.back_lang', $back_lang->value);
-            })
-            ->where('flashcard_decks.user_id', $user_id->getValue())
-            ->when(!is_null($search), function ($query) use ($search) {
-                return $query->where(DB::raw('LOWER(flashcard_decks.name)'), 'LIKE', '%' . mb_strtolower($search) . '%');
-            })
-            ->take($per_page)
-            ->skip(($page - 1) * $per_page)
-            ->leftJoinSub($activities, 'flashcard_deck_activities', function ($join) {
-                $join->on('flashcard_deck_activities.flashcard_deck_id', '=', 'flashcard_decks.id');
-            })
-            ->select(
-                'flashcard_decks.*',
-                DB::raw('(SELECT language_level
-                    FROM flashcards
-                    WHERE flashcards.flashcard_deck_id = flashcard_decks.id
-                    GROUP BY language_level
-                    ORDER BY COUNT(*) DESC
-                LIMIT 1) as most_frequent_language_level'),
-                DB::raw('(
-                    SELECT COUNT(flashcards.id)
-                    FROM flashcards
-                    WHERE flashcards.flashcard_deck_id = flashcard_decks.id
-                    ) as flashcards_count'),
-                DB::raw("(
-                    SELECT MAX(lsf.updated_at)
-                    FROM learning_session_flashcards as lsf
-                    LEFT JOIN flashcards ON lsf.flashcard_id = flashcards.id
-                    LEFT JOIN learning_sessions as ls on ls.id = lsf.learning_session_id
-                    WHERE flashcards.flashcard_deck_id = flashcard_decks.id
-                    AND ls.user_id = '{$user_id->getValue()}'
-                    ) as last_learnt_at"),
-            )
-            ->orderByRaw('
-                CASE
-                    WHEN flashcard_deck_activities.last_viewed_at IS NOT NULL THEN flashcard_deck_activities.last_viewed_at
-                    ELSE flashcard_decks.created_at
-                END DESC NULLS LAST
-            ')
-            ->get();
-
-        $rating_stats = $this->getRatingStats($results->pluck('id'), $user_id);
-
-        return $results->map(function (object $data) use ($rating_stats) {
-            $rating_sum = $rating_stats->where('flashcard_deck_id', $data->id)->first()->total_avg_rating ?? 0.0;
-
-            $avg_rating = $this->calculateAvgRating((float) $rating_sum, $data->flashcards_count);
-
-            return new OwnerCategoryRead(
-                new FlashcardDeckId($data->id),
-                $data->name,
-                LanguageLevel::from($data->most_frequent_language_level ?? $data->default_language_level),
-                $data->flashcards_count,
-                $avg_rating,
-                $data->last_learnt_at ? Carbon::parse($data->last_learnt_at) : null,
-                FlashcardOwnerType::USER,
-            );
-        })->toArray();
-    }
-
-    private function findDeck(FlashcardDeckId $id, UserId $user_id): ?object
-    {
-        return $this->db::table('flashcard_decks')
-            ->select([
-                'flashcard_decks.*',
-                DB::raw('(SELECT language_level
-                    FROM flashcards
-                    WHERE flashcards.flashcard_deck_id = flashcard_decks.id
-                    GROUP BY language_level
-                    ORDER BY COUNT(*) DESC
-                LIMIT 1) as most_frequent_language_level'),
-                DB::raw("(
-                    SELECT MAX(lsf.updated_at)
-                    FROM learning_session_flashcards as lsf
-                    LEFT JOIN flashcards ON lsf.flashcard_id = flashcards.id
-                    LEFT JOIN learning_sessions as ls on ls.id = lsf.learning_session_id
-                    WHERE flashcards.flashcard_deck_id = flashcard_decks.id
-                    AND ls.user_id = '{$user_id->getValue()}'
-                    ) as last_learnt_at"),
-            ])
-            ->find($id->getValue());
-    }
-
     private function getRatingStats(Collection $ids, UserId $user_id): Collection
     {
-        $flashcard_avg_ratings = DB::table('learning_session_flashcards as lsf1')
-            ->leftJoin('learning_sessions', 'lsf1.learning_session_id', '=', 'learning_sessions.id')
-            ->selectRaw('
-                lsf1.flashcard_id,
-                AVG(lsf1.rating)::float as avg_rating
-            ')
-            ->whereNotNull('lsf1.rating')
-            ->where('learning_sessions.user_id', $user_id->getValue())
-            ->whereIn('lsf1.id', function ($query) {
-                $query->select('id')
-                    ->from('learning_session_flashcards as lsf2')
-                    ->whereColumn('lsf2.flashcard_id', 'lsf1.flashcard_id')
-                    ->orderByDesc('lsf2.id')
-                    ->limit(2);
-            })
-            ->groupBy('lsf1.flashcard_id');
-
-        return DB::table('flashcards')
-            ->joinSub($flashcard_avg_ratings, 'avg_ratings', function ($join) {
-                $join->on('avg_ratings.flashcard_id', '=', 'flashcards.id');
-            })
-            ->whereIn('flashcards.flashcard_deck_id', $ids)
-            ->selectRaw('flashcards.flashcard_deck_id, SUM(avg_ratings.avg_rating) as total_avg_rating')
+        return FlashcardQueryBuilder::new()
+            ->joinAvgRatings($user_id, 2, 'avg_ratings')
+            ->byDeckIds($ids->toArray())
+            ->addSelectAll(['flashcard_deck_id'])
+            ->addSelectAvgRatings('total_avg_rating')
             ->groupBy('flashcards.flashcard_deck_id')
             ->get();
     }

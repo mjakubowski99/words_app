@@ -209,6 +209,26 @@ test('get by user return only user decks', function () {
         ->and($results[0]->getOwner()->getId()->getValue())->toBe($user_deck->user_id)
         ->and($results[0]->getOwner()->getOwnerType())->toBe(FlashcardOwnerType::USER);
 });
+test('get by user when language doesnt match return empty list', function () {
+    // GIVEN
+    $user = User::factory()->create();
+    $admin = Admin::factory()->create();
+    $user_deck = FlashcardDeck::factory()->create([
+        'user_id' => $user->id,
+        'admin_id' => null,
+    ]);
+    Flashcard::factory()->create([
+        'flashcard_deck_id' => $user_deck->id,
+        'front_lang' => Language::IT,
+        'back_lang' => Language::FR,
+    ]);
+
+    // WHEN
+    $results = $this->repository->getByUser($user->getId(), Language::PL, Language::EN, 1, 15);
+
+    // THEN
+    expect($results)->toHaveCount(0);
+});
 test('get by owner pagination works', function () {
     // GIVEN
     $user = User::factory()->create();
@@ -257,6 +277,22 @@ test('search by name should return user deck', function () {
     expect($deck->getId()->getValue())->toBe($expected_deck->id)
         ->and($deck->getName())->toBe($expected_deck->name)
         ->and($deck->getOwner()->getId()->getValue())->toBe($user->id);
+});
+test('search by name when language doesnt match return empty list', function () {
+    // GIVEN
+    $user = User::factory()->create();
+    $expected_deck = FlashcardDeck::factory()->create(['name' => 'deck', 'user_id' => $user->id]);
+    Flashcard::factory()->create([
+        'flashcard_deck_id' => $expected_deck->id,
+        'front_lang' => Language::DE,
+        'back_lang' => Language::EN,
+    ]);
+
+    // WHEN
+    $deck = $this->repository->searchByName($user->getId(), 'deck', Language::PL, Language::EN);
+
+    // THEN
+    expect($deck)->toBe(null);
 });
 test('search by name should correctly search by name', function () {
     // GIVEN

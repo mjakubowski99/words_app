@@ -138,7 +138,13 @@ class SessionController extends Controller
 
         DB::transaction(function () use ($add_session_flashcards, $request, $result, $user) {
             $add_session_flashcards->handle(
-                new AddSessionFlashcards($result->getId(), $user->getId(), $user->getUserLanguage()->getEnum(), $user->getLearningLanguage()->getEnum(), self::FLASHCARDS_LIMIT)
+                new AddSessionFlashcards(
+                    $result->getId(),
+                    $user->getId(),
+                    $user->getUserLanguage()->getEnum(),
+                    $user->getLearningLanguage()->getEnum(),
+                    self::FLASHCARDS_LIMIT
+                )
             );
         });
 

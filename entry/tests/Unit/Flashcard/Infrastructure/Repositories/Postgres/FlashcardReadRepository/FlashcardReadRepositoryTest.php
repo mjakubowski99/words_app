@@ -53,6 +53,41 @@ test('find rating stats return only user ratings', function () {
     }
 });
 
+test('find rating stats return only ratings in language', function () {
+    // GIVEN
+    $user = $this->createUser();
+    $learning_session = $this->createLearningSession([
+        'user_id' => $user->id,
+    ]);
+    $this->createLearningSessionFlashcard([
+        'learning_session_id' => $learning_session->id,
+        'rating' => Rating::GOOD,
+        'flashcard_id' => $this->createFlashcard(['front_lang' => Language::EN, 'back_lang' => Language::PL])->id,
+    ]);
+    $this->createLearningSessionFlashcard([
+        'learning_session_id' => $learning_session->id,
+        'rating' => Rating::WEAK,
+        'flashcard_id' => $this->createFlashcard(['front_lang' => Language::DE, 'back_lang' => Language::FR])->id,
+    ]);
+    $expecteds = [
+        ['rating' => GeneralRatingType::UNKNOWN->value, 'rating_percentage' => 0.0],
+        ['rating' => GeneralRatingType::WEAK->value, 'rating_percentage' => 0.0],
+        ['rating' => GeneralRatingType::GOOD->value, 'rating_percentage' => 100.0],
+        ['rating' => GeneralRatingType::VERY_GOOD->value, 'rating_percentage' => 0.0],
+    ];
+
+    // WHEN
+    $results = $this->repository->findStatsByUser($user->getId(), Language::EN, Language::PL, null);
+
+    // THEN
+    $i = 0;
+    foreach ($results->getRatingStats() as $result) {
+        expect($result->getRating()->getValue()->value)->toBe($expecteds[$i]['rating'])
+            ->and(round($result->getRatingPercentage(), 2))->toBe($expecteds[$i]['rating_percentage']);
+        ++$i;
+    }
+});
+
 test('find rating stats when owner type admin return ratings only for admin flashcards', function () {
     // GIVEN
     $user = $this->createUser();
