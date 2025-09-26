@@ -1,6 +1,8 @@
 <?php
 
 declare(strict_types=1);
+
+use App\Models\Flashcard;
 use App\Models\User;
 use App\Models\FlashcardDeck;
 use Shared\Enum\LanguageLevel;
@@ -90,7 +92,12 @@ test('when category already exists should generate flashcards and assign them to
     ]);
     $deck_name = 'Category';
     $user = User::factory()->create();
-    FlashcardDeck::factory()->create(['name' => $deck_name, 'user_id' => $user->id]);
+    $deck = FlashcardDeck::factory()->create(['name' => $deck_name, 'user_id' => $user->id]);
+    Flashcard::factory()->create([
+        'flashcard_deck_id' => $deck->id,
+        'front_lang' => Language::pl(),
+        'back_lang' => Language::en(),
+    ]);
     $command = new GenerateFlashcards(
         $user->getId(),
         $deck_name,

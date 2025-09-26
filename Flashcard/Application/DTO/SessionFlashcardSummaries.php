@@ -23,18 +23,23 @@ class SessionFlashcardSummaries implements ISessionFlashcardSummaries
     /** @param Flashcard[] $options */
     public static function fromStory(Story $story, Flashcard $base_story_flashcard, array $options = []): self
     {
-        $i = -1;
-
         $answer_options = [];
         foreach ($story->getStoryFlashcards() as $flashcard) {
-            $answer_options[] = new AnswerOption($flashcard->getFlashcard()->getBackWord());
+            $answer_options[] = $flashcard->getFlashcard()->getBackWord();
         }
         foreach ($options as $option) {
-            $answer_options[] = new AnswerOption($option->getBackWord());
+            $answer_options[] = $option->getBackWord();
+        }
+        $answer_options[] = $base_story_flashcard->getBackWord();
+        $answer_options = array_values(array_unique($answer_options));
+
+        for($i=0; $i<count($answer_options); $i++) {
+            $answer_options[$i] = new AnswerOption($answer_options[$i]);
         }
 
         shuffle($answer_options);
 
+        $i = -1;
         return new self(
             $story->getId(),
             array_map(function (StoryFlashcard $story_flashcard) use (&$i) {
@@ -55,18 +60,23 @@ class SessionFlashcardSummaries implements ISessionFlashcardSummaries
     /** @param Flashcard[] $options */
     public static function fromFlashcards(array $flashcards, Flashcard $base_flashcard, array $options = []): self
     {
-        $i = -1;
-
         $answer_options = [];
         foreach ($options as $option) {
-            $answer_options[] = new AnswerOption($option->getBackWord());
+            $answer_options[] = $option->getBackWord();
         }
         foreach ($flashcards as $flashcard) {
-            $answer_options[] = new AnswerOption($flashcard->getBackWord());
+            $answer_options[] = $flashcard->getBackWord();
+        }
+        $answer_options[] = $base_flashcard->getBackWord();
+        $answer_options = array_values(array_unique($answer_options));
+
+        for($i=0; $i<count($answer_options); $i++) {
+            $answer_options[$i] = new AnswerOption($answer_options[$i]);
         }
 
         shuffle($answer_options);
 
+        $i = -1;
         return new self(
             null,
             array_map(function (Flashcard $flashcard) use (&$i) {

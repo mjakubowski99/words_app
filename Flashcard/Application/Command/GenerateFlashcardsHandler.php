@@ -19,14 +19,16 @@ final readonly class GenerateFlashcardsHandler
     {
         $resolved_deck = $this->deck_resolver->resolveByName(
             $command->getUserId(),
+            $command->getFrontLang()->getEnum(),
+            $command->getBackLang()->getEnum(),
             $command->getDeckName(),
             $command->getLanguageLevel(),
         );
 
         $flashcards_count = $this->flashcard_generator_service->generate(
             $resolved_deck,
-            $command->getFront(),
-            $command->getBack(),
+            $command->getFrontLang(),
+            $command->getBackLang(),
             $command->getDeckName(),
             $flashcards_limit,
             $flashcards_save_limit

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\Query;
 
-use Shared\Utils\ValueObjects\UserId;
+use Shared\User\IUser;
 use Flashcard\Application\ReadModels\UserFlashcardsRead;
 use Flashcard\Application\Repository\IFlashcardReadRepository;
 
@@ -14,8 +14,15 @@ class GetUserFlashcards
         private IFlashcardReadRepository $repository
     ) {}
 
-    public function get(UserId $user_id, ?string $search, int $page, int $per_page): UserFlashcardsRead
+    public function get(IUser $user, ?string $search, int $page, int $per_page): UserFlashcardsRead
     {
-        return $this->repository->findByUser($user_id, $search, $page, $per_page);
+        return $this->repository->findByUser(
+            $user->getId(),
+            $user->getUserLanguage()->getEnum(),
+            $user->getLearningLanguage()->getEnum(),
+            $search,
+            $page,
+            $per_page
+        );
     }
 }

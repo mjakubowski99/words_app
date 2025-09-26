@@ -13,9 +13,22 @@ uses(DatabaseTransactions::class);
 
 test('index success', function () {
     // GIVEN
-    $user = $this->createUser();
-    $this->createFlashcardDeck(['user_id' => $user->id]);
-    $this->createFlashcardDeck(['user_id' => $user->id]);
+    $user = $this->createUser([
+        'user_language' => Language::PL,
+        'learning_language' => Language::EN,
+    ]);
+    $deck = $this->createFlashcardDeck(['user_id' => $user->id]);
+    $this->createFlashcard([
+        'flashcard_deck_id' => $deck->id,
+        'front_lang' => Language::PL,
+        'back_lang' => Language::EN,
+    ]);
+    $deck = $this->createFlashcardDeck(['user_id' => $user->id]);
+    $this->createFlashcard([
+        'flashcard_deck_id' => $deck->id,
+        'front_lang' => Language::PL,
+        'back_lang' => Language::EN,
+    ]);
 
     // WHEN
     $response = $this->actingAs($user, 'sanctum')
@@ -46,9 +59,21 @@ test('index success', function () {
 });
 test('index admin success', function () {
     // GIVEN
-    $user = $this->createUser();
+    $user = $this->createUser([
+        'user_language' => Language::PL,
+        'learning_language' => Language::EN,
+    ]);
     $admin = $this->createAdmin();
-    $this->createFlashcardDeck(['admin_id' => $admin->id, 'user_id' => null, 'default_language_level' => LanguageLevel::A1]);
+    $deck = $this->createFlashcardDeck([
+        'admin_id' => $admin->id,
+        'user_id' => null,
+        'default_language_level' => LanguageLevel::A1
+    ]);
+    $this->createFlashcard([
+        'flashcard_deck_id' => $deck->id,
+        'front_lang' => Language::PL,
+        'back_lang' => Language::EN,
+    ]);
 
     // WHEN
     $response = $this->actingAs($user, 'sanctum')
@@ -79,10 +104,23 @@ test('index admin success', function () {
 });
 test('index admin when deck filter success', function () {
     // GIVEN
-    $user = $this->createUser();
+    $user = $this->createUser([
+        'user_language' => Language::PL,
+        'learning_language' => Language::EN,
+    ]);
     $admin = $this->createAdmin();
-    $this->createFlashcardDeck(['admin_id' => $admin->id, 'user_id' => null, 'default_language_level' => LanguageLevel::A1]);
-    $this->createFlashcardDeck(['admin_id' => $admin->id, 'user_id' => null, 'default_language_level' => LanguageLevel::A2]);
+    $deck_1 = $this->createFlashcardDeck(['admin_id' => $admin->id, 'user_id' => null, 'default_language_level' => LanguageLevel::A1]);
+    $this->createFlashcard([
+        'flashcard_deck_id' => $deck_1->id,
+        'front_lang' => Language::PL,
+        'back_lang' => Language::EN,
+    ]);
+    $deck_2 = $this->createFlashcardDeck(['admin_id' => $admin->id, 'user_id' => null, 'default_language_level' => LanguageLevel::A2]);
+    $this->createFlashcard([
+        'flashcard_deck_id' => $deck_2->id,
+        'front_lang' => Language::PL,
+        'back_lang' => Language::EN,
+    ]);
 
     // WHEN
     $response = $this->actingAs($user, 'sanctum')
@@ -115,10 +153,15 @@ test('index admin when deck filter success', function () {
 });
 test('rating stats read when user authorized success', function () {
     // GIVEN
-    $user = $this->createUser();
+    $user = $this->createUser([
+        'user_language' => Language::PL,
+        'learning_language' => Language::EN,
+    ]);
     $deck = $this->createFlashcardDeck();
     $flashcard = $this->createFlashcard([
         'flashcard_deck_id' => $deck->id,
+        'front_lang' => Language::PL,
+        'back_lang' => Language::EN,
     ]);
     $this->createLearningSessionFlashcard([
         'flashcard_id' => $flashcard->id,

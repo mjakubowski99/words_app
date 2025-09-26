@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Models\Admin;
 use App\Models\Flashcard;
+use Shared\Enum\Language;
 use Tests\Base\FlashcardTestCase;
 use Shared\Enum\GeneralRatingType;
 use Flashcard\Domain\Models\Rating;
@@ -27,11 +28,11 @@ test('find rating stats return only user ratings', function () {
     $this->createLearningSessionFlashcard([
         'learning_session_id' => $learning_session->id,
         'rating' => Rating::GOOD,
-        'flashcard_id' => $this->createFlashcard()->id,
+        'flashcard_id' => $this->createFlashcard(['front_lang' => Language::EN, 'back_lang' => Language::PL])->id,
     ]);
     $this->createLearningSessionFlashcard([
         'rating' => Rating::WEAK,
-        'flashcard_id' => $this->createFlashcard()->id,
+        'flashcard_id' => $this->createFlashcard(['front_lang' => Language::EN, 'back_lang' => Language::PL])->id,
     ]);
     $expecteds = [
         ['rating' => GeneralRatingType::UNKNOWN->value, 'rating_percentage' => 0.0],
@@ -41,13 +42,13 @@ test('find rating stats return only user ratings', function () {
     ];
 
     // WHEN
-    $results = $this->repository->findStatsByUser($user->getId(), null);
+    $results = $this->repository->findStatsByUser($user->getId(), Language::EN, Language::PL, null);
 
     // THEN
     $i = 0;
     foreach ($results->getRatingStats() as $result) {
-        expect($result->getRating()->getValue()->value)->toBe($expecteds[$i]['rating']);
-        expect(round($result->getRatingPercentage(), 2))->toBe($expecteds[$i]['rating_percentage']);
+        expect($result->getRating()->getValue()->value)->toBe($expecteds[$i]['rating'])
+            ->and(round($result->getRatingPercentage(), 2))->toBe($expecteds[$i]['rating_percentage']);
         ++$i;
     }
 });
@@ -61,12 +62,12 @@ test('find rating stats when owner type admin return ratings only for admin flas
     $this->createLearningSessionFlashcard([
         'learning_session_id' => $learning_session->id,
         'rating' => Rating::GOOD,
-        'flashcard_id' => Flashcard::factory()->byAdmin(Admin::factory()->create())->create()->id,
+        'flashcard_id' => Flashcard::factory()->byAdmin(Admin::factory()->create())->create(['front_lang' => Language::EN, 'back_lang' => Language::PL])->id,
     ]);
     $this->createLearningSessionFlashcard([
         'learning_session_id' => $learning_session->id,
         'rating' => Rating::WEAK,
-        'flashcard_id' => Flashcard::factory()->byUser($user)->create()->id,
+        'flashcard_id' => Flashcard::factory()->byUser($user)->create(['front_lang' => Language::EN, 'back_lang' => Language::PL])->id,
     ]);
     $expecteds = [
         ['rating' => GeneralRatingType::UNKNOWN->value, 'rating_percentage' => 0.0],
@@ -76,13 +77,13 @@ test('find rating stats when owner type admin return ratings only for admin flas
     ];
 
     // WHEN
-    $results = $this->repository->findStatsByUser($user->getId(), FlashcardOwnerType::ADMIN);
+    $results = $this->repository->findStatsByUser($user->getId(), Language::EN, Language::PL, FlashcardOwnerType::ADMIN);
 
     // THEN
     $i = 0;
     foreach ($results->getRatingStats() as $result) {
-        expect($result->getRating()->getValue()->value)->toBe($expecteds[$i]['rating']);
-        expect(round($result->getRatingPercentage(), 2))->toBe($expecteds[$i]['rating_percentage']);
+        expect($result->getRating()->getValue()->value)->toBe($expecteds[$i]['rating'])
+            ->and(round($result->getRatingPercentage(), 2))->toBe($expecteds[$i]['rating_percentage']);
         ++$i;
     }
 });
@@ -95,12 +96,12 @@ test('find rating stats when owner type user return ratings only for user flashc
     $this->createLearningSessionFlashcard([
         'learning_session_id' => $learning_session->id,
         'rating' => Rating::GOOD,
-        'flashcard_id' => Flashcard::factory()->byAdmin(Admin::factory()->create())->create()->id,
+        'flashcard_id' => Flashcard::factory()->byAdmin(Admin::factory()->create())->create(['front_lang' => Language::EN, 'back_lang' => Language::PL])->id,
     ]);
     $this->createLearningSessionFlashcard([
         'learning_session_id' => $learning_session->id,
         'rating' => Rating::WEAK,
-        'flashcard_id' => Flashcard::factory()->byUser($user)->create()->id,
+        'flashcard_id' => Flashcard::factory()->byUser($user)->create(['front_lang' => Language::EN, 'back_lang' => Language::PL])->id,
     ]);
     $expecteds = [
         ['rating' => GeneralRatingType::UNKNOWN->value, 'rating_percentage' => 0.0],
@@ -110,13 +111,13 @@ test('find rating stats when owner type user return ratings only for user flashc
     ];
 
     // WHEN
-    $results = $this->repository->findStatsByUser($user->getId(), FlashcardOwnerType::USER);
+    $results = $this->repository->findStatsByUser($user->getId(), Language::EN, Language::PL, FlashcardOwnerType::USER);
 
     // THEN
     $i = 0;
     foreach ($results->getRatingStats() as $result) {
-        expect($result->getRating()->getValue()->value)->toBe($expecteds[$i]['rating']);
-        expect(round($result->getRatingPercentage(), 2))->toBe($expecteds[$i]['rating_percentage']);
+        expect($result->getRating()->getValue()->value)->toBe($expecteds[$i]['rating'])
+            ->and(round($result->getRatingPercentage(), 2))->toBe($expecteds[$i]['rating_percentage']);
         ++$i;
     }
 });
@@ -131,18 +132,18 @@ test('find rating stats return correct values', function (array $flashcards, arr
         $this->createLearningSessionFlashcard([
             'learning_session_id' => $learning_session->id,
             'rating' => $flashcard['rating'],
-            'flashcard_id' => $this->createFlashcard(['user_id' => $user->id])->id,
+            'flashcard_id' => $this->createFlashcard(['user_id' => $user->id, 'front_lang' => Language::EN, 'back_lang' => Language::PL])->id,
         ]);
     }
 
     // WHEN
-    $results = $this->repository->findStatsByUser($user->getId(), null);
+    $results = $this->repository->findStatsByUser($user->getId(), Language::EN, Language::PL, null);
 
     // THEN
     $i = 0;
     foreach ($results->getRatingStats() as $result) {
-        expect($result->getRating()->getValue()->value)->toBe($expecteds[$i]['rating']);
-        expect(round($result->getRatingPercentage(), 2))->toBe($expecteds[$i]['rating_percentage']);
+        expect($result->getRating()->getValue()->value)->toBe($expecteds[$i]['rating'])
+            ->and(round($result->getRatingPercentage(), 2))->toBe($expecteds[$i]['rating_percentage']);
         ++$i;
     }
 })->with('ratedFlashcardsRatingProvider');

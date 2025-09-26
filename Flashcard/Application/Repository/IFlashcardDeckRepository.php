@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Flashcard\Application\Repository;
 
 use Flashcard\Domain\Models\Deck;
+use Shared\Enum\Language;
 use Shared\Utils\ValueObjects\UserId;
 use Flashcard\Domain\ValueObjects\FlashcardDeckId;
 
@@ -12,12 +13,12 @@ interface IFlashcardDeckRepository
 {
     public function findById(FlashcardDeckId $id): Deck;
 
-    public function searchByName(UserId $user_id, string $name): ?Deck;
+    public function searchByName(UserId $user_id, string $name, Language $front_lang, Language $back_lang): ?Deck;
 
-    public function searchByNameAdmin(string $name): ?Deck;
+    public function searchByNameAdmin(string $name, Language $front_lang, Language $back_lang): ?Deck;
 
     /** @return Deck[] */
-    public function getByUser(UserId $user_id, int $page, int $per_page): array;
+    public function getByUser(UserId $user_id, Language $front_lang, Language $back_lang, int $page, int $per_page): array;
 
     public function create(Deck $deck): Deck;
 

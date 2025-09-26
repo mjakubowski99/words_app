@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\Services;
 
+use Shared\Enum\Language;
 use Shared\Enum\LanguageLevel;
 use Flashcard\Domain\Models\Deck;
 use Flashcard\Domain\Models\Owner;
@@ -18,9 +19,9 @@ class DeckResolver
         private IFlashcardDeckRepository $repository
     ) {}
 
-    public function resolveByName(UserId $user_id, string $name, LanguageLevel $level): ResolvedDeck
+    public function resolveByName(UserId $user_id, Language $front_lang, Language $back_lang, string $name, LanguageLevel $level): ResolvedDeck
     {
-        $existing_deck = $this->repository->searchByName($user_id, $name);
+        $existing_deck = $this->repository->searchByName($user_id, $name, $front_lang, $back_lang);
 
         if ($existing_deck) {
             return new ResolvedDeck(true, $existing_deck);

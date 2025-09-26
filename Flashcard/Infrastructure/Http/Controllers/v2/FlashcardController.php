@@ -147,7 +147,7 @@ class FlashcardController
         GetUserFlashcards $query,
     ): UserFlashcardsResource {
         $flashcards = $query->get(
-            $request->currentId(),
+            $request->current(),
             $request->getSearch(),
             $request->getPage(),
             $request->getPerPage()
@@ -187,6 +187,6 @@ class FlashcardController
         GetUserRatingStatsRequest $request,
         GetUserRatingStats $query,
     ): RatingStatsResource {
-        return new RatingStatsResource($query->get($request->currentId(), $request->getOwnerType()));
+        return new RatingStatsResource($query->get($request->current(), $request->getOwnerType()));
     }
 }

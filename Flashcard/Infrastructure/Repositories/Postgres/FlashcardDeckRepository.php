@@ -8,6 +8,7 @@ use Flashcard\Application\Repository\IFlashcardDeckRepository;
 use Flashcard\Domain\Models\Deck;
 use Flashcard\Domain\ValueObjects\FlashcardDeckId;
 use Flashcard\Infrastructure\Http\FlashcardDeckMapper;
+use Shared\Enum\Language;
 use Shared\Utils\ValueObjects\UserId;
 
 class FlashcardDeckRepository implements IFlashcardDeckRepository
@@ -21,14 +22,14 @@ class FlashcardDeckRepository implements IFlashcardDeckRepository
         return $this->mapper->findById($id);
     }
 
-    public function searchByName(UserId $user_id, string $name): ?Deck
+    public function searchByName(UserId $user_id, string $name, Language $front_lang, Language $back_lang): ?Deck
     {
-        return $this->mapper->searchByName($user_id, $name);
+        return $this->mapper->searchByName($user_id, $name, $front_lang, $back_lang);
     }
 
-    public function searchByNameAdmin(string $name): ?Deck
+    public function searchByNameAdmin(string $name, Language $front_lang, Language $back_lang): ?Deck
     {
-        return $this->mapper->searchByNameAdmin($name);
+        return $this->mapper->searchByNameAdmin($name, $front_lang, $back_lang);
     }
 
     public function create(Deck $deck): Deck
@@ -49,9 +50,9 @@ class FlashcardDeckRepository implements IFlashcardDeckRepository
     }
 
     /** @return Deck[] */
-    public function getByUser(UserId $user_id, int $page, int $per_page): array
+    public function getByUser(UserId $user_id, Language $front_lang, Language $back_lang, int $page, int $per_page): array
     {
-        return $this->mapper->getByUser($user_id, $page, $per_page);
+        return $this->mapper->getByUser($user_id, $front_lang, $back_lang, $page, $per_page);
     }
 
     public function remove(Deck $deck): void

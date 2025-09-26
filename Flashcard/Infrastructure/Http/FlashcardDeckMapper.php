@@ -9,6 +9,7 @@ use Flashcard\Domain\Models\Deck;
 use Flashcard\Domain\ValueObjects\FlashcardDeckId;
 use Flashcard\Infrastructure\Mappers\Traits\HasOwnerBuilder;
 use Illuminate\Support\Facades\DB;
+use Shared\Enum\Language;
 use Shared\Enum\LanguageLevel;
 use Shared\Utils\ValueObjects\UserId;
 
@@ -82,9 +83,16 @@ class FlashcardDeckMapper
         return $this->map($result);
     }
 
-    public function searchByName(UserId $user_id, string $name): ?Deck
+    public function searchByName(UserId $user_id, string $name, Language $front_lang, Language $back_lang): ?Deck
     {
         $result = $this->db::table('flashcard_decks')
+            ->whereExists(function ($query) use ($front_lang, $back_lang) {
+                $query->select('flashcards.id')
+                    ->from('flashcards')
+                    ->whereColumn('flashcards.flashcard_deck_id', 'flashcard_decks.id')
+                    ->where('flashcards.front_lang', $front_lang->value)
+                    ->where('flashcards.back_lang', $back_lang->value);
+            })
             ->where('user_id', $user_id->getValue())
             ->whereRaw('LOWER(name) = ?', [mb_strtolower($name)])
             ->first();
@@ -92,9 +100,16 @@ class FlashcardDeckMapper
         return $result ? $this->map($result) : null;
     }
 
-    public function searchByNameAdmin(string $name): ?Deck
+    public function searchByNameAdmin(string $name, Language $front_lang, Language $back_lang): ?Deck
     {
         $result = $this->db::table('flashcard_decks')
+            ->whereExists(function ($query) use ($front_lang, $back_lang) {
+                $query->select('flashcards.id')
+                    ->from('flashcards')
+                    ->whereColumn('flashcards.flashcard_deck_id', 'flashcard_decks.id')
+                    ->where('flashcards.front_lang', $front_lang->value)
+                    ->where('flashcards.back_lang', $back_lang->value);
+            })
             ->whereNotNull('admin_id')
             ->whereNull('user_id')
             ->whereRaw('LOWER(name) = ?', [mb_strtolower($name)])
@@ -103,9 +118,16 @@ class FlashcardDeckMapper
         return $result ? $this->map($result) : null;
     }
 
-    public function getByUser(UserId $user_id, int $page, int $per_page): array
+    public function getByUser(UserId $user_id, Language $front_lang, Language $back_lang, int $page, int $per_page): array
     {
         $results = $this->db::table('flashcard_decks')
+            ->whereExists(function ($query) use ($front_lang, $back_lang) {
+                $query->select('flashcards.id')
+                    ->from('flashcards')
+                    ->whereColumn('flashcards.flashcard_deck_id', 'flashcard_decks.id')
+                    ->where('flashcards.front_lang', $front_lang->value)
+                    ->where('flashcards.back_lang', $back_lang->value);
+            })
             ->where('user_id', $user_id->getValue())
             ->take($per_page)
             ->skip(($page - 1) * $per_page)

@@ -29,11 +29,15 @@ class FlashcardReadMapper
     ) {}
 
     public function findFlashcardStats(
+        \Shared\Enum\Language $front_lang,
+        \Shared\Enum\Language $back_lang,
         ?FlashcardDeckId $deck_id,
         ?UserId $user_id,
         ?FlashcardOwnerType $flashcard_owner_type = null,
     ): RatingStatsReadCollection {
         $results = $this->db::table('flashcards')
+            ->where('front_lang', $front_lang)
+            ->where('back_lang', $back_lang)
             ->when($flashcard_owner_type === FlashcardOwnerType::USER, fn ($q) => $q->whereNotNull('flashcards.user_id'))
             ->when($flashcard_owner_type === FlashcardOwnerType::ADMIN, fn ($q) => $q->whereNotNull('flashcards.admin_id'))
             ->when($deck_id !== null, fn ($q) => $q->where('flashcards.flashcard_deck_id', '=', $deck_id->getValue()))
@@ -68,9 +72,9 @@ class FlashcardReadMapper
         return new RatingStatsReadCollection($data);
     }
 
-    public function getByUser(UserId $user_id, ?string $search, int $page, int $per_page): UserFlashcardsRead
+    public function getByUser(UserId $user_id, \Shared\Enum\Language $front_lang, \Shared\Enum\Language $back_lang, ?string $search, int $page, int $per_page): UserFlashcardsRead
     {
-        $user_flashcards = $this->search($user_id, null, $user_id, $search, $page, $per_page);
+        $user_flashcards = $this->search($user_id, $front_lang, $back_lang,null, $user_id, $search, $page, $per_page);
 
         $count = $this->db::table('flashcards')
             ->where('user_id', $user_id->getValue())
@@ -85,11 +89,13 @@ class FlashcardReadMapper
         );
     }
 
-    public function search(UserId $user_id, ?FlashcardDeckId $deck_id, ?UserId $user_filter, ?string $search, int $page, int $per_page): array
+    public function search(UserId $user_id, ?\Shared\Enum\Language $front_lang, ?\Shared\Enum\Language $back_lang, ?FlashcardDeckId $deck_id, ?UserId $user_filter, ?string $search, int $page, int $per_page): array
     {
         $rating = Rating::maxRating();
 
         $results = $this->db::table('flashcards')
+            ->when($front_lang, fn($q) => $q->where('front_lang', $front_lang))
+            ->when($back_lang, fn($q) => $q->where('back_lang', $back_lang))
             ->when(!is_null($search), function ($query) use ($search) {
                 return $query->where(function ($q) use ($search) {
                     $search = mb_strtolower($search);

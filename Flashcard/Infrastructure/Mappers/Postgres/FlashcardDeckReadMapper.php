@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Flashcard\Infrastructure\Mappers\Postgres;
 
 use Carbon\Carbon;
+use Shared\Enum\Language;
 use Shared\Enum\LanguageLevel;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -34,7 +35,7 @@ class FlashcardDeckReadMapper
             throw new ModelNotFoundException('Category not found');
         }
 
-        $flashcards = $this->flashcard_mapper->search($user_id, $id, null, $search, $page, $per_page);
+        $flashcards = $this->flashcard_mapper->search($user_id, null, null, $id, null, $search, $page, $per_page);
 
         $flashcards_count = $this->db::table('flashcards')
             ->where('flashcards.flashcard_deck_id', $id->getValue())
@@ -59,11 +60,18 @@ class FlashcardDeckReadMapper
     }
 
     /** @return OwnerCategoryRead[] */
-    public function getAdminDecks(UserId $user_id, ?LanguageLevel $level, ?string $search, int $page, int $per_page): array
+    public function getAdminDecks(UserId $user_id, Language $front_lang, Language $back_lang, ?LanguageLevel $level, ?string $search, int $page, int $per_page): array
     {
         $activities = $this->db::table('flashcard_deck_activities')->where('user_id', $user_id);
 
         $results = $this->db::table('flashcard_decks')
+            ->whereExists(function ($query) use ($front_lang, $back_lang) {
+                $query->select('flashcards.id')
+                    ->from('flashcards')
+                    ->whereColumn('flashcards.flashcard_deck_id', 'flashcard_decks.id')
+                    ->where('flashcards.front_lang', $front_lang->value)
+                    ->where('flashcards.back_lang', $back_lang->value);
+            })
             ->when($level !== null, fn ($q) => $q->where('flashcard_decks.default_language_level', '=', $level->value))
             ->whereNotNull('flashcard_decks.admin_id')
             ->when(!is_null($search), function ($query) use ($search) {
@@ -122,11 +130,18 @@ class FlashcardDeckReadMapper
     }
 
     /** @return OwnerCategoryRead[] */
-    public function getByUser(UserId $user_id, ?string $search, int $page, int $per_page): array
+    public function getByUser(UserId $user_id, Language $front_lang, Language $back_lang, ?string $search, int $page, int $per_page): array
     {
         $activities = $this->db::table('flashcard_deck_activities')->where('user_id', $user_id);
 
         $results = $this->db::table('flashcard_decks')
+            ->whereExists(function ($query) use ($front_lang, $back_lang) {
+                $query->select('flashcards.id')
+                    ->from('flashcards')
+                    ->whereColumn('flashcards.flashcard_deck_id', 'flashcard_decks.id')
+                    ->where('flashcards.front_lang', $front_lang->value)
+                    ->where('flashcards.back_lang', $back_lang->value);
+            })
             ->where('flashcard_decks.user_id', $user_id->getValue())
             ->when(!is_null($search), function ($query) use ($search) {
                 return $query->where(DB::raw('LOWER(flashcard_decks.name)'), 'LIKE', '%' . mb_strtolower($search) . '%');

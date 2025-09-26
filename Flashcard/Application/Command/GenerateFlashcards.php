@@ -33,12 +33,12 @@ class GenerateFlashcards
         return $this->language_level;
     }
 
-    public function getFront(): Language
+    public function getFrontLang(): Language
     {
         return $this->front;
     }
 
-    public function getBack(): Language
+    public function getBackLang(): Language
     {
         return $this->back;
     }

@@ -9,6 +9,7 @@ use App\Models\Flashcard;
 use App\Models\FlashcardDeck;
 use App\Models\SmTwoFlashcard;
 use App\Models\StoryFlashcard;
+use Shared\Enum\Language;
 use Shared\Enum\LanguageLevel;
 use App\Models\LearningSession;
 use Flashcard\Domain\Models\Deck;
@@ -34,11 +35,11 @@ test('find by id when normal deck success', function () {
     $result = $this->repository->findById($deck->getId());
 
     // THEN
-    expect($result)->toBeInstanceOf(Deck::class);
-    expect($result->getId()->getValue())->toBe($deck->getId()->getValue());
-    expect($result->getName())->toBe($deck->name);
-    expect($result->getOwner()->getId()->getValue())->toBe($deck->user->getId()->getValue());
-    expect($result->getOwner()->getOwnerType())->toBe(FlashcardOwnerType::USER);
+    expect($result)->toBeInstanceOf(Deck::class)
+        ->and($result->getId()->getValue())->toBe($deck->getId()->getValue())
+        ->and($result->getName())->toBe($deck->name)
+        ->and($result->getOwner()->getId()->getValue())->toBe($deck->user->getId()->getValue())
+        ->and($result->getOwner()->getOwnerType())->toBe(FlashcardOwnerType::USER);
 });
 test('find by id when admin is owner success', function () {
     // GIVEN
@@ -52,8 +53,8 @@ test('find by id when admin is owner success', function () {
     $result = $this->repository->findById($deck->getId());
 
     // THEN
-    expect($result)->toBeInstanceOf(Deck::class);
-    expect($result->getOwner()->equals($admin->toOwner()))->toBeTrue();
+    expect($result)->toBeInstanceOf(Deck::class)
+        ->and($result->getOwner()->equals($admin->toOwner()))->toBeTrue();
 });
 test('create should create deck', function () {
     // GIVEN
@@ -182,21 +183,31 @@ test('get by user return only user decks', function () {
         'admin_id' => $admin->id,
         'user_id' => null,
     ]);
+    Flashcard::factory()->create([
+        'flashcard_deck_id' => $other_deck->id,
+        'front_lang' => Language::PL,
+        'back_lang' => Language::EN,
+    ]);
     $user_deck = FlashcardDeck::factory()->create([
         'user_id' => $user->id,
         'admin_id' => null,
     ]);
+    Flashcard::factory()->create([
+        'flashcard_deck_id' => $user_deck->id,
+        'front_lang' => Language::PL,
+        'back_lang' => Language::EN,
+    ]);
 
     // WHEN
-    $results = $this->repository->getByUser($user->getId(), 1, 15);
+    $results = $this->repository->getByUser($user->getId(), Language::PL, Language::EN, 1, 15);
 
     // THEN
-    expect($results)->toHaveCount(1);
-    expect($results[0])->toBeInstanceOf(Deck::class);
-    expect($results[0]->getId()->getValue())->toBe($user_deck->id);
-    expect($results[0]->getName())->toBe($user_deck->name);
-    expect($results[0]->getOwner()->getId()->getValue())->toBe($user_deck->user_id);
-    expect($results[0]->getOwner()->getOwnerType())->toBe(FlashcardOwnerType::USER);
+    expect($results)->toHaveCount(1)
+        ->and($results[0])->toBeInstanceOf(Deck::class)
+        ->and($results[0]->getId()->getValue())->toBe($user_deck->id)
+        ->and($results[0]->getName())->toBe($user_deck->name)
+        ->and($results[0]->getOwner()->getId()->getValue())->toBe($user_deck->user_id)
+        ->and($results[0]->getOwner()->getOwnerType())->toBe(FlashcardOwnerType::USER);
 });
 test('get by owner pagination works', function () {
     // GIVEN
@@ -204,42 +215,72 @@ test('get by owner pagination works', function () {
     $user_decks = FlashcardDeck::factory(2)->create([
         'user_id' => $user->id,
     ]);
+    Flashcard::factory()->create([
+        'flashcard_deck_id' => $user_decks[0]->id,
+        'front_lang' => Language::PL,
+        'back_lang' => Language::EN,
+    ]);
+    Flashcard::factory()->create([
+        'flashcard_deck_id' => $user_decks[1]->id,
+        'front_lang' => Language::PL,
+        'back_lang' => Language::EN,
+    ]);
 
     // WHEN
-    $results = $this->repository->getByUser($user->getId(), 2, 1);
+    $results = $this->repository->getByUser($user->getId(), Language::PL, Language::EN, 2, 1);
 
     // THEN
-    expect($results)->toHaveCount(1);
-    expect($results[0])->toBeInstanceOf(Deck::class);
-    expect($results[0]->getId()->getValue())->toBe($user_decks[1]->id);
+    expect($results)->toHaveCount(1)
+        ->and($results[0])->toBeInstanceOf(Deck::class)
+        ->and($results[0]->getId()->getValue())->toBe($user_decks[1]->id);
 });
 test('search by name should return user deck', function () {
     // GIVEN
     $user = User::factory()->create();
-    FlashcardDeck::factory()->create(['name' => 'deck']);
+    $other_deck = FlashcardDeck::factory()->create(['name' => 'deck']);
+    Flashcard::factory()->create([
+        'flashcard_deck_id' => $other_deck->id,
+        'front_lang' => Language::PL,
+        'back_lang' => Language::EN,
+    ]);
     $expected_deck = FlashcardDeck::factory()->create(['name' => 'deck', 'user_id' => $user->id]);
+    Flashcard::factory()->create([
+        'flashcard_deck_id' => $expected_deck->id,
+        'front_lang' => Language::PL,
+        'back_lang' => Language::EN,
+    ]);
 
     // WHEN
-    $deck = $this->repository->searchByName($user->getId(), 'deck');
+    $deck = $this->repository->searchByName($user->getId(), 'deck', Language::PL, Language::EN);
 
     // THEN
-    expect($deck->getId()->getValue())->toBe($expected_deck->id);
-    expect($deck->getName())->toBe($expected_deck->name);
-    expect($deck->getOwner()->getId()->getValue())->toBe($user->id);
+    expect($deck->getId()->getValue())->toBe($expected_deck->id)
+        ->and($deck->getName())->toBe($expected_deck->name)
+        ->and($deck->getOwner()->getId()->getValue())->toBe($user->id);
 });
 test('search by name should correctly search by name', function () {
     // GIVEN
     $user = User::factory()->create();
-    FlashcardDeck::factory()->create(['name' => 'deck 1', 'user_id' => $user->id]);
+    $other_deck = FlashcardDeck::factory()->create(['name' => 'deck 1', 'user_id' => $user->id]);
+    Flashcard::factory()->create([
+        'flashcard_deck_id' => $other_deck->id,
+        'front_lang' => Language::PL,
+        'back_lang' => Language::EN,
+    ]);
     $expected_deck = FlashcardDeck::factory()->create(['name' => 'deck', 'user_id' => $user->id]);
+    Flashcard::factory()->create([
+        'flashcard_deck_id' => $expected_deck->id,
+        'front_lang' => Language::PL,
+        'back_lang' => Language::EN,
+    ]);
 
     // WHEN
-    $deck = $this->repository->searchByName($user->getId(), 'deck');
+    $deck = $this->repository->searchByName($user->getId(), 'deck', Language::PL, Language::EN);
 
     // THEN
-    expect($deck->getId()->getValue())->toBe($expected_deck->id);
-    expect($deck->getName())->toBe($expected_deck->name);
-});
+    expect($deck->getId()->getValue())->toBe($expected_deck->id)
+        ->and($deck->getName())->toBe($expected_deck->name);
+    });
 test('bulk delete should delete only decks with given ids', function () {
     // GIVEN
     $user = User::factory()->create();

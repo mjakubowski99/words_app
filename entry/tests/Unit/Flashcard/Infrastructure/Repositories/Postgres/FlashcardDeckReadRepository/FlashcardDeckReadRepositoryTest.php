@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Models\User;
 use App\Models\Admin;
 use App\Models\FlashcardDeck;
+use Shared\Enum\Language;
 use Shared\Enum\LanguageLevel;
 use Tests\Base\FlashcardTestCase;
 use Shared\Enum\GeneralRatingType;
@@ -143,9 +144,15 @@ test('get by user return only user categories', function () {
         'user_id' => $user->id,
         'default_language_level' => LanguageLevel::B1,
     ]);
+    $this->createFlashcard([
+        'flashcard_deck_id' => $user_deck->id,
+        'front_lang' => Language::PL,
+        'back_lang' => Language::EN,
+        'language_level' => LanguageLevel::B1,
+    ]);
 
     // WHEN
-    $results = $this->repository->getByUser($user->getId(), null, 1, 15);
+    $results = $this->repository->getByUser($user->getId(), Language::PL, Language::EN, null, 1, 15);
 
     // THEN
     expect($results)->toHaveCount(1)
@@ -159,15 +166,25 @@ test('get by user return only user categories', function () {
 test('get by user pagination works', function () {
     // GIVEN
     $user = $this->createUser();
-    $this->createFlashcardDeck([
+    $other_deck = $this->createFlashcardDeck([
         'user_id' => $user->id,
     ]);
     $user_deck = $this->createFlashcardDeck([
         'user_id' => $user->id,
     ]);
+    $this->createFlashcard([
+        'flashcard_deck_id' => $other_deck->id,
+        'front_lang' => Language::PL,
+        'back_lang' => Language::EN,
+    ]);
+    $this->createFlashcard([
+        'flashcard_deck_id' => $user_deck->id,
+        'front_lang' => Language::PL,
+        'back_lang' => Language::EN,
+    ]);
 
     // WHEN
-    $results = $this->repository->getByUser($user->getId(), null, 2, 1);
+    $results = $this->repository->getByUser($user->getId(), Language::PL, Language::EN,  null, 2, 1);
 
     // THEN
     expect($results)->toHaveCount(1)
@@ -186,9 +203,14 @@ test('get by user searching works', function () {
         'user_id' => $user->id,
         'name' => 'Alan',
     ]);
+    $this->createFlashcard([
+        'flashcard_deck_id' => $expected->id,
+        'front_lang' => Language::PL,
+        'back_lang' => Language::EN,
+    ]);
 
     // WHEN
-    $results = $this->repository->getByUser($user->getId(), 'LAn', 1, 15);
+    $results = $this->repository->getByUser($user->getId(), Language::PL, Language::EN, 'LAn', 1, 15);
 
     // THEN
     expect($results)->toHaveCount(1)
@@ -209,9 +231,14 @@ test('get admin decks searching works', function () {
         'admin_id' => Admin::factory()->create(),
         'name' => 'Alan',
     ]);
+    $this->createFlashcard([
+        'flashcard_deck_id' => $expected->id,
+        'front_lang' => Language::PL,
+        'back_lang' => Language::EN,
+    ]);
 
     // WHEN
-    $results = $this->repository->getAdminDecks($user->getId(), null, 'LAn', 1, 15);
+    $results = $this->repository->getAdminDecks($user->getId(), Language::PL, Language::EN, null, 'LAn', 1, 15);
 
     // THEN
     expect($results)->toHaveCount(1)
@@ -235,9 +262,14 @@ test('get admin decks language level filter works', function () {
         'name' => 'Alan',
         'default_language_level' => LanguageLevel::A1,
     ]);
+    $this->createFlashcard([
+        'flashcard_deck_id' => $expected->id,
+        'front_lang' => Language::PL,
+        'back_lang' => Language::EN,
+    ]);
 
     // WHEN
-    $results = $this->repository->getAdminDecks($user->getId(), LanguageLevel::A1, 'LAn', 1, 15);
+    $results = $this->repository->getAdminDecks($user->getId(), Language::PL, Language::EN, LanguageLevel::A1, 'LAn', 1, 15);
 
     // THEN
     expect($results)->toHaveCount(1)
@@ -255,8 +287,8 @@ test('get admin decks last learnt at is correct', function () {
         'name' => 'Alan',
     ]);
     $flashcards = [
-        $this->createFlashcard(['flashcard_deck_id' => $expected->id]),
-        $this->createFlashcard(['flashcard_deck_id' => $expected->id]),
+        $this->createFlashcard(['flashcard_deck_id' => $expected->id, 'front_lang' => Language::PL, 'back_lang' => Language::EN]),
+        $this->createFlashcard(['flashcard_deck_id' => $expected->id, 'front_lang' => Language::PL, 'back_lang' => Language::EN]),
     ];
     $learning_session = $this->createLearningSession([
         'user_id' => $user->id,
@@ -273,7 +305,7 @@ test('get admin decks last learnt at is correct', function () {
     ]);
 
     // WHEN
-    $results = $this->repository->getAdminDecks($user->getId(), null, 'LAn', 1, 15);
+    $results = $this->repository->getAdminDecks($user->getId(), Language::PL, Language::EN, null, 'LAn', 1, 15);
 
     // THEN
     expect($results[0]->getLastLearntAt()->toDateTimeString())->toBe($now->toDateTimeString());
@@ -286,15 +318,15 @@ test('get by user level is most frequent flashcard language level', function () 
         'user_id' => $user->id,
         'name' => 'Alan',
     ]);
-    $this->createFlashcard(['flashcard_deck_id' => $expected->id, 'language_level' => LanguageLevel::A1]);
-    $this->createFlashcard(['flashcard_deck_id' => $expected->id, 'language_level' => LanguageLevel::A2]);
-    $this->createFlashcard(['flashcard_deck_id' => $expected->id, 'language_level' => LanguageLevel::A2]);
-    $this->createFlashcard(['flashcard_deck_id' => $expected->id, 'language_level' => LanguageLevel::A2]);
-    $this->createFlashcard(['flashcard_deck_id' => $expected->id, 'language_level' => LanguageLevel::B1]);
-    $this->createFlashcard(['flashcard_deck_id' => $expected->id, 'language_level' => LanguageLevel::B1]);
+    $this->createFlashcard(['flashcard_deck_id' => $expected->id, 'language_level' => LanguageLevel::A1, 'front_lang' => Language::PL, 'back_lang' => Language::EN]);
+    $this->createFlashcard(['flashcard_deck_id' => $expected->id, 'language_level' => LanguageLevel::A2, 'front_lang' => Language::PL, 'back_lang' => Language::EN]);
+    $this->createFlashcard(['flashcard_deck_id' => $expected->id, 'language_level' => LanguageLevel::A2, 'front_lang' => Language::PL, 'back_lang' => Language::EN]);
+    $this->createFlashcard(['flashcard_deck_id' => $expected->id, 'language_level' => LanguageLevel::A2, 'front_lang' => Language::PL, 'back_lang' => Language::EN]);
+    $this->createFlashcard(['flashcard_deck_id' => $expected->id, 'language_level' => LanguageLevel::B1, 'front_lang' => Language::PL, 'back_lang' => Language::EN]);
+    $this->createFlashcard(['flashcard_deck_id' => $expected->id, 'language_level' => LanguageLevel::B1, 'front_lang' => Language::PL, 'back_lang' => Language::EN]);
 
     // WHEN
-    $results = $this->repository->getByUser($user->getId(), 'LAn', 1, 15);
+    $results = $this->repository->getByUser($user->getId(), Language::PL, Language::EN, 'LAn', 1, 15);
 
     // THEN
     expect($results)->toHaveCount(1)
@@ -311,8 +343,8 @@ test('get by user rating percentage is correct', function () {
         'name' => 'Alan',
     ]);
     $flashcards = [
-        $this->createFlashcard(['flashcard_deck_id' => $expected->id]),
-        $this->createFlashcard(['flashcard_deck_id' => $expected->id]),
+        $this->createFlashcard(['flashcard_deck_id' => $expected->id, 'front_lang' => Language::PL, 'back_lang' => Language::EN]),
+        $this->createFlashcard(['flashcard_deck_id' => $expected->id, 'front_lang' => Language::PL, 'back_lang' => Language::EN]),
     ];
     $session = $this->createLearningSession(['user_id' => $user->id]);
     $this->createLearningSessionFlashcard(['learning_session_id' => $session->id, 'flashcard_id' => $flashcards[0]->id, 'rating' => Rating::GOOD]);
@@ -324,7 +356,7 @@ test('get by user rating percentage is correct', function () {
     ) / (2 * Rating::VERY_GOOD->value) * 100.0;
 
     // WHEN
-    $results = $this->repository->getByUser($user->getId(), 'LAn', 1, 15);
+    $results = $this->repository->getByUser($user->getId(), Language::PL, Language::EN, 'LAn', 1, 15);
 
     // THEN
     expect(round($results[0]->getRatingPercentage(), 2))->toBe(round($expected_ratio, 2));
@@ -339,15 +371,15 @@ test('get by user last learnt at is correct', function () {
         'name' => 'Alan',
     ]);
     $flashcards = [
-        $this->createFlashcard(['flashcard_deck_id' => $expected->id]),
-        $this->createFlashcard(['flashcard_deck_id' => $expected->id]),
+        $this->createFlashcard(['flashcard_deck_id' => $expected->id, 'front_lang' => Language::DE, 'back_lang' => Language::FR]),
+        $this->createFlashcard(['flashcard_deck_id' => $expected->id, 'front_lang' => Language::DE, 'back_lang' => Language::FR]),
     ];
     $session = $this->createLearningSession(['user_id' => $user->id]);
     $this->createLearningSessionFlashcard(['learning_session_id' => $session->id, 'flashcard_id' => $flashcards[0]->id, 'updated_at' => (clone $now)->subMinute()]);
     $this->createLearningSessionFlashcard(['learning_session_id' => $session->id, 'flashcard_id' => $flashcards[0]->id, 'updated_at' => $now]);
 
     // WHEN
-    $results = $this->repository->getByUser($user->getId(), 'LAn', 1, 15);
+    $results = $this->repository->getByUser($user->getId(), Language::DE, Language::FR, 'LAn', 1, 15);
 
     // THEN
     expect($results[0]->getLastLearntAt()->toDateTimeString())->toBe($now->toDateTimeString());
@@ -364,7 +396,11 @@ test('find rating stats return correct values', function (array $flashcards, arr
     ]);
     foreach ($flashcards as $flashcard) {
         if ($flashcard['rating'] === null) {
-            $this->createFlashcard(['flashcard_deck_id' => $deck->id]);
+            $this->createFlashcard([
+                'flashcard_deck_id' => $deck->id,
+                'front_lang' => Language::PL,
+                'back_lang' => Language::EN,
+            ]);
         } else {
             $this->createLearningSessionFlashcard([
                 'learning_session_id' => $session->id,
@@ -375,7 +411,7 @@ test('find rating stats return correct values', function (array $flashcards, arr
     }
 
     // WHEN
-    $results = $this->repository->findRatingStats($deck->getId());
+    $results = $this->repository->findRatingStats($deck->getId(), Language::PL, Language::EN);
 
     // THEN
     $i = 0;

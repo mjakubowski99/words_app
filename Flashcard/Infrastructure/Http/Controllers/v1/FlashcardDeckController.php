@@ -75,7 +75,7 @@ class FlashcardDeckController
     ): FlashcardDecksResource {
         return new FlashcardDecksResource([
             'decks' => $get_user_decks->handle(
-                $request->currentId(),
+                $request->current(),
                 $request->getSearch(),
                 $request->getPage(),
                 $request->getPerPage(),
@@ -169,6 +169,8 @@ class FlashcardDeckController
     ): DeckDetailsResource {
         $regenerate_flashcards->handle(
             $request->getOwner(),
+            $request->current()->getUserLanguage(),
+            $request->current()->getLearningLanguage(),
             $request->getDeckId(),
             self::FLASHCARDS_LIMIT,
             self::FLASHCARDS_SAVE_LIMIT,
