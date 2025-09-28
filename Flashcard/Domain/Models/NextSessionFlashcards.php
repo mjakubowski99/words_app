@@ -171,8 +171,8 @@ class NextSessionFlashcards extends SessionFlashcardsBase
 
         if (
             $this->isMixedSessionType()
-            && $rating
-            && $rating->value < Rating::GOOD->value
+            && ($rating === null
+                || $rating->value < Rating::GOOD->value)
         ) {
             return null;
         }
