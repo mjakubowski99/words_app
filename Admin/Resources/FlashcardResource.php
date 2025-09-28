@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Admin\Resources;
 
-use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Admin\Models\Flashcard;
+use Filament\Schemas\Schema;
 use Filament\Resources\Resource;
 use Admin\Traits\HasFlashcardConfigurator;
 use Admin\Resources\FlashcardResource\Pages\EditFlashcard;
@@ -19,18 +19,18 @@ class FlashcardResource extends Resource
 
     protected static ?string $model = Flashcard::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static \BackedEnum|string|null $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form->schema(self::formFields());
+        return $schema->components(self::formFields());
     }
 
     public static function table(Table $table): Table
     {
         return $table
             ->columns(self::tableColumns())
-            ->actions([
+            ->recordActions([
                 self::buildEditAction(),
                 self::buildDeleteAction(),
             ]);

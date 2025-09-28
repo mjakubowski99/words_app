@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Admin\Traits;
 
+use Filament\Actions\Action;
 use Shared\User\IUserFacade;
 use Shared\Enum\LanguageLevel;
 use Admin\Models\FlashcardDeck;
+use Filament\Actions\BulkAction;
 use Illuminate\Support\Collection;
-use Filament\Tables\Actions\Action;
 use Filament\Forms\Components\Select;
-use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Support\Facades\Storage;
 use Filament\Forms\Components\TextInput;
@@ -40,7 +40,7 @@ trait HasFlashcardDeckConfigurator
     public static function buildImportAction(): Action
     {
         return Action::make('Import')
-            ->form([
+            ->schema([
                 TextInput::make('name')->required(),
                 Select::make('language_level')->options(LanguageLevel::getForSelectOptions())->required(),
                 Select::make('owner_user')->options(array_combine(config('app.privileged_emails'), config('app.privileged_emails')))
@@ -116,7 +116,7 @@ trait HasFlashcardDeckConfigurator
     public static function buildUpsertDeckNames(): Action
     {
         return Action::make('Upsert deck details')
-            ->form([
+            ->schema([
                 FileUpload::make('import_file')
                     ->required()
                     ->acceptedFileTypes([
