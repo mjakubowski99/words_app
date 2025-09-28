@@ -13,7 +13,7 @@ class StoryCollection
 
     public function get(): array
     {
-        return array_values($this->stories);
+        return $this->stories;
     }
 
     public function unset(array $indexes): void
