@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Gate;
 use App\Http\Middleware\TrustProxies;
 use Admin\Policies\FlashcardDeckPolicy;
 use Filament\Widgets\FilamentInfoWidget;
+use Andreia\FilamentNordTheme\FilamentNordThemePlugin;
 use Filament\Http\Middleware\Authenticate;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Cookie\Middleware\EncryptCookies;
@@ -68,6 +69,7 @@ class AdminPanelProvider extends PanelProvider
                 DispatchServingFilamentEvent::class,
                 TrustProxies::class,
             ])
+//            ->plugin(FilamentNordThemePlugin::make())
             ->authMiddleware([
                 Authenticate::class,
             ])->authGuard('admin');
