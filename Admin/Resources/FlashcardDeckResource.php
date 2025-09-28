@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Admin\Resources;
 
-use Filament\Tables;
-use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Filament\Schemas\Schema;
 use Admin\Models\FlashcardDeck;
+use Filament\Actions\EditAction;
 use Filament\Resources\Resource;
 use Admin\Traits\HasFlashcardDeckConfigurator;
 use Admin\Resources\FlashcardDeckResource\Pages\EditFlashcardDeck;
@@ -21,20 +21,20 @@ class FlashcardDeckResource extends Resource
 
     protected static ?string $model = FlashcardDeck::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static \BackedEnum|string|null $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema(self::formFields());
+        return $schema
+            ->components(self::formFields());
     }
 
     public static function table(Table $table): Table
     {
         return $table
             ->columns(self::tableColumns())
-            ->actions([
-                Tables\Actions\EditAction::make(),
+            ->recordActions([
+                EditAction::make(),
             ])->headerActions([
                 self::buildImportAction(),
                 self::buildExportAction(),

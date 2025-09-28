@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Admin\Resources\FlashcardDeckResource\RelationManagers;
 
-use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Filament\Schemas\Schema;
 use Admin\Traits\HasFlashcardConfigurator;
 use Filament\Resources\RelationManagers\RelationManager;
 
@@ -15,9 +15,9 @@ class FlashcardsRelationManager extends RelationManager
 
     protected static string $relationship = 'flashcards';
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form->schema(self::formFields());
+        return $schema->components(self::formFields());
     }
 
     public function table(Table $table): Table
@@ -25,7 +25,7 @@ class FlashcardsRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('id')
             ->columns(self::tableColumns())
-            ->actions([
+            ->recordActions([
                 self::buildEditAction(),
                 self::buildDeleteAction(),
             ]);

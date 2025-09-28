@@ -37,6 +37,10 @@ RUN apt-get update && apt-get install -y \
     wget \
     gnupg
 
+# Node js
+RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - \
+    && apt-get install -y nodejs
+
 # Get latest Composer
 COPY --from=composer:2.8 /usr/bin/composer /usr/bin/composer
 

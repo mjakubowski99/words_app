@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Admin\Traits;
 
-use Filament\Tables;
 use Shared\Models\Emoji;
 use Admin\Models\Flashcard;
+use Filament\Actions\EditAction;
+use Filament\Actions\DeleteAction;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
 use Shared\Flashcard\IFlashcardAdminFacade;
 
@@ -15,14 +17,14 @@ trait HasFlashcardConfigurator
     public static function tableColumns(): array
     {
         return [
-            Tables\Columns\TextColumn::make('id')->sortable(),
-            Tables\Columns\TextColumn::make('emoji')->formatStateUsing(function (Flashcard $model) {
+            TextColumn::make('id')->sortable(),
+            TextColumn::make('emoji')->formatStateUsing(function (Flashcard $model) {
                 return $model->emoji ? (string) Emoji::fromUnicode($model->emoji) : null;
             }),
-            Tables\Columns\TextColumn::make('front_context')->sortable(),
-            Tables\Columns\TextColumn::make('front_word')->sortable(),
-            Tables\Columns\TextColumn::make('back_context')->sortable(),
-            Tables\Columns\TextColumn::make('back_word')->sortable(),
+            TextColumn::make('front_context')->sortable(),
+            TextColumn::make('front_word')->sortable(),
+            TextColumn::make('back_context')->sortable(),
+            TextColumn::make('back_word')->sortable(),
         ];
     }
 
@@ -42,9 +44,9 @@ trait HasFlashcardConfigurator
         return app()->make(IFlashcardAdminFacade::class);
     }
 
-    public static function buildEditAction(): Tables\Actions\EditAction
+    public static function buildEditAction(): EditAction
     {
-        return Tables\Actions\EditAction::make()
+        return EditAction::make()
             ->using(function (Flashcard $flashcard, array $data) {
                 self::buildFlashcardFacade()->update(
                     $flashcard->id,
@@ -58,9 +60,9 @@ trait HasFlashcardConfigurator
             });
     }
 
-    public static function buildDeleteAction(): Tables\Actions\DeleteAction
+    public static function buildDeleteAction(): DeleteAction
     {
-        return Tables\Actions\DeleteAction::make()
+        return DeleteAction::make()
             ->action(function (Flashcard $flashcard) {
                 self::buildFlashcardFacade()->delete($flashcard->id);
             });
