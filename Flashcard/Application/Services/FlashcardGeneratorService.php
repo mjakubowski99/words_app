@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\Services;
 
+use Shared\Utils\ValueObjects\Language;
 use Flashcard\Application\DTO\ResolvedDeck;
 use Flashcard\Domain\Models\FlashcardPrompt;
 use Flashcard\Application\Repository\IStoryRepository;
@@ -11,7 +12,6 @@ use Flashcard\Application\Repository\IFlashcardRepository;
 use Flashcard\Application\Repository\IFlashcardDeckRepository;
 use Flashcard\Application\Repository\IFlashcardDuplicateRepository;
 use Flashcard\Application\Services\AiGenerators\IFlashcardGenerator;
-use Shared\Utils\ValueObjects\Language;
 
 class FlashcardGeneratorService
 {

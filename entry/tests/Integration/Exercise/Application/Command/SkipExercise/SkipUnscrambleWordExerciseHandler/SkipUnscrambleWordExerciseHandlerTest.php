@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 use App\Models\Exercise;
 use App\Models\ExerciseEntry;
-use App\Models\LearningSessionFlashcard;
-use App\Models\UnscrambleWordExercise;
-use Exercise\Application\Command\SkipExercise\SkipUnscrambleWordExerciseHandler;
-use Exercise\Domain\Models\ExerciseStatus;
 use Flashcard\Domain\Models\Rating;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use App\Models\UnscrambleWordExercise;
+use App\Models\LearningSessionFlashcard;
 use Shared\Utils\ValueObjects\ExerciseId;
+use Exercise\Domain\Models\ExerciseStatus;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Exercise\Application\Command\SkipExercise\SkipUnscrambleWordExerciseHandler;
 
 uses(DatabaseTransactions::class);
 

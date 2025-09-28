@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Exercise\Domain\Models\ExerciseEntry;
 
 use Exercise\Domain\Models\Answer\Answer;
+use Shared\Utils\ValueObjects\ExerciseId;
 use Exercise\Domain\Models\AnswerAssessment;
 use Shared\Utils\ValueObjects\ExerciseEntryId;
-use Shared\Utils\ValueObjects\ExerciseId;
 
 class ExerciseEntry
 {

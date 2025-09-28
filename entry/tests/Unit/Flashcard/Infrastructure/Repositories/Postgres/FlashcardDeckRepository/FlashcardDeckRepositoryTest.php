@@ -6,10 +6,10 @@ use App\Models\User;
 use App\Models\Admin;
 use App\Models\Story;
 use App\Models\Flashcard;
+use Shared\Enum\Language;
 use App\Models\FlashcardDeck;
 use App\Models\SmTwoFlashcard;
 use App\Models\StoryFlashcard;
-use Shared\Enum\Language;
 use Shared\Enum\LanguageLevel;
 use App\Models\LearningSession;
 use Flashcard\Domain\Models\Deck;
@@ -316,7 +316,7 @@ test('search by name should correctly search by name', function () {
     // THEN
     expect($deck->getId()->getValue())->toBe($expected_deck->id)
         ->and($deck->getName())->toBe($expected_deck->name);
-    });
+});
 test('bulk delete should delete only decks with given ids', function () {
     // GIVEN
     $user = User::factory()->create();

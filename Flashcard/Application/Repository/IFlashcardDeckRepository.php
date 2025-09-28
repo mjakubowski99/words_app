@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\Repository;
 
-use Flashcard\Domain\Models\Deck;
 use Shared\Enum\Language;
+use Flashcard\Domain\Models\Deck;
 use Shared\Utils\ValueObjects\UserId;
 use Flashcard\Domain\ValueObjects\FlashcardDeckId;
 

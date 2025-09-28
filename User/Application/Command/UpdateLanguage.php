@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace User\Application\Command;
 
+use User\Application\DTO\UserDTO;
+use Shared\Utils\ValueObjects\UserId;
 use Shared\Flashcard\IFlashcardFacade;
 use Shared\Utils\ValueObjects\Language;
-use Shared\Utils\ValueObjects\UserId;
-use User\Application\DTO\UserDTO;
 use User\Application\Repositories\IUserRepository;
 
 class UpdateLanguage

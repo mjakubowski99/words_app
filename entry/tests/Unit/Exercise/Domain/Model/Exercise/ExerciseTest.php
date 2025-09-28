@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-use Exercise\Domain\Exceptions\ExerciseStatusTransitionException;
-use Exercise\Domain\Models\Answer\Answer;
-use Exercise\Domain\Models\AnswerAssessment;
-use Exercise\Domain\Models\ExerciseEntry\ExerciseEntry;
-use Exercise\Domain\Models\ExerciseStatus;
 use Shared\Enum\ExerciseType;
-use Shared\Utils\ValueObjects\ExerciseEntryId;
-use Shared\Utils\ValueObjects\ExerciseId;
 use Shared\Utils\ValueObjects\UserId;
+use Exercise\Domain\Models\Answer\Answer;
+use Shared\Utils\ValueObjects\ExerciseId;
+use Exercise\Domain\Models\ExerciseStatus;
+use Exercise\Domain\Models\AnswerAssessment;
+use Shared\Utils\ValueObjects\ExerciseEntryId;
+use Exercise\Domain\Models\ExerciseEntry\ExerciseEntry;
+use Exercise\Domain\Exceptions\ExerciseStatusTransitionException;
 use Tests\Unit\Exercise\Domain\Model\Exercise\ConcreteTestExercise;
 
 test('assesses answer status allows for assessment and entry exists', function () {

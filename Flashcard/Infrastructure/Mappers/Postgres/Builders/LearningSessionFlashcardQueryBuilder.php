@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Flashcard\Infrastructure\Mappers\Postgres\Builders;
 
-use Flashcard\Domain\ValueObjects\FlashcardId;
 use Illuminate\Support\Facades\DB;
 use Shared\Utils\ValueObjects\UserId;
+use Flashcard\Domain\ValueObjects\FlashcardId;
 
 class LearningSessionFlashcardQueryBuilder extends CustomQueryBuilder
 {
@@ -25,12 +27,12 @@ class LearningSessionFlashcardQueryBuilder extends CustomQueryBuilder
 
     public function byFlashcardId(FlashcardId $id): self
     {
-        return $this->where("learning_session_flashcards.flashcard_id", $id->getValue());
+        return $this->where('learning_session_flashcards.flashcard_id', $id->getValue());
     }
 
     public function byUser(UserId $user_id): self
     {
-        return $this->where("learning_sessions.user_id", $user_id->getValue());
+        return $this->where('learning_sessions.user_id', $user_id->getValue());
     }
 
     public function notRated(): self

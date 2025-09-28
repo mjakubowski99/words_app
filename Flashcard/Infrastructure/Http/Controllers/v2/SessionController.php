@@ -136,7 +136,7 @@ class SessionController extends Controller
             return new JsonResponse(['message' => $result->getFailReason()], 400);
         }
 
-        DB::transaction(function () use ($add_session_flashcards, $request, $result, $user) {
+        DB::transaction(function () use ($add_session_flashcards, $result, $user) {
             $add_session_flashcards->handle(
                 new AddSessionFlashcards(
                     $result->getId(),

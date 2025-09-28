@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace User\Infrastructure\Http\Controllers\v2;
 
 use App\Http\OpenApi\Tags;
+use OpenApi\Attributes as OAT;
 use Illuminate\Http\JsonResponse;
 use Shared\Utils\ValueObjects\Language;
-use OpenApi\Attributes as OAT;
 
 class LanguageController
 {
@@ -42,9 +44,9 @@ class LanguageController
     public function get(): JsonResponse
     {
         return new JsonResponse([
-            'data' => array_map(fn(Language $lang) => [
+            'data' => array_map(fn (Language $lang) => [
                 'code' => $lang->getValue(),
-                'flag' => asset('assets/flags/' . strtolower($lang->getValue()) . '.svg'),
+                'flag' => asset('assets/flags/' . mb_strtolower($lang->getValue()) . '.svg'),
             ], Language::all()),
         ]);
     }

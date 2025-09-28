@@ -4,13 +4,11 @@ declare(strict_types=1);
 
 use App\Models\User;
 use App\Models\Admin;
-use App\Models\Story;
 use App\Models\Flashcard;
 use Shared\Enum\Language;
 use Shared\Enum\SessionType;
 use App\Models\FlashcardDeck;
 use App\Models\SmTwoFlashcard;
-use App\Models\StoryFlashcard;
 use App\Models\LearningSession;
 use App\Models\FlashcardPollItem;
 use Flashcard\Domain\Models\Rating;

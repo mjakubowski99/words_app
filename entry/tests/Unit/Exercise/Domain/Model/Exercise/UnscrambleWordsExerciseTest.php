@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use Exercise\Domain\Models\Exercise\UnscrambleWordsExercise;
 use Shared\Models\Emoji;
 use Shared\Utils\ValueObjects\UserId;
+use Exercise\Domain\Models\Exercise\UnscrambleWordsExercise;
 
 test('new exercise should create exercise with scrambled word', function () {
     // GIVEN

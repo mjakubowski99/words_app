@@ -40,7 +40,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
             example: 'pl',
         ),
         new OAT\Property(
-            property: 'user_language',
+            property: 'learning_language',
             description: 'The user language code',
             type: 'string',
             example: 'en',

@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Exercise\Infrastructure\Mappers\Postgres;
 
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
+use Shared\Utils\ValueObjects\ExerciseId;
+use Shared\Utils\ValueObjects\ExerciseEntryId;
 use Exercise\Application\DTO\Exercise\WordMatchExerciseRead;
 use Exercise\Application\DTO\Exercise\WordMatchExerciseReadEntry;
 use Exercise\Infrastructure\Models\WordMatchExerciseJsonProperties;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
-use Shared\Utils\ValueObjects\ExerciseEntryId;
-use Shared\Utils\ValueObjects\ExerciseId;
 
 class WordMatchExerciseReadMapper
 {

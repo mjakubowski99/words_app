@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Exercise\Application\DTO;
 
-use Exercise\Domain\Models\Exercise\Exercise;
 use Shared\Exercise\IFlashcardExercise;
-use Shared\Flashcard\ISessionFlashcardSummaries;
+use Exercise\Domain\Models\Exercise\Exercise;
 use Shared\Utils\ValueObjects\ExerciseEntryId;
+use Shared\Flashcard\ISessionFlashcardSummaries;
 
 class FlashcardExercise implements IFlashcardExercise
 {

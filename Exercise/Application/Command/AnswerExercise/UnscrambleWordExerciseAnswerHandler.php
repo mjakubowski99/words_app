@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Exercise\Application\Command\AnswerExercise;
 
-use Exercise\Application\Repositories\Exercise\IUnscrambleWordExerciseRepository;
-use Exercise\Domain\Exceptions\InvalidExerciseTypeException;
-use Exercise\Domain\Models\Exercise\Exercise;
-use Exercise\Domain\Models\Exercise\UnscrambleWordsExercise;
 use Shared\Flashcard\IFlashcardFacade;
-use Shared\Utils\ValueObjects\ExerciseEntryId;
 use Shared\Utils\ValueObjects\ExerciseId;
+use Exercise\Domain\Models\Exercise\Exercise;
+use Shared\Utils\ValueObjects\ExerciseEntryId;
+use Exercise\Domain\Exceptions\InvalidExerciseTypeException;
+use Exercise\Domain\Models\Exercise\UnscrambleWordsExercise;
+use Exercise\Application\Repositories\Exercise\IUnscrambleWordExerciseRepository;
 
 class UnscrambleWordExerciseAnswerHandler extends AbstractExerciseAnswerHandler
 {

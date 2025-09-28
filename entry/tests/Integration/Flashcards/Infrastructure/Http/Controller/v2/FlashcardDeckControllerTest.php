@@ -67,7 +67,7 @@ test('index admin success', function () {
     $deck = $this->createFlashcardDeck([
         'admin_id' => $admin->id,
         'user_id' => null,
-        'default_language_level' => LanguageLevel::A1
+        'default_language_level' => LanguageLevel::A1,
     ]);
     $this->createFlashcard([
         'flashcard_deck_id' => $deck->id,

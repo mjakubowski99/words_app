@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
 use User\Infrastructure\Http\Controllers\v2\AuthController;
-use User\Infrastructure\Http\Controllers\v2\LanguageController;
 use User\Infrastructure\Http\Controllers\v2\UserController;
+use User\Infrastructure\Http\Controllers\v2\LanguageController;
 use Exercise\Infrastructure\Http\Controllers\ExerciseController;
 use Flashcard\Infrastructure\Http\Controllers\v2\SessionController;
 use Flashcard\Infrastructure\Http\Controllers\v2\FlashcardController;

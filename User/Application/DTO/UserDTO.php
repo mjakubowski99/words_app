@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace User\Application\DTO;
 
 use Shared\User\IUser;
-use Shared\Utils\ValueObjects\Language;
 use Shared\Utils\ValueObjects\UserId;
+use Shared\Utils\ValueObjects\Language;
 
 readonly class UserDTO implements IUser
 {

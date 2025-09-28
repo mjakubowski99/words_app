@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\Command;
 
-use Flashcard\Application\Exercise\FlashcardSummaryFactory;
-use Flashcard\Application\Repository\INextSessionFlashcardsRepository;
+use Shared\Exercise\IFlashcardExerciseFacade;
 use Flashcard\Application\Services\IFlashcardSelector;
 use Flashcard\Domain\Services\SessionFlashcardsService;
-use Shared\Exercise\IFlashcardExerciseFacade;
+use Flashcard\Application\Exercise\FlashcardSummaryFactory;
+use Flashcard\Application\Repository\INextSessionFlashcardsRepository;
 
 class AddSessionFlashcardsHandler
 {

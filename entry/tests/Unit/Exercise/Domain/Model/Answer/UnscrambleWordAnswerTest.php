@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-use Exercise\Domain\Exceptions\ExerciseAnswerCompareFailureException;
+use Shared\Utils\ValueObjects\ExerciseEntryId;
 use Exercise\Domain\Models\Answer\UnscrambleWordAnswer;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Shared\Utils\ValueObjects\ExerciseEntryId;
+use Exercise\Domain\Exceptions\ExerciseAnswerCompareFailureException;
 
 uses(DatabaseTransactions::class);
 

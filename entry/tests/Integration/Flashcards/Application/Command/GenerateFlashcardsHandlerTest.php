@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-use App\Models\Flashcard;
 use App\Models\User;
+use App\Models\Flashcard;
 use App\Models\FlashcardDeck;
 use Shared\Enum\LanguageLevel;
 use Illuminate\Support\Facades\Http;
+use Shared\Utils\ValueObjects\Language;
 use Flashcard\Application\Command\GenerateFlashcards;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Flashcard\Application\Command\GenerateFlashcardsHandler;
 use Flashcard\Application\Exceptions\AiResponseFailedException;
-use Shared\Utils\ValueObjects\Language;
 
 uses(DatabaseTransactions::class);
 

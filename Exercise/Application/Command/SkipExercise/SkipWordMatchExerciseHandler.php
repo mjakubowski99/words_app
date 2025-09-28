@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Exercise\Application\Command\SkipExercise;
 
-use Exercise\Application\Repositories\Exercise\IWordMatchExerciseRepository;
-use Exercise\Domain\Exceptions\InvalidExerciseTypeException;
-use Exercise\Domain\Models\Exercise\Exercise;
-use Exercise\Domain\Models\Exercise\WordMatchExercise;
 use Shared\Flashcard\IFlashcardFacade;
 use Shared\Utils\ValueObjects\ExerciseId;
+use Exercise\Domain\Models\Exercise\Exercise;
+use Exercise\Domain\Models\Exercise\WordMatchExercise;
+use Exercise\Domain\Exceptions\InvalidExerciseTypeException;
+use Exercise\Application\Repositories\Exercise\IWordMatchExerciseRepository;
 
 class SkipWordMatchExerciseHandler extends AbstractSkipExerciseHandler
 {

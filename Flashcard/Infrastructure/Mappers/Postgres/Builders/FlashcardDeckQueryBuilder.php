@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Flashcard\Infrastructure\Mappers\Postgres\Builders;
 
-use Illuminate\Support\Facades\DB;
 use Shared\Enum\Language;
 use Shared\Enum\LanguageLevel;
+use Illuminate\Support\Facades\DB;
 use Shared\Utils\ValueObjects\UserId;
 
 class FlashcardDeckQueryBuilder extends CustomQueryBuilder
@@ -23,8 +25,8 @@ class FlashcardDeckQueryBuilder extends CustomQueryBuilder
 
     public function byUser(UserId $user_id): static
     {
-        return $this->where("flashcard_decks.user_id", $user_id->getValue())
-            ->whereNull("flashcard_decks.admin_id");
+        return $this->where('flashcard_decks.user_id', $user_id->getValue())
+            ->whereNull('flashcard_decks.admin_id');
     }
 
     public function byAdmin(): static
@@ -35,12 +37,13 @@ class FlashcardDeckQueryBuilder extends CustomQueryBuilder
 
     public function byLanguage(Language $front_lang, Language $back_lang): static
     {
-        return $this->whereExists(function ($query) use ($front_lang, $back_lang) {
-            $query->select('flashcards.id')
-                ->from('flashcards')
-                ->whereColumn('flashcards.flashcard_deck_id', 'flashcard_decks.id')
-                ->where('flashcards.front_lang', $front_lang->value)
-                ->where('flashcards.back_lang', $back_lang->value);
+        return $this->whereExists(
+            function ($query) use ($front_lang, $back_lang) {
+                $query->select('flashcards.id')
+                    ->from('flashcards')
+                    ->whereColumn('flashcards.flashcard_deck_id', 'flashcard_decks.id')
+                    ->where('flashcards.front_lang', $front_lang->value)
+                    ->where('flashcards.back_lang', $back_lang->value);
             }
         );
     }
@@ -61,7 +64,8 @@ class FlashcardDeckQueryBuilder extends CustomQueryBuilder
 
     public function addSelectMostFrequentLanguageLevel(string $alias): static
     {
-        return $this->addSelect(DB::raw("(SELECT language_level
+        return $this->addSelect(
+            DB::raw("(SELECT language_level
                     FROM flashcards
                     WHERE flashcards.flashcard_deck_id = flashcard_decks.id
                     GROUP BY language_level
@@ -81,7 +85,8 @@ class FlashcardDeckQueryBuilder extends CustomQueryBuilder
 
     public function addSelectLastLearntAt(UserId $user_id, string $alias): static
     {
-        return $this->addSelect(DB::raw("(
+        return $this->addSelect(DB::raw(
+            "(
             SELECT MAX(lsf.updated_at)
             FROM learning_session_flashcards as lsf
             LEFT JOIN flashcards ON lsf.flashcard_id = flashcards.id

@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Mappers\Postgres;
 
-use Flashcard\Infrastructure\Mappers\Postgres\Builders\FlashcardQueryBuilder;
-use Flashcard\Infrastructure\Mappers\Postgres\Builders\LearningSessionFlashcardQueryBuilder;
-use Flashcard\Infrastructure\Mappers\Postgres\Builders\LearningSessionQueryBuilder;
 use Shared\Models\Emoji;
 use Shared\Enum\LanguageLevel;
 use Flashcard\Domain\Models\Deck;
@@ -21,6 +18,9 @@ use Flashcard\Domain\Models\StoryCollection;
 use Flashcard\Domain\ValueObjects\FlashcardId;
 use Flashcard\Domain\ValueObjects\FlashcardDeckId;
 use Flashcard\Infrastructure\Mappers\Traits\HasOwnerBuilder;
+use Flashcard\Infrastructure\Mappers\Postgres\Builders\FlashcardQueryBuilder;
+use Flashcard\Infrastructure\Mappers\Postgres\Builders\LearningSessionQueryBuilder;
+use Flashcard\Infrastructure\Mappers\Postgres\Builders\LearningSessionFlashcardQueryBuilder;
 
 class FlashcardMapper
 {

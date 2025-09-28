@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace User\Infrastructure\Entities;
 
 use App\Models\User as BaseModel;
-use Shared\Utils\ValueObjects\Language;
 use Shared\Utils\ValueObjects\UserId;
 use User\Domain\Models\Entities\IUser;
+use Shared\Utils\ValueObjects\Language;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 
@@ -39,7 +39,7 @@ class User extends BaseModel implements IUser
     {
         return $this->email;
     }
-    
+
     public function profileCompleted(): bool
     {
         return $this->profile_completed;

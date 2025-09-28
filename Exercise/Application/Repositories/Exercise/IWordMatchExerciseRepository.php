@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Exercise\Application\Repositories\Exercise;
 
-use Exercise\Domain\Models\Exercise\WordMatchExercise;
 use Shared\Utils\ValueObjects\ExerciseId;
+use Exercise\Domain\Models\Exercise\WordMatchExercise;
 
 interface IWordMatchExerciseRepository
 {

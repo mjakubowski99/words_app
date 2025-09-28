@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Exercise\Application\Repositories\ExerciseRead;
 
-use Shared\Exercise\Exercises\IUnscrambleWordExerciseRead;
 use Shared\Utils\ValueObjects\ExerciseEntryId;
+use Shared\Exercise\Exercises\IUnscrambleWordExerciseRead;
 
 interface IUnscrambleWordExerciseReadRepository
 {

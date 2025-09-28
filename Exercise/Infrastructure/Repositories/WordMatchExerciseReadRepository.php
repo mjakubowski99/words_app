@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Exercise\Infrastructure\Repositories;
 
-use Exercise\Application\Repositories\ExerciseRead\IWordMatchExerciseReadRepository;
-use Exercise\Infrastructure\Mappers\Postgres\WordMatchExerciseReadMapper;
-use Shared\Exercise\Exercises\IWordMatchExerciseRead;
 use Shared\Utils\ValueObjects\ExerciseEntryId;
+use Shared\Exercise\Exercises\IWordMatchExerciseRead;
+use Exercise\Infrastructure\Mappers\Postgres\WordMatchExerciseReadMapper;
+use Exercise\Application\Repositories\ExerciseRead\IWordMatchExerciseReadRepository;
 
 class WordMatchExerciseReadRepository implements IWordMatchExerciseReadRepository
 {

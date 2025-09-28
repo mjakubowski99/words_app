@@ -33,7 +33,7 @@ class Language
 
     public static function all(): array
     {
-        return array_map(fn($lang) => new self($lang->value), LanguageEnum::cases());
+        return array_map(fn ($lang) => new self($lang->value), LanguageEnum::cases());
     }
 
     public function __construct(string $value)

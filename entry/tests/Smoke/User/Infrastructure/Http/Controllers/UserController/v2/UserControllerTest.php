@@ -4,8 +4,8 @@ declare(strict_types=1);
 use App\Models\Flashcard;
 use Shared\Enum\ReportType;
 use Shared\Enum\ReportableType;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Shared\Utils\ValueObjects\Language;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 uses(DatabaseTransactions::class);
 

@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Database\Factories;
 
 use Ramsey\Uuid\Uuid;
+use Shared\Enum\Language;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Shared\Enum\Language;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>

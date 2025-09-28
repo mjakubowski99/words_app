@@ -27,7 +27,7 @@ enum Language: string
 
     public function getName(): string
     {
-        return match($this) {
+        return match ($this) {
             self::PL => 'Polish',
             self::EN => 'English',
             self::IT => 'Italian',

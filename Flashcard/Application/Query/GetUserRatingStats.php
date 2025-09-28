@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\Query;
 
-use Shared\Enum\FlashcardOwnerType;
 use Shared\User\IUser;
-use Shared\Utils\ValueObjects\UserId;
+use Shared\Enum\FlashcardOwnerType;
 use Flashcard\Application\Repository\IFlashcardReadRepository;
 use Flashcard\Application\ReadModels\RatingStatsReadCollection;
 

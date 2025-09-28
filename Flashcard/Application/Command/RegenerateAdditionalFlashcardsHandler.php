@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Flashcard\Application\Command;
 
 use Flashcard\Domain\Models\Owner;
+use Shared\Utils\ValueObjects\Language;
 use Shared\Exceptions\ForbiddenException;
 use Flashcard\Application\Services\DeckResolver;
 use Flashcard\Domain\ValueObjects\FlashcardDeckId;
 use Flashcard\Application\Services\FlashcardGeneratorService;
-use Shared\Utils\ValueObjects\Language;
 
 class RegenerateAdditionalFlashcardsHandler
 {

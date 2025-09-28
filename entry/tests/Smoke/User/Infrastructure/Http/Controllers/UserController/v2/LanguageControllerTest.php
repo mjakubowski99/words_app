@@ -19,6 +19,6 @@ test('get languages success', function () {
                 'code',
                 'flag',
             ],
-        ]
+        ],
     ]);
 });

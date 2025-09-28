@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Exercise\Application\DTO\Exercise;
 
-use Shared\Exercise\Exercises\IWordMatchExerciseRead;
 use Shared\Utils\ValueObjects\ExerciseId;
+use Shared\Exercise\Exercises\IWordMatchExerciseRead;
 
 class WordMatchExerciseRead implements IWordMatchExerciseRead
 {

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Flashcard\Infrastructure\Mappers\Postgres;
 
 use Shared\Models\Emoji;
+use Shared\Enum\Language;
 use Shared\Enum\LanguageLevel;
 use Flashcard\Domain\Models\Deck;
 use Illuminate\Support\Facades\DB;
@@ -12,7 +13,6 @@ use Flashcard\Domain\Models\Rating;
 use Shared\Utils\ValueObjects\UserId;
 use Flashcard\Domain\Models\Flashcard;
 use Illuminate\Database\Query\Builder;
-use Shared\Enum\Language;
 use Flashcard\Domain\ValueObjects\FlashcardId;
 use Flashcard\Domain\ValueObjects\FlashcardDeckId;
 use Flashcard\Infrastructure\Mappers\Traits\HasOwnerBuilder;

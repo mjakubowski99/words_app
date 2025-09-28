@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Exercise\Domain\Models\Answer;
 
-use Exercise\Domain\Exceptions\ExerciseAnswerCompareFailureException;
 use Exercise\Domain\Models\AnswerAssessment;
 use Shared\Utils\ValueObjects\ExerciseEntryId;
+use Exercise\Domain\Exceptions\ExerciseAnswerCompareFailureException;
 
 abstract class Answer
 {

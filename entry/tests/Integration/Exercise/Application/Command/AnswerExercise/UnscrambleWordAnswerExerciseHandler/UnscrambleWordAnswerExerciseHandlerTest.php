@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 use App\Models\Exercise;
 use App\Models\ExerciseEntry;
-use App\Models\LearningSession;
-use App\Models\LearningSessionFlashcard;
-use App\Models\UnscrambleWordExercise;
-use Exercise\Application\Command\AnswerExercise\UnscrambleWordExerciseAnswerHandler;
-use Exercise\Domain\Models\Answer\UnscrambleWordAnswer;
-use Exercise\Domain\Models\ExerciseStatus;
-use Flashcard\Domain\Models\Rating;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Shared\Enum\SessionStatus;
-use Shared\Utils\ValueObjects\ExerciseEntryId;
+use App\Models\LearningSession;
+use Flashcard\Domain\Models\Rating;
+use App\Models\UnscrambleWordExercise;
+use App\Models\LearningSessionFlashcard;
 use Shared\Utils\ValueObjects\ExerciseId;
+use Exercise\Domain\Models\ExerciseStatus;
+use Shared\Utils\ValueObjects\ExerciseEntryId;
+use Exercise\Domain\Models\Answer\UnscrambleWordAnswer;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Exercise\Application\Command\AnswerExercise\UnscrambleWordExerciseAnswerHandler;
 
 uses(DatabaseTransactions::class);
 

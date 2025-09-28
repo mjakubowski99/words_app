@@ -3,18 +3,18 @@
 declare(strict_types=1);
 
 use App\Models\Exercise;
-use App\Models\LearningSessionFlashcard;
-use App\Models\UnscrambleWordExercise;
-use Exercise\Domain\Models\Answer\Answer;
-use Exercise\Domain\Models\Exercise\UnscrambleWordsExercise;
-use Exercise\Domain\Models\ExerciseEntry\ExerciseEntry;
-use Exercise\Domain\Models\ExerciseStatus;
-use Exercise\Infrastructure\Repositories\UnscrambleWordExerciseRepository;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Shared\Enum\ExerciseType;
 use Shared\Models\Emoji;
-use Shared\Utils\ValueObjects\ExerciseEntryId;
+use Shared\Enum\ExerciseType;
+use App\Models\UnscrambleWordExercise;
+use App\Models\LearningSessionFlashcard;
+use Exercise\Domain\Models\Answer\Answer;
 use Shared\Utils\ValueObjects\ExerciseId;
+use Exercise\Domain\Models\ExerciseStatus;
+use Shared\Utils\ValueObjects\ExerciseEntryId;
+use Exercise\Domain\Models\ExerciseEntry\ExerciseEntry;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Exercise\Domain\Models\Exercise\UnscrambleWordsExercise;
+use Exercise\Infrastructure\Repositories\UnscrambleWordExerciseRepository;
 
 uses(DatabaseTransactions::class);
 

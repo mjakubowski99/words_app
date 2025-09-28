@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 use App\Models\User;
 use App\Models\Admin;
-use App\Models\FlashcardDeck;
-use Flashcard\Application\ReadModels\RatingStatsRead;
 use Shared\Enum\Language;
+use App\Models\FlashcardDeck;
 use Shared\Enum\LanguageLevel;
 use Tests\Base\FlashcardTestCase;
 use Shared\Enum\GeneralRatingType;
@@ -14,6 +13,7 @@ use Flashcard\Domain\Models\Rating;
 use Shared\Enum\FlashcardOwnerType;
 use Flashcard\Application\ReadModels\FlashcardRead;
 use Flashcard\Application\ReadModels\DeckDetailsRead;
+use Flashcard\Application\ReadModels\RatingStatsRead;
 use Flashcard\Application\ReadModels\OwnerCategoryRead;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Flashcard\Infrastructure\Repositories\Postgres\FlashcardDeckReadRepository;
@@ -185,7 +185,7 @@ test('get by user pagination works', function () {
     ]);
 
     // WHEN
-    $results = $this->repository->getByUser($user->getId(), Language::PL, Language::EN,  null, 2, 1);
+    $results = $this->repository->getByUser($user->getId(), Language::PL, Language::EN, null, 2, 1);
 
     // THEN
     expect($results)->toHaveCount(1)
@@ -546,7 +546,7 @@ test('find rating stats counts only in given language', function () {
     // THEN
     expect(
         collect($results->getRatingStats())
-            ->where(fn(RatingStatsRead $read) => $read->getRating()->getValue() === GeneralRatingType::VERY_GOOD)
+            ->where(fn (RatingStatsRead $read) => $read->getRating()->getValue() === GeneralRatingType::VERY_GOOD)
             ->firstOrFail()
             ->getRatingPercentage()
     )->toBe(100.0);

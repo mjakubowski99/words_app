@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use Exercise\Application\DTO\Exercise\WordMatchExerciseReadEntry;
 use Shared\Utils\ValueObjects\ExerciseEntryId;
+use Exercise\Application\DTO\Exercise\WordMatchExerciseReadEntry;
 
 test('get sentence part before word should return correct part', function (string $sentence, string $word, string $expected) {
     // GIVEN

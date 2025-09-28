@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace Exercise\Domain\Models\Exercise;
 
-use Exercise\Domain\Exceptions\ExerciseAssessmentNotAllowedException;
-use Exercise\Domain\Exceptions\ExerciseEntryNotFoundException;
-use Exercise\Domain\Exceptions\ExerciseStatusTransitionException;
+use Shared\Enum\ExerciseType;
+use Shared\Utils\ValueObjects\UserId;
 use Exercise\Domain\Models\Answer\Answer;
+use Shared\Utils\ValueObjects\ExerciseId;
+use Exercise\Domain\Models\ExerciseStatus;
 use Exercise\Domain\Models\AnswerAssessment;
 use Exercise\Domain\Models\ExerciseEntry\ExerciseEntry;
-use Exercise\Domain\Models\ExerciseStatus;
-use Shared\Enum\ExerciseType;
-use Shared\Utils\ValueObjects\ExerciseId;
-use Shared\Utils\ValueObjects\UserId;
+use Exercise\Domain\Exceptions\ExerciseEntryNotFoundException;
+use Exercise\Domain\Exceptions\ExerciseStatusTransitionException;
+use Exercise\Domain\Exceptions\ExerciseAssessmentNotAllowedException;
 
 abstract class Exercise
 {

@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Exercise\Infrastructure\Http\Request;
 
-use Exercise\Domain\Models\Answer\WordMatchAnswer;
 use OpenApi\Attributes as OAT;
 use Shared\Http\Request\Request;
-use Shared\Utils\ValueObjects\ExerciseEntryId;
 use Shared\Utils\ValueObjects\ExerciseId;
+use Shared\Utils\ValueObjects\ExerciseEntryId;
+use Exercise\Domain\Models\Answer\WordMatchAnswer;
 
 #[OAT\Schema(
     schema: 'Requests\Exercise\WordMatchExerciseAnswerRequest',

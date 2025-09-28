@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\Query;
 
-use Shared\Enum\LanguageLevel;
 use Shared\User\IUser;
-use Shared\Utils\ValueObjects\UserId;
+use Shared\Enum\LanguageLevel;
 use Flashcard\Application\ReadModels\OwnerCategoryRead;
 use Flashcard\Application\Repository\IFlashcardDeckReadRepository;
 

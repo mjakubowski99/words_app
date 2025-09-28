@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Exercise\Infrastructure\Http\Resources;
 
+use OpenApi\Attributes as OAT;
 use Exercise\Domain\Models\AnswerAssessment;
 use Illuminate\Http\Resources\Json\JsonResource;
-use OpenApi\Attributes as OAT;
 
 #[OAT\Schema(
     schema: 'Resources\Exercise\UnscrambleWordExerciseAssessmentResource',

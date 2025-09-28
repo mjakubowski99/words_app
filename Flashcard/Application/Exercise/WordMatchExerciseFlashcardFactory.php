@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\Exercise;
 
-use Flashcard\Application\DTO\SessionFlashcardSummaries;
-use Flashcard\Application\Repository\IStoryRepository;
-use Flashcard\Application\Services\IFlashcardSelector;
-use Flashcard\Domain\Models\Flashcard;
-use Flashcard\Domain\Models\NextSessionFlashcards;
-use Flashcard\Domain\Models\StoryFlashcard;
 use Shared\Utils\Cache\ICache;
 use Shared\Utils\ValueObjects\UserId;
+use Flashcard\Domain\Models\Flashcard;
+use Flashcard\Domain\Models\StoryFlashcard;
+use Flashcard\Domain\Models\NextSessionFlashcards;
+use Flashcard\Application\Repository\IStoryRepository;
+use Flashcard\Application\Services\IFlashcardSelector;
+use Flashcard\Application\DTO\SessionFlashcardSummaries;
 
 class WordMatchExerciseFlashcardFactory implements IExerciseFlashcardFactory
 {

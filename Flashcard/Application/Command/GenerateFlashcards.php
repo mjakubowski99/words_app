@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\Command;
 
-use Shared\Utils\ValueObjects\Language;
 use Shared\Enum\LanguageLevel;
 use Shared\Utils\ValueObjects\UserId;
+use Shared\Utils\ValueObjects\Language;
 
 class GenerateFlashcards
 {

@@ -21,5 +21,6 @@ interface IFlashcardPollRepository
     public function save(FlashcardPoll $poll): void;
 
     public function resetLeitnerLevelIfMaxLevelExceeded(UserId $user_id, int $max_level): void;
+
     public function deleteAllByUserId(UserId $user_id): void;
 }

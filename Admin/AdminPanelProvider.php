@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Admin;
 
-use Filament\Enums\ThemeMode;
 use Filament\Pages;
 use Filament\Panel;
 use Filament\Widgets;
 use Admin\Models\Flashcard;
 use Filament\PanelProvider;
+use Filament\Enums\ThemeMode;
 use Admin\Models\FlashcardDeck;
 use Filament\Support\Colors\Color;
 use Admin\Policies\FlashcardPolicy;

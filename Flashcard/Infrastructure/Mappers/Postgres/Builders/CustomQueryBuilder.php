@@ -1,13 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Flashcard\Infrastructure\Mappers\Postgres\Builders;
 
-use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Query\Builder;
 
 abstract class CustomQueryBuilder extends Builder
 {
-    public abstract static function tableName(): string;
+    abstract public static function tableName(): string;
 
     public static function new(): static
     {
@@ -18,6 +20,7 @@ abstract class CustomQueryBuilder extends Builder
     {
         $connection = DB::connection();
 
+        /* @phpstan-ignore-next-line */
         return (new static(
             $connection,
             $connection->getQueryGrammar(),
@@ -28,7 +31,8 @@ abstract class CustomQueryBuilder extends Builder
     public function addSelectAll(array $rows): static
     {
         $t = static::tableName();
-        return $this->addSelect(array_map(fn($r) => "$t.$r", $rows));
+
+        return $this->addSelect(array_map(fn ($r) => "{$t}.{$r}", $rows));
     }
 
     public function setPage(int $page, int $per_page): static

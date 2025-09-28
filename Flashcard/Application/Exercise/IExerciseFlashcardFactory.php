@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\Exercise;
 
-use Flashcard\Application\DTO\SessionFlashcardSummaries;
 use Flashcard\Domain\Models\Flashcard;
 use Flashcard\Domain\Models\NextSessionFlashcards;
+use Flashcard\Application\DTO\SessionFlashcardSummaries;
 
 interface IExerciseFlashcardFactory
 {

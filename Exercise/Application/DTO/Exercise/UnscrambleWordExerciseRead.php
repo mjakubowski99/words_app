@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Exercise\Application\DTO\Exercise;
 
-use Shared\Exercise\Exercises\IUnscrambleWordExerciseRead;
 use Shared\Models\Emoji;
 use Shared\Utils\ValueObjects\ExerciseId;
+use Shared\Exercise\Exercises\IUnscrambleWordExerciseRead;
 
 class UnscrambleWordExerciseRead implements IUnscrambleWordExerciseRead
 {

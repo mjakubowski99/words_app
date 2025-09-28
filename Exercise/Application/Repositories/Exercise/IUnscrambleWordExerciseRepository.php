@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Exercise\Application\Repositories\Exercise;
 
-use Exercise\Domain\Models\Exercise\UnscrambleWordsExercise;
-use Shared\Utils\ValueObjects\ExerciseEntryId;
 use Shared\Utils\ValueObjects\ExerciseId;
+use Shared\Utils\ValueObjects\ExerciseEntryId;
+use Exercise\Domain\Models\Exercise\UnscrambleWordsExercise;
 
 interface IUnscrambleWordExerciseRepository
 {

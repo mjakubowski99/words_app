@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Exercise\Infrastructure\Models;
 
-use Exercise\Domain\Models\Exercise\WordMatchExercise;
 use Shared\Utils\ValueObjects\StoryId;
+use Exercise\Domain\Models\Exercise\WordMatchExercise;
 
 class WordMatchExerciseJsonProperties
 {

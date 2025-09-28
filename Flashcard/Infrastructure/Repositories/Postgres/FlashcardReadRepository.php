@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Flashcard\Infrastructure\Repositories\Postgres;
 
-use Shared\Enum\FlashcardOwnerType;
 use Shared\Enum\Language;
+use Shared\Enum\FlashcardOwnerType;
 use Shared\Utils\ValueObjects\UserId;
 use Flashcard\Application\ReadModels\UserFlashcardsRead;
 use Flashcard\Application\Repository\IFlashcardReadRepository;

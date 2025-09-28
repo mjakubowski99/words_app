@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace Exercise\Domain\Models\Exercise;
 
-use Exercise\Domain\Models\Answer\Answer;
-use Exercise\Domain\Models\AnswerAssessment;
-use Exercise\Domain\Models\ExerciseEntry\WordMatchExerciseEntry;
-use Exercise\Domain\Models\ExerciseStatus;
 use Shared\Enum\ExerciseType;
-use Shared\Flashcard\ISessionFlashcardSummaries;
-use Shared\Utils\ValueObjects\ExerciseId;
-use Shared\Utils\ValueObjects\StoryId;
 use Shared\Utils\ValueObjects\UserId;
+use Shared\Utils\ValueObjects\StoryId;
+use Exercise\Domain\Models\Answer\Answer;
+use Shared\Utils\ValueObjects\ExerciseId;
+use Exercise\Domain\Models\ExerciseStatus;
+use Exercise\Domain\Models\AnswerAssessment;
+use Shared\Flashcard\ISessionFlashcardSummaries;
+use Exercise\Domain\Models\ExerciseEntry\WordMatchExerciseEntry;
 
 class WordMatchExercise extends Exercise
 {

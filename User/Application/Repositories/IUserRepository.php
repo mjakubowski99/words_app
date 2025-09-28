@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace User\Application\Repositories;
 
 use Shared\Enum\UserProvider;
-use Shared\Utils\ValueObjects\Language;
 use Shared\Utils\ValueObjects\UserId;
 use User\Domain\Models\Entities\IUser;
 
@@ -22,5 +21,6 @@ interface IUserRepository
     public function create(array $attributes): IUser;
 
     public function delete(UserId $user_id): void;
+
     public function update(IUser $user): void;
 }

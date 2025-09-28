@@ -4,21 +4,21 @@ declare(strict_types=1);
 
 namespace Exercise\Infrastructure;
 
+use Illuminate\Support\ServiceProvider;
+use Shared\Exercise\IFlashcardExerciseFacade;
+use Shared\Exercise\Exercises\IExerciseReadFacade;
 use Exercise\Application\Facades\ExerciseReadFacade;
 use Exercise\Application\Facades\FlashcardExerciseFacade;
-use Exercise\Application\Repositories\Exercise\IUnscrambleWordExerciseRepository;
-use Exercise\Application\Repositories\Exercise\IWordMatchExerciseRepository;
-use Exercise\Application\Repositories\ExerciseRead\IUnscrambleWordExerciseReadRepository;
-use Exercise\Application\Repositories\ExerciseRead\IWordMatchExerciseReadRepository;
 use Exercise\Application\Repositories\IExerciseStatsRepository;
 use Exercise\Infrastructure\Repositories\ExerciseStatsRepository;
-use Exercise\Infrastructure\Repositories\UnscrambleWordExerciseReadRepository;
-use Exercise\Infrastructure\Repositories\UnscrambleWordExerciseRepository;
-use Exercise\Infrastructure\Repositories\WordMatchExerciseReadRepository;
 use Exercise\Infrastructure\Repositories\WordMatchExerciseRepository;
-use Illuminate\Support\ServiceProvider;
-use Shared\Exercise\Exercises\IExerciseReadFacade;
-use Shared\Exercise\IFlashcardExerciseFacade;
+use Exercise\Infrastructure\Repositories\WordMatchExerciseReadRepository;
+use Exercise\Infrastructure\Repositories\UnscrambleWordExerciseRepository;
+use Exercise\Application\Repositories\Exercise\IWordMatchExerciseRepository;
+use Exercise\Infrastructure\Repositories\UnscrambleWordExerciseReadRepository;
+use Exercise\Application\Repositories\Exercise\IUnscrambleWordExerciseRepository;
+use Exercise\Application\Repositories\ExerciseRead\IWordMatchExerciseReadRepository;
+use Exercise\Application\Repositories\ExerciseRead\IUnscrambleWordExerciseReadRepository;
 
 class ExerciseServiceProvider extends ServiceProvider
 {

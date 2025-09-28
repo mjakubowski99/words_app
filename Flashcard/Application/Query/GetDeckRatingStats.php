@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\Query;
 
+use Shared\Enum\Language;
 use Flashcard\Domain\ValueObjects\FlashcardDeckId;
 use Flashcard\Application\ReadModels\RatingStatsReadCollection;
 use Flashcard\Application\Repository\IFlashcardDeckReadRepository;
-use Shared\Enum\Language;
-use Shared\User\IUser;
 
 readonly class GetDeckRatingStats
 {

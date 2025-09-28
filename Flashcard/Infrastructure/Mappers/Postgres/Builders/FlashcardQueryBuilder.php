@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Flashcard\Infrastructure\Mappers\Postgres\Builders;
 
 use Illuminate\Support\Facades\DB;
@@ -14,8 +16,8 @@ class FlashcardQueryBuilder extends CustomQueryBuilder
 
     public function byUser(UserId $user_id): static
     {
-        return $this->where("flashcards.user_id", $user_id->getValue())
-            ->whereNull("flashcards.admin_id");
+        return $this->where('flashcards.user_id', $user_id->getValue())
+            ->whereNull('flashcards.admin_id');
     }
 
     public function byIds(array $flashcard_ids): self
@@ -57,7 +59,7 @@ class FlashcardQueryBuilder extends CustomQueryBuilder
             ->addSelectAvgRating('avg_rating');
 
         return $this->joinSub($sub_query, $alias, function ($join) use ($alias) {
-            $join->on($alias.'.flashcard_id', '=', 'flashcards.id');
+            $join->on($alias . '.flashcard_id', '=', 'flashcards.id');
         });
     }
 
@@ -69,8 +71,9 @@ class FlashcardQueryBuilder extends CustomQueryBuilder
     public function addSelectDeckColumns(array $columns): self
     {
         foreach ($columns as $column => $alias) {
-            $this->addSelect("flashcard_decks.{$column} as $alias");
+            $this->addSelect("flashcard_decks.{$column} as {$alias}");
         }
+
         return $this;
     }
 }

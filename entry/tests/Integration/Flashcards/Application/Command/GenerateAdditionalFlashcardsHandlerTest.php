@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
+use App\Models\User;
 use App\Models\Flashcard;
 use App\Models\FlashcardDeck;
-use App\Models\User;
-use Flashcard\Application\Command\RegenerateAdditionalFlashcardsHandler;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Tests\Base\FlashcardTestCase;
 use Illuminate\Support\Facades\Http;
 use Shared\Utils\ValueObjects\Language;
-use Tests\Base\FlashcardTestCase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Flashcard\Application\Command\RegenerateAdditionalFlashcardsHandler;
 
 uses(FlashcardTestCase::class);
 uses(DatabaseTransactions::class);

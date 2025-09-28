@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Exercise\Infrastructure\Mappers\Postgres;
 
+use Shared\Models\Emoji;
+use Illuminate\Support\Facades\DB;
+use Shared\Utils\ValueObjects\UserId;
+use Shared\Utils\ValueObjects\ExerciseId;
+use Exercise\Domain\Models\ExerciseStatus;
+use Shared\Utils\ValueObjects\ExerciseEntryId;
 use Exercise\Domain\Models\Answer\UnscrambleWordAnswer;
 use Exercise\Domain\Models\Exercise\UnscrambleWordsExercise;
-use Exercise\Domain\Models\ExerciseStatus;
-use Illuminate\Support\Facades\DB;
-use Shared\Models\Emoji;
-use Shared\Utils\ValueObjects\ExerciseEntryId;
-use Shared\Utils\ValueObjects\ExerciseId;
-use Shared\Utils\ValueObjects\UserId;
 
 class UnscrambleWordExerciseMapper
 {

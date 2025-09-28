@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Exercise\Domain\Models\ExerciseEntry;
 
 use Exercise\Domain\Models\Answer\Answer;
-use Exercise\Domain\Models\Answer\WordMatchAnswer;
+use Shared\Utils\ValueObjects\ExerciseId;
 use Shared\Flashcard\ISessionFlashcardSummary;
 use Shared\Utils\ValueObjects\ExerciseEntryId;
-use Shared\Utils\ValueObjects\ExerciseId;
+use Exercise\Domain\Models\Answer\WordMatchAnswer;
 
 class WordMatchExerciseEntry extends ExerciseEntry
 {

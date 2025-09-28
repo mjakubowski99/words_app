@@ -5,8 +5,8 @@ declare(strict_types=1);
 use App\Models\Exercise;
 use App\Models\ExerciseEntry;
 use App\Models\UnscrambleWordExercise;
-use Database\Factories\WordMatchExerciseFactory;
 use Exercise\Domain\Models\ExerciseStatus;
+use Database\Factories\WordMatchExerciseFactory;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 uses(DatabaseTransactions::class);

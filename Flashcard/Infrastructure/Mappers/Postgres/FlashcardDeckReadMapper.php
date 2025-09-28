@@ -5,13 +5,9 @@ declare(strict_types=1);
 namespace Flashcard\Infrastructure\Mappers\Postgres;
 
 use Carbon\Carbon;
-use Flashcard\Infrastructure\Mappers\Postgres\Builders\FlashcardQueryBuilder;
-use Flashcard\Infrastructure\Mappers\Postgres\Builders\FlashcardDeckQueryBuilder;
-use Flashcard\Infrastructure\Mappers\Postgres\Builders\LearningSessionFlashcardQueryBuilder;
 use Shared\Enum\Language;
 use Shared\Enum\LanguageLevel;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
 use Flashcard\Domain\Models\Rating;
 use Shared\Enum\FlashcardOwnerType;
 use Shared\Utils\ValueObjects\UserId;
@@ -20,13 +16,14 @@ use Flashcard\Application\ReadModels\DeckDetailsRead;
 use Flashcard\Application\ReadModels\OwnerCategoryRead;
 use Flashcard\Domain\Exceptions\ModelNotFoundException;
 use Flashcard\Infrastructure\Mappers\Traits\HasOwnerBuilder;
+use Flashcard\Infrastructure\Mappers\Postgres\Builders\FlashcardQueryBuilder;
+use Flashcard\Infrastructure\Mappers\Postgres\Builders\FlashcardDeckQueryBuilder;
 
 class FlashcardDeckReadMapper
 {
     use HasOwnerBuilder;
 
     public function __construct(
-        private readonly DB $db,
         private readonly FlashcardReadMapper $flashcard_mapper,
     ) {}
 
@@ -123,7 +120,8 @@ class FlashcardDeckReadMapper
         UserId $user_id
     ): DeckDetailsRead {
         $total_avg_rating = $this->getRatingStats(
-            collect([$deck->id]), $user_id
+            collect([$deck->id]),
+            $user_id
         )->first()->toal_avg_rating ?? 0.0;
 
         $avg_rating = $this->calculateAvgRating($total_avg_rating, $flashcards_count);

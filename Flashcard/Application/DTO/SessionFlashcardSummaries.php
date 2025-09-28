@@ -33,13 +33,14 @@ class SessionFlashcardSummaries implements ISessionFlashcardSummaries
         $answer_options[] = $base_story_flashcard->getBackWord();
         $answer_options = array_values(array_unique($answer_options));
 
-        for($i=0; $i<count($answer_options); $i++) {
+        for ($i = 0; $i < count($answer_options); ++$i) {
             $answer_options[$i] = new AnswerOption($answer_options[$i]);
         }
 
         shuffle($answer_options);
 
         $i = -1;
+
         return new self(
             $story->getId(),
             array_map(function (StoryFlashcard $story_flashcard) use (&$i) {
@@ -70,13 +71,14 @@ class SessionFlashcardSummaries implements ISessionFlashcardSummaries
         $answer_options[] = $base_flashcard->getBackWord();
         $answer_options = array_values(array_unique($answer_options));
 
-        for($i=0; $i<count($answer_options); $i++) {
+        for ($i = 0; $i < count($answer_options); ++$i) {
             $answer_options[$i] = new AnswerOption($answer_options[$i]);
         }
 
         shuffle($answer_options);
 
         $i = -1;
+
         return new self(
             null,
             array_map(function (Flashcard $flashcard) use (&$i) {

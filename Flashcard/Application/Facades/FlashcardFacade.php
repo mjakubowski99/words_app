@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\Facades;
 
-use Flashcard\Application\Command\ClearFlashcardPoll;
-use Shared\Exercise\IExerciseScore;
 use Shared\User\IUser;
+use Shared\Exercise\IExerciseScore;
 use Shared\Utils\ValueObjects\UserId;
 use Shared\Flashcard\IFlashcardFacade;
+use Flashcard\Application\Command\ClearFlashcardPoll;
 use Flashcard\Application\Command\UpdateRatingsHandler;
 use Flashcard\Application\Command\DeleteUserDataHandler;
 use Flashcard\Application\Repository\ISessionRepository;

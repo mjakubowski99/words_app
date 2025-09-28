@@ -74,7 +74,7 @@ class FlashcardReadMapper
 
     public function getByUser(UserId $user_id, \Shared\Enum\Language $front_lang, \Shared\Enum\Language $back_lang, ?string $search, int $page, int $per_page): UserFlashcardsRead
     {
-        $user_flashcards = $this->search($user_id, $front_lang, $back_lang,null, $user_id, $search, $page, $per_page);
+        $user_flashcards = $this->search($user_id, $front_lang, $back_lang, null, $user_id, $search, $page, $per_page);
 
         $count = $this->db::table('flashcards')
             ->where('user_id', $user_id->getValue())
@@ -94,8 +94,8 @@ class FlashcardReadMapper
         $rating = Rating::maxRating();
 
         $results = $this->db::table('flashcards')
-            ->when($front_lang, fn($q) => $q->where('front_lang', $front_lang))
-            ->when($back_lang, fn($q) => $q->where('back_lang', $back_lang))
+            ->when($front_lang, fn ($q) => $q->where('front_lang', $front_lang))
+            ->when($back_lang, fn ($q) => $q->where('back_lang', $back_lang))
             ->when(!is_null($search), function ($query) use ($search) {
                 return $query->where(function ($q) use ($search) {
                     $search = mb_strtolower($search);
