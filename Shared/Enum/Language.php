@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Shared\Enum;
 
+use Shared\Exceptions\NotFoundException;
+
 enum Language: string
 {
     case PL = 'pl';
@@ -14,6 +16,11 @@ enum Language: string
     case DE = 'de';
     case ZH = 'zh';
     case CS = 'cs';
+
+    public static function values(): array
+    {
+        return array_map(fn ($case) => $case->value, self::cases());
+    }
 
     public static function defaultUserLanguage(): self
     {
@@ -35,7 +42,9 @@ enum Language: string
             self::FR => 'French',
             self::DE => 'German',
             self::ZH => 'Chinese',
+            /* @phpstan-ignore-next-line */
             self::CS => 'Czech',
+            default => throw new NotFoundException('Unknown language'),
         };
     }
 }

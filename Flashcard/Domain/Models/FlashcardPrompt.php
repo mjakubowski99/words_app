@@ -80,13 +80,13 @@ class FlashcardPrompt
 
     private function validateLanguages(): void
     {
-        $supportedLanguages = ['pl', 'en', 'it', 'es', 'fr', 'de', 'zh', 'cs'];
+        $supported_languages = \Shared\Enum\Language::values();
 
-        if (!in_array($this->word_lang->getValue(), $supportedLanguages, true)) {
+        if (!in_array($this->word_lang->getValue(), $supported_languages, true)) {
             throw new InvalidPromptException("Unsupported word language: {$this->word_lang->getValue()}");
         }
 
-        if (!in_array($this->translation_lang->getValue(), $supportedLanguages, true)) {
+        if (!in_array($this->translation_lang->getValue(), $supported_languages, true)) {
             throw new InvalidPromptException("Unsupported translation language: {$this->translation_lang->getValue()}");
         }
     }

@@ -53,6 +53,11 @@ class FlashcardDeckQueryBuilder extends CustomQueryBuilder
         return $this->when($level !== null, fn ($q) => $q->where('flashcard_decks.default_language_level', '=', $level->value));
     }
 
+    public function byName(string $search): static
+    {
+        return $this->whereRaw('LOWER(flashcard_decks.name) = ?', [mb_strtolower($search)]);
+    }
+
     public function joinActivities(UserId $user_id): static
     {
         $activities = DB::table('flashcard_deck_activities')->where('user_id', $user_id);
