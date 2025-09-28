@@ -49,16 +49,25 @@ class FlashcardQueryBuilder extends CustomQueryBuilder
 
     public function joinAvgRatings(UserId $user_id, int $ratings_limit, string $alias): self
     {
-        $sub_query = LearningSessionFlashcardQueryBuilder::new()
+        $raned_ratings_query = LearningSessionFlashcardQueryBuilder::new()
             ->joinLearningSessions()
             ->byUser($user_id)
             ->rated()
-            ->onlyLatestByFlashcards($ratings_limit)
-            ->groupByFlashcard()
             ->addSelectColumn('flashcard_id')
-            ->addSelectAvgRating('avg_rating');
+            ->addSelectColumn('rating')
+            ->addSelect(DB::raw('ROW_NUMBER() OVER (
+            PARTITION BY learning_session_flashcards.flashcard_id 
+            ORDER BY learning_session_flashcards.id DESC
+        ) as rn'));
 
-        return $this->joinSub($sub_query, $alias, function ($join) use ($alias) {
+        $avg_ratings_query = DB::table(DB::raw("({$raned_ratings_query->toSql()}) as ranked_ratings"))
+            ->mergeBindings($raned_ratings_query)
+            ->select('flashcard_id')
+            ->selectRaw('AVG(rating)::float as avg_rating')
+            ->where('rn', '<=', $ratings_limit)
+            ->groupBy('flashcard_id');
+
+        return $this->joinSub($avg_ratings_query, $alias, function ($join) use ($alias) {
             $join->on($alias . '.flashcard_id', '=', 'flashcards.id');
         });
     }

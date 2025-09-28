@@ -50,17 +50,6 @@ class LearningSessionFlashcardQueryBuilder extends CustomQueryBuilder
         return $this->groupBy('learning_session_flashcards.flashcard_id');
     }
 
-    public function onlyLatestByFlashcards(int $count): self
-    {
-        return $this->whereIn('learning_session_flashcards.id', function ($query) use ($count) {
-            $query->select('id')
-                ->from('learning_session_flashcards as lsf2')
-                ->whereColumn('lsf2.flashcard_id', 'learning_session_flashcards.flashcard_id')
-                ->orderByDesc('lsf2.id')
-                ->limit($count);
-        });
-    }
-
     public function addSelectColumn(string $column): self
     {
         return $this->addSelect('learning_session_flashcards.' . $column);
