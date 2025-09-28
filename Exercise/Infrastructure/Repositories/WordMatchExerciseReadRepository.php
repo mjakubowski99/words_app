@@ -6,8 +6,8 @@ namespace Exercise\Infrastructure\Repositories;
 
 use Shared\Utils\ValueObjects\ExerciseEntryId;
 use Shared\Exercise\Exercises\IWordMatchExerciseRead;
-use Exercise\Application\Repositories\IWordMatchExerciseReadRepository;
 use Exercise\Infrastructure\Mappers\Postgres\WordMatchExerciseReadMapper;
+use Exercise\Application\Repositories\ExerciseRead\IWordMatchExerciseReadRepository;
 
 class WordMatchExerciseReadRepository implements IWordMatchExerciseReadRepository
 {

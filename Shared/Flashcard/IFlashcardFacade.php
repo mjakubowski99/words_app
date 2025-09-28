@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Shared\Flashcard;
 
+use Shared\User\IUser;
 use Shared\Exercise\IExerciseScore;
 use Shared\Utils\ValueObjects\UserId;
 
@@ -18,4 +19,6 @@ interface IFlashcardFacade
 
     /** @param int[] $session_flashcard_ids*/
     public function updateRatingsByPreviousRates(array $session_flashcard_ids): void;
+
+    public function postLanguageUpdate(IUser $user): void;
 }

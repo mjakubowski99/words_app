@@ -28,6 +28,23 @@ use Illuminate\Http\Resources\Json\JsonResource;
             property: 'has_any_session',
             type: 'boolean'
         ),
+        new OAT\Property(
+            property: 'profile_completed',
+            description: 'Whether the user has completed their profile. chosen language to learn and etc.',
+            type: 'boolean'
+        ),
+        new OAT\Property(
+            property: 'user_language',
+            description: 'The user language code',
+            type: 'string',
+            example: 'pl',
+        ),
+        new OAT\Property(
+            property: 'learning_language',
+            description: 'The user language code',
+            type: 'string',
+            example: 'en',
+        ),
     ]
 )]
 class UserResource extends JsonResource
@@ -46,6 +63,9 @@ class UserResource extends JsonResource
             'name' => $user->getName(),
             'email' => $user->getEmail(),
             'has_any_session' => $has_any_session,
+            'profile_completed' => $user->profileCompleted(),
+            'user_language' => $user->getUserLanguage()->getValue(),
+            'learning_language' => $user->getLearningLanguage()->getValue(),
         ];
     }
 }

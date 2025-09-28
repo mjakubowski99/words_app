@@ -7,8 +7,8 @@ namespace Exercise\Infrastructure\Http\Request;
 use OpenApi\Attributes as OAT;
 use Shared\Http\Request\Request;
 use Shared\Utils\ValueObjects\ExerciseId;
-use Exercise\Domain\Models\WordMatchAnswer;
 use Shared\Utils\ValueObjects\ExerciseEntryId;
+use Exercise\Domain\Models\Answer\WordMatchAnswer;
 
 #[OAT\Schema(
     schema: 'Requests\Exercise\WordMatchExerciseAnswerRequest',

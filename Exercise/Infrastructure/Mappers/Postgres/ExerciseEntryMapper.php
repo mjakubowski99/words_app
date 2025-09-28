@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Exercise\Infrastructure\Mappers\Postgres;
 
 use Illuminate\Support\Facades\DB;
-use Exercise\Domain\Models\ExerciseEntry;
+use Exercise\Domain\Models\ExerciseEntry\ExerciseEntry;
 
 class ExerciseEntryMapper
 {

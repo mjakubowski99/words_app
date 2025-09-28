@@ -8,10 +8,12 @@ use App\Http\OpenApi\Tags;
 use OpenApi\Attributes as OAT;
 use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
+use User\Application\Command\UpdateLanguage;
 use User\Application\Command\DeleteUserHandler;
 use User\Application\Command\CreateReportHandler;
 use User\Infrastructure\Http\Request\DeleteUserRequest;
 use User\Infrastructure\Http\Request\StoreReportRequest;
+use User\Infrastructure\Http\Request\UpdateLanguageRequest;
 
 class UserController extends Controller
 {
@@ -70,6 +72,30 @@ class UserController extends Controller
     public function storeReport(StoreReportRequest $request, CreateReportHandler $handler): JsonResponse
     {
         $handler->handle($request->toCommand());
+
+        return new JsonResponse([], 204);
+    }
+
+    #[OAT\Put(
+        path: '/api/v2/user/me/language',
+        operationId: 'user.me.language.update',
+        description: 'Update the user\'s preferred and learning languages',
+        summary: 'Update user language preferences',
+        security: [['sanctum' => []]],
+        requestBody: new OAT\RequestBody(
+            content: new OAT\JsonContent(ref: '#/components/schemas/Requests\User\UpdateLanguageRequest')
+        ),
+        tags: [Tags::USER, Tags::V2, Tags::LANGUAGE],
+        responses: [
+            new OAT\Response(ref: '#/components/responses/no_content', response: 204),
+            new OAT\Response(ref: '#/components/responses/unauthenticated', response: 401),
+            new OAT\Response(ref: '#/components/responses/validation_error', response: 422),
+            new OAT\Response(ref: '#/components/responses/server_error', response: 500),
+        ],
+    )]
+    public function updateLanguage(UpdateLanguageRequest $request, UpdateLanguage $handler): JsonResponse
+    {
+        $handler->handle($request->currentId(), $request->getUserLanguage(), $request->getLearningLanguage());
 
         return new JsonResponse([], 204);
     }

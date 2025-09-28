@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Exercise\Application\Services\ExerciseFactory;
 
 use Shared\Utils\ValueObjects\UserId;
-use Exercise\Domain\Models\WordMatchExercise;
 use Exercise\Application\DTO\FlashcardExercise;
 use Shared\Flashcard\ISessionFlashcardSummaries;
-use Exercise\Application\Repositories\IWordMatchExerciseRepository;
+use Exercise\Domain\Models\Exercise\WordMatchExercise;
+use Exercise\Application\Repositories\Exercise\IWordMatchExerciseRepository;
 
 class WordMatchExerciseFactory implements IExerciseFactory
 {

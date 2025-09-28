@@ -10,59 +10,57 @@ use Flashcard\Domain\Exceptions\InvalidPromptException;
 
 class FlashcardPrompt
 {
-    private readonly Language $word_lang;
-    private readonly Language $translation_lang;
-
     private string $prompt = '
-        Jesteś algorytmem AI generującym słowa do nauki języka angielskiego.
-        Na podstawie tematu podanego przez użytkownika utwórz historię składającą się łącznie z ${{words_count}} zdań po angielsku. 
-        Podziel historię na części, które muszą mieć po 3–4 zdania każda — każda część to osobna mini-historia, 
-        która w obrębie tych zdań musi tworzyć spójną, logiczną całość (czyli krótkie zdarzenie z początkiem, środkiem i końcem).
-        Dla każdego zdania wygeneruj jego tłumaczenie na język polski.
-        Następnie z wygenerowanych zdań wyodrębnij słowa do fiszek (flashcards). Wybrane słowa muszą:
-        – występować w zdaniu w swojej podstawowej (nieodmienionej) formie,
-        – bezpośrednio odnosić się do tematu,
-        – nie powtarzać się w innych historiach.
-        Przkładowe story: rozmowa z kasjerem
+        You are an AI algorithm generating vocabulary for language learning.
+        Based on the topic provided by the user, create a story consisting of ${{words_count}} sentences in ${{translation_lang_name}}.
+        Divide the story into parts that must have 3-4 sentences each — each part is a separate mini-story,
+        which within these sentences must form a coherent, logical whole (i.e., a short event with beginning, middle, and end).
+        For each sentence, generate its translation into ${{word_lang_name}}.
+        Then extract words for flashcards from the generated sentences. Selected words must:
+        – appear in the sentence in their basic (uninflected) form,
+        – directly relate to the topic,
+        – not repeat in other stories.
+        Example story: conversation with a cashier
             - Emma walked into the store and picked up a bottle of water.
             - She went to the counter where the cashier was waiting.
             - The cashier said, "That will be two dollars, please."
-        Wynik zapisz w formie prostego kodu JSON:
+        Save the result in simple JSON code format:
         [{
-        "word": "kasjer",
-        "trans": "cashier",
-        "sentence":"Poszła do lady, gdzie czekał kasjer.",
-        "sentence_trans":"She went to the counter where the cashier was waiting.",
-        "emoji":"😀",
+        "word": "word_in_${{word_lang_code}}",
+        "trans": "translation_in_${{translation_lang_code}}",
+        "sentence": "sentence_in_${{word_lang_name}}",
+        "sentence_trans": "sentence_in_${{translation_lang_name}}",
+        "emoji": "😀",
         "story_id": 1
         },...]
-        Opis pól:
-         - word: słowo po polsku
-         - trans: jego tłumaczenie na angielski
-         - sentence: zdanie po polsku, w którym występuje słowo
-         - sentence_trans: tłumacznie zdania na angielski
-         – story_id: numer historii, z której pochodzi (story_id).
-        Wygeneruj odpowiedź w formacie JSON zawierającą ${{words_count}} rekordów.
-        Uwzględnij również specyfikację poziomu języka. Wybrany poziom to: ${{level}}
+        Field descriptions:
+         - word: word in ${{word_lang_name}}
+         - trans: its translation to ${{translation_lang_name}}
+         - sentence: sentence in ${{word_lang_name}} containing the word
+         - sentence_trans: sentence translation to ${{translation_lang_name}}
+         - story_id: story number from which it originates (story_id).
+        Generate a JSON format response containing ${{words_count}} records.
+        Also consider the language level specification. Selected level: ${{level}}
         ${{letters_condition}}
-        Zastosuj:
-            - kreatywność w tworzeniu przykładów
-            - losowe ziarno generowania: ${{seed}}
-        Prompt użytkownika to: ${{category}}.
-        Warunek błedu: Jeśli z jakiegoś powodu nie jesteś w stanie wygenerować rekordów dla danej sytuacji, zamiast rekordów odpowiedz w formacie 
+        Apply:
+            - creativity in creating examples
+            - random generation seed: ${{seed}}
+        User prompt: ${{category}}.
+        Error condition: If for any reason you cannot generate records for the given situation, instead of records respond in format 
         {"error":"prompt"}
-        Twoja odpowiedź ma zawierać tylko i wyłącznie dane w formacie JSON i nic więcej.
+        Your response should contain only and exclusively data in JSON format and nothing else.
     ';
 
     public function __construct(
         private readonly string $category,
         private readonly LanguageLevel $language_level,
+        private readonly Language $word_lang,
+        private readonly Language $translation_lang,
         private readonly int $words_count = 10,
         private array $initial_letters_to_avoid = [],
     ) {
+        $this->validateLanguages();
         $this->buildPrompt();
-        $this->word_lang = Language::pl();
-        $this->translation_lang = Language::en();
     }
 
     public function getPrompt(): string
@@ -80,12 +78,26 @@ class FlashcardPrompt
         return $this->translation_lang;
     }
 
+    private function validateLanguages(): void
+    {
+        $supported_languages = \Shared\Enum\Language::values();
+
+        if (!in_array($this->word_lang->getValue(), $supported_languages, true)) {
+            throw new InvalidPromptException("Unsupported word language: {$this->word_lang->getValue()}");
+        }
+
+        if (!in_array($this->translation_lang->getValue(), $supported_languages, true)) {
+            throw new InvalidPromptException("Unsupported translation language: {$this->translation_lang->getValue()}");
+        }
+    }
+
     private function buildPrompt(): void
     {
         $this->setRandomSeed();
         $this->setCategory();
         $this->setLanguageLevel();
         $this->setWordsCount();
+        $this->setLanguages();
         $this->setInitialLettersToAvoid();
         $this->removeWhiteCharacters();
     }
@@ -122,6 +134,23 @@ class FlashcardPrompt
         $this->prompt = str_replace('${{words_count}}', (string) $this->words_count, $this->prompt);
     }
 
+    private function setLanguages(): void
+    {
+        $replacements = [
+            '${{word_lang_name}}' => $this->word_lang->getValue(),
+            '${{translation_lang_name}}' => $this->translation_lang->getValue(),
+            '${{word_lang_code}}' => $this->word_lang->getValue(),
+            '${{translation_lang_code}}' => $this->translation_lang->getValue(),
+        ];
+
+        foreach ($replacements as $placeholder => $replacement) {
+            if (!str_contains($this->prompt, $placeholder)) {
+                throw new InvalidPromptException("Invalid prompt exception. Missing placeholder: {$placeholder}");
+            }
+            $this->prompt = str_replace($placeholder, $replacement, $this->prompt);
+        }
+    }
+
     private function setInitialLettersToAvoid(): void
     {
         if (!str_contains($this->prompt, '${{letters_condition}}')) {
@@ -133,7 +162,7 @@ class FlashcardPrompt
         if ($letters === '') {
             $this->prompt = str_replace('${{letters_condition}}', '', $this->prompt);
         } else {
-            $condition = 'Unikaj słów zaczynających się na litery: ';
+            $condition = 'Avoid words starting with letters: ';
             $this->prompt = str_replace('${{letters_condition}}', $condition . $letters, $this->prompt);
         }
     }

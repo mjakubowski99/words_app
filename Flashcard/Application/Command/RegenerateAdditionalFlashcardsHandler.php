@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Flashcard\Application\Command;
 
 use Flashcard\Domain\Models\Owner;
+use Shared\Utils\ValueObjects\Language;
 use Shared\Exceptions\ForbiddenException;
 use Flashcard\Application\Services\DeckResolver;
 use Flashcard\Domain\ValueObjects\FlashcardDeckId;
@@ -17,7 +18,7 @@ class RegenerateAdditionalFlashcardsHandler
         private FlashcardGeneratorService $flashcard_generator_service,
     ) {}
 
-    public function handle(Owner $owner, FlashcardDeckId $id, int $words_count, int $words_count_to_save): void
+    public function handle(Owner $owner, Language $front, Language $back, FlashcardDeckId $id, int $words_count, int $words_count_to_save): void
     {
         $resolved_deck = $this->deck_resolver->resolveById($id);
 
@@ -27,6 +28,8 @@ class RegenerateAdditionalFlashcardsHandler
 
         $this->flashcard_generator_service->generate(
             $resolved_deck,
+            $front,
+            $back,
             $resolved_deck->getDeck()->getName(),
             $words_count,
             $words_count_to_save

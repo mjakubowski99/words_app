@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 use App\Models\Exercise;
 use App\Models\ExerciseEntry;
 use Shared\Utils\ValueObjects\StoryId;

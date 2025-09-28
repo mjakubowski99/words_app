@@ -9,8 +9,8 @@ use Shared\Exercise\Exercises\IExerciseReadFacade;
 use Shared\Exercise\Exercises\IWordMatchExerciseRead;
 use Shared\Exercise\Exercises\IUnscrambleWordExerciseRead;
 use Exercise\Application\Repositories\IExerciseStatsRepository;
-use Exercise\Application\Repositories\IWordMatchExerciseReadRepository;
-use Exercise\Application\Repositories\IUnscrambleWordExerciseReadRepository;
+use Exercise\Application\Repositories\ExerciseRead\IWordMatchExerciseReadRepository;
+use Exercise\Application\Repositories\ExerciseRead\IUnscrambleWordExerciseReadRepository;
 
 class ExerciseReadFacade implements IExerciseReadFacade
 {

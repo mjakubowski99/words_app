@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Exercise\Application\DTO;
 
-use Exercise\Domain\Models\Exercise;
 use Shared\Exercise\IFlashcardExercise;
+use Exercise\Domain\Models\Exercise\Exercise;
 use Shared\Utils\ValueObjects\ExerciseEntryId;
 use Shared\Flashcard\ISessionFlashcardSummaries;
 

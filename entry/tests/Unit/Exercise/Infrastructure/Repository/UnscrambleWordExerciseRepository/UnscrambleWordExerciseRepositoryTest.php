@@ -1,18 +1,19 @@
 <?php
 
 declare(strict_types=1);
+
 use App\Models\Exercise;
 use Shared\Models\Emoji;
 use Shared\Enum\ExerciseType;
-use Exercise\Domain\Models\Answer;
 use App\Models\UnscrambleWordExercise;
 use App\Models\LearningSessionFlashcard;
-use Exercise\Domain\Models\ExerciseEntry;
+use Exercise\Domain\Models\Answer\Answer;
 use Shared\Utils\ValueObjects\ExerciseId;
 use Exercise\Domain\Models\ExerciseStatus;
 use Shared\Utils\ValueObjects\ExerciseEntryId;
-use Exercise\Domain\Models\UnscrambleWordsExercise;
+use Exercise\Domain\Models\ExerciseEntry\ExerciseEntry;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Exercise\Domain\Models\Exercise\UnscrambleWordsExercise;
 use Exercise\Infrastructure\Repositories\UnscrambleWordExerciseRepository;
 
 uses(DatabaseTransactions::class);

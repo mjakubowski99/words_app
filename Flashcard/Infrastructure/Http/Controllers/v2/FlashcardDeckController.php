@@ -87,7 +87,7 @@ class FlashcardDeckController
     ): FlashcardDecksResource {
         return new FlashcardDecksResource([
             'decks' => $get_user_decks->handle(
-                $request->currentId(),
+                $request->current(),
                 $request->getSearch(),
                 $request->getPage(),
                 $request->getPerPage(),
@@ -152,7 +152,7 @@ class FlashcardDeckController
     ): FlashcardDecksResource {
         return new FlashcardDecksResource([
             'decks' => $get_admin_decks->handle(
-                $request->currentId(),
+                $request->current(),
                 $request->getLanguageLevel(),
                 $request->getSearch(),
                 $request->getPage(),
@@ -251,8 +251,12 @@ class FlashcardDeckController
         RegenerateAdditionalFlashcardsHandler $regenerate_flashcards,
         GetDeckDetails $get_deck_details,
     ): DeckDetailsResource {
+        $user = $request->current();
+
         $regenerate_flashcards->handle(
             $request->getOwner(),
+            $user->getUserLanguage(),
+            $user->getLearningLanguage(),
             $request->getDeckId(),
             self::FLASHCARDS_LIMIT,
             self::FLASHCARDS_SAVE_LIMIT,
@@ -409,7 +413,15 @@ class FlashcardDeckController
         GetDeckRatingStatsRequest $request,
         GetDeckRatingStats $get_deck_rating_stats,
     ): RatingStatsResource {
-        return new RatingStatsResource($get_deck_rating_stats->get($request->getDeckId()));
+        $user = $request->current();
+
+        return new RatingStatsResource(
+            $get_deck_rating_stats->get(
+                $request->getDeckId(),
+                $user->getUserLanguage()->getEnum(),
+                $user->getLearningLanguage()->getEnum(),
+            )
+        );
     }
 
     #[OAT\Post(

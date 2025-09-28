@@ -6,8 +6,8 @@ namespace Exercise\Infrastructure\Repositories;
 
 use Shared\Utils\ValueObjects\ExerciseEntryId;
 use Shared\Exercise\Exercises\IUnscrambleWordExerciseRead;
-use Exercise\Application\Repositories\IUnscrambleWordExerciseReadRepository;
 use Exercise\Infrastructure\Mappers\Postgres\UnscrambleWordExerciseReadMapper;
+use Exercise\Application\Repositories\ExerciseRead\IUnscrambleWordExerciseReadRepository;
 
 class UnscrambleWordExerciseReadRepository implements IUnscrambleWordExerciseReadRepository
 {

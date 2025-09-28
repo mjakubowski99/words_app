@@ -4,6 +4,7 @@ declare(strict_types=1);
 use Ramsey\Uuid\Uuid;
 use Shared\Utils\ValueObjects\UserId;
 use Flashcard\Domain\Models\Flashcard;
+use Shared\Utils\ValueObjects\Language;
 use Flashcard\Domain\Models\FlashcardPoll;
 use Flashcard\Domain\ValueObjects\FlashcardId;
 use Flashcard\Domain\Types\FlashcardIdCollection;
@@ -43,12 +44,12 @@ test('refresh when new poll add flashcards from selector to poll', function () {
     $this->selector->shouldReceive('selectToPoll')->andReturn($flashcards);
 
     // WHEN
-    $poll = $this->service->refresh($user_id);
+    $poll = $this->service->refresh($user_id, Language::pl(), Language::en());
 
     // THEN
-    expect(count($poll->getFlashcardIdsToAdd()))->toBe(2);
-    expect($poll->getFlashcardIdsToAdd()[0]->getValue())->toBe($flashcards[0]->getId()->getValue());
-    expect($poll->getFlashcardIdsToAdd()[1]->getValue())->toBe($flashcards[1]->getId()->getValue());
+    expect(count($poll->getFlashcardIdsToAdd()))->toBe(2)
+        ->and($poll->getFlashcardIdsToAdd()[0]->getValue())->toBe($flashcards[0]->getId()->getValue())
+        ->and($poll->getFlashcardIdsToAdd()[1]->getValue())->toBe($flashcards[1]->getId()->getValue());
 });
 test('refresh when are flashcards to replace replace flashcards correctly', function () {
     // GIVEN
@@ -74,14 +75,14 @@ test('refresh when are flashcards to replace replace flashcards correctly', func
     $this->selector->shouldReceive('selectToPoll')->andReturn($to_add);
 
     // WHEN
-    $poll = $this->service->refresh($user_id);
+    $poll = $this->service->refresh($user_id, Language::pl(), Language::en());
 
     // THEN
-    expect(count($poll->getFlashcardIdsToAdd()))->toBe(2);
-    expect($poll->getFlashcardIdsToAdd()[0]->getValue())->toBe($to_add[0]->getId()->getValue());
-    expect($poll->getFlashcardIdsToAdd()[1]->getValue())->toBe($to_add[1]->getId()->getValue());
-    expect($poll->getFlashcardIdsToPurge()[0]->getValue())->toBe($to_purge[0]->getValue());
-    expect($poll->getFlashcardIdsToPurge()[1]->getValue())->toBe($to_purge[1]->getValue());
+    expect(count($poll->getFlashcardIdsToAdd()))->toBe(2)
+        ->and($poll->getFlashcardIdsToAdd()[0]->getValue())->toBe($to_add[0]->getId()->getValue())
+        ->and($poll->getFlashcardIdsToAdd()[1]->getValue())->toBe($to_add[1]->getId()->getValue())
+        ->and($poll->getFlashcardIdsToPurge()[0]->getValue())->toBe($to_purge[0]->getValue())
+        ->and($poll->getFlashcardIdsToPurge()[1]->getValue())->toBe($to_purge[1]->getValue());
 });
 test('refresh when no flashcards to replace should not replace flashcards', function () {
     // GIVEN
@@ -107,11 +108,11 @@ test('refresh when no flashcards to replace should not replace flashcards', func
     $this->selector->shouldReceive('selectToPoll')->andReturn($to_add);
 
     // WHEN
-    $poll = $this->service->refresh($user_id);
+    $poll = $this->service->refresh($user_id, Language::pl(), Language::en());
 
     // THEN
-    expect(count($poll->getFlashcardIdsToAdd()))->toBe(2);
-    expect($poll->getFlashcardIdsToAdd()[0]->getValue())->toBe($to_add[0]->getId()->getValue());
-    expect($poll->getFlashcardIdsToAdd()[1]->getValue())->toBe($to_add[1]->getId()->getValue());
-    expect($poll->getFlashcardIdsToPurge())->toHaveCount(0);
+    expect(count($poll->getFlashcardIdsToAdd()))->toBe(2)
+        ->and($poll->getFlashcardIdsToAdd()[0]->getValue())->toBe($to_add[0]->getId()->getValue())
+        ->and($poll->getFlashcardIdsToAdd()[1]->getValue())->toBe($to_add[1]->getId()->getValue())
+        ->and($poll->getFlashcardIdsToPurge())->toHaveCount(0);
 });

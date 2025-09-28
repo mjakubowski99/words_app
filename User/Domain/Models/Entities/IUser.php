@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace User\Domain\Models\Entities;
 
 use Shared\Utils\ValueObjects\UserId;
+use Shared\Utils\ValueObjects\Language;
 
 interface IUser
 {
@@ -15,4 +16,16 @@ interface IUser
     public function getEmail(): string;
 
     public function getName(): string;
+
+    public function getUserLanguage(): Language;
+
+    public function getLearningLanguage(): Language;
+
+    public function profileCompleted(): bool;
+
+    public function setUserLanguage(Language $language): void;
+
+    public function setLearningLanguage(Language $language): void;
+
+    public function setProfileCompleted(): void;
 }

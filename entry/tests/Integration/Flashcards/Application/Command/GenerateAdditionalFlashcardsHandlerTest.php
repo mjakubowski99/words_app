@@ -7,6 +7,7 @@ use App\Models\Flashcard;
 use App\Models\FlashcardDeck;
 use Tests\Base\FlashcardTestCase;
 use Illuminate\Support\Facades\Http;
+use Shared\Utils\ValueObjects\Language;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Flashcard\Application\Command\RegenerateAdditionalFlashcardsHandler;
 
@@ -57,6 +58,7 @@ beforeEach(function () {
             }';
     $this->handler = $this->app->make(RegenerateAdditionalFlashcardsHandler::class);
 });
+
 test('handle should generate flashcards', function () {
     // GIVEN
     Http::fake([
@@ -68,13 +70,14 @@ test('handle should generate flashcards', function () {
     ]);
 
     // WHEN
-    $this->handler->handle($user->toOwner(), $deck->getId(), 3, 3);
+    $this->handler->handle($user->toOwner(), Language::pl(), Language::en(), $deck->getId(), 3, 3);
 
     // THEN
     $this->assertDatabaseHas('flashcards', [
         'flashcard_deck_id' => $deck->getId(),
     ]);
 });
+
 test('handle should eliminate duplicates', function () {
     // GIVEN
     Flashcard::query()->forceDelete();
@@ -89,7 +92,7 @@ test('handle should eliminate duplicates', function () {
     ]);
 
     // WHEN
-    $this->handler->handle($user->toOwner(), $deck->getId(), 4, 2);
+    $this->handler->handle($user->toOwner(), Language::pl(), Language::en(), $deck->getId(), 4, 2);
 
     // THEN
     $this->assertDatabaseHas('flashcards', [
@@ -105,6 +108,6 @@ test('handle should eliminate duplicates', function () {
         ->where('flashcard_deck_id', $deck->id)
         ->count();
 
-    expect($flashcard_not_duplicated)->toBe(1);
-    expect($flashcard_count)->toBe(3);
+    expect($flashcard_not_duplicated)->toBe(1)
+        ->and($flashcard_count)->toBe(3);
 });

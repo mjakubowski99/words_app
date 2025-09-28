@@ -6,6 +6,7 @@ namespace Flashcard\Application\Command;
 
 use Shared\Enum\LanguageLevel;
 use Shared\Utils\ValueObjects\UserId;
+use Shared\Utils\ValueObjects\Language;
 
 class GenerateFlashcards
 {
@@ -13,6 +14,8 @@ class GenerateFlashcards
         private readonly UserId $user_id,
         private readonly string $deck_name,
         private readonly LanguageLevel $language_level,
+        private readonly Language $front,
+        private readonly Language $back,
     ) {}
 
     public function getUserId(): UserId
@@ -28,5 +31,15 @@ class GenerateFlashcards
     public function getLanguageLevel(): LanguageLevel
     {
         return $this->language_level;
+    }
+
+    public function getFrontLang(): Language
+    {
+        return $this->front;
+    }
+
+    public function getBackLang(): Language
+    {
+        return $this->back;
     }
 }

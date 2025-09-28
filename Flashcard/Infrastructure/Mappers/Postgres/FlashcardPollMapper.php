@@ -123,4 +123,11 @@ class FlashcardPollMapper
                 ->update(['leitner_level' => 0]);
         }
     }
+
+    public function deleteAllByUserId(UserId $user_id): void
+    {
+        $this->db::table('flashcard_poll_items')
+            ->where('user_id', $user_id)
+            ->delete();
+    }
 }

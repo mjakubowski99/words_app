@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Flashcard\Infrastructure\Mappers\Postgres;
 
 use Shared\Models\Emoji;
+use Shared\Enum\Language;
 use Shared\Enum\LanguageLevel;
 use Flashcard\Domain\Models\Deck;
 use Illuminate\Support\Facades\DB;
@@ -12,7 +13,6 @@ use Flashcard\Domain\Models\Rating;
 use Shared\Utils\ValueObjects\UserId;
 use Flashcard\Domain\Models\Flashcard;
 use Illuminate\Database\Query\Builder;
-use Shared\Utils\ValueObjects\Language;
 use Flashcard\Domain\ValueObjects\FlashcardId;
 use Flashcard\Domain\ValueObjects\FlashcardDeckId;
 use Flashcard\Infrastructure\Mappers\Traits\HasOwnerBuilder;
@@ -34,6 +34,8 @@ class FlashcardFromSmTwoMapper
         int $cards_per_session,
         bool $from_poll,
         bool $exclude_from_poll,
+        Language $front,
+        Language $back,
     ): array {
         $sort_sql = array_map(fn (PostgresSortCriteria $criteria) => $criteria->apply(), $sort_criteria);
 
@@ -48,6 +50,8 @@ class FlashcardFromSmTwoMapper
         }
 
         return $query
+            ->where('flashcards.front_lang', $front->value)
+            ->where('flashcards.back_lang', $back->value)
             ->when($exclude_from_poll, fn ($q) => $q->whereNotIn(
                 'flashcards.id',
                 fn ($q) => $q->select('flashcard_id')->from('flashcard_poll_items')->where('user_id', $user_id)
@@ -78,7 +82,7 @@ class FlashcardFromSmTwoMapper
             })->toArray();
     }
 
-    public function getNextFlashcardsByDeck(UserId $user_id, FlashcardDeckId $deck_id, int $limit, array $exclude_flashcard_ids, array $sort_criteria, int $cards_per_session, bool $from_poll): array
+    public function getNextFlashcardsByDeck(UserId $user_id, FlashcardDeckId $deck_id, int $limit, array $exclude_flashcard_ids, array $sort_criteria, int $cards_per_session, bool $from_poll, Language $front, Language $back): array
     {
         $sort_sql = array_map(fn (PostgresSortCriteria $criteria) => $criteria->apply(), $sort_criteria);
 
@@ -93,6 +97,8 @@ class FlashcardFromSmTwoMapper
         }
 
         return $query
+            ->where('flashcards.front_lang', $front->value)
+            ->where('flashcards.back_lang', $back->value)
             ->whereNotIn('flashcards.id', array_map(fn (FlashcardId $id) => $id->getValue(), $exclude_flashcard_ids))
             ->leftJoin('flashcard_decks', 'flashcard_decks.id', '=', 'flashcards.flashcard_deck_id')
             ->where('flashcards.flashcard_deck_id', $deck_id->getValue())
@@ -131,9 +137,9 @@ class FlashcardFromSmTwoMapper
         return new Flashcard(
             new FlashcardId($data->id),
             $data->front_word,
-            Language::from($data->front_lang),
+            \Shared\Utils\ValueObjects\Language::from($data->front_lang),
             $data->back_word,
-            Language::from($data->back_lang),
+            \Shared\Utils\ValueObjects\Language::from($data->back_lang),
             $data->front_context,
             $data->back_context,
             $this->buildOwner((string) $data->user_id, (string) $data->admin_id),

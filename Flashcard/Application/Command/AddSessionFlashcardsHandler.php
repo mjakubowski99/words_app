@@ -7,7 +7,7 @@ namespace Flashcard\Application\Command;
 use Shared\Exercise\IFlashcardExerciseFacade;
 use Flashcard\Application\Services\IFlashcardSelector;
 use Flashcard\Domain\Services\SessionFlashcardsService;
-use Flashcard\Application\Services\FlashcardSummaryFactory;
+use Flashcard\Application\Exercise\FlashcardSummaryFactory;
 use Flashcard\Application\Repository\INextSessionFlashcardsRepository;
 
 class AddSessionFlashcardsHandler
@@ -28,7 +28,7 @@ class AddSessionFlashcardsHandler
             return;
         }
 
-        $flashcards = $this->selector->select($next_session_flashcards, $command->getLimit());
+        $flashcards = $this->selector->select($next_session_flashcards, $command->getLimit(), $command->getFront(), $command->getBack());
 
         $exercise_type = $next_session_flashcards->resolveExerciseByRating($flashcards[0]->getLastUserRating());
 

@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\Facades;
 
+use Shared\User\IUser;
 use Shared\Exercise\IExerciseScore;
 use Shared\Utils\ValueObjects\UserId;
 use Shared\Flashcard\IFlashcardFacade;
+use Flashcard\Application\Command\ClearFlashcardPoll;
 use Flashcard\Application\Command\UpdateRatingsHandler;
 use Flashcard\Application\Command\DeleteUserDataHandler;
 use Flashcard\Application\Repository\ISessionRepository;
@@ -19,6 +21,7 @@ class FlashcardFacade implements IFlashcardFacade
         private ISessionRepository $session_repository,
         private UpdateRatingsHandler $update_ratings_handler,
         private UpdateRatingsByPreviousRatingHandler $update_ratings_by_previous_rating_handler,
+        private ClearFlashcardPoll $clear_flashcard_poll,
     ) {}
 
     public function deleteUserData(UserId $user_id): void
@@ -41,5 +44,10 @@ class FlashcardFacade implements IFlashcardFacade
     public function updateRatingsByPreviousRates(array $session_flashcard_ids): void
     {
         $this->update_ratings_by_previous_rating_handler->handle($session_flashcard_ids);
+    }
+
+    public function postLanguageUpdate(IUser $user): void
+    {
+        $this->clear_flashcard_poll->clear($user->getId());
     }
 }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Flashcard\Application\Repository;
 
+use Shared\Enum\Language;
 use Shared\Utils\ValueObjects\UserId;
 use Flashcard\Domain\Models\Flashcard;
 use Flashcard\Domain\Models\SmTwoFlashcards;
@@ -31,6 +32,8 @@ interface ISmTwoFlashcardRepository
         array $sort_criteria,
         int $cards_per_session,
         bool $from_poll,
+        Language $front,
+        Language $back,
     ): array;
 
     /**
@@ -45,5 +48,7 @@ interface ISmTwoFlashcardRepository
         int $cards_per_session,
         bool $from_poll,
         bool $exclude_from_poll,
+        Language $front,
+        Language $back,
     ): array;
 }

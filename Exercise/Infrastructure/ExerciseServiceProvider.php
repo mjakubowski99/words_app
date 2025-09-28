@@ -11,14 +11,14 @@ use Exercise\Application\Facades\ExerciseReadFacade;
 use Exercise\Application\Facades\FlashcardExerciseFacade;
 use Exercise\Application\Repositories\IExerciseStatsRepository;
 use Exercise\Infrastructure\Repositories\ExerciseStatsRepository;
-use Exercise\Application\Repositories\IWordMatchExerciseRepository;
 use Exercise\Infrastructure\Repositories\WordMatchExerciseRepository;
-use Exercise\Application\Repositories\IWordMatchExerciseReadRepository;
-use Exercise\Application\Repositories\IUnscrambleWordExerciseRepository;
 use Exercise\Infrastructure\Repositories\WordMatchExerciseReadRepository;
 use Exercise\Infrastructure\Repositories\UnscrambleWordExerciseRepository;
-use Exercise\Application\Repositories\IUnscrambleWordExerciseReadRepository;
+use Exercise\Application\Repositories\Exercise\IWordMatchExerciseRepository;
 use Exercise\Infrastructure\Repositories\UnscrambleWordExerciseReadRepository;
+use Exercise\Application\Repositories\Exercise\IUnscrambleWordExerciseRepository;
+use Exercise\Application\Repositories\ExerciseRead\IWordMatchExerciseReadRepository;
+use Exercise\Application\Repositories\ExerciseRead\IUnscrambleWordExerciseReadRepository;
 
 class ExerciseServiceProvider extends ServiceProvider
 {

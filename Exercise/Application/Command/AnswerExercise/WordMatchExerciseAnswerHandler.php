@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Exercise\Application\Command\AnswerExercise;
 
-use Exercise\Domain\Models\Exercise;
 use Shared\Flashcard\IFlashcardFacade;
 use Shared\Utils\ValueObjects\ExerciseId;
-use Exercise\Domain\Models\WordMatchExercise;
+use Exercise\Domain\Models\Exercise\Exercise;
+use Exercise\Domain\Models\Exercise\WordMatchExercise;
 use Exercise\Domain\Exceptions\InvalidExerciseTypeException;
-use Exercise\Application\Repositories\IWordMatchExerciseRepository;
+use Exercise\Application\Repositories\Exercise\IWordMatchExerciseRepository;
 
 class WordMatchExerciseAnswerHandler extends AbstractExerciseAnswerHandler
 {

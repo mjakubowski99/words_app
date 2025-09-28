@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace Exercise\Application\Command\AnswerExercise;
 
-use Exercise\Domain\Models\Answer;
-use Exercise\Domain\Models\Exercise;
 use Shared\Utils\ValueObjects\UserId;
 use Shared\Flashcard\IFlashcardFacade;
-use Exercise\Domain\Models\ExerciseEntry;
+use Exercise\Domain\Models\Answer\Answer;
 use Shared\Utils\ValueObjects\ExerciseId;
 use Exercise\Application\DTO\ExerciseScore;
 use Exercise\Domain\Models\AnswerAssessment;
 use Shared\Exceptions\UnauthorizedException;
+use Exercise\Domain\Models\Exercise\Exercise;
+use Exercise\Domain\Models\ExerciseEntry\ExerciseEntry;
 
 abstract class AbstractExerciseAnswerHandler
 {

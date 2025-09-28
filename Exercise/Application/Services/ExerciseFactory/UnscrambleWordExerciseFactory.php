@@ -7,8 +7,8 @@ namespace Exercise\Application\Services\ExerciseFactory;
 use Shared\Utils\ValueObjects\UserId;
 use Exercise\Application\DTO\FlashcardExercise;
 use Shared\Flashcard\ISessionFlashcardSummaries;
-use Exercise\Domain\Models\UnscrambleWordsExercise;
-use Exercise\Application\Repositories\IUnscrambleWordExerciseRepository;
+use Exercise\Domain\Models\Exercise\UnscrambleWordsExercise;
+use Exercise\Application\Repositories\Exercise\IUnscrambleWordExerciseRepository;
 
 class UnscrambleWordExerciseFactory implements IExerciseFactory
 {

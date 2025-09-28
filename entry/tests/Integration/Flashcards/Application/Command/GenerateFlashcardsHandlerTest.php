@@ -1,10 +1,13 @@
 <?php
 
 declare(strict_types=1);
+
 use App\Models\User;
+use App\Models\Flashcard;
 use App\Models\FlashcardDeck;
 use Shared\Enum\LanguageLevel;
 use Illuminate\Support\Facades\Http;
+use Shared\Utils\ValueObjects\Language;
 use Flashcard\Application\Command\GenerateFlashcards;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Flashcard\Application\Command\GenerateFlashcardsHandler;
@@ -64,7 +67,9 @@ test('handle should generate flashcards', function () {
     $command = new GenerateFlashcards(
         $user->getId(),
         $deck_name,
-        LanguageLevel::A1
+        LanguageLevel::A1,
+        Language::pl(),
+        Language::en()
     );
 
     // WHEN
@@ -87,11 +92,18 @@ test('when category already exists should generate flashcards and assign them to
     ]);
     $deck_name = 'Category';
     $user = User::factory()->create();
-    FlashcardDeck::factory()->create(['name' => $deck_name, 'user_id' => $user->id]);
+    $deck = FlashcardDeck::factory()->create(['name' => $deck_name, 'user_id' => $user->id]);
+    Flashcard::factory()->create([
+        'flashcard_deck_id' => $deck->id,
+        'front_lang' => Language::pl(),
+        'back_lang' => Language::en(),
+    ]);
     $command = new GenerateFlashcards(
         $user->getId(),
         $deck_name,
-        LanguageLevel::A1
+        LanguageLevel::A1,
+        Language::pl(),
+        Language::en()
     );
 
     // WHEN
@@ -114,7 +126,9 @@ test('when category already exists and api fail should not remove category', fun
     $command = new GenerateFlashcards(
         $user->getId(),
         $deck_name,
-        LanguageLevel::A1
+        LanguageLevel::A1,
+        Language::pl(),
+        Language::en()
     );
 
     $this->expectException(AiResponseFailedException::class);
@@ -137,7 +151,9 @@ test('when new category and api fail should remove category', function () {
     $command = new GenerateFlashcards(
         $user->getId(),
         $deck_name,
-        LanguageLevel::A1
+        LanguageLevel::A1,
+        Language::pl(),
+        Language::en()
     );
 
     $this->expectException(AiResponseFailedException::class);

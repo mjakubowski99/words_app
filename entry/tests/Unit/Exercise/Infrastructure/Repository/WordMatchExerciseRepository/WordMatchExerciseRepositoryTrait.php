@@ -11,10 +11,10 @@ use Shared\Utils\ValueObjects\UserId;
 use Shared\Utils\ValueObjects\StoryId;
 use Shared\Utils\ValueObjects\ExerciseId;
 use Exercise\Domain\Models\ExerciseStatus;
-use Exercise\Domain\Models\WordMatchAnswer;
-use Exercise\Domain\Models\WordMatchExercise;
 use Shared\Utils\ValueObjects\ExerciseEntryId;
-use Exercise\Domain\Models\WordMatchExerciseEntry;
+use Exercise\Domain\Models\Answer\WordMatchAnswer;
+use Exercise\Domain\Models\Exercise\WordMatchExercise;
+use Exercise\Domain\Models\ExerciseEntry\WordMatchExerciseEntry;
 
 trait WordMatchExerciseRepositoryTrait
 {

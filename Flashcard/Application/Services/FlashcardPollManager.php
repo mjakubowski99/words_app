@@ -6,6 +6,7 @@ namespace Flashcard\Application\Services;
 
 use Shared\Utils\ValueObjects\UserId;
 use Flashcard\Domain\Models\Flashcard;
+use Shared\Utils\ValueObjects\Language;
 use Flashcard\Domain\Models\FlashcardPoll;
 use Flashcard\Domain\Types\FlashcardIdCollection;
 use Flashcard\Application\Repository\IFlashcardPollRepository;
@@ -20,14 +21,14 @@ class FlashcardPollManager
         private readonly FlashcardPollResolver $resolver,
     ) {}
 
-    public function refresh(UserId $user_id): FlashcardPoll
+    public function refresh(UserId $user_id, Language $front, Language $back): FlashcardPoll
     {
         $poll = $this->resolver->resolve($user_id);
 
         if (!$poll->pollIsFull()) {
             $flashcard_ids = array_map(
                 fn (Flashcard $flashcard) => $flashcard->getId(),
-                $this->selector->selectToPoll($user_id, $poll->countToFillPoll())
+                $this->selector->selectToPoll($user_id, $poll->countToFillPoll(), $front->getEnum(), $back->getEnum())
             );
 
             $poll->push(FlashcardIdCollection::fromArray($flashcard_ids));
@@ -35,7 +36,7 @@ class FlashcardPollManager
             $limit = $poll->getCountToPurge();
             $flashcard_ids = array_map(
                 fn (Flashcard $flashcard) => $flashcard->getId(),
-                $this->selector->selectToPoll($user_id, $limit)
+                $this->selector->selectToPoll($user_id, $limit, $front->getEnum(), $back->getEnum())
             );
             $poll->replaceWithNew(FlashcardIdCollection::fromArray($flashcard_ids));
         }
@@ -45,5 +46,10 @@ class FlashcardPollManager
         $this->repository->resetLeitnerLevelIfMaxLevelExceeded($user_id, self::LEITNER_MAX_LEVEL);
 
         return $poll;
+    }
+
+    public function clear(UserId $user_id): void
+    {
+        $this->repository->deleteAllByUserId($user_id);
     }
 }

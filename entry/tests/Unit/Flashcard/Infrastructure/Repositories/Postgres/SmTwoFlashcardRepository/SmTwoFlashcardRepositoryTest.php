@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Models\User;
 use App\Models\Admin;
 use App\Models\Flashcard;
+use Shared\Enum\Language;
 use App\Models\FlashcardDeck;
 use App\Models\SmTwoFlashcard;
 use App\Models\FlashcardPollItem;
@@ -34,8 +35,8 @@ test('find many should return correct sm two flashcards', function () {
     $results = $this->repository->findMany($user->getId(), $flashcard_ids);
 
     // THEN
-    expect(count($results))->toBe(2);
-    expect($results->all()[0]->getMinRating())->toBe(3);
+    expect(count($results))->toBe(2)
+        ->and($results->all()[0]->getMinRating())->toBe(3);
 });
 test('reset repetitions in session success', function () {
     // GIVEN
@@ -134,9 +135,40 @@ test('get next flashcards by deck should return flashcards', function () {
         FlashcardSortCriteria::RANDOMIZE_LATEST_FLASHCARDS_ORDER,
         FlashcardSortCriteria::PLANNED_FLASHCARDS_FOR_CURRENT_DATE_FIRST,
         FlashcardSortCriteria::LOWEST_REPETITION_INTERVAL_FIRST,
-    ], 2, true);
+    ], 2, true, Language::PL, Language::EN);
 
     // THEN
-    expect($results)->toHaveCount(1);
-    expect($results[0]->getId()->getValue())->toBe($flashcard_poll->flashcard_id);
+    expect($results)->toHaveCount(1)
+        ->and($results[0]->getId()->getValue())->toBe($flashcard_poll->flashcard_id);
+});
+
+test('get next flashcards by deck return flashcards in correct language', function () {
+    // GIVEN
+    $user = User::factory()->create();
+    $deck = FlashcardDeck::factory()->create();
+
+    $flashcard = Flashcard::factory()->create([
+        'user_id' => $user->id,
+        'flashcard_deck_id' => $deck->id,
+        'front_lang' => Language::PL,
+        'back_lang' => Language::ZH,
+    ]);
+    $expected_flashcard = Flashcard::factory()->create([
+        'user_id' => $user->id,
+        'flashcard_deck_id' => $deck->id,
+        'front_lang' => Language::DE,
+        'back_lang' => Language::ES,
+    ]);
+
+    // WHEN
+    $results = $this->repository->getNextFlashcardsByDeck($user->getId(), $deck->getId(), 5, [], [FlashcardSortCriteria::HARD_FLASHCARDS_FIRST], 2, false, Language::DE, Language::ES);
+
+    // THEN
+    expect($results)->toHaveCount(1)
+        ->and($results[0]->getId()->getValue())
+        ->toBe($expected_flashcard->id)
+        ->and($results[0]->getFrontLang()->getValue())
+        ->toBe(Language::DE->value)
+        ->and($results[0]->getBackLang()->getValue())
+        ->toBe(Language::ES->value);
 });

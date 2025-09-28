@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Exercise\Application\Command\SkipExercise;
 
-use Exercise\Domain\Models\Exercise;
 use Shared\Utils\ValueObjects\UserId;
 use Shared\Flashcard\IFlashcardFacade;
-use Exercise\Domain\Models\ExerciseEntry;
 use Shared\Utils\ValueObjects\ExerciseId;
 use Exercise\Application\DTO\ExerciseScore;
 use Shared\Exceptions\UnauthorizedException;
+use Exercise\Domain\Models\Exercise\Exercise;
+use Exercise\Domain\Models\ExerciseEntry\ExerciseEntry;
 
 abstract class AbstractSkipExerciseHandler
 {

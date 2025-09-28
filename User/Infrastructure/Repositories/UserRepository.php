@@ -62,4 +62,19 @@ readonly class UserRepository implements IUserRepository
             ->where('provider_type', $provider->value)
             ->firstOrFail();
     }
+
+    public function update(IUser $user): void
+    {
+        $this->user
+            ->newQuery()
+            ->where('id', $user->getId()->getValue())
+            ->update([
+                'email' => $user->getEmail(),
+                'name' => $user->getName(),
+                'password' => $user->getPassword(),
+                'user_language' => $user->getUserLanguage()->getValue(),
+                'learning_language' => $user->getLearningLanguage()->getValue(),
+                'profile_completed' => $user->profileCompleted(),
+            ]);
+    }
 }

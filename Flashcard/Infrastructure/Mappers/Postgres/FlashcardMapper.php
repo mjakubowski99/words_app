@@ -18,6 +18,9 @@ use Flashcard\Domain\Models\StoryCollection;
 use Flashcard\Domain\ValueObjects\FlashcardId;
 use Flashcard\Domain\ValueObjects\FlashcardDeckId;
 use Flashcard\Infrastructure\Mappers\Traits\HasOwnerBuilder;
+use Flashcard\Infrastructure\Mappers\Postgres\Builders\FlashcardQueryBuilder;
+use Flashcard\Infrastructure\Mappers\Postgres\Builders\LearningSessionQueryBuilder;
+use Flashcard\Infrastructure\Mappers\Postgres\Builders\LearningSessionFlashcardQueryBuilder;
 
 class FlashcardMapper
 {
@@ -27,17 +30,17 @@ class FlashcardMapper
 
     public function getByCategory(FlashcardDeckId $id): array
     {
-        return $this->db::table('flashcards')
-            ->where('flashcards.flashcard_deck_id', $id->getValue())
-            ->leftJoin('flashcard_decks', 'flashcard_decks.id', '=', 'flashcards.flashcard_deck_id')
-            ->select(
-                'flashcards.*',
-                'flashcard_decks.user_id as deck_user_id',
-                'flashcard_decks.admin_id as deck_admin_id',
-                'flashcard_decks.tag as deck_tag',
-                'flashcard_decks.name as deck_name',
-                'flashcard_decks.default_language_level as deck_default_language_level',
-            )
+        return FlashcardQueryBuilder::new()
+            ->byDeckIds([$id->getValue()])
+            ->leftJoinDeck()
+            ->addSelectAll(['*'])
+            ->addSelectDeckColumns([
+                'user_id' => 'deck_user_id',
+                'admin_id' => 'deck_admin_id',
+                'tag' => 'deck_tag',
+                'name' => 'deck_name',
+                'default_language_level' => 'deck_default_language_level',
+            ])
             ->get()
             ->map(function (object $data) {
                 return $this->map($data);
@@ -46,20 +49,20 @@ class FlashcardMapper
 
     public function getRandomFlashcards(UserId $user_id, int $limit, array $exclude_flashcard_ids): array
     {
-        return $this->db::table('flashcards')
-            ->where('flashcards.user_id', $user_id->getValue())
-            ->leftJoin('flashcard_decks', 'flashcard_decks.id', '=', 'flashcards.flashcard_deck_id')
-            ->whereNotIn('flashcards.id', $exclude_flashcard_ids)
+        return FlashcardQueryBuilder::new()
+            ->leftJoinDeck()
+            ->byUser($user_id)
+            ->without($exclude_flashcard_ids)
             ->take($limit)
             ->inRandomOrder()
-            ->select(
-                'flashcards.*',
-                'flashcard_decks.user_id as deck_user_id',
-                'flashcard_decks.admin_id as deck_admin_id',
-                'flashcard_decks.tag as deck_tag',
-                'flashcard_decks.name as deck_name',
-                'flashcard_decks.default_language_level as deck_default_language_level',
-            )
+            ->addSelectAll(['*'])
+            ->addSelectDeckColumns([
+                'user_id' => 'deck_user_id',
+                'admin_id' => 'deck_admin_id',
+                'tag' => 'deck_tag',
+                'name' => 'deck_name',
+                'default_language_level' => 'deck_default_language_level',
+            ])
             ->get()
             ->map(function (object $data) {
                 return $this->map($data);
@@ -68,20 +71,20 @@ class FlashcardMapper
 
     public function getRandomFlashcardsByCategory(FlashcardDeckId $id, int $limit, array $exclude_flashcard_ids): array
     {
-        return $this->db::table('flashcards')
-            ->where('flashcards.flashcard_deck_id', $id->getValue())
-            ->leftJoin('flashcard_decks', 'flashcard_decks.id', '=', 'flashcards.flashcard_deck_id')
-            ->whereNotIn('flashcards.id', $exclude_flashcard_ids)
+        return FlashcardQueryBuilder::new()
+            ->byDeckIds([$id->getValue()])
+            ->leftJoinDeck()
+            ->without($exclude_flashcard_ids)
             ->take($limit)
             ->inRandomOrder()
-            ->select(
-                'flashcards.*',
-                'flashcard_decks.user_id as deck_user_id',
-                'flashcard_decks.admin_id as deck_admin_id',
-                'flashcard_decks.tag as deck_tag',
-                'flashcard_decks.name as deck_name',
-                'flashcard_decks.default_language_level as deck_default_language_level',
-            )
+            ->addSelectAll(['*'])
+            ->addSelectDeckColumns([
+                'user_id' => 'deck_user_id',
+                'admin_id' => 'deck_admin_id',
+                'tag' => 'deck_tag',
+                'name' => 'deck_name',
+                'default_language_level' => 'deck_default_language_level',
+            ])
             ->get()
             ->map(function (object $data) {
                 return $this->map($data);
@@ -112,14 +115,12 @@ class FlashcardMapper
             ];
         }
 
-        $this->db::table('flashcards')->insert($insert_data);
+        FlashcardQueryBuilder::new()->insert($insert_data);
     }
 
     public function createManyFromStoryFlashcards(StoryCollection $stories): StoryCollection
     {
-        $insert_data = [];
-        $created_at = now();
-        $updated_at = now();
+        [$insert_data, $created_at, $updated_at] = [[], now(), now()];
 
         /** @var StoryFlashcard $story_flashcard */
         foreach ($stories->getAllStoryFlashcards() as $story_flashcard) {
@@ -159,17 +160,17 @@ class FlashcardMapper
 
     public function findMany(array $flashcard_ids): array
     {
-        return $this->db::table('flashcards')
-            ->whereIn('flashcards.id', $flashcard_ids)
-            ->leftJoin('flashcard_decks', 'flashcard_decks.id', '=', 'flashcards.flashcard_deck_id')
-            ->select(
-                'flashcards.*',
-                'flashcard_decks.user_id as deck_user_id',
-                'flashcard_decks.admin_id as deck_admin_id',
-                'flashcard_decks.tag as deck_tag',
-                'flashcard_decks.name as deck_name',
-                'flashcard_decks.default_language_level as deck_default_language_level',
-            )
+        return FlashcardQueryBuilder::new()
+            ->leftJoinDeck()
+            ->byIds($flashcard_ids)
+            ->addSelectAll(['*'])
+            ->addSelectDeckColumns([
+                'user_id' => 'deck_user_id',
+                'admin_id' => 'deck_admin_id',
+                'tag' => 'deck_tag',
+                'name' => 'deck_name',
+                'default_language_level' => 'deck_default_language_level',
+            ])
             ->get()
             ->map(function (object $data) {
                 return $this->map($data);
@@ -178,21 +179,19 @@ class FlashcardMapper
 
     public function findManyForUser(array $flashcard_ids, UserId $user_id): array
     {
-        return $this->db::table('flashcards')
-            ->whereIn('flashcards.id', $flashcard_ids)
-            ->leftJoin('flashcard_decks', 'flashcard_decks.id', '=', 'flashcards.flashcard_deck_id')
-            ->leftJoin('sm_two_flashcards', 'sm_two_flashcards.flashcard_id', '=', 'flashcards.id')
-            ->where(fn ($q) => $q->where('sm_two_flashcards.user_id', '=', $user_id->getValue())->orWhereNull('sm_two_flashcards.user_id'))
-            ->select(
-                'flashcards.*',
-                'sm_two_flashcards.last_rating',
-                'flashcard_decks.user_id as deck_user_id',
-                'flashcard_decks.admin_id as deck_admin_id',
-                'flashcard_decks.tag as deck_tag',
-                'flashcard_decks.name as deck_name',
-                'flashcard_decks.default_language_level as deck_default_language_level',
-            )
-            ->get()
+        return FlashcardQueryBuilder::new()
+            ->leftJoinDeck()
+            ->leftJoinSmTwoFlashcards($user_id)
+            ->byIds($flashcard_ids)
+            ->addSelectAll(['*'])
+            ->addSelect('sm_two_flashcards.last_rating')
+            ->addSelectDeckColumns([
+                'user_id' => 'deck_user_id',
+                'admin_id' => 'deck_admin_id',
+                'tag' => 'deck_tag',
+                'name' => 'deck_name',
+                'default_language_level' => 'deck_default_language_level',
+            ])->get()
             ->map(function (object $data) {
                 return $this->map($data);
             })->all();
@@ -200,17 +199,17 @@ class FlashcardMapper
 
     public function delete(FlashcardId $id): void
     {
-        $this->db::table('flashcards')
-            ->where('id', $id)
+        FlashcardQueryBuilder::new()
+            ->byIds([$id->getValue()])
             ->delete();
     }
 
     /** @param FlashcardId[] $flashcard_ids */
     public function bulkDelete(UserId $user_id, array $flashcard_ids): void
     {
-        $this->db::table('flashcards')
-            ->where('user_id', $user_id)
-            ->whereIn('id', $flashcard_ids)
+        FlashcardQueryBuilder::new()
+            ->byUser($user_id)
+            ->byIds(array_map(fn (FlashcardId $id) => $id->getValue(), $flashcard_ids))
             ->delete();
     }
 
@@ -228,8 +227,8 @@ class FlashcardMapper
 
     public function deleteAllForUser(UserId $user_id): void
     {
-        $this->db::table('flashcards')
-            ->where('user_id', $user_id)
+        FlashcardQueryBuilder::new()
+            ->byUser($user_id)
             ->delete();
     }
 
@@ -237,8 +236,8 @@ class FlashcardMapper
     {
         $now = now();
 
-        $this->db::table('flashcards')
-            ->where('id', $flashcard->getId())
+        FlashcardQueryBuilder::new()
+            ->byIds([$flashcard->getId()->getValue()])
             ->update([
                 'user_id' => $flashcard->getOwner()->isUser() ? $flashcard->getOwner()->getId() : null,
                 'admin_id' => $flashcard->getOwner()->isAdmin() ? $flashcard->getOwner()->getId() : null,
@@ -257,8 +256,8 @@ class FlashcardMapper
 
     public function replaceDeck(FlashcardDeckId $actual_deck_id, FlashcardDeckId $new_deck_id): bool
     {
-        $this->db::table('flashcards')
-            ->where('flashcard_deck_id', $actual_deck_id)
+        FlashcardQueryBuilder::new()
+            ->byDeckIds([$actual_deck_id->getValue()])
             ->update([
                 'flashcard_deck_id' => $new_deck_id,
                 'updated_at' => now(),
@@ -269,8 +268,8 @@ class FlashcardMapper
 
     public function replaceInSessions(FlashcardDeckId $actual_deck_id, FlashcardDeckId $new_deck_id): bool
     {
-        $this->db::table('learning_sessions')
-            ->where('flashcard_deck_id', $actual_deck_id)
+        LearningSessionQueryBuilder::new()
+            ->byDeckId($actual_deck_id)
             ->update([
                 'flashcard_deck_id' => $new_deck_id,
                 'updated_at' => now(),
@@ -281,8 +280,8 @@ class FlashcardMapper
 
     public function hasAnySessions(FlashcardId $id): bool
     {
-        return $this->db::table('learning_session_flashcards')
-            ->where('flashcard_id', $id->getValue())
+        return LearningSessionFlashcardQueryBuilder::new()
+            ->byFlashcardId($id)
             ->exists();
     }
 

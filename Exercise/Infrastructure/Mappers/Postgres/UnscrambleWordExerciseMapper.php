@@ -10,8 +10,8 @@ use Shared\Utils\ValueObjects\UserId;
 use Shared\Utils\ValueObjects\ExerciseId;
 use Exercise\Domain\Models\ExerciseStatus;
 use Shared\Utils\ValueObjects\ExerciseEntryId;
-use Exercise\Domain\Models\UnscrambleWordAnswer;
-use Exercise\Domain\Models\UnscrambleWordsExercise;
+use Exercise\Domain\Models\Answer\UnscrambleWordAnswer;
+use Exercise\Domain\Models\Exercise\UnscrambleWordsExercise;
 
 class UnscrambleWordExerciseMapper
 {

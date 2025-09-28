@@ -48,7 +48,7 @@ class ImportFlashcardsHandler
 
     private function resolveDeck(Owner $owner, string $deck_name, LanguageLevel $level): Deck
     {
-        $deck = $this->deck_repository->searchByNameAdmin($deck_name);
+        $deck = $this->deck_repository->searchByNameAdmin($deck_name, Language::pl()->getEnum(), Language::en()->getEnum());
 
         if (!$deck) {
             $deck = new Deck(

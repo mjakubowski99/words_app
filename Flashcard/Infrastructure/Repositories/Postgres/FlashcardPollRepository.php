@@ -45,4 +45,9 @@ class FlashcardPollRepository implements IFlashcardPollRepository
     {
         $this->mapper->resetLeitnerLevelIfMaxLevelExceeded($user_id, $max_level);
     }
+
+    public function deleteAllByUserId(UserId $user_id): void
+    {
+        $this->mapper->deleteAllByUserId($user_id);
+    }
 }

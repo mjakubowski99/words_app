@@ -9,6 +9,7 @@ use Filament\Panel;
 use Filament\Widgets;
 use Admin\Models\Flashcard;
 use Filament\PanelProvider;
+use Filament\Enums\ThemeMode;
 use Admin\Models\FlashcardDeck;
 use Filament\Support\Colors\Color;
 use Admin\Policies\FlashcardPolicy;
@@ -43,6 +44,7 @@ class AdminPanelProvider extends PanelProvider
             ->colors([
                 'primary' => Color::Amber,
             ])
+            ->defaultThemeMode(ThemeMode::Dark)
             ->discoverResources(in: base_path('../Admin/Resources'), for: 'Admin\Resources')
             ->discoverPages(in: base_path('../Admin/Pages'), for: 'Admin\Pages')
             ->pages([

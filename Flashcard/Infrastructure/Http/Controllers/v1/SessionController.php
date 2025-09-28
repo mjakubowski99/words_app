@@ -28,8 +28,16 @@ class SessionController extends Controller
         AddSessionFlashcardsHandler $add_session_flashcards,
         GetNextSessionFlashcardsHandler $get_next_session_flashcards,
     ): JsonResponse|NextSessionFlashcardsResource {
+        $user = $request->current();
+
         $add_session_flashcards->handle(
-            new AddSessionFlashcards($request->getSessionId(), $request->currentId(), self::FLASHCARDS_LIMIT)
+            new AddSessionFlashcards(
+                $request->getSessionId(),
+                $user->getId(),
+                $user->getUserLanguage()->getEnum(),
+                $user->getLearningLanguage()->getEnum(),
+                self::FLASHCARDS_LIMIT
+            )
         );
 
         return new NextSessionFlashcardsResource(
@@ -84,8 +92,16 @@ class SessionController extends Controller
             return new JsonResponse(['message' => $result->getFailReason()], 400);
         }
 
+        $user = $request->current();
+
         $add_session_flashcards->handle(
-            new AddSessionFlashcards($result->getId(), $request->currentId(), self::FLASHCARDS_LIMIT)
+            new AddSessionFlashcards(
+                $result->getId(),
+                $user->getId(),
+                $user->getUserLanguage()->getEnum(),
+                $user->getLearningLanguage()->getEnum(),
+                self::FLASHCARDS_LIMIT
+            )
         );
 
         return new NextSessionFlashcardsResource(
@@ -139,7 +155,16 @@ class SessionController extends Controller
             $request->getSessionId(),
             $request->getRatings(),
         );
-        $add_session_flashcards_command = new AddSessionFlashcards($request->getSessionId(), $request->currentId(), self::FLASHCARDS_LIMIT);
+
+        $user = $request->current();
+
+        $add_session_flashcards_command = new AddSessionFlashcards(
+            $request->getSessionId(),
+            $user->getId(),
+            $user->getUserLanguage()->getEnum(),
+            $user->getLearningLanguage()->getEnum(),
+            self::FLASHCARDS_LIMIT
+        );
 
         $rate->handle($rate_command);
 

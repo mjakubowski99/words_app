@@ -21,4 +21,6 @@ interface IUserRepository
     public function create(array $attributes): IUser;
 
     public function delete(UserId $user_id): void;
+
+    public function update(IUser $user): void;
 }

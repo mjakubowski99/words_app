@@ -6,6 +6,7 @@ namespace User\Application\DTO;
 
 use Shared\User\IUser;
 use Shared\Utils\ValueObjects\UserId;
+use Shared\Utils\ValueObjects\Language;
 
 readonly class UserDTO implements IUser
 {
@@ -31,5 +32,20 @@ readonly class UserDTO implements IUser
     public function getName(): string
     {
         return $this->domain_user->getName();
+    }
+
+    public function getUserLanguage(): Language
+    {
+        return $this->domain_user->getUserLanguage();
+    }
+
+    public function getLearningLanguage(): Language
+    {
+        return $this->domain_user->getLearningLanguage();
+    }
+
+    public function profileCompleted(): bool
+    {
+        return $this->domain_user->profileCompleted();
     }
 }

@@ -8,8 +8,8 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Shared\Utils\ValueObjects\ExerciseId;
 use Shared\Utils\ValueObjects\ExerciseEntryId;
-use Exercise\Application\DTO\WordMatchExerciseRead;
-use Exercise\Application\DTO\WordMatchExerciseReadEntry;
+use Exercise\Application\DTO\Exercise\WordMatchExerciseRead;
+use Exercise\Application\DTO\Exercise\WordMatchExerciseReadEntry;
 use Exercise\Infrastructure\Models\WordMatchExerciseJsonProperties;
 
 class WordMatchExerciseReadMapper

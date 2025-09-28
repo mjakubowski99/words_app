@@ -3,13 +3,13 @@
 declare(strict_types=1);
 
 use Shared\Enum\ExerciseType;
-use Exercise\Domain\Models\Answer;
 use Shared\Utils\ValueObjects\UserId;
-use Exercise\Domain\Models\ExerciseEntry;
+use Exercise\Domain\Models\Answer\Answer;
 use Shared\Utils\ValueObjects\ExerciseId;
 use Exercise\Domain\Models\ExerciseStatus;
 use Exercise\Domain\Models\AnswerAssessment;
 use Shared\Utils\ValueObjects\ExerciseEntryId;
+use Exercise\Domain\Models\ExerciseEntry\ExerciseEntry;
 use Exercise\Domain\Exceptions\ExerciseStatusTransitionException;
 use Tests\Unit\Exercise\Domain\Model\Exercise\ConcreteTestExercise;
 
