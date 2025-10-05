@@ -18,6 +18,7 @@ test('from string success', function () {
     expect($this->model)->toBeInstanceOf(UnscrambleWordAnswer::class);
     expect($this->model->toString())->toBe('answer1');
 });
+
 test('compare when answers are the same success', function () {
     // GIVEN
     $this->model = UnscrambleWordAnswer::fromString(new ExerciseEntryId(1), 'answer1');
@@ -30,6 +31,7 @@ test('compare when answers are the same success', function () {
     expect($assessment->isCorrect())->toBeTrue();
     expect($assessment->getRealScore())->toBe(100.0);
 });
+
 test('compare when exercise entry id mismatch fail', function () {
     // GIVEN
     $this->model = UnscrambleWordAnswer::fromString(new ExerciseEntryId(1), 'test');

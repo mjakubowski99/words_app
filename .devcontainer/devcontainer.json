@@ -2,26 +2,27 @@
     "name": "PHP Dev Container",
     "dockerComposeFile": "../entry/docker/docker-compose.yml",
     "service": "php",
-    "workspaceFolder": "/var/www",
+    "workspaceFolder": "/var/www/entry",
     "customizations": {
         "vscode": {
             "extensions": [
-                "ms-php.php-pack",
-                "ms-vscode.vscode-node-azure-pack",
-                "anan.jetbrains-darcula-theme",
-                "bmewburn.vscode-intelephense-client",
-                "jebbs.plantuml",
-                "eamodio.gitlens"
+                "devsense.composer-php-vscode",
+                "devsense.intelli-php-vscode",
+                "devsense.phptools-vscode",
+                "devsense.profiler-php-vscode",
+                "felixfbecker.php-debug",
+                "junstyle.php-cs-fixer",
+                "recca0120.vscode-phpunit",
+                "laravel.vscode-laravel",
+                "mehedidracula.php-namespace-resolver"
             ],
             "settings": {
-                "php.version": "8.3",
-                "intelephense.environment.phpVersion": "8.3",
+                "php.version": "8.4",
+                "intelephense.environment.phpVersion": "8.4",
                 "php.validate.executablePath": "/usr/local/bin/php",
-                "phpunit.php": "/usr/local/bin/php",
-                "phpunit.phpunit": "/var/www/entry/vendor/bin/phpunit",
-                "phpunit.args": [
-                    "--colors=always"
-                ]
+                "php-cs-fixer.executablePath": "vendor/bin/php-cs-fixer",
+                "php-cs-fixer.config": ".php-cs-fixer.dist.php",
+                "phpunit.phpunit": "vendor/bin/pest"
             }
         }
     },
