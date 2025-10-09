@@ -709,7 +709,7 @@
                     const challengeDiv = document.getElementById('challenge');
                     challengeDiv.textContent = 'Wyzwanie dla tych co zle odpowiedzieli: ' + quizData[currentQuestion].forceChallenge 
                     challengeDiv.classList.remove('hidden');
-                } else if (Math.random() < 0.6) {
+                } else if (Math.random() < 0.95) {
                     const challengeDiv = document.getElementById('challenge');
                     challengeDiv.textContent = 'Wyzwanie dla tych co zle odpowiedzieli: ' + getRandomChallenge();
                     challengeDiv.classList.remove('hidden');
