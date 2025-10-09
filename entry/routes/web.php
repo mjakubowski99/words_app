@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+use Illuminate\Support\Facades\Route;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -12,3 +14,7 @@ declare(strict_types=1);
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+
+Route::get('/quiz-test', function() {
+    return view('quizchlanie');
+});
