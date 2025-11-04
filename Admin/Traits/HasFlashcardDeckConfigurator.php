@@ -48,6 +48,7 @@ trait HasFlashcardDeckConfigurator
                     ->helperText('This is optional, when we as admins want to import decks for us'),
                 FileUpload::make('import_file')
                     ->required()
+                    ->disk('public')
                     ->acceptedFileTypes([
                         'text/csv',
                     ])
