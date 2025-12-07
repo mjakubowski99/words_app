@@ -7,6 +7,6 @@ return [
     'api_url' => env('GEMINI_API_URL'),
 
     'endpoints' => [
-        'generate_text' => 'v1beta/models/gemini-2.5-flash:generateContent',
+        'generate_text' => 'v1beta/models/gemini-2.5-flash-lite:generateContent',
     ],
 ];
