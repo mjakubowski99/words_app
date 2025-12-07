@@ -7,6 +7,6 @@ return [
     'api_url' => env('GEMINI_API_URL'),
 
     'endpoints' => [
-        'generate_text' => 'v1beta/models/gemma-3-12b:generateContent',
+        'generate_text' => 'v1beta/models/gemma-3-27b-it:generateContent',
     ],
 ];
